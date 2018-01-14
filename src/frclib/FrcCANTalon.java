@@ -23,6 +23,7 @@
 package frclib;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.Faults;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.LimitSwitchNormal;
 import com.ctre.phoenix.motorcontrol.LimitSwitchSource;
@@ -46,6 +47,7 @@ public class FrcCANTalon extends TrcMotor
     private TrcDbgTrace dbgTrace = null;
 
     public TalonSRX motor;
+    private Faults motorFaults;
     private boolean feedbackDeviceIsPot = false;
     private boolean limitSwitchesSwapped = false;
     private boolean revLimitSwitchNormalOpen = false;
@@ -66,6 +68,7 @@ public class FrcCANTalon extends TrcMotor
     {
         super(instanceName);
         motor = new TalonSRX(deviceNumber);
+        motorFaults = new Faults();
         resetPosition(true);
 
         if (debugEnabled)
@@ -237,9 +240,9 @@ public class FrcCANTalon extends TrcMotor
     public boolean isLowerLimitSwitchActive()
     {
         final String funcName = "isLowerLimitSwitchActive";
-        boolean isActive = false;
-//        boolean isActive = limitSwitchesSwapped? !(fwdLimitSwitchNormalOpen^motor.isFwdLimitSwitchClosed()):
-//                                                 !(revLimitSwitchNormalOpen^motor.isRevLimitSwitchClosed());
+
+        motor.getFaults(motorFaults);
+        boolean isActive = limitSwitchesSwapped? motorFaults.ForwardLimitSwitch: motorFaults.ReverseLimitSwitch;
 
         if (debugEnabled)
         {
@@ -259,9 +262,9 @@ public class FrcCANTalon extends TrcMotor
     public boolean isUpperLimitSwitchActive()
     {
         final String funcName = "isUpperLimitSwitchActive";
-        boolean isActive = false;
-//        boolean isActive = limitSwitchesSwapped? !(revLimitSwitchNormalOpen^motor.isRevLimitSwitchClosed()):
-//                                                 !(fwdLimitSwitchNormalOpen^motor.isFwdLimitSwitchClosed());
+
+        motor.getFaults(motorFaults);
+        boolean isActive = limitSwitchesSwapped? motorFaults.ReverseLimitSwitch: motorFaults.ForwardLimitSwitch;
 
         if (debugEnabled)
         {
