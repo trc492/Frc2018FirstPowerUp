@@ -81,7 +81,8 @@ public class Robot extends FrcRobotBase implements TrcPidController.PidInput
     public static final boolean USE_GRIP_VISION = false;
     public static final boolean USE_AXIS_CAMERA = false;
     public static final boolean USE_FACE_DETECTOR = false;
-    public static final boolean USE_FRONT_PIXY = true;
+    public static final boolean USE_PIXY_SPI = true;
+    public static final boolean USE_FRONT_PIXY = false;
     public static final boolean USE_FRONT_PIXY_UART = false;
     public static final boolean USE_REAR_PIXY = false;
     public static final boolean USE_TEXT_TO_SPEECH = false;
@@ -133,6 +134,7 @@ public class Robot extends FrcRobotBase implements TrcPidController.PidInput
     //
     public GripVision gripVision = null;
     public FrcFaceDetector faceDetector = null;
+    public PixyVision pixy = null;
     public PixyVision frontPixy = null;
     public PixyVision rearPixy = null;
 
@@ -270,6 +272,13 @@ public class Robot extends FrcRobotBase implements TrcPidController.PidInput
         }
         else
         {
+            if (USE_PIXY_SPI)
+            {
+                pixy = new PixyVision(
+                    "PixyCam", this, RobotInfo.PIXY_POWER_CUBE_SIGNATURE, RobotInfo.PIXY_BRIGHTNESS,
+                    RobotInfo.PIXY_ORIENTATION, SPI.Port.kOnboardCS0);
+            }
+
             if (USE_FRONT_PIXY)
             {
                 if (USE_FRONT_PIXY_UART)

@@ -25,6 +25,7 @@ package frclib;
 import java.util.Arrays;
 
 import edu.wpi.first.wpilibj.I2C;
+import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.SerialPort;
 import trclib.TrcDbgTrace;
 import trclib.TrcSerialBusDevice;
@@ -53,6 +54,31 @@ public class FrcPixyCam extends TrcPixyCam
     public static final SerialPort.StopBits DEF_STOP_BITS = SerialPort.StopBits.kOne;
 
     private TrcSerialBusDevice pixyCam = null;
+
+    /**
+     * Constructor: Create an instance of the object.
+     *
+     * @param instanceName specifies the instance name.
+     * @param port specifies the SPI port on the RoboRIO.
+     */
+    public FrcPixyCam(final String instanceName, SPI.Port port)
+    {
+        super(instanceName);
+
+        if (debugEnabled)
+        {
+            dbgTrace = new TrcDbgTrace(moduleName + "." + instanceName, tracingEnabled, traceLevel, msgLevel);
+        }
+
+        SPI spi = new SPI(port);
+        spi.setMSBFirst();
+        spi.setClockActiveHigh();
+        spi.setSampleDataOnRising();
+        spi.setChipSelectActiveLow();
+        pixyCam = new FrcSpiDevice(instanceName, spi);
+
+        start();
+    }   //FrcPixyCam
 
     /**
      * Constructor: Create an instance of the object.

@@ -182,6 +182,9 @@ public class RobotInfo
     public static final int PIXYCAM_HEIGHT                      = 200;
     public static final int PIXY_LIFT_SIGNATURE                 = 1;
     public static final int PIXY_GEAR_SIGNATURE                 = 2;
+    public static final int PIXY_POWER_CUBE_SIGNATURE           = 1;
+    public static final int PIXY_BRIGHTNESS                     = 80;
+    public static final PixyVision.Orientation PIXY_ORIENTATION = PixyVision.Orientation.NORMAL_LANDSCAPE;
     public static final int PIXYCAM_FRONT_I2C_ADDRESS           = FrcPixyCam.DEF_I2C_ADDRESS;
     public static final int PIXYCAM_REAR_I2C_ADDRESS            = PIXYCAM_FRONT_I2C_ADDRESS + 2;
     public static final int PIXY_FRONT_BRIGHTNESS               = 35;

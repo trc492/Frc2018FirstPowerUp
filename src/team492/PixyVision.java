@@ -27,6 +27,7 @@ import java.util.ArrayList;
 import org.opencv.core.Rect;
 
 import edu.wpi.first.wpilibj.I2C;
+import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.SerialPort;
 import frclib.FrcPixyCam;
 import frclib.FrcPneumatic;
@@ -95,6 +96,14 @@ public class PixyVision
         targetFoundLED = new FrcPneumatic("TargetFoundLED", RobotInfo.CANID_PCM1, RobotInfo.SOL_TARGET_FOUND_LED);
         targetAlignedLED = new FrcPneumatic("TargetAlignedLED", RobotInfo.CANID_PCM1, RobotInfo.SOL_TARGET_ALIGNED_LED);
     }   //commonInit
+
+    public PixyVision(
+        final String instanceName, Robot robot, int signature, int brightness, Orientation orientation,
+        SPI.Port port)
+    {
+        pixyCamera = new FrcPixyCam(instanceName, port);
+        commonInit(robot, signature, brightness, orientation);
+    }   //PixyVision
 
     public PixyVision(
         final String instanceName, Robot robot, int signature, int brightness, Orientation orientation,
