@@ -25,7 +25,7 @@ package team492;
 import edu.wpi.first.wpilibj.DigitalInput;
 import frclib.FrcPneumatic;
 
-public class GearPickup
+public class CubePickup
 {
     private FrcPneumatic claw, arm;
     private DigitalInput gearSensor;
@@ -33,7 +33,7 @@ public class GearPickup
     /**
      * Initialize the GearPickup class.
      */
-    public GearPickup()
+    public CubePickup()
     {
         claw = new FrcPneumatic(
             "GearPickupClaw", RobotInfo.CANID_PCM1,
