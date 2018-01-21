@@ -152,10 +152,6 @@ public class FrcTeleOp implements TrcRobot.RobotMode, FrcJoystick.ButtonHandler
 
             double winchPower = operatorStick.getYWithDeadband(true);
             robot.winch.setPower(winchPower);
-
-            double shooterValue = (operatorStick.getZ() + 1.0) / 2.0;
-//            robot.shooter.setPower(shooterValue);
-            robot.shooter.setSpeed(shooterValue*RobotInfo.SHOOTER_MAX_RPM);
         }
 
         robot.updateDashboard();
@@ -361,17 +357,9 @@ public class FrcTeleOp implements TrcRobot.RobotMode, FrcJoystick.ButtonHandler
                     break;
 
                 case FrcJoystick.LOGITECH_BUTTON6:
-                    if (pressed && !visionAssistOn)
-                    {
-                        robot.mailbox.extend();
-                    }
                     break;
 
                 case FrcJoystick.LOGITECH_BUTTON7:
-                    if (pressed && !visionAssistOn)
-                    {
-                        robot.mailbox.retract();
-                    }
                     break;
 
                 case FrcJoystick.LOGITECH_BUTTON8:

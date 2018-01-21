@@ -104,38 +104,26 @@ public class Winch
 
     public void setPower(double power)
     {
-        if (Robot.USE_ACCELEROMETER)
+        double currTime = TrcUtil.getCurrentTime();
+
+        if (power == 0.0)
         {
-            if (!offGround && Math.abs(getRobotTilt()) >= RobotInfo.WINCH_TILT_THRESHOLD)
-            {
-                offGround = true;
-                mainMotor.resetPosition();
-            }
+            motorStarted = false;
         }
-        else
+        else if (!motorStarted)
         {
-            double currTime = TrcUtil.getCurrentTime();
+            //
+            // Motor current spikes up when starting, so ignore the first half second to allow current to settle.
+            //
+            motorStarted = true;
+            settlingTime = currTime + RobotInfo.WINCH_SPIKE_TIMEOUT;
+        }
 
-            power = Math.abs(power);
-            if (power == 0.0)
-            {
-                motorStarted = false;
-            }
-            else if (!motorStarted)
-            {
-                //
-                // Motor current spikes up when starting, so ignore the first half second to allow current to settle.
-                //
-                motorStarted = true;
-                settlingTime = currTime + RobotInfo.WINCH_SPIKE_TIMEOUT;
-            }
-
-            if (!offGround && motorStarted &&
-                currTime >= settlingTime && getCurrent() >= RobotInfo.WINCH_MOTOR_CURRENT_THRESHOLD)
-            {
-                offGround = true;
-                mainMotor.resetPosition();
-            }
+        if (!offGround && motorStarted &&
+            currTime >= settlingTime && getCurrent() >= RobotInfo.WINCH_MOTOR_CURRENT_THRESHOLD)
+        {
+            offGround = true;
+            mainMotor.resetPosition();
         }
 
         if (!manualOverride)

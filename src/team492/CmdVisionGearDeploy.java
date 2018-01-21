@@ -79,7 +79,6 @@ class CmdVisionGearDeploy implements TrcRobot.RobotCommand
     public void stop()
     {
         sm.stop();
-        robot.mailbox.retract();
         robot.pidDrive.cancel();
         robot.visionPidDrive.cancel();
     }   //start
@@ -107,7 +106,7 @@ class CmdVisionGearDeploy implements TrcRobot.RobotCommand
             switch (state)
             {
                 case TURN_TO_TARGET:
-                    targetInfo = robot.frontPixy.getTargetInfo();
+                    targetInfo = robot.pixy.getTargetInfo();
                     double angle = targetInfo != null? targetInfo.angle: 0.0;
                     xDistance = yDistance = 0.0;
                     robot.targetHeading += angle;
@@ -148,7 +147,6 @@ class CmdVisionGearDeploy implements TrcRobot.RobotCommand
                     //
                     // Place gear on peg.
                     //
-                    robot.mailbox.extend();
                     timer.set(visionGearDeployTime, event);
                     sm.waitForSingleEvent(event, State.BACKUP);
                     break;
@@ -168,7 +166,6 @@ class CmdVisionGearDeploy implements TrcRobot.RobotCommand
                     //
                     // We are done.
                     //
-                    robot.mailbox.retract();
                     done = true;
                     sm.stop();
                     break;

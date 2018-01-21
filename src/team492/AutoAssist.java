@@ -22,6 +22,7 @@
 
 package team492;
 
-public class AutoAssist {
+public class AutoAssist
+{
 
 }
