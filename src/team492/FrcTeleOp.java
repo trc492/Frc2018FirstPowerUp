@@ -88,7 +88,6 @@ public class FrcTeleOp implements TrcRobot.RobotMode, FrcJoystick.ButtonHandler
 
         robot.driveBase.resetPosition();
         robot.targetHeading = 0.0;
-        robot.winch.clearState();
 
         robot.encoderXPidCtrl.setOutputRange(-1.0, 1.0);
         robot.encoderYPidCtrl.setOutputRange(-1.0, 1.0);
@@ -374,7 +373,6 @@ public class FrcTeleOp implements TrcRobot.RobotMode, FrcJoystick.ButtonHandler
                     break;
 
                 case FrcJoystick.LOGITECH_BUTTON10:
-                    robot.winch.setManualOverride(pressed);
                     break;
 
                 case FrcJoystick.LOGITECH_BUTTON11:

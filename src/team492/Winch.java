@@ -24,41 +24,23 @@ package team492;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 
-import edu.wpi.first.wpilibj.BuiltInAccelerometer;
 import frclib.FrcCANTalon;
-import trclib.TrcKalmanFilter;
-import trclib.TrcUtil;
 
 public class Winch
 {
     private FrcCANTalon mainMotor;
     private FrcCANTalon slaveMotor;
-    private BuiltInAccelerometer zAccel = null;
-    private TrcKalmanFilter zAccelFilter = null;
     private double motorPower = 0.0;
-    private boolean manualOverride = false;
-    private boolean motorStarted = false;
-    private boolean offGround = false;
     private boolean motorSlowed = false;
-    private double settlingTime = 0.0;
     private double masterCurrent = 0.0;
     private double slaveCurrent = 0.0;
     private double maxCurrent = 0.0;
-    private double zValue = 0.0;
-
     public Winch()
     {
         mainMotor = new FrcCANTalon("WinchMaster", RobotInfo.CANID_WINCH_MASTER);
         slaveMotor = new FrcCANTalon("WinchSlave", RobotInfo.CANID_WINCH_SLAVE);
         slaveMotor.motor.set(ControlMode.Follower, RobotInfo.CANID_WINCH_MASTER);
         mainMotor.setPositionSensorInverted(false);
-        zAccel = new BuiltInAccelerometer();
-        zAccelFilter = new TrcKalmanFilter("ZAccel");
-    }
-
-    public void setManualOverride(boolean override)
-    {
-        this.manualOverride = override;
     }
 
     public boolean isUpperLimitSwitchActive()
@@ -71,10 +53,6 @@ public class Winch
         return mainMotor.isLowerLimitSwitchActive();
     }
 
-    public boolean isOffGround()
-    {
-        return offGround;
-    }
 
     public boolean isMotorSlowed()
     {
@@ -86,61 +64,25 @@ public class Winch
         return mainMotor.getPosition()*RobotInfo.WINCH_POSITION_SCALE;
     }
 
-    public double getRobotTilt()
-    {
-        zValue = zAccelFilter.filterData(zAccel.getZ());
-        return Math.toDegrees(Math.acos(zValue));
-    }
-
-    public double getZValue()
-    {
-        return zValue;
-    }
-
     public double getPower()
     {
         return motorPower;
     }
 
     public void setPower(double power)
+	{
+		motorPower = power;
+		mainMotor.setPower(motorPower);
+    }
+    
+    public void stop() 
     {
-        double currTime = TrcUtil.getCurrentTime();
-
-        if (power == 0.0)
-        {
-            motorStarted = false;
-        }
-        else if (!motorStarted)
-        {
-            //
-            // Motor current spikes up when starting, so ignore the first half second to allow current to settle.
-            //
-            motorStarted = true;
-            settlingTime = currTime + RobotInfo.WINCH_SPIKE_TIMEOUT;
-        }
-
-        if (!offGround && motorStarted &&
-            currTime >= settlingTime && getCurrent() >= RobotInfo.WINCH_MOTOR_CURRENT_THRESHOLD)
-        {
-            offGround = true;
-            mainMotor.resetPosition();
-        }
-
-        if (!manualOverride)
-        {
-            if (touchingPlate())
-            {
-                power = 0.0;
-            }
-            else if (offGround && getPosition() >= RobotInfo.WINCH_HEIGHT_THRESHOLD)
-            {
-                power *= RobotInfo.WINCH_MOTOR_POWER_SCALE;
-                motorSlowed = true;
-            }
-        }
-
-        motorPower = power;
-        mainMotor.setPower(motorPower);
+    	setPower(0.0);
+    }
+    
+    public void climb() 
+    {
+    	setPower(0.7);
     }
 
     public double getCurrent()
@@ -167,19 +109,6 @@ public class Winch
     public double getMaxCurrent()
     {
         return maxCurrent;
-    }
-
-    public boolean touchingPlate()
-    {
-        return isUpperLimitSwitchActive() || isLowerLimitSwitchActive();
-    }
-
-    public void clearState()
-    {
-        offGround = false;
-        motorSlowed = false;
-        motorStarted = false;
-        maxCurrent = 0.0;
     }
 
 }   //class Winch
