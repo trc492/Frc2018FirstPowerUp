@@ -22,110 +22,153 @@
 
 package team492;
 
+import com.ctre.phoenix.motorcontrol.ControlMode;
+
 import edu.wpi.first.wpilibj.DigitalInput;
 import frclib.FrcPneumatic;
+import frclib.FrcCANTalon;
 
 public class CubePickup
 {
-    private FrcPneumatic claw, arm;
-    private DigitalInput gearSensor;
+	private FrcCANTalon controlMotor, slaveMotor;
+	private FrcPneumatic claw, deployer;
+	private DigitalInput cubeSensor;
 
-    /**
-     * Initialize the GearPickup class.
-     */
-    public CubePickup()
-    {
-        claw = new FrcPneumatic(
-            "GearPickupClaw", RobotInfo.CANID_PCM1,
-            RobotInfo.SOL_GEARPICKUP_CLAW_EXTEND, RobotInfo.SOL_GEARPICKUP_CLAW_RETRACT);
-        arm = new FrcPneumatic(
-            "GearPickupArm", RobotInfo.CANID_PCM1,
-            RobotInfo.SOL_GEARPICKUP_ARM_EXTEND, RobotInfo.SOL_GEARPICKUP_ARM_RETRACT);
-        gearSensor = new DigitalInput(RobotInfo.DIN_GEAR_SENSOR);
-    }
+	// TODO: temporary variables for talon CAN IDs
+	private static final int CANID_RIGHT_PICKUP = 21;
+	private static final int CANID_LEFT_PICKUP = 21;
 
-    /**
-     * Open the claw.
-     */
-    public void openClaw()
-    {
-        claw.extend();
-    }
 
-    /**
-     * Close the claw
-     */
-    public void closeClaw()
-    {
-        claw.retract();
-    }
+	/**
+	 * Initialize the GearPickup class.
+	 */
+	public CubePickup()
+	{
+		controlMotor = new FrcCANTalon("RightPickupMotor", CANID_RIGHT_PICKUP);
+		slaveMotor = new FrcCANTalon("LeftPickupMotor", CANID_LEFT_PICKUP);
+		slaveMotor.motor.set(ControlMode.Follower, CANID_RIGHT_PICKUP);
+		slaveMotor.motor.setInverted(true);
 
-    /**
-     * Get whether the claw is opened or not.
-     *
-     * @return true if opened, false if not.
-     */
-    public boolean isClawOpen()
-    {
-        return claw.isExtended();
-    }
+		claw = new FrcPneumatic(
+				"CubePickupClaw", RobotInfo.CANID_PCM1,
+				// TODO: change constants in RobotInfo
+				RobotInfo.SOL_GEARPICKUP_CLAW_EXTEND, RobotInfo.SOL_GEARPICKUP_CLAW_RETRACT);
+		deployer = new FrcPneumatic(
+				"CubePickupDeploy", RobotInfo.CANID_PCM1,
+				// TODO: change constants in RobotInfo
+				RobotInfo.SOL_GEARPICKUP_ARM_EXTEND, RobotInfo.SOL_GEARPICKUP_ARM_RETRACT);
+		// TODO: change the constant in RobotInfo
+		cubeSensor = new DigitalInput(RobotInfo.DIN_GEAR_SENSOR);
+	}
 
-    /**
-     * Set the state of the claw.
-     * 
-     * @param open If true, open the claw. If false, close it.
-     */
-    public void setClawOpen(boolean open)
-    {
-        if (open)
-            openClaw();
-        else
-            closeClaw();
-    }
+	/**
+	 * Open the claw.
+	 */
+	public void openClaw()
+	{
+		claw.extend();
+	}
 
-    /**
-     * Lift the arm so the gear is perpendicular to the ground.
-     */
-    public void liftArm()
-    {
-        arm.retract();
-    }
+	/**
+	 * Close the claw
+	 */
+	public void closeClaw()
+	{
+		claw.retract();
+	}
 
-    /**
-     * Lower the arm so the claw is on the ground.
-     */
-    public void lowerArm()
-    {
-        arm.extend();
-    }
+	/**
+	 * Get whether the claw is opened or not.
+	 *
+	 * @return true if opened, false if not.
+	 */
+	public boolean isClawOpen()
+	{
+		return claw.isExtended();
+	}
 
-    /**
-     * Set the state of the arm.
-     *
-     * @param up If true, lift the arm. Otherwise, lower.
-     */
-    public void setArmUp(boolean up)
-    {
-        if (up)
-            arm.retract();
-        else
-            arm.extend();
-    }
+	/**
+	 * Set the state of the claw.
+	 * 
+	 * @param open If true, open the claw. If false, close it.
+	 */
+	public void setClawOpen(boolean open)
+	{
+		if (open)
+			openClaw();
+		else
+			closeClaw();
+	}
 
-    /**
-     * Is the arm up or down?
-     * 
-     * @return Returns true if the arm is up, (gear is off ground) and returns
-     *         false if the arm is down. (gear is on ground)
-     */
-    public boolean isArmUp()
-    {
-        return !arm.isExtended();
-    }
+	/**
+	 * Lift the pickup so the claw is off the ground.
+	 */
+	public void raisePickup()
+	{
+		deployer.retract();
+	}
 
-    public boolean gearDetected()
-    {
-        return gearSensor.get();
-    }
+	/**
+	 * Lower the pickup so the claw is on the ground.
+	 */
+	public void deployPickup()
+	{
+		deployer.extend();
+	}
+
+	/**
+	 * Set the state of the pickup.
+	 *
+	 * @param down If true, lift the pickup. Otherwise, lower.
+	 */
+	public void setPickupDeployed(boolean down)
+	{
+		if (down)
+			deployer.retract();
+		else
+			deployer.extend();
+	}
+
+	/**
+	 * Is the pickup up or down?
+	 * 
+	 * @return Returns true if the pickup is up, (claw is off ground) and returns
+	 *         false if the pickup is down. (claw is on ground)
+	 */
+	public boolean isPickupDeployed()
+	{
+		return deployer.isExtended();
+	}
+
+	/**
+	 * 
+	 * @return Returns true of there is a cube in the pickup
+	 */
+	public boolean cubeDetected()
+	{
+		return cubeSensor.get();
+	}
+
+	/**
+	 * spin the pickup motors to pull in a cube
+	 */
+	public void grabCube(double power) {
+		controlMotor.setPower(power);
+	}
+
+	/**
+	 * spin the motors to push out a cube
+	 */
+	public void dropCube(double power) {
+		controlMotor.setPower(-power);
+	}
+	
+	/**
+	 * stops the pickup motors,
+	 * use after cube has been picked up or dropped
+	 */
+	public void stopPickup() {
+		controlMotor.setPower(0.0);
+	}
 
 }

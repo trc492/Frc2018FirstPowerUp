@@ -318,7 +318,7 @@ public class FrcTest extends FrcTeleOp
             robot.driveBase.getXPosition(), robot.driveBase.getYPosition(), robot.driveBase.getHeading());
         robot.dashboard.displayPrintf(4, "Gyro: Rate=%.3f, Heading=%.1f",
             robot.gyro.getZRotationRate().value, robot.gyro.getZHeading().value);
-        robot.dashboard.displayPrintf(5, "GearPickup: gear=%s", robot.cubePickup.gearDetected());
+        robot.dashboard.displayPrintf(5, "CubePickup: cube=%s", robot.cubePickup.cubeDetected());
         robot.dashboard.displayPrintf(6, "PressureSensor: pressure=%.1f", robot.getPressure());
         robot.dashboard.displayPrintf(7, "Ultrasonic=%.1f inches", robot.getUltrasonicDistance());
     }   //doSensorsTest

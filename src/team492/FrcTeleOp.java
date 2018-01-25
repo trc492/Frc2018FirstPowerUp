@@ -322,7 +322,7 @@ public class FrcTeleOp implements TrcRobot.RobotMode, FrcJoystick.ButtonHandler
                     //
                     if (pressed && !visionAssistOn)
                     {
-                        robot.cubePickup.lowerArm();
+                        robot.cubePickup.deployPickup();
                     }
                     break;
 
@@ -332,7 +332,7 @@ public class FrcTeleOp implements TrcRobot.RobotMode, FrcJoystick.ButtonHandler
                     //
                     if (pressed && !visionAssistOn)
                     {
-                        robot.cubePickup.liftArm();
+                        robot.cubePickup.raisePickup();
                     }
                     break;
 
