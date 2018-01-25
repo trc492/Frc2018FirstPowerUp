@@ -34,31 +34,23 @@ public class CubePickup
 	private FrcPneumatic claw, deployer;
 	private DigitalInput cubeSensor;
 
-	// TODO: temporary variables for talon CAN IDs
-	private static final int CANID_RIGHT_PICKUP = 21;
-	private static final int CANID_LEFT_PICKUP = 21;
-
-
 	/**
-	 * Initialize the GearPickup class.
+	 * Initialize the CubePickup class.
 	 */
 	public CubePickup()
 	{
-		controlMotor = new FrcCANTalon("RightPickupMotor", CANID_RIGHT_PICKUP);
-		slaveMotor = new FrcCANTalon("LeftPickupMotor", CANID_LEFT_PICKUP);
-		slaveMotor.motor.set(ControlMode.Follower, CANID_RIGHT_PICKUP);
+		controlMotor = new FrcCANTalon("RightPickupMotor", RobotInfo.CANID_RIGHT_PICKUP);
+		slaveMotor = new FrcCANTalon("LeftPickupMotor", RobotInfo.CANID_LEFT_PICKUP);
+		slaveMotor.motor.set(ControlMode.Follower, RobotInfo.CANID_RIGHT_PICKUP);
 		slaveMotor.motor.setInverted(true);
 
 		claw = new FrcPneumatic(
 				"CubePickupClaw", RobotInfo.CANID_PCM1,
-				// TODO: change constants in RobotInfo
-				RobotInfo.SOL_GEARPICKUP_CLAW_EXTEND, RobotInfo.SOL_GEARPICKUP_CLAW_RETRACT);
+				RobotInfo.SOL_CUBEPICKUP_CLAW_EXTEND, RobotInfo.SOL_CUBEPICKUP_CLAW_RETRACT);
 		deployer = new FrcPneumatic(
 				"CubePickupDeploy", RobotInfo.CANID_PCM1,
-				// TODO: change constants in RobotInfo
-				RobotInfo.SOL_GEARPICKUP_ARM_EXTEND, RobotInfo.SOL_GEARPICKUP_ARM_RETRACT);
-		// TODO: change the constant in RobotInfo
-		cubeSensor = new DigitalInput(RobotInfo.DIN_GEAR_SENSOR);
+				RobotInfo.SOL_CUBEPICKUP_ARM_EXTEND, RobotInfo.SOL_CUBEPICKUP_ARM_RETRACT);
+		cubeSensor = new DigitalInput(RobotInfo.DIN_CUBE_SENSOR);
 	}
 
 	/**
