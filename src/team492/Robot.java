@@ -483,15 +483,9 @@ public class Robot extends FrcRobotBase
                     winch.getPower(), winch.getPosition(),
                     Boolean.toString(winch.isUpperLimitSwitchActive()),
                     Boolean.toString(winch.isLowerLimitSwitchActive()));
-                double tilt = winch.getRobotTilt();
-                double zGForce = winch.getZValue();
                 dashboard.displayPrintf(9, "Winch: current=%.1f/%.1f (%.1f)",
                     winch.getMasterCurrent(), winch.getSlaveCurrent(), winch.getMaxCurrent());
-                dashboard.displayPrintf(10, "Winch: OffGround=%s", Boolean.toString(winch.isOffGround()));
                 dashboard.displayPrintf(11, "Winch: MotorSlowed=%s", Boolean.toString(winch.isMotorSlowed()));
-                dashboard.displayPrintf(12, "Winch: TouchPlate=%s", Boolean.toString(winch.touchingPlate()));
-                dashboard.displayPrintf(13, "Winch: tilt=%.1f, Z=%.1f", tilt, zGForce);
-                HalDashboard.putNumber("Tilt", tilt);
             }
 
             if (DEBUG_PIXY)
