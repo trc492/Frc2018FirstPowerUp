@@ -31,10 +31,6 @@ public class Winch
     private FrcCANTalon mainMotor;
     private FrcCANTalon slaveMotor;
     private double motorPower = 0.0;
-    private boolean motorSlowed = false;
-    private double masterCurrent = 0.0;
-    private double slaveCurrent = 0.0;
-    private double maxCurrent = 0.0;
     public Winch()
     {
         mainMotor = new FrcCANTalon("WinchMaster", RobotInfo.CANID_WINCH_MASTER);
@@ -54,10 +50,7 @@ public class Winch
     }
 
 
-    public boolean isMotorSlowed()
-    {
-        return motorSlowed;
-    }
+
 
     public double getPosition()
     {
@@ -85,30 +78,6 @@ public class Winch
     	setPower(0.7);
     }
 
-    public double getCurrent()
-    {
-        masterCurrent = mainMotor.motor.getOutputCurrent();
-        slaveCurrent = slaveMotor.motor.getOutputCurrent();
-        double totalCurrent = Math.abs(masterCurrent) + Math.abs(slaveCurrent);
-
-        if (totalCurrent > maxCurrent) maxCurrent = totalCurrent;
-
-        return totalCurrent;
-    }
-
-    public double getMasterCurrent()
-    {
-        return masterCurrent;
-    }
-
-    public double getSlaveCurrent()
-    {
-        return slaveCurrent;
-    }
-
-    public double getMaxCurrent()
-    {
-        return maxCurrent;
-    }
+    
 
 }   //class Winch
