@@ -202,4 +202,14 @@ public class RobotInfo
     public static final double WINCH_SPIKE_TIMEOUT              = 0.5;
     public static final double WINCH_TILT_THRESHOLD             = 35.0;
 
+    
+    // 
+    // Elevator subsystem.
+    //
+    //
+    // CAN IDs.
+    //
+    public static final int ELEVATOR_MOTOR_ID              = 1;    
+    
+    
 }   // class RobotInfo
