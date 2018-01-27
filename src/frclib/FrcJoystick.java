@@ -109,11 +109,10 @@ public class FrcJoystick extends Joystick implements TrcTaskMgr.Task
         /**
          * This method is called when button event is detected.
          *
-         * @param joystick specifies the joystick object that generated the event.
          * @param button specifies the button ID that generates the event
          * @param pressed specifies true if the button is pressed, false otherwise.
          */
-        void joystickButtonEvent(FrcJoystick joystick, int button, boolean pressed);
+        void joystickButtonEvent(int button, boolean pressed);
 
     }   //interface ButonHandler
 
@@ -577,7 +576,7 @@ public class FrcJoystick extends Joystick implements TrcTaskMgr.Task
                         {
                             dbgTrace.traceInfo(funcName, "Button %x pressed", buttonMask);
                         }
-                        buttonHandler.joystickButtonEvent(this, buttonMask, true);
+                        buttonHandler.joystickButtonEvent(buttonMask, true);
                     }
                     else
                     {
@@ -588,7 +587,7 @@ public class FrcJoystick extends Joystick implements TrcTaskMgr.Task
                         {
                             dbgTrace.traceInfo(funcName, "Button %x released", buttonMask);
                         }
-                        buttonHandler.joystickButtonEvent(this, buttonMask, false);
+                        buttonHandler.joystickButtonEvent(buttonMask, false);
                     }
                     //
                     // Clear the least significant set bit.
