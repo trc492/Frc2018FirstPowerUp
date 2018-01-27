@@ -1,0 +1,152 @@
+/*
+ * Copyright (c) 2018 Titan Robotics Club (http://www.titanrobotics.com)
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+
+package team492;
+
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import hallib.HalDashboard;
+import trclib.TrcEvent;
+import trclib.TrcRobot;
+import trclib.TrcStateMachine;
+import trclib.TrcTimer;
+
+class CmdPowerUpAuto implements TrcRobot.RobotCommand
+{
+    private static enum State
+    {
+        PICK_UP_CUBE,
+    	RAISE_ELEVATOR,
+    	DO_DELAY,
+        DRIVE_FORWARD_DISTANCE,
+        MOVE_SIDEWAYS,
+        DRIVE_TO_TARGET,
+        RAISE_ELEVATOR_TO_TARGET,
+        DONE
+    }   //enum State
+
+    private static final String moduleName = "CmdPowerUpAuto";
+
+    private Robot robot;
+    private double delay;
+    private Alliance alliance;
+    private String targetSide;
+    private TrcEvent event;
+    private TrcTimer timer;
+    private TrcStateMachine<State> sm;
+    private int startLocation;
+    private double forwardDistance;
+    private int targetType;
+
+    CmdPowerUpAuto(Robot robot, double delay)
+    {
+    	DriverStation ds = DriverStation.getInstance();
+        this.robot = robot;
+        this.delay = delay;
+        this.alliance = ds.getAlliance();
+        //Gets which side is our switch and scale
+        this.targetSide = ds.getGameSpecificMessage();
+        this.startLocation = ds.getLocation();     
+
+        forwardDistance = HalDashboard.getNumber("forwardDistance", 85.0); //TODO: Need Default Number
+        targetType = (int)HalDashboard.getNumber("targetType", 60.0); //TODO: What type?
+        
+
+      
+        event = new TrcEvent(moduleName);
+        timer = new TrcTimer(moduleName);
+        sm = new TrcStateMachine<>(moduleName);
+        sm.start(State.PICK_UP_CUBE);
+
+        robot.tracer.traceInfo(
+            moduleName,
+            "delay=%.3f, alliance=%s, targetSide=%s, startLocation=%d, forwardDist=%.1f, targetType=%d",           "lsDist=%.1f, diagDist=%.1f",
+            delay, alliance, targetSide, startLocation, forwardDistance, targetType);
+    }   //CmdPidDrive
+
+    //
+    // Implements the TrcRobot.RobotCommand interface.
+    //
+
+    @Override
+    public boolean cmdPeriodic(double elapsedTime)
+    {
+        boolean done = !sm.isEnabled();
+        //
+        // Print debug info.
+        //
+        State state = sm.getState();
+        robot.dashboard.displayPrintf(1, "State: %s", state != null? state.toString(): "Disabled");
+
+        if (sm.isReady())
+        {
+            state = sm.getState();
+            double xDistance, yDistance;
+
+            switch (state)
+            {
+                
+
+                case PICK_UP_CUBE:
+                	break;
+                case RAISE_ELEVATOR:
+                	break;
+                case DO_DELAY:
+                    //
+                    // Do delay if any.
+                    //
+                    if (delay == 0.0)
+                    {
+                        sm.setState(State.DRIVE_FORWARD_DISTANCE);
+                    }
+                    else
+                    {
+                        timer.set(delay, event);
+                        sm.waitForSingleEvent(event, State.DRIVE_FORWARD_DISTANCE);
+                    }
+                    break;
+                case DRIVE_FORWARD_DISTANCE:
+                	break;
+                case MOVE_SIDEWAYS:
+                	break;
+                case DRIVE_TO_TARGET:
+                	break;
+                case RAISE_ELEVATOR_TO_TARGET:
+                	break;
+                    
+                case DONE:
+                default:
+                    //
+                    // We are done.
+                    //
+                    done = true;
+                    sm.stop();
+                    break;
+            }
+
+            robot.traceStateInfo(elapsedTime, state.toString());
+        }
+
+        return done;
+    }   //cmdPeriodic
+
+}   //class CmdSideGearLift
