@@ -25,6 +25,7 @@ package team492;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import hallib.HalDashboard;
+//import team492.CmdMidGearLift.State;
 import trclib.TrcEvent;
 import trclib.TrcRobot;
 import trclib.TrcStateMachine;
@@ -40,7 +41,10 @@ class CmdPowerUpAuto implements TrcRobot.RobotCommand
         DRIVE_FORWARD_DISTANCE,
         MOVE_SIDEWAYS,
         DRIVE_TO_TARGET,
-        RAISE_ELEVATOR_TO_TARGET,
+        TURN_ROBOT,
+        DEPOSIT_CUBE,
+        STRAFE_TO_PLATFORM_ZONE,
+        PICK_UP_SECOND_CUBE,
         DONE
     }   //enum State
 
@@ -107,7 +111,11 @@ class CmdPowerUpAuto implements TrcRobot.RobotCommand
                 
 
                 case PICK_UP_CUBE:
-                	break;
+                	//
+                	//pick up cube from floor
+                	//
+                	
+                  	break;
                 case RAISE_ELEVATOR:
                 	break;
                 case DO_DELAY:
@@ -125,12 +133,38 @@ class CmdPowerUpAuto implements TrcRobot.RobotCommand
                     }
                     break;
                 case DRIVE_FORWARD_DISTANCE:
+                	xDistance = 0.0;
+                    yDistance = forwardDistance;
+
+                    //robot.encoderYPidCtrl.setOutputRange(-1.0, 1.0);
+                    robot.pidDrive.setTarget(xDistance, yDistance, robot.targetHeading, false, event);
+                    sm.waitForSingleEvent(event, State.MOVE_SIDEWAYS);              	
+                	
                 	break;
                 case MOVE_SIDEWAYS:
-                	break;
+                	xDistance = 0;
+                    yDistance = 0;
+
+                    robot.encoderYPidCtrl.setOutputRange(-1.0, 1.0);
+                    robot.pidDrive.setTarget(xDistance, yDistance, robot.targetHeading, false, event);
+                    sm.waitForSingleEvent(event, State.DONE);
+                    break;
+                	               	
                 case DRIVE_TO_TARGET:
+                	xDistance = 0.0;
+                    if (targetType == 0) {
+                    	//When the target is the switch
+                    }
+                    else if (targetType == 1) {
+                    	//if the target is the scale 
+                    }
+
+                    robot.encoderYPidCtrl.setOutputRange(-1.0, 1.0);
+                    robot.pidDrive.setTarget(xDistance, forwardDistance, robot.targetHeading, false, event);
+                    sm.waitForSingleEvent(event, State.DEPOSIT_CUBE);  
+                	
                 	break;
-                case RAISE_ELEVATOR_TO_TARGET:
+                case DEPOSIT_CUBE:
                 	break;
                     
                 case DONE:
