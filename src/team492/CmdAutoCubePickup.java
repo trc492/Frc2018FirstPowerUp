@@ -56,8 +56,7 @@ public class CmdAutoCubePickup implements TrcRobot.RobotCommand
 			switch (state){
 				case START:
 					robot.cubePickup.openClaw(); //TODO: Talk to Chris about singular method to init Claw subystem
-					double pos = 6.0 * (1.0 / Elevator.ELEVATOR_INCHES_PER_COUNT); // Convert 6.0 inches to encoder ticks
-					// Assuming pos parameter of setPosition is in ticks
+					double pos = 6.0; // 6.0 inches. According to Victor, pos parameter is in inches
 					robot.elevator.setPosition(pos, event, 5.0); // Need to tune timeout section of this
 					sm.waitForSingleEvent(event, State.DRIVE);
 					break;
