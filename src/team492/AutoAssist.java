@@ -22,7 +22,49 @@
 
 package team492;
 
-public class AutoAssist
+public class AutoAssist 
 {
+	
+	public CmdAutoCubePickup autoCubePickup;
+	
+	private Robot robot;
+	public AutoAssist(Robot robot)
+	{
+		this.robot = robot;
+		autoCubePickup = new CmdAutoCubePickup(robot);
+	}
+	
+	public boolean isCubePickupEnabled()
+	{
+		return autoCubePickup.isEnabled();
+	}
+	
+	public void setCubePickupEnabled(boolean enabled)
+	{
+		if(enabled)
+		{
+			enableCubePickup();
+		}
+		else
+		{
+			disableCubePickup();
+		}
+	}
+	
+	public void enableCubePickup()
+	{
+		autoCubePickup.start();
+	}
+	
+	public void disableCubePickup()
+	{
+		autoCubePickup.stop();
+	}
 
+	public boolean cubePickupPeriodic(double elapsedTime)
+	{
+		return autoCubePickup.cmdPeriodic(elapsedTime);
+	}
+	
+	
 }

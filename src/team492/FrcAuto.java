@@ -169,6 +169,7 @@ public class FrcAuto implements TrcRobot.RobotMode
         if (autoCommand != null)
         {
             autoCommand.cmdPeriodic(elapsedTime);
+            robot.autoAssist.cubePickupPeriodic(elapsedTime);
 
             if (robot.pidDrive.isActive())
             {

@@ -365,7 +365,7 @@ public class Robot extends FrcRobotBase
         cubePickup = new CubePickup();
         winch = new Winch();
         elevator = new Elevator();
-        autoAssist = new AutoAssist();
+        autoAssist = new AutoAssist(this);
 
         //
         // Create Global Menus (can be used in all modes).
