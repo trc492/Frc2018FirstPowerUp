@@ -176,6 +176,7 @@ public class FrcTeleOp implements TrcRobot.RobotMode
                 visionAssistOn = false;
             }
         }
+        robot.autoAssist.cubePickupPeriodic(elapsedTime);
     }   // runContinuous
 
     //
