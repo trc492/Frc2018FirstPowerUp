@@ -17,7 +17,7 @@ public class CmdAutoCubePickup implements TrcRobot.RobotCommand
 	}
 	
 	private TrcEvent event;
-	public TrcStateMachine<State> sm;
+	private TrcStateMachine<State> sm;
 	private Robot robot;
 	public CmdAutoCubePickup(Robot robot)
 	{
@@ -56,8 +56,10 @@ public class CmdAutoCubePickup implements TrcRobot.RobotCommand
 			switch (state){
 				case START:
 					robot.cubePickup.openClaw(); //TODO: Talk to Chris about singular method to init Claw subystem
-					// TODO: set elevator to correct height (waiting on Victor)
-					sm.setState(State.DRIVE); // This will change
+					double pos = 6.0 * (1.0 / Elevator.ELEVATOR_INCHES_PER_COUNT); // Convert 6.0 inches to encoder ticks
+					// Assuming pos parameter of setPosition is in ticks
+					robot.elevator.setPosition(pos, event, 5.0); // Need to tune timeout section of this
+					sm.waitForSingleEvent(event, State.DRIVE);
 					break;
 					
 				case DRIVE:
@@ -65,7 +67,7 @@ public class CmdAutoCubePickup implements TrcRobot.RobotCommand
 					robot.visionPidDrive.setTarget(target.xDistance, target.yDistance, 0d,
 							true, event);
 					// robot.cubePickup.setCubeTriggerEnabled(true)
-					// TODO: Talk to Chris to provide TrcTrigger to monitor proximity sensor
+					// TODO: Talk to Chris to provide TrcDigitalTrigger to monitor proximity sensor
 					sm.waitForSingleEvent(event, State.PICKUP);
 					break;
 				
