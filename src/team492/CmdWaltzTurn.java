@@ -43,6 +43,7 @@ class CmdWaltzTurn implements TrcRobot.RobotCommand
 
     private TrcEvent event;
     private TrcStateMachine<State> sm;
+    private TurnMode prevTurnMode;
 
     CmdWaltzTurn(Robot robot)
     {
@@ -50,6 +51,7 @@ class CmdWaltzTurn implements TrcRobot.RobotCommand
 
         event = new TrcEvent(moduleName);
         sm = new TrcStateMachine<>(moduleName);
+        prevTurnMode = robot.pidDrive.getTurnMode();
     }   //CmdWaltzTurn
 
     public void setClockwiseTurn(boolean clockwiseTurn, boolean driveInverted)
@@ -69,7 +71,7 @@ class CmdWaltzTurn implements TrcRobot.RobotCommand
         if (robot.pidDrive.isActive())
         {
             robot.pidDrive.cancel();
-            robot.pidDrive.setTurnMode(TurnMode.IN_PLACE);
+            robot.pidDrive.setTurnMode(prevTurnMode);
         }
     }   //cancel
 
@@ -96,6 +98,7 @@ class CmdWaltzTurn implements TrcRobot.RobotCommand
                     robot.targetHeading = robot.driveBase.getHeading();
                     robot.targetHeading += clockwiseTurn? 180.0: -180.0;
 
+                    prevTurnMode = robot.pidDrive.getTurnMode();
                     robot.pidDrive.setTurnMode(driveInverted? TurnMode.PIVOT_FORWARD: TurnMode.PIVOT_BACKWARD);
                     robot.pidDrive.setTarget(0.0, 0.0, robot.targetHeading, false, event, 2.0);
                     sm.waitForSingleEvent(event, State.DONE);
@@ -106,7 +109,7 @@ class CmdWaltzTurn implements TrcRobot.RobotCommand
                     //
                     // We are done.
                     //
-                    robot.pidDrive.setTurnMode(TurnMode.IN_PLACE);
+                    robot.pidDrive.setTurnMode(prevTurnMode);
                     done = true;
                     sm.stop();
                     break;
