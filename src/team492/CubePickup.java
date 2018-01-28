@@ -26,6 +26,7 @@ import com.ctre.phoenix.motorcontrol.ControlMode;
 
 import edu.wpi.first.wpilibj.DigitalInput;
 import frclib.FrcPneumatic;
+import trclib.TrcStateMachine;
 import frclib.FrcCANTalon;
 
 public class CubePickup
@@ -33,6 +34,7 @@ public class CubePickup
 	private FrcCANTalon controlMotor, slaveMotor;
 	private FrcPneumatic claw, deployer;
 	private DigitalInput cubeSensor;
+
 
 	/**
 	 * Initialize the CubePickup class.
@@ -111,14 +113,14 @@ public class CubePickup
 	/**
 	 * Set the state of the pickup.
 	 *
-	 * @param down If true, lift the pickup. Otherwise, lower.
+	 * @param down If true, lower the pickup. Otherwise, lift.
 	 */
 	public void setPickupDeployed(boolean down)
 	{
 		if (down)
-			deployer.retract();
+			deployPickup();
 		else
-			deployer.extend();
+			raisePickup();
 	}
 
 	/**
@@ -154,7 +156,7 @@ public class CubePickup
 	public void dropCube(double power) {
 		controlMotor.setPower(-power);
 	}
-	
+
 	/**
 	 * stops the pickup motors,
 	 * use after cube has been picked up or dropped

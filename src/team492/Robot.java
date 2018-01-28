@@ -492,9 +492,6 @@ public class Robot extends FrcRobotBase
                     winch.getPower(), winch.getPosition(),
                     Boolean.toString(winch.isUpperLimitSwitchActive()),
                     Boolean.toString(winch.isLowerLimitSwitchActive()));
-                dashboard.displayPrintf(9, "Winch: current=%.1f/%.1f (%.1f)",
-                    winch.getMasterCurrent(), winch.getSlaveCurrent(), winch.getMaxCurrent());
-                dashboard.displayPrintf(11, "Winch: MotorSlowed=%s", Boolean.toString(winch.isMotorSlowed()));
             }
 
             if (DEBUG_PIXY)
