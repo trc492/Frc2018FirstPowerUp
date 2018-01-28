@@ -34,6 +34,7 @@ import edu.wpi.first.wpilibj.AnalogGyro;
 import edu.wpi.first.wpilibj.AnalogInput;
 import edu.wpi.first.wpilibj.CameraServer;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.I2C;
 import edu.wpi.first.wpilibj.Relay;
 import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.SerialPort;
@@ -44,6 +45,7 @@ import frclib.FrcCANTalon;
 import frclib.FrcChoiceMenu;
 import frclib.FrcEmic2TextToSpeech;
 import frclib.FrcGyro;
+import frclib.FrcI2cLEDPanel;
 import frclib.FrcRobotBase;
 import frclib.FrcRobotBattery;
 import hallib.HalDashboard;
@@ -77,6 +79,7 @@ public class Robot extends FrcRobotBase
     public static final boolean USE_AXIS_CAMERA = false;
     public static final boolean USE_PIXY_SPI = true;
     public static final boolean USE_TEXT_TO_SPEECH = false;
+    public static final boolean USE_MESSAGE_BOARD = true;
 
     private static final boolean DEBUG_DRIVE_BASE = false;
     private static final boolean DEBUG_PID_DRIVE = false;
@@ -124,9 +127,10 @@ public class Robot extends FrcRobotBase
     public PixyVision pixy = null;
 
     //
-    // Sound subsystem.
+    // Miscellaneous subsystem.
     //
     public FrcEmic2TextToSpeech tts = null;
+    public FrcI2cLEDPanel messageBoard = null;
 
     //
     // DriveBase subsystem.
@@ -248,7 +252,7 @@ public class Robot extends FrcRobotBase
         }
 
         //
-        // Sound subsystem.
+        // Miscellaneous subsystems.
         //
         if (USE_TEXT_TO_SPEECH)
         {
@@ -256,6 +260,11 @@ public class Robot extends FrcRobotBase
             tts.setEnabled(true);
             tts.selectVoice(Voice.FrailFrank);
             tts.setVolume(1.0);
+        }
+
+        if (USE_MESSAGE_BOARD)
+        {
+            messageBoard = new FrcI2cLEDPanel("messageBoard", I2C.Port.kOnboard);
         }
 
         //
@@ -347,7 +356,7 @@ public class Robot extends FrcRobotBase
         visionPidTurn.setMsgTracer(tracer);
 
         //
-        // Create other subsystems.
+        // Create other hardware subsystems.
         //
         ringLightsPower = new Relay(RobotInfo.RELAY_RINGLIGHT_POWER);
         ringLightsPower.setDirection(Direction.kForward);
