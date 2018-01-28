@@ -46,7 +46,7 @@ public class Elevator
 		// elevatorLowerLimitSwitch
 		// input for elevatorPidControl as Supplier<Double> pidInput type.
 		elevatorMotor = new FrcCANTalon("elevatorMotor", RobotInfo.ELEVATOR_MOTOR_ID); // the name and the device number
-		elevatorPidCtrl = new TrcPidController("elevatorPidController", new TrcPidController.PidCoefficients(RobotInfo.ELEVATOR_KP, RobotInfo.ELEVATOR_KI, RobotInfo.ELEVATOR_KD), RobotInfo.ELEVATOR_TOLERANCE, 2.0, null);
+		elevatorPidCtrl = new TrcPidController("elevatorPidController", new TrcPidController.PidCoefficients(RobotInfo.ELEVATOR_KP, RobotInfo.ELEVATOR_KI, RobotInfo.ELEVATOR_KD), RobotInfo.ELEVATOR_TOLERANCE, 2.0, elevatorMotor::getPosition);
 		elevator = new TrcPidActuator(
                 "elevator", elevatorMotor, elevatorLowerLimitSwitch, elevatorPidCtrl,
                 RobotInfo.ELEVATOR_MIN_HEIGHT, RobotInfo.ELEVATOR_MAX_HEIGHT);
