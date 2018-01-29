@@ -44,7 +44,6 @@ public class FrcTeleOp implements TrcRobot.RobotMode
     private FrcJoystick leftDriveStick;
     private FrcJoystick rightDriveStick;
     private FrcJoystick operatorStick;
-    private CmdVisionGearDeploy cmdVisionDeploy;
     private CmdWaltzTurn cmdWaltzTurn;
     private String message = null;
 
@@ -53,7 +52,6 @@ public class FrcTeleOp implements TrcRobot.RobotMode
 
     private boolean driveInverted = false;
     private boolean flashLightsOn = false;
-    private boolean visionAssistOn = false;
     private boolean waltzTurnOn = false;
 
     public FrcTeleOp(Robot robot)
@@ -74,7 +72,6 @@ public class FrcTeleOp implements TrcRobot.RobotMode
             "operatorStick", RobotInfo.JSPORT_OPERATORSTICK, this::operatorStickButtonEvent);
         operatorStick.setYInverted(true);
 
-        cmdVisionDeploy = new CmdVisionGearDeploy(robot);
         cmdWaltzTurn = new CmdWaltzTurn(robot);
         message = HalDashboard.getString("Message", "Hello, Titans!");
     }   // FrcTeleOp
@@ -108,7 +105,7 @@ public class FrcTeleOp implements TrcRobot.RobotMode
     @Override
     public void runPeriodic(double elapsedTime)
     {
-        if (!visionAssistOn && !waltzTurnOn)
+        if (!waltzTurnOn)
         {
             //
             // DriveBase operation.
@@ -162,18 +159,12 @@ public class FrcTeleOp implements TrcRobot.RobotMode
     @Override
     public void runContinuous(double elapsedTime)
     {
+        //CodeReview: visionAssist is our autoAssist this season.
         if (waltzTurnOn)
         {
             if (cmdWaltzTurn.cmdPeriodic(elapsedTime))
             {
                 waltzTurnOn = false;
-            }
-        }
-        else if (visionAssistOn)
-        {
-            if (cmdVisionDeploy.cmdPeriodic(elapsedTime))
-            {
-                visionAssistOn = false;
             }
         }
         robot.autoAssist.cubePickupPeriodic(elapsedTime);
@@ -185,6 +176,7 @@ public class FrcTeleOp implements TrcRobot.RobotMode
 
     public void leftDriveStickButtonEvent(int button, boolean pressed)
     {
+        //CodeReview: remove last season's code.
         switch (button)
         {
             case FrcJoystick.LOGITECH_TRIGGER:
@@ -236,15 +228,6 @@ public class FrcTeleOp implements TrcRobot.RobotMode
                 break;
 
             case FrcJoystick.LOGITECH_BUTTON10:
-                if (pressed)
-                {
-                    cmdVisionDeploy.start();
-                }
-                else
-                {
-                    cmdVisionDeploy.stop();
-                }
-                visionAssistOn = pressed;
                 break;
 
             case FrcJoystick.LOGITECH_BUTTON11:
@@ -322,7 +305,7 @@ public class FrcTeleOp implements TrcRobot.RobotMode
                 //
                 // Arm down.
                 //
-                if (pressed && !visionAssistOn)
+                if (pressed)
                 {
                     robot.cubePickup.deployPickup();
                 }
@@ -332,7 +315,7 @@ public class FrcTeleOp implements TrcRobot.RobotMode
                 //
                 // Arm up.
                 //
-                if (pressed && !visionAssistOn)
+                if (pressed)
                 {
                     robot.cubePickup.raisePickup();
                 }
@@ -342,7 +325,7 @@ public class FrcTeleOp implements TrcRobot.RobotMode
                 //
                 // Claw open.
                 //
-                if (pressed && !visionAssistOn)
+                if (pressed)
                 {
                     robot.cubePickup.openClaw();
                 }
@@ -352,7 +335,7 @@ public class FrcTeleOp implements TrcRobot.RobotMode
                 //
                 // Claw close.
                 //
-                if (pressed && !visionAssistOn)
+                if (pressed)
                 {
                     robot.cubePickup.closeClaw();
                 }

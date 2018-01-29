@@ -8,8 +8,8 @@
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
  *
- * The above copyright notice and this permission notice shall be included in all
- * copies or substantial portions of the Software.
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
  *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
@@ -25,7 +25,6 @@ package team492;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import hallib.HalDashboard;
-//import team492.CmdMidGearLift.State;
 import trclib.TrcEvent;
 import trclib.TrcRobot;
 import trclib.TrcStateMachine;
@@ -36,8 +35,8 @@ class CmdPowerUpAuto implements TrcRobot.RobotCommand
     private static enum State
     {
         PICK_UP_CUBE,
-    	RAISE_ELEVATOR,
-    	DO_DELAY,
+        RAISE_ELEVATOR,
+        DO_DELAY,
         DRIVE_FORWARD_DISTANCE,
         MOVE_SIDEWAYS,
         DRIVE_TO_TARGET,
@@ -46,12 +45,13 @@ class CmdPowerUpAuto implements TrcRobot.RobotCommand
         STRAFE_TO_PLATFORM_ZONE,
         PICK_UP_SECOND_CUBE,
         DONE
-    }   //enum State
+    } // enum State
 
     private static final String moduleName = "CmdPowerUpAuto";
 
     private Robot robot;
     private double delay;
+    //CodeReview: alliance may be useful for others, move it to robot.java.
     private Alliance alliance;
     private String targetSide;
     private TrcEvent event;
@@ -63,29 +63,31 @@ class CmdPowerUpAuto implements TrcRobot.RobotCommand
 
     CmdPowerUpAuto(Robot robot, double delay)
     {
-    	DriverStation ds = DriverStation.getInstance();
+        DriverStation ds = DriverStation.getInstance();
         this.robot = robot;
         this.delay = delay;
         this.alliance = ds.getAlliance();
-        //Gets which side is our switch and scale
+        // Gets which side is our switch and scale
         this.targetSide = ds.getGameSpecificMessage();
-        this.startLocation = ds.getLocation();     
+        this.startLocation = ds.getLocation();
 
-        forwardDistance = HalDashboard.getNumber("forwardDistance", 85.0); //TODO: Need Default Number
-        targetType = (int)HalDashboard.getNumber("targetType", 60.0); //TODO: What type?
-        
+        forwardDistance = HalDashboard.getNumber("forwardDistance", 85.0); // TODO:
+                                                                           // Need
+                                                                           // Default
+                                                                           // Number
+        targetType = (int) HalDashboard.getNumber("targetType", 60.0); // TODO:
+                                                                       // What
+                                                                       // type?
 
-      
         event = new TrcEvent(moduleName);
         timer = new TrcTimer(moduleName);
         sm = new TrcStateMachine<>(moduleName);
         sm.start(State.PICK_UP_CUBE);
 
-        robot.tracer.traceInfo(
-            moduleName,
-            "delay=%.3f, alliance=%s, targetSide=%s, startLocation=%d, forwardDist=%.1f, targetType=%d",           "lsDist=%.1f, diagDist=%.1f",
-            delay, alliance, targetSide, startLocation, forwardDistance, targetType);
-    }   //CmdPidDrive
+        robot.tracer.traceInfo(moduleName,
+            "delay=%.3f, alliance=%s, targetSide=%s, startLocation=%d, forwardDist=%.1f, targetType=%d",
+            "lsDist=%.1f, diagDist=%.1f", delay, alliance, targetSide, startLocation, forwardDistance, targetType);
+    } // CmdPidDrive
 
     //
     // Implements the TrcRobot.RobotCommand interface.
@@ -99,7 +101,7 @@ class CmdPowerUpAuto implements TrcRobot.RobotCommand
         // Print debug info.
         //
         State state = sm.getState();
-        robot.dashboard.displayPrintf(1, "State: %s", state != null? state.toString(): "Disabled");
+        robot.dashboard.displayPrintf(1, "State: %s", state != null ? state.toString() : "Disabled");
 
         if (sm.isReady())
         {
@@ -108,16 +110,15 @@ class CmdPowerUpAuto implements TrcRobot.RobotCommand
 
             switch (state)
             {
-                
-
                 case PICK_UP_CUBE:
-                	//
-                	//pick up cube from floor
-                	//
-                	
-                  	break;
+                    //
+                    // pick up cube from floor
+                    //
+                    break;
+
                 case RAISE_ELEVATOR:
-                	break;
+                    break;
+
                 case DO_DELAY:
                     //
                     // Do delay if any.
@@ -132,41 +133,53 @@ class CmdPowerUpAuto implements TrcRobot.RobotCommand
                         sm.waitForSingleEvent(event, State.DRIVE_FORWARD_DISTANCE);
                     }
                     break;
+
                 case DRIVE_FORWARD_DISTANCE:
-                	xDistance = 0.0;
+                    xDistance = 0.0;
                     yDistance = forwardDistance;
 
-                    //robot.encoderYPidCtrl.setOutputRange(-1.0, 1.0);
+                    // robot.encoderYPidCtrl.setOutputRange(-1.0, 1.0);
                     robot.pidDrive.setTarget(xDistance, yDistance, robot.targetHeading, false, event);
-                    sm.waitForSingleEvent(event, State.MOVE_SIDEWAYS);              	
-                	
-                	break;
+                    sm.waitForSingleEvent(event, State.MOVE_SIDEWAYS);
+                    break;
+
                 case MOVE_SIDEWAYS:
-                	xDistance = 0;
+                    xDistance = 0;
                     yDistance = 0;
 
                     robot.encoderYPidCtrl.setOutputRange(-1.0, 1.0);
                     robot.pidDrive.setTarget(xDistance, yDistance, robot.targetHeading, false, event);
                     sm.waitForSingleEvent(event, State.DONE);
                     break;
-                	               	
+
                 case DRIVE_TO_TARGET:
-                	xDistance = 0.0;
-                    if (targetType == 0) {
-                    	//When the target is the switch
+                    xDistance = 0.0;
+                    if (targetType == 0)
+                    {
+                        // When the target is the switch
                     }
-                    else if (targetType == 1) {
-                    	//if the target is the scale 
+                    else if (targetType == 1)
+                    {
+                        // if the target is the scale
                     }
 
                     robot.encoderYPidCtrl.setOutputRange(-1.0, 1.0);
                     robot.pidDrive.setTarget(xDistance, forwardDistance, robot.targetHeading, false, event);
-                    sm.waitForSingleEvent(event, State.DEPOSIT_CUBE);  
-                	
-                	break;
+                    sm.waitForSingleEvent(event, State.DEPOSIT_CUBE);
+                    break;
+
+                case TURN_ROBOT:
+                    break;
+
                 case DEPOSIT_CUBE:
-                	break;
-                    
+                    break;
+
+                case STRAFE_TO_PLATFORM_ZONE:
+                    break;
+
+                case PICK_UP_SECOND_CUBE:
+                    break;
+
                 case DONE:
                 default:
                     //
@@ -181,6 +194,6 @@ class CmdPowerUpAuto implements TrcRobot.RobotCommand
         }
 
         return done;
-    }   //cmdPeriodic
+    } // cmdPeriodic
 
-}   //class CmdSideGearLift
+} // class CmdSideGearLift

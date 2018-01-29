@@ -140,6 +140,7 @@ public class PixyVision
      */
     private Rect getTargetRect()
     {
+        //CodeReview: this code is for last year. Needs updating...
         Rect targetRect = null;
         ObjectBlock[] detectedObjects = pixyCamera.getDetectedObjects();
 
@@ -335,6 +336,7 @@ public class PixyVision
 
         if (targetRect != null)
         {
+            //CodeReview: these numbers are for last year's target, needs updating...
             //
             // Physical target width:           W = 10 inches.
             // Physical target distance 1:      D1 = 20 inches.

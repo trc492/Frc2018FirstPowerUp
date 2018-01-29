@@ -32,8 +32,8 @@ public class FrcAuto implements TrcRobot.RobotMode
 {
     public static enum AutoStrategy
     {
-    	//Different choices for autonomous
-    	POWER_UP_AUTO,
+        //Different choices for autonomous
+        POWER_UP_AUTO,
         X_TIMED_DRIVE,
         Y_TIMED_DRIVE,
         X_DISTANCE_DRIVE,
@@ -97,7 +97,6 @@ public class FrcAuto implements TrcRobot.RobotMode
         switch (autoStrategy)
         {
             case POWER_UP_AUTO:
-               
                 autoCommand = new CmdPowerUpAuto(robot, delay);
                 break;
 
@@ -169,6 +168,7 @@ public class FrcAuto implements TrcRobot.RobotMode
         if (autoCommand != null)
         {
             autoCommand.cmdPeriodic(elapsedTime);
+            //CodeReview: this doesn't belong here. It belongs in the state machine in CmdPowerupAuto.
             robot.autoAssist.cubePickupPeriodic(elapsedTime);
 
             if (robot.pidDrive.isActive())

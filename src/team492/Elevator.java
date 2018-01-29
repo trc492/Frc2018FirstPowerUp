@@ -28,47 +28,50 @@ import trclib.TrcPidActuator;
 import trclib.TrcPidController;
 import frclib.FrcCANTalon;
 import trclib.TrcDigitalInput;
-import trclib.TrcAnalogInput;
 
 public class Elevator
 {
-   	public TrcPidActuator elevator;
-	public TrcMotor elevatorMotor;
-	public TrcPidController elevatorPidCtrl;
-	public TrcDigitalInput elevatorLowerLimitSwitch;
-	private TrcAnalogInput dogLeash = null; // this needs to be decided later.
-	
-	private double elevatorPower = 0.0;
+    public TrcPidActuator elevator;
+    public TrcMotor elevatorMotor;
+    public TrcPidController elevatorPidCtrl;
+    public TrcDigitalInput elevatorLowerLimitSwitch;
+//S    private TrcAnalogInput dogLeash = null; // this needs to be decided later.
 
-	public Elevator()
-	{
-		// we need to initiate:
-		// elevatorLowerLimitSwitch
-		// input for elevatorPidControl as Supplier<Double> pidInput type.
-		elevatorMotor = new FrcCANTalon("elevatorMotor", RobotInfo.ELEVATOR_MOTOR_ID); // the name and the device number
-		elevatorPidCtrl = new TrcPidController("elevatorPidController", new TrcPidController.PidCoefficients(RobotInfo.ELEVATOR_KP, RobotInfo.ELEVATOR_KI, RobotInfo.ELEVATOR_KD), RobotInfo.ELEVATOR_TOLERANCE, 2.0, elevatorMotor::getPosition);
-		elevator = new TrcPidActuator(
-                "elevator", elevatorMotor, elevatorLowerLimitSwitch, elevatorPidCtrl,
-                RobotInfo.ELEVATOR_MIN_HEIGHT, RobotInfo.ELEVATOR_MAX_HEIGHT);
-	}
-	
-	public void zeroCalibrate()
+    private double elevatorPower = 0.0;
+
+    public Elevator()
+    {
+        //CodeReview: where do you initialize elevatorLowerLimitSwitch? There may also be an upperLimitSwitch.
+        // we need to initiate:
+        // elevatorLowerLimitSwitch
+        // input for elevatorPidControl as Supplier<Double> pidInput type.
+        elevatorMotor = new FrcCANTalon("elevatorMotor", RobotInfo.ELEVATOR_MOTOR_ID); // the name and the device number
+        elevatorPidCtrl = new TrcPidController(
+            "elevatorPidController",
+            new TrcPidController.PidCoefficients(RobotInfo.ELEVATOR_KP, RobotInfo.ELEVATOR_KI, RobotInfo.ELEVATOR_KD),
+            RobotInfo.ELEVATOR_TOLERANCE, elevator::getPosition);
+        elevator = new TrcPidActuator(
+            "elevator", elevatorMotor, elevatorLowerLimitSwitch, elevatorPidCtrl,
+            RobotInfo.ELEVATOR_MIN_HEIGHT, RobotInfo.ELEVATOR_MAX_HEIGHT);
+    }
+
+    public void zeroCalibrate()
     {
         elevator.zeroCalibrate(RobotInfo.ELEVATOR_CAL_POWER);
     }   //zeroCalibrate
 
-	/**
-	 * 
-	 * @param pos (Altitude in inches)
-	 * @param event (TrcEvent event)
-	 * @param timeout 
-	 * Set the position for Elevator to move to in inches using PID control.
-	 */
+    /**
+     * 
+     * @param pos (Altitude in inches)
+     * @param event (TrcEvent event)
+     * @param timeout 
+     * Set the position for Elevator to move to in inches using PID control.
+     */
     public void setPosition(double pos, TrcEvent event, double timeout)
     {
         elevator.setTarget(pos, event, timeout);
     }   //setPosition
-    
+
     public void setPower(double power)
     {
         double pos = getPosition();
@@ -82,17 +85,17 @@ public class Elevator
         elevator.setPower(power);
         elevatorPower = power;
     }   //setPower
-    
+
     // get the current power the elevator actuator is running at.
     public double getPower()
     {
-    	return elevatorPower;
+        return elevatorPower;
     }
-    
+
     // get the current altitude of the elevator relative to encoder zero. (in inches)
     public double getPosition()
     {
-    	return elevator.getPosition();
+        return elevator.getPosition();
     }
     
 }

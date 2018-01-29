@@ -26,143 +26,144 @@ import com.ctre.phoenix.motorcontrol.ControlMode;
 
 import edu.wpi.first.wpilibj.DigitalInput;
 import frclib.FrcPneumatic;
-import trclib.TrcStateMachine;
 import frclib.FrcCANTalon;
 
 public class CubePickup
 {
-	private FrcCANTalon controlMotor, slaveMotor;
-	private FrcPneumatic claw, deployer;
-	private DigitalInput cubeSensor;
+    private FrcCANTalon controlMotor, slaveMotor;
+    private FrcPneumatic claw, deployer;
+    private DigitalInput cubeSensor;
 
+    /**
+     * Initialize the CubePickup class.
+     */
+    public CubePickup()
+    {
+        controlMotor = new FrcCANTalon("RightPickupMotor", RobotInfo.CANID_RIGHT_PICKUP);
+        slaveMotor = new FrcCANTalon("LeftPickupMotor", RobotInfo.CANID_LEFT_PICKUP);
+        slaveMotor.motor.set(ControlMode.Follower, RobotInfo.CANID_RIGHT_PICKUP);
+        slaveMotor.motor.setInverted(true);
 
-	/**
-	 * Initialize the CubePickup class.
-	 */
-	public CubePickup()
-	{
-		controlMotor = new FrcCANTalon("RightPickupMotor", RobotInfo.CANID_RIGHT_PICKUP);
-		slaveMotor = new FrcCANTalon("LeftPickupMotor", RobotInfo.CANID_LEFT_PICKUP);
-		slaveMotor.motor.set(ControlMode.Follower, RobotInfo.CANID_RIGHT_PICKUP);
-		slaveMotor.motor.setInverted(true);
+        claw = new FrcPneumatic(
+            "CubePickupClaw", RobotInfo.CANID_PCM1,
+            RobotInfo.SOL_CUBEPICKUP_CLAW_EXTEND, RobotInfo.SOL_CUBEPICKUP_CLAW_RETRACT);
+        deployer = new FrcPneumatic(
+            "CubePickupDeploy", RobotInfo.CANID_PCM1,
+            RobotInfo.SOL_CUBEPICKUP_ARM_EXTEND, RobotInfo.SOL_CUBEPICKUP_ARM_RETRACT);
+        cubeSensor = new DigitalInput(RobotInfo.DIN_CUBE_SENSOR);
+    }
 
-		claw = new FrcPneumatic(
-				"CubePickupClaw", RobotInfo.CANID_PCM1,
-				RobotInfo.SOL_CUBEPICKUP_CLAW_EXTEND, RobotInfo.SOL_CUBEPICKUP_CLAW_RETRACT);
-		deployer = new FrcPneumatic(
-				"CubePickupDeploy", RobotInfo.CANID_PCM1,
-				RobotInfo.SOL_CUBEPICKUP_ARM_EXTEND, RobotInfo.SOL_CUBEPICKUP_ARM_RETRACT);
-		cubeSensor = new DigitalInput(RobotInfo.DIN_CUBE_SENSOR);
-	}
+    /**
+     * Open the claw.
+     */
+    public void openClaw()
+    {
+        claw.extend();
+    }
 
-	/**
-	 * Open the claw.
-	 */
-	public void openClaw()
-	{
-		claw.extend();
-	}
+    /**
+     * Close the claw
+     */
+    public void closeClaw()
+    {
+        claw.retract();
+    }
 
-	/**
-	 * Close the claw
-	 */
-	public void closeClaw()
-	{
-		claw.retract();
-	}
+    /**
+     * Get whether the claw is opened or not.
+     *
+     * @return true if opened, false if not.
+     */
+    public boolean isClawOpen()
+    {
+        return claw.isExtended();
+    }
 
-	/**
-	 * Get whether the claw is opened or not.
-	 *
-	 * @return true if opened, false if not.
-	 */
-	public boolean isClawOpen()
-	{
-		return claw.isExtended();
-	}
+    /**
+     * Set the state of the claw.
+     * 
+     * @param open If true, open the claw. If false, close it.
+     */
+    public void setClawOpen(boolean open)
+    {
+        if (open)
+            openClaw();
+        else
+            closeClaw();
+    }
 
-	/**
-	 * Set the state of the claw.
-	 * 
-	 * @param open If true, open the claw. If false, close it.
-	 */
-	public void setClawOpen(boolean open)
-	{
-		if (open)
-			openClaw();
-		else
-			closeClaw();
-	}
+    /**
+     * Lift the pickup so the claw is off the ground.
+     */
+    public void raisePickup()
+    {
+        deployer.retract();
+    }
 
-	/**
-	 * Lift the pickup so the claw is off the ground.
-	 */
-	public void raisePickup()
-	{
-		deployer.retract();
-	}
+    /**
+     * Lower the pickup so the claw is on the ground.
+     */
+    public void deployPickup()
+    {
+        deployer.extend();
+    }
 
-	/**
-	 * Lower the pickup so the claw is on the ground.
-	 */
-	public void deployPickup()
-	{
-		deployer.extend();
-	}
+    /**
+     * Set the state of the pickup.
+     *
+     * @param down If true, lower the pickup. Otherwise, lift.
+     */
+    public void setPickupDeployed(boolean down)
+    {
+        if (down)
+            deployPickup();
+        else
+            raisePickup();
+    }
 
-	/**
-	 * Set the state of the pickup.
-	 *
-	 * @param down If true, lower the pickup. Otherwise, lift.
-	 */
-	public void setPickupDeployed(boolean down)
-	{
-		if (down)
-			deployPickup();
-		else
-			raisePickup();
-	}
+    /**
+     * Is the pickup up or down?
+     * 
+     * @return Returns true if the pickup is up, (claw is off ground) and returns
+     *         false if the pickup is down. (claw is on ground)
+     */
+    public boolean isPickupDeployed()
+    {
+        return deployer.isExtended();
+    }
 
-	/**
-	 * Is the pickup up or down?
-	 * 
-	 * @return Returns true if the pickup is up, (claw is off ground) and returns
-	 *         false if the pickup is down. (claw is on ground)
-	 */
-	public boolean isPickupDeployed()
-	{
-		return deployer.isExtended();
-	}
+    /**
+     * 
+     * @return Returns true of there is a cube in the pickup
+     */
+    public boolean cubeDetected()
+    {
+        return cubeSensor.get();
+    }
 
-	/**
-	 * 
-	 * @return Returns true of there is a cube in the pickup
-	 */
-	public boolean cubeDetected()
-	{
-		return cubeSensor.get();
-	}
+    /**
+     * spin the pickup motors to pull in a cube
+     */
+    public void grabCube(double power)
+    {
+        controlMotor.setPower(power);
+    }
 
-	/**
-	 * spin the pickup motors to pull in a cube
-	 */
-	public void grabCube(double power) {
-		controlMotor.setPower(power);
-	}
+    /**
+     * spin the motors to push out a cube
+     */
+    public void dropCube(double power)
+    {
+        controlMotor.setPower(-power);
+    }
 
-	/**
-	 * spin the motors to push out a cube
-	 */
-	public void dropCube(double power) {
-		controlMotor.setPower(-power);
-	}
-
-	/**
-	 * stops the pickup motors,
-	 * use after cube has been picked up or dropped
-	 */
-	public void stopPickup() {
-		controlMotor.setPower(0.0);
-	}
+    /**
+     * stops the pickup motors,
+     * use after cube has been picked up or dropped
+     */
+    public void stopPickup()
+    {
+        controlMotor.setPower(0.0);
+    }
 
 }

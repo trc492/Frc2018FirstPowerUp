@@ -31,6 +31,7 @@ public class Winch
     private FrcCANTalon mainMotor;
     private FrcCANTalon slaveMotor;
     private double motorPower = 0.0;
+
     public Winch()
     {
         mainMotor = new FrcCANTalon("WinchMaster", RobotInfo.CANID_WINCH_MASTER);
@@ -49,9 +50,6 @@ public class Winch
         return mainMotor.isLowerLimitSwitchActive();
     }
 
-
-
-
     public double getPosition()
     {
         return mainMotor.getPosition()*RobotInfo.WINCH_POSITION_SCALE;
@@ -63,21 +61,19 @@ public class Winch
     }
 
     public void setPower(double power)
-	{
-		motorPower = power;
-		mainMotor.setPower(motorPower);
-    }
-    
-    public void stop() 
     {
-    	setPower(0.0);
-    }
-    
-    public void climb() 
-    {
-    	setPower(0.7);
+        motorPower = power;
+        mainMotor.setPower(motorPower);
     }
 
-    
+    public void stop() 
+    {
+        setPower(0.0);
+    }
+
+    public void climb() 
+    {
+        setPower(0.7);
+    }
 
 }   //class Winch

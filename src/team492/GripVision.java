@@ -62,6 +62,7 @@ public class GripVision extends FrcVisionTarget
 
     public Rect getTargetRect()
     {
+        //CodeReview: this is last year's algorithm, needs updating... Or do we need it?
         Rect targetRect = null;
         Rect[] objectRects = getObjectRects();
 

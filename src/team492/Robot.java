@@ -79,7 +79,7 @@ public class Robot extends FrcRobotBase
     public static final boolean USE_AXIS_CAMERA = false;
     public static final boolean USE_PIXY_SPI = true;
     public static final boolean USE_TEXT_TO_SPEECH = false;
-    public static final boolean USE_MESSAGE_BOARD = true;
+    public static final boolean USE_MESSAGE_BOARD = false;
 
     private static final boolean DEBUG_DRIVE_BASE = false;
     private static final boolean DEBUG_PID_DRIVE = false;
@@ -88,6 +88,7 @@ public class Robot extends FrcRobotBase
     private static final boolean DEBUG_PIXY = true;
     private static final double DASHBOARD_UPDATE_INTERVAL = 0.1;
 
+    // CodeReview: get rid of Match type because we can get it from FMS.
     public static enum MatchType
     {
         Practice,
@@ -97,13 +98,14 @@ public class Robot extends FrcRobotBase
         Final
     }   //enum MatchType
 
+    // CodeReview: get rid of Alliance type because we can get it from FMS.
     public static enum Alliance
     {
         RED_ALLIANCE,
         BLUE_ALLIANCE
     }   //enum Alliance
 
-    public DriverStation ds;
+    public DriverStation ds = DriverStation.getInstance();
     public HalDashboard dashboard = HalDashboard.getInstance();
     public TrcDbgTrace tracer = TrcDbgTrace.getGlobalTracer();
 
@@ -165,6 +167,7 @@ public class Robot extends FrcRobotBase
     //
     // Menus.
     //
+    // CodeReview: get rid of Match type, alliance, match number.
     public FrcChoiceMenu<MatchType> matchTypeMenu;
     public FrcChoiceMenu<Alliance> allianceMenu;
 
@@ -370,6 +373,7 @@ public class Robot extends FrcRobotBase
         //
         // Create Global Menus (can be used in all modes).
         //
+        // CodeReview: get rid of Match type, alliance, match number, alliance, 
         matchTypeMenu = new FrcChoiceMenu<>("Match Type");
         allianceMenu = new FrcChoiceMenu<>("Alliance");
 
@@ -397,6 +401,7 @@ public class Robot extends FrcRobotBase
         //
         // Retrieve Global Choices.
         //
+        // CodeReview: get rid of Match type, match number alliance. Get them from FMS.
         matchType = matchTypeMenu.getCurrentChoiceObject();
         matchNumber = (int)HalDashboard.getNumber("MatchNumber", 0.0);
         alliance = allianceMenu.getCurrentChoiceObject();
