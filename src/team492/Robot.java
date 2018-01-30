@@ -88,7 +88,14 @@ public class Robot extends FrcRobotBase
     private static final boolean DEBUG_PIXY = true;
     private static final double DASHBOARD_UPDATE_INTERVAL = 0.1;
 
-    // CodeReview: get rid of Match type because we can get it from FMS.
+    // CodeReview: get rid of Match type because we can get it from FMS now.
+    // FMS provided the following info:
+    //  - alliance
+    //  - location
+    //  - match type
+    //  - match number
+    //  - event name
+    //  - replay number???
     public static enum MatchType
     {
         Practice,
