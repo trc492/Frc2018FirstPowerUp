@@ -42,9 +42,7 @@ public class Elevator
     public Elevator()
     {
         //CodeReview: where do you initialize elevatorLowerLimitSwitch? There may also be an upperLimitSwitch.
-        // we need to initiate:
-        // elevatorLowerLimitSwitch
-        // input for elevatorPidControl as Supplier<Double> pidInput type.
+        // We are currently using soft limit switch, no need.
         elevatorMotor = new FrcCANTalon("elevatorMotor", RobotInfo.ELEVATOR_MOTOR_ID); // the name and the device number
         elevatorPidCtrl = new TrcPidController(
             "elevatorPidController",
