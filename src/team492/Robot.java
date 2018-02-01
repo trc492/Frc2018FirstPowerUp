@@ -517,7 +517,7 @@ public class Robot extends FrcRobotBase implements TrcPidController.PidInput
 
         if (currTime >= nextUpdateTime)
         {
-            nextUpdateTime = currTime + DASHBOARD_UPDATE_INTERVAL;
+         j             nextUpdateTime = currTime + DASHBOARD_UPDATE_INTERVAL;
 
             if (DEBUG_DRIVE_BASE)
             {
