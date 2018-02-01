@@ -47,6 +47,10 @@ public class CmdPickupCube implements TrcRobot.RobotCommand
     {
         sm.start(State.GRAB_CUBE);
     }
+    
+    public void stop() {
+    	robot.cubePickup.stopPickup();
+    }
 
     //CodeReview: need a stop method.
 
