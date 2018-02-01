@@ -422,7 +422,7 @@ public class Robot extends FrcRobotBase
 
         if (currTime >= nextUpdateTime)
         {
-         j             nextUpdateTime = currTime + DASHBOARD_UPDATE_INTERVAL;
+        	nextUpdateTime = currTime + DASHBOARD_UPDATE_INTERVAL;
 
             if (DEBUG_DRIVE_BASE)
             {
