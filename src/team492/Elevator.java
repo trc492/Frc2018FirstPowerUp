@@ -27,6 +27,7 @@ import trclib.TrcMotor;
 import trclib.TrcPidActuator;
 import trclib.TrcPidController;
 import frclib.FrcCANTalon;
+import frclib.FrcDigitalInput;
 import trclib.TrcDigitalInput;
 
 public class Elevator
@@ -43,6 +44,7 @@ public class Elevator
     {
         //CodeReview: where do you initialize elevatorLowerLimitSwitch? There may also be an upperLimitSwitch.
     	// Still needs lowerLimitSwitch
+    	elevatorLowerLimitSwitch = new FrcDigitalInput("elevatorLowerLimitSwitch", RobotInfo.ELEVATOR_LOWER_LIMIT_ID);
         elevatorMotor = new FrcCANTalon("elevatorMotor", RobotInfo.ELEVATOR_MOTOR_ID); // the name and the device number
         elevatorMotor.setSoftLimitEnabled(true, true);
         elevatorMotor.setSoftLowerLimit(RobotInfo.ELEVATOR_MIN_HEIGHT);
