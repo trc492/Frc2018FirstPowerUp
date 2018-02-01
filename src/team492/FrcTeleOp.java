@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017 Titan Robotics Club (http://www.titanrobotics.com)
+ * Copyright (c) 2018 Titan Robotics Club (http://www.titanrobotics.com)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -27,7 +27,7 @@ import frclib.FrcJoystick;
 import hallib.HalDashboard;
 import trclib.TrcRobot;
 
-public class FrcTeleOp implements TrcRobot.RobotMode, FrcJoystick.ButtonHandler
+public class FrcTeleOp implements TrcRobot.RobotMode
 {
     private enum DriveMode
     {
@@ -44,7 +44,6 @@ public class FrcTeleOp implements TrcRobot.RobotMode, FrcJoystick.ButtonHandler
     private FrcJoystick leftDriveStick;
     private FrcJoystick rightDriveStick;
     private FrcJoystick operatorStick;
-    private CmdVisionGearDeploy cmdVisionDeploy;
     private CmdWaltzTurn cmdWaltzTurn;
     private String message = null;
 
@@ -53,7 +52,6 @@ public class FrcTeleOp implements TrcRobot.RobotMode, FrcJoystick.ButtonHandler
 
     private boolean driveInverted = false;
     private boolean flashLightsOn = false;
-    private boolean visionAssistOn = false;
     private boolean waltzTurnOn = false;
 
     public FrcTeleOp(Robot robot)
@@ -62,16 +60,18 @@ public class FrcTeleOp implements TrcRobot.RobotMode, FrcJoystick.ButtonHandler
         //
         // Input subsystem.
         //
-        leftDriveStick = new FrcJoystick("leftDriveStick", RobotInfo.JSPORT_LEFT_DRIVESTICK, this);
+        leftDriveStick = new FrcJoystick(
+            "leftDriveStick", RobotInfo.JSPORT_LEFT_DRIVESTICK, this::leftDriveStickButtonEvent);
         leftDriveStick.setYInverted(true);
 
-        rightDriveStick = new FrcJoystick("rightDriveStick", RobotInfo.JSPORT_RIGHT_DRIVESTICK, this);
+        rightDriveStick = new FrcJoystick(
+            "rightDriveStick", RobotInfo.JSPORT_RIGHT_DRIVESTICK, this::rightDriveStickButtonEvent);
         rightDriveStick.setYInverted(true);
 
-        operatorStick = new FrcJoystick("operatorStick", RobotInfo.JSPORT_OPERATORSTICK, this);
+        operatorStick = new FrcJoystick(
+            "operatorStick", RobotInfo.JSPORT_OPERATORSTICK, this::operatorStickButtonEvent);
         operatorStick.setYInverted(true);
 
-        cmdVisionDeploy = new CmdVisionGearDeploy(robot);
         cmdWaltzTurn = new CmdWaltzTurn(robot);
         message = HalDashboard.getString("Message", "Hello, Titans!");
     }   // FrcTeleOp
@@ -88,7 +88,6 @@ public class FrcTeleOp implements TrcRobot.RobotMode, FrcJoystick.ButtonHandler
 
         robot.driveBase.resetPosition();
         robot.targetHeading = 0.0;
-        robot.winch.clearState();
 
         robot.encoderXPidCtrl.setOutputRange(-1.0, 1.0);
         robot.encoderYPidCtrl.setOutputRange(-1.0, 1.0);
@@ -106,7 +105,7 @@ public class FrcTeleOp implements TrcRobot.RobotMode, FrcJoystick.ButtonHandler
     @Override
     public void runPeriodic(double elapsedTime)
     {
-        if (!visionAssistOn && !waltzTurnOn)
+        if (!waltzTurnOn)
         {
             //
             // DriveBase operation.
@@ -152,10 +151,6 @@ public class FrcTeleOp implements TrcRobot.RobotMode, FrcJoystick.ButtonHandler
 
             double winchPower = operatorStick.getYWithDeadband(true);
             robot.winch.setPower(winchPower);
-
-            double shooterValue = (operatorStick.getZ() + 1.0) / 2.0;
-//            robot.shooter.setPower(shooterValue);
-            robot.shooter.setSpeed(shooterValue*RobotInfo.SHOOTER_MAX_RPM);
         }
 
         robot.updateDashboard();
@@ -164,6 +159,7 @@ public class FrcTeleOp implements TrcRobot.RobotMode, FrcJoystick.ButtonHandler
     @Override
     public void runContinuous(double elapsedTime)
     {
+        //CodeReview: visionAssist is our autoAssist this season.
         if (waltzTurnOn)
         {
             if (cmdWaltzTurn.cmdPeriodic(elapsedTime))
@@ -171,231 +167,206 @@ public class FrcTeleOp implements TrcRobot.RobotMode, FrcJoystick.ButtonHandler
                 waltzTurnOn = false;
             }
         }
-        else if (visionAssistOn)
-        {
-            if (cmdVisionDeploy.cmdPeriodic(elapsedTime))
-            {
-                visionAssistOn = false;
-            }
-        }
+        robot.cmdAutoCubePickup.cmdPeriodic(elapsedTime);
     }   // runContinuous
 
     //
     // Implements TrcJoystick.ButtonHandler.
     //
 
-    @Override
-    public void joystickButtonEvent(FrcJoystick joystick, int button, boolean pressed)
+    public void leftDriveStickButtonEvent(int button, boolean pressed)
     {
-        if (joystick == leftDriveStick)
+        //CodeReview: remove last season's code.
+        switch (button)
         {
-            switch (button)
-            {
-                case FrcJoystick.LOGITECH_TRIGGER:
-                    slowDriveOverride = pressed;
-                    break;
+            case FrcJoystick.LOGITECH_TRIGGER:
+                slowDriveOverride = pressed;
+                break;
 
-                case FrcJoystick.LOGITECH_BUTTON2:
-                    if (pressed && robot.tts != null)
-                    {
-                        robot.tts.speak("Kevin, drop the rope!");
-                    }
-                    break;
+            case FrcJoystick.LOGITECH_BUTTON2:
+                if (pressed && robot.tts != null)
+                {
+                    robot.tts.speak("Kevin, drop the rope!");
+                }
+                break;
 
-                case FrcJoystick.LOGITECH_BUTTON3:
-                    if (pressed && robot.tts != null)
-                    {
-                        robot.tts.speak("Kevin, spin the rotor!");
-                    }
-                    break;
+            case FrcJoystick.LOGITECH_BUTTON3:
+                if (pressed && robot.tts != null)
+                {
+                    robot.tts.speak("Kevin, spin the rotor!");
+                }
+                break;
 
-                case FrcJoystick.LOGITECH_BUTTON4:
-                    if (pressed && robot.tts != null)
-                    {
-                        robot.tts.speak("Kevin, pick up the gear!");
-                    }
-                    break;
+            case FrcJoystick.LOGITECH_BUTTON4:
+                if (pressed && robot.tts != null)
+                {
+                    robot.tts.speak("Kevin, pick up the gear!");
+                }
+                break;
 
-                case FrcJoystick.LOGITECH_BUTTON5:
-                    if (pressed && robot.tts != null)
-                    {
-                        robot.tts.speak("Kevin, pick up the free gear!");
-                    }
-                    break;
+            case FrcJoystick.LOGITECH_BUTTON5:
+                if (pressed && robot.tts != null)
+                {
+                    robot.tts.speak("Kevin, pick up the free gear!");
+                }
+                break;
 
-                case FrcJoystick.LOGITECH_BUTTON6:
-                    if (pressed && robot.tts != null && message != null)
-                    {
-                        robot.tts.speak(message);
-                    }
-                    break;
+            case FrcJoystick.LOGITECH_BUTTON6:
+                if (pressed && robot.tts != null && message != null)
+                {
+                    robot.tts.speak(message);
+                }
+                break;
 
-                case FrcJoystick.LOGITECH_BUTTON7:
-                    break;
+            case FrcJoystick.LOGITECH_BUTTON7:
+                break;
 
-                case FrcJoystick.LOGITECH_BUTTON8:
-                    break;
+            case FrcJoystick.LOGITECH_BUTTON8:
+                break;
 
-                case FrcJoystick.LOGITECH_BUTTON9:
-                    break;
+            case FrcJoystick.LOGITECH_BUTTON9:
+                break;
 
-                case FrcJoystick.LOGITECH_BUTTON10:
-                    if (pressed)
-                    {
-                        cmdVisionDeploy.start();
-                    }
-                    else
-                    {
-                        cmdVisionDeploy.stop();
-                    }
-                    visionAssistOn = pressed;
-                    break;
+            case FrcJoystick.LOGITECH_BUTTON10:
+                break;
 
-                case FrcJoystick.LOGITECH_BUTTON11:
-                    break;
+            case FrcJoystick.LOGITECH_BUTTON11:
+                break;
 
-                case FrcJoystick.LOGITECH_BUTTON12:
-                    break;
-            }
+            case FrcJoystick.LOGITECH_BUTTON12:
+                break;
         }
-        else if (joystick == rightDriveStick)
+    }   //leftDriveStickButtonEvent
+
+    public void rightDriveStickButtonEvent(int button, boolean pressed)
+    {
+        switch (button)
         {
-            switch (button)
-            {
-                case FrcJoystick.SIDEWINDER_TRIGGER:
-                    if (pressed)
-                    {
-                        driveInverted = !driveInverted;
-                    }
-                    break;
+            case FrcJoystick.SIDEWINDER_TRIGGER:
+                if (pressed)
+                {
+                    driveInverted = !driveInverted;
+                }
+                break;
 
-                case FrcJoystick.SIDEWINDER_BUTTON2:
-                    if (pressed)
-                    {
-                        cmdWaltzTurn.stop();
-                        waltzTurnOn = false;
-                    }
-                    break;
+            case FrcJoystick.SIDEWINDER_BUTTON2:
+                if (pressed)
+                {
+                    cmdWaltzTurn.stop();
+                    waltzTurnOn = false;
+                }
+                break;
 
-                case FrcJoystick.SIDEWINDER_BUTTON3:
-                    if (pressed)
-                    {
-                        cmdWaltzTurn.setClockwiseTurn(true, driveInverted);
-                        cmdWaltzTurn.start();
-                        driveInverted = !driveInverted;
-                        waltzTurnOn = true;
-                    }
-                    break;
+            case FrcJoystick.SIDEWINDER_BUTTON3:
+                if (pressed)
+                {
+                    cmdWaltzTurn.setClockwiseTurn(true, driveInverted);
+                    cmdWaltzTurn.start();
+                    driveInverted = !driveInverted;
+                    waltzTurnOn = true;
+                }
+                break;
 
-                case FrcJoystick.SIDEWINDER_BUTTON4:
-                    if (pressed)
-                    {
-                        cmdWaltzTurn.setClockwiseTurn(false, driveInverted);
-                        cmdWaltzTurn.start();
-                        driveInverted = !driveInverted;
-                        waltzTurnOn = true;
-                    }
-                    break;
+            case FrcJoystick.SIDEWINDER_BUTTON4:
+                if (pressed)
+                {
+                    cmdWaltzTurn.setClockwiseTurn(false, driveInverted);
+                    cmdWaltzTurn.start();
+                    driveInverted = !driveInverted;
+                    waltzTurnOn = true;
+                }
+                break;
 
-                case FrcJoystick.SIDEWINDER_BUTTON5:
-                    break;
+            case FrcJoystick.SIDEWINDER_BUTTON5:
+                break;
 
-                case FrcJoystick.SIDEWINDER_BUTTON6:
-                    break;
+            case FrcJoystick.SIDEWINDER_BUTTON6:
+                break;
 
-                case FrcJoystick.SIDEWINDER_BUTTON7:
-                    break;
+            case FrcJoystick.SIDEWINDER_BUTTON7:
+                break;
 
-                case FrcJoystick.SIDEWINDER_BUTTON8:
-                    break;
+            case FrcJoystick.SIDEWINDER_BUTTON8:
+                break;
 
-                case FrcJoystick.SIDEWINDER_BUTTON9:
-                    break;
-            }
+            case FrcJoystick.SIDEWINDER_BUTTON9:
+                break;
         }
-        else if (joystick == operatorStick)
+    }   //rightDriveStickButtonEvent
+
+    public void operatorStickButtonEvent(int button, boolean pressed)
+    {
+        switch (button)
         {
-            switch (button)
-            {
-                case FrcJoystick.LOGITECH_TRIGGER:
-                    break;
+            case FrcJoystick.LOGITECH_TRIGGER:
+                break;
 
-                case FrcJoystick.LOGITECH_BUTTON2:
-                    //
-                    // Arm down.
-                    //
-                    if (pressed && !visionAssistOn)
-                    {
-                        robot.gearPickup.lowerArm();
-                    }
-                    break;
+            case FrcJoystick.LOGITECH_BUTTON2:
+                //
+                // Arm down.
+                //
+                if (pressed)
+                {
+                    robot.cubePickup.deployPickup();
+                }
+                break;
 
-                case FrcJoystick.LOGITECH_BUTTON3:
-                    //
-                    // Arm up.
-                    //
-                    if (pressed && !visionAssistOn)
-                    {
-                        robot.gearPickup.liftArm();
-                    }
-                    break;
+            case FrcJoystick.LOGITECH_BUTTON3:
+                //
+                // Arm up.
+                //
+                if (pressed)
+                {
+                    robot.cubePickup.raisePickup();
+                }
+                break;
 
-                case FrcJoystick.LOGITECH_BUTTON4:
-                    //
-                    // Claw open.
-                    //
-                    if (pressed && !visionAssistOn)
-                    {
-                        robot.gearPickup.openClaw();
-                    }
-                    break;
+            case FrcJoystick.LOGITECH_BUTTON4:
+                //
+                // Claw open.
+                //
+                if (pressed)
+                {
+                    robot.cubePickup.openClaw();
+                }
+                break;
 
-                case FrcJoystick.LOGITECH_BUTTON5:
-                    //
-                    // Claw close.
-                    //
-                    if (pressed && !visionAssistOn)
-                    {
-                        robot.gearPickup.closeClaw();
-                    }
-                    break;
+            case FrcJoystick.LOGITECH_BUTTON5:
+                //
+                // Claw close.
+                //
+                if (pressed)
+                {
+                    robot.cubePickup.closeClaw();
+                }
+                break;
 
-                case FrcJoystick.LOGITECH_BUTTON6:
-                    if (pressed && !visionAssistOn)
-                    {
-                        robot.mailbox.extend();
-                    }
-                    break;
+            case FrcJoystick.LOGITECH_BUTTON6:
+                break;
 
-                case FrcJoystick.LOGITECH_BUTTON7:
-                    if (pressed && !visionAssistOn)
-                    {
-                        robot.mailbox.retract();
-                    }
-                    break;
+            case FrcJoystick.LOGITECH_BUTTON7:
+                break;
 
-                case FrcJoystick.LOGITECH_BUTTON8:
-                    break;
+            case FrcJoystick.LOGITECH_BUTTON8:
+                break;
 
-                case FrcJoystick.LOGITECH_BUTTON9:
-                    if (pressed)
-                    {
-                        flashLightsOn = !flashLightsOn;
-                        robot.flashLightsPower.set(flashLightsOn? Value.kOn: Value.kOff);
-                    }
-                    break;
+            case FrcJoystick.LOGITECH_BUTTON9:
+                if (pressed)
+                {
+                    flashLightsOn = !flashLightsOn;
+                    robot.flashLightsPower.set(flashLightsOn? Value.kOn: Value.kOff);
+                }
+                break;
 
-                case FrcJoystick.LOGITECH_BUTTON10:
-                    robot.winch.setManualOverride(pressed);
-                    break;
+            case FrcJoystick.LOGITECH_BUTTON10:
+                break;
 
-                case FrcJoystick.LOGITECH_BUTTON11:
-                    break;
+            case FrcJoystick.LOGITECH_BUTTON11:
+                break;
 
-                case FrcJoystick.LOGITECH_BUTTON12:
-                    break;
-            }
+            case FrcJoystick.LOGITECH_BUTTON12:
+                break;
         }
-    }   // joystickButtonEvent
+    }   //operatorStickButtonEvent
 
 }   // class FrcTeleOp

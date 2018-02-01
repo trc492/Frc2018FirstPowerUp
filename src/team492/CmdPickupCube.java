@@ -22,54 +22,37 @@
 
 package team492;
 
-import trclib.TrcEvent;
 import trclib.TrcRobot;
 import trclib.TrcStateMachine;
-import trclib.TrcTimer;
 
-class CmdTimedDrive implements TrcRobot.RobotCommand
+public class CmdPickupCube implements TrcRobot.RobotCommand
 {
+    private static final String moduleName = "CmdPickupCube";
+
     private static enum State
     {
-        DO_DELAY,
-        DRIVE_BY_TIME,
-        DONE
-    }   //enum State
-
-    private static final String moduleName = "CmdTimedDrive";
+        GRAB_CUBE, WAIT_FOR_CUBE, DONE
+    } // enum State
 
     private Robot robot;
-    private double delay;
-    private double driveTime;
-    private double xDrivePower;
-    private double yDrivePower;
-    private double turnPower;
-
-    private TrcEvent event;
-    private TrcTimer timer;
     private TrcStateMachine<State> sm;
 
-    CmdTimedDrive(Robot robot, double delay, double driveTime, double xDrivePower, double yDrivePower, double turnPower)
+    CmdPickupCube(Robot robot)
     {
         this.robot = robot;
-        this.delay = delay;
-        this.driveTime = driveTime;
-        this.xDrivePower = xDrivePower;
-        this.yDrivePower = yDrivePower;
-        this.turnPower = turnPower;
-        event = new TrcEvent(moduleName);
-        timer = new TrcTimer(moduleName);
         sm = new TrcStateMachine<>(moduleName);
-        sm.start(State.DO_DELAY);
+    } // CmdPickupCube
 
-        robot.tracer.traceInfo(
-            moduleName, "delay=%.3f, time=%.1f, xPower=%.1f, yPower=%.1f, turnPower=%.1f",
-            delay, driveTime, xDrivePower, yDrivePower, turnPower);
-    }   //CmdTimedDrive
+    public void start()
+    {
+        sm.start(State.GRAB_CUBE);
+    }
+    
+    public void stop() {
+    	robot.cubePickup.stopPickup();
+    }
 
-    //
-    // Implements the TrcRobot.AutoStrategy interface.
-    //
+    //CodeReview: need a stop method.
 
     @Override
     public boolean cmdPeriodic(double elapsedTime)
@@ -84,48 +67,42 @@ class CmdTimedDrive implements TrcRobot.RobotCommand
         if (sm.isReady())
         {
             state = sm.getState();
-
             switch (state)
             {
-                case DO_DELAY:
+                case GRAB_CUBE:
                     //
-                    // Do delay if any.
+                    // Spins motors to pull in cube.
                     //
-                    if (delay == 0.0)
-                    {
-                        sm.setState(State.DRIVE_BY_TIME);
-                    }
-                    else
-                    {
-                        timer.set(delay, event);
-                        sm.waitForSingleEvent(event, State.DRIVE_BY_TIME);
-                    }
+                    robot.cubePickup.grabCube(0.5);
+                    sm.setState(State.WAIT_FOR_CUBE);
                     break;
 
-                case DRIVE_BY_TIME:
+                    //CodeReview: create a digital trigger and use it to signal an event.
+
+                case WAIT_FOR_CUBE:
                     //
-                    // Drive the robot with the given power for a set amount of time.
+                    // Continues spinning motors until a cube is detected.
                     //
-                    robot.driveBase.mecanumDrive_Cartesian(xDrivePower, yDrivePower, turnPower);
-                    timer.set(driveTime, event);
-                    sm.waitForSingleEvent(event, State.DONE);
+                    if (robot.cubePickup.cubeDetected())
+                    {
+                        sm.setState(State.DONE);
+                    } else
+                    {
+                        sm.setState(State.WAIT_FOR_CUBE);
+                    }
                     break;
 
                 case DONE:
                 default:
                     //
-                    // We are done.
+                    // Done.
                     //
-                    robot.driveBase.mecanumDrive_Cartesian(0.0, 0.0, 0.0);
-                    done = true;
+                    robot.cubePickup.stopPickup();
                     sm.stop();
                     break;
             }
-
-            robot.traceStateInfo(elapsedTime, state.toString());
         }
-
         return done;
-    }   //cmdPeriodic
+    }
 
-}   //class CmdTimedDrive
+}

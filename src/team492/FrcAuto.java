@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017 Titan Robotics Club (http://www.titanrobotics.com)
+ * Copyright (c) 2018 Titan Robotics Club (http://www.titanrobotics.com)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -32,9 +32,8 @@ public class FrcAuto implements TrcRobot.RobotMode
 {
     public static enum AutoStrategy
     {
-        LEFT_GEAR_LIFT,
-        RIGHT_GEAR_LIFT,
-        MIDDLE_GEAR_LIFT,
+        //Different choices for autonomous
+        POWER_UP_AUTO,
         X_TIMED_DRIVE,
         Y_TIMED_DRIVE,
         X_DISTANCE_DRIVE,
@@ -66,9 +65,7 @@ public class FrcAuto implements TrcRobot.RobotMode
         //
         // Populate Autonomous Mode menus.
         //
-        autoStrategyMenu.addChoice("Middle Gear Lift", FrcAuto.AutoStrategy.MIDDLE_GEAR_LIFT, true);
-        autoStrategyMenu.addChoice("Left Gear Lift", FrcAuto.AutoStrategy.LEFT_GEAR_LIFT, false);
-        autoStrategyMenu.addChoice("Right Gear Lift", FrcAuto.AutoStrategy.RIGHT_GEAR_LIFT, false);
+        autoStrategyMenu.addChoice("Power Up Auto", FrcAuto.AutoStrategy.POWER_UP_AUTO, false);
         autoStrategyMenu.addChoice("X Timed Drive", FrcAuto.AutoStrategy.X_TIMED_DRIVE, false);
         autoStrategyMenu.addChoice("Y Timed Drive", FrcAuto.AutoStrategy.Y_TIMED_DRIVE, false);
         autoStrategyMenu.addChoice("X Distance Drive", FrcAuto.AutoStrategy.X_DISTANCE_DRIVE, false);
@@ -99,19 +96,8 @@ public class FrcAuto implements TrcRobot.RobotMode
 
         switch (autoStrategy)
         {
-            case LEFT_GEAR_LIFT:
-                useVision = true;
-                autoCommand = new CmdSideGearLift(robot, delay, false);
-                break;
-
-            case RIGHT_GEAR_LIFT:
-                useVision = true;
-                autoCommand = new CmdSideGearLift(robot, delay, true);
-                break;
-
-            case MIDDLE_GEAR_LIFT:
-                useVision = true;
-                autoCommand = new CmdMidGearLift(robot, delay);
+            case POWER_UP_AUTO:
+                autoCommand = new CmdPowerUpAuto(robot, delay);
                 break;
 
             case X_TIMED_DRIVE:

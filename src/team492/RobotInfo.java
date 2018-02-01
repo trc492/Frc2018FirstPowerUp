@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2015 Titan Robotics Club (http://www.titanrobotics.com)
+ * Copyright (c) 2018 Titan Robotics Club (http://www.titanrobotics.com)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -36,11 +36,6 @@ public class RobotInfo
     //
     public static final double FIELD_LENGTH                     = 54*12.0;
     public static final double FIELD_WIDTH                      = 27*12.0;
-    public static final double FIELD_BASELINE_DISTANCE          = 93.3;
-    public static final double FIELD_LAUNCHPAD_DISTANCE         = 185.3;
-    public static final double FIELD_NEUTRAL_ZONE_LENGTH        = FIELD_LENGTH - FIELD_LAUNCHPAD_DISTANCE*2.0;
-    public static final double FIELD_SIDELIFT_ANGLE             = 60.0;     //in degrees
-    public static final double FIELD_AIRSHIP_PANEL_WIDTH        = 40.755;   //70.59/2/sin(60)
 
     //
     // Robot dimensions.
@@ -65,7 +60,7 @@ public class RobotInfo
     //
     // Digital Input ports.
     //
-    public static final int DIN_GEAR_SENSOR                     = 0;
+    public static final int DIN_CUBE_SENSOR                     = 0;
 
     //
     // CAN IDs.
@@ -76,7 +71,8 @@ public class RobotInfo
     public static final int CANID_RIGHTREARWHEEL                = 6;    // 40A: Blue
     public static final int CANID_WINCH_MASTER                  = 7;    // 40A: Purple
     public static final int CANID_WINCH_SLAVE                   = 8;    // 40A: Gray
-    public static final int CANID_SHOOTER                       = 13;   // 40A (probably): Blue
+    public static final int CANID_RIGHT_PICKUP                  = 9;    // 30A: White
+    public static final int CANID_LEFT_PICKUP                   = 10;   // 30A: Orange
 
     public static final int CANID_PDP                           = 16;
     public static final int CANID_PCM1                          = 17;
@@ -91,12 +87,11 @@ public class RobotInfo
     //
     // Solenoid channels.
     //
-    public static final int SOL_GEARPICKUP_CLAW_RETRACT         = 0;
-    public static final int SOL_GEARPICKUP_CLAW_EXTEND          = 1;
-    public static final int SOL_GEARPICKUP_ARM_RETRACT          = 2;
-    public static final int SOL_GEARPICKUP_ARM_EXTEND           = 3;
-    public static final int SOL_MAILBOX_RETRACT                 = 4;
-    public static final int SOL_MAILBOX_EXTEND                  = 5;
+    public static final int SOL_CUBEPICKUP_CLAW_RETRACT         = 0;
+    public static final int SOL_CUBEPICKUP_CLAW_EXTEND          = 1;
+    public static final int SOL_CUBEPICKUP_ARM_RETRACT          = 2;
+    public static final int SOL_CUBEPICKUP_ARM_EXTEND           = 3;
+
     public static final int SOL_TARGET_FOUND_LED                = 6;    // White LED
     public static final int SOL_TARGET_ALIGNED_LED              = 7;    // Blue LED
 
@@ -207,10 +202,23 @@ public class RobotInfo
     public static final double WINCH_SPIKE_TIMEOUT              = 0.5;
     public static final double WINCH_TILT_THRESHOLD             = 35.0;
 
+    
+    // 
+    // Elevator subsystem.
     //
-    // Shooter subsystem.
-    //
-    public static final int SHOOTER_COUNT_PER_REV               = 1024;
-    public static final int SHOOTER_MAX_RPM                     = 4500;
-
+    public static final int ELEVATOR_MOTOR_ID              = 1;    
+	
+    public static final double ELEVATOR_INCHES_PER_COUNT      = 0.002822426329889;  // we will need to change this, later during calibration
+    public static final double ELEVATOR_KP                      = 0.3;                // this too
+    public static final double ELEVATOR_KI                      = 0.0;                // hopefully not this
+    public static final double ELEVATOR_KD                      = 0.0;                // this too
+    public static final double ELEVATOR_TOLERANCE              = 0.5;				  // this too
+    public static final double ELEVATOR_MIN_HEIGHT             = 0.0;
+    public static final double ELEVATOR_MAX_HEIGHT             = 85.0;              
+    public static final double ELEVATOR_MID_HEIGHT             = 4.0;
+    public static final double ELEVATOR_CAL_POWER              = 0.3;               // this too
+    public static final double ELEVATOR_SENSOR_ZERO_OFFSET    = -0.529;            // this too
+    public static final double ELEVATOR_SENSOR_SCALE           = 11.18586208869386; // and this
+    public static final double ELEVATOR_STARTING_HEIGHT       = 55.0;
+    
 }   // class RobotInfo

@@ -22,6 +22,8 @@
 
 package trclib;
 
+import java.util.function.Supplier;
+
 import hallib.HalDashboard;
 
 /**
@@ -98,24 +100,6 @@ public class TrcPidController
 
     }   //class PidCoefficients
 
-    /**
-     * PID controller needs input from a feedback device for calculating the output power. Whoever is providing this
-     * input must implement this interface.
-     */
-    public interface PidInput
-    {
-        /**
-         * This method is called by the PID controller to get input data from the feedback device. The feedback
-         * device can be motor encoders, gyro, ultrasonic sensor, light sensor etc.
-         *
-         * @param pidCtrl specifies this PID controller so the provider can identify what sensor to read if it is
-         *                a provider for multiple PID controllers.
-         * @return input value of the feedback device.
-         */
-        double getInput(TrcPidController pidCtrl);
-
-    }   //interface PidInput
-
     public static final double DEF_SETTLING_TIME = 0.2;
 
     private HalDashboard dashboard;
@@ -123,7 +107,7 @@ public class TrcPidController
     private PidCoefficients pidCoefficients;
     private double tolerance;
     private double settlingTime;
-    private PidInput pidInput;
+    private Supplier<Double> pidInput;
 
     private boolean inverted = false;
     private boolean absSetPoint = false;
@@ -162,7 +146,7 @@ public class TrcPidController
             PidCoefficients pidCoefficients,
             double tolerance,
             double settlingTime,
-            PidInput pidInput)
+            Supplier<Double> pidInput)
     {
         if (debugEnabled)
         {
@@ -193,47 +177,9 @@ public class TrcPidController
             final String instanceName,
             PidCoefficients pidCoefficients,
             double tolerance,
-            PidInput pidInput)
+            Supplier<Double> pidInput)
     {
         this(instanceName, pidCoefficients, tolerance, DEF_SETTLING_TIME, pidInput);
-    }   //TrcPidController
-
-    /**
-     * Constructor: Create an instance of the object. This constructor is not public. It is only for classes
-     * extending this class (e.g. Cascade PID Controller) that cannot make itself as an input provider in its
-     * constructor (Java won't allow it). Instead, we provide another protected method setPidInput so it can
-     * set the PidInput outside of the super() call.
-     *
-     * @param instanceName specifies the instance name.
-     * @param pidCoefficients specifies the PID constants.
-     * @param tolerance specifies the target tolerance.
-     * @param settlingTime specifies the minimum on target settling time.
-     */
-    protected TrcPidController(
-            final String instanceName,
-            PidCoefficients pidCoefficients,
-            double       tolerance,
-            double       settlingTime)
-    {
-        this(instanceName, pidCoefficients, tolerance, settlingTime, null);
-    }   //TrcPidController
-
-    /**
-     * Constructor: Create an instance of the object. This constructor is not public. It is only for classes
-     * extending this class (e.g. Cascade PID Controller) that cannot make itself as an input provider in its
-     * constructor (Java won't allow it). Instead, we provide another protected method setPidInput so it can
-     * set the PidInput outside of the super() call.
-     *
-     * @param instanceName specifies the instance name.
-     * @param pidCoefficients specifies the PID constants.
-     * @param tolerance specifies the target tolerance.
-     */
-    protected TrcPidController(
-            final String instanceName,
-            PidCoefficients pidCoefficients,
-            double tolerance)
-    {
-        this(instanceName, pidCoefficients, tolerance, DEF_SETTLING_TIME, null);
     }   //TrcPidController
 
     /**
@@ -245,16 +191,6 @@ public class TrcPidController
     {
         return instanceName;
     }   //toString
-
-    /**
-     * This method can only be called by classes extending this class to set the input provider.
-     *
-     * @param pidInput specifies the input provider.
-     */
-    protected void setPidInput(PidInput pidInput)
-    {
-        this.pidInput = pidInput;
-    }   //setPidInput
 
     /**
      * This method displays the PID information on the dashboard for debugging and tuning purpose. Note that the
@@ -559,7 +495,7 @@ public class TrcPidController
             dbgTrace.traceEnter(funcName, TrcDbgTrace.TraceLevel.API, "target=%f", target);
         }
 
-        double input = pidInput.getInput(this);
+        double input = pidInput.get();
         if (!absSetPoint)
         {
             //
@@ -711,7 +647,7 @@ public class TrcPidController
         double currTime = TrcUtil.getCurrentTime();
         double deltaTime = currTime - prevTime;
         prevTime = currTime;
-        input = pidInput.getInput(this);
+        input = pidInput.get();
         currError = setPoint - input;
         if (inverted)
         {

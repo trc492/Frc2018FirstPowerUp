@@ -1,4 +1,5 @@
 /*
+ * Copyright (c) 2018 Titan Robotics Club (http://www.titanrobotics.com)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -237,8 +238,7 @@ public class FrcTest extends FrcTeleOp
             case Y_DISTANCE_DRIVE:
             case TURN_DEGREES:
                 robot.dashboard.displayPrintf(2, "xPos=%.1f,yPos=%.1f,heading=%.1f",
-                    robot.getInput(robot.encoderXPidCtrl), robot.getInput(robot.encoderYPidCtrl),
-                    robot.getInput(robot.gyroTurnPidCtrl));
+                    robot.driveBase.getXPosition(), robot.driveBase.getYPosition(), robot.driveBase.getHeading());
                 robot.encoderXPidCtrl.displayPidInfo(3);
                 robot.encoderYPidCtrl.displayPidInfo(5);
                 robot.gyroTurnPidCtrl.displayPidInfo(7);
@@ -262,8 +262,7 @@ public class FrcTest extends FrcTeleOp
 
             case VISION_DRIVE:
                 robot.dashboard.displayPrintf(2, "xPos=%.1f,yPos=%.1f,heading=%.1f",
-                    robot.getInput(robot.encoderXPidCtrl), robot.getInput(robot.encoderYPidCtrl),
-                    robot.getInput(robot.gyroTurnPidCtrl));
+                    robot.driveBase.getXPosition(), robot.driveBase.getYPosition(), robot.driveBase.getHeading());
                 robot.encoderXPidCtrl.displayPidInfo(3);
                 robot.sonarDrivePidCtrl.displayPidInfo(5);
                 robot.visionTurnPidCtrl.displayPidInfo(7);
@@ -278,8 +277,7 @@ public class FrcTest extends FrcTeleOp
 
             case SONAR_DRIVE:
                 robot.dashboard.displayPrintf(2, "xPos=%.1f,yPos=%.1f,heading=%.1f",
-                    robot.getInput(robot.encoderXPidCtrl), robot.getInput(robot.encoderYPidCtrl),
-                    robot.getInput(robot.gyroTurnPidCtrl));
+                    robot.driveBase.getXPosition(), robot.driveBase.getYPosition(), robot.driveBase.getHeading());
                 robot.sonarDrivePidCtrl.displayPidInfo(3);
 
                 if (!sonarPidDriveCommand.cmdPeriodic(elapsedTime))
@@ -290,8 +288,7 @@ public class FrcTest extends FrcTeleOp
 
             case VISION_TURN:
                 robot.dashboard.displayPrintf(2, "xPos=%.1f,yPos=%.1f,heading=%.1f",
-                    robot.getInput(robot.encoderXPidCtrl), robot.getInput(robot.encoderYPidCtrl),
-                    robot.getInput(robot.gyroTurnPidCtrl));
+                    robot.driveBase.getXPosition(), robot.driveBase.getYPosition(), robot.driveBase.getHeading());
                 robot.visionTurnPidCtrl.displayPidInfo(3);
 
                 if (!visionPidTurnCommand.cmdPeriodic(elapsedTime))
@@ -321,7 +318,7 @@ public class FrcTest extends FrcTeleOp
             robot.driveBase.getXPosition(), robot.driveBase.getYPosition(), robot.driveBase.getHeading());
         robot.dashboard.displayPrintf(4, "Gyro: Rate=%.3f, Heading=%.1f",
             robot.gyro.getZRotationRate().value, robot.gyro.getZHeading().value);
-        robot.dashboard.displayPrintf(5, "GearPickup: gear=%s", robot.gearPickup.gearDetected());
+        robot.dashboard.displayPrintf(5, "CubePickup: cube=%s", robot.cubePickup.cubeDetected());
         robot.dashboard.displayPrintf(6, "PressureSensor: pressure=%.1f", robot.getPressure());
         robot.dashboard.displayPrintf(7, "Ultrasonic=%.1f inches", robot.getUltrasonicDistance());
     }   //doSensorsTest

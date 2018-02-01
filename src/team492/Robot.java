@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017 Titan Robotics Club (http://www.titanrobotics.com)
+ * Copyright (c) 2018 Titan Robotics Club (http://www.titanrobotics.com)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -30,11 +30,12 @@ import edu.wpi.cscore.AxisCamera;
 import edu.wpi.cscore.CvSink;
 import edu.wpi.cscore.CvSource;
 import edu.wpi.cscore.UsbCamera;
-import edu.wpi.first.wpilibj.ADXRS450_Gyro;
 import edu.wpi.first.wpilibj.AnalogGyro;
 import edu.wpi.first.wpilibj.AnalogInput;
 import edu.wpi.first.wpilibj.CameraServer;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.wpilibj.DriverStation.MatchType;
 import edu.wpi.first.wpilibj.I2C;
 import edu.wpi.first.wpilibj.Relay;
 import edu.wpi.first.wpilibj.SPI;
@@ -43,11 +44,9 @@ import edu.wpi.first.wpilibj.Relay.Direction;
 import edu.wpi.first.wpilibj.Relay.Value;
 import frclib.FrcAHRSGyro;
 import frclib.FrcCANTalon;
-import frclib.FrcChoiceMenu;
 import frclib.FrcEmic2TextToSpeech;
-import frclib.FrcFaceDetector;
 import frclib.FrcGyro;
-import frclib.FrcPneumatic;
+import frclib.FrcI2cLEDPanel;
 import frclib.FrcRobotBase;
 import frclib.FrcRobotBattery;
 import hallib.HalDashboard;
@@ -69,50 +68,36 @@ import trclib.TrcUtil;
  * creating this project, you must also update the manifest file in the
  * resource directory.
  */
-public class Robot extends FrcRobotBase implements TrcPidController.PidInput
+public class Robot extends FrcRobotBase
 {
     public static final String programName = "FirstPowerUp";
     private static final String moduleName = "Robot";
 
     public static final boolean USE_TRACELOG = true;
     public static final boolean USE_NAV_X = false;
-    public static final boolean USE_SPI_GYRO = false;
     public static final boolean USE_ANALOG_GYRO = false;
     public static final boolean USE_GRIP_VISION = false;
     public static final boolean USE_AXIS_CAMERA = false;
-    public static final boolean USE_FACE_DETECTOR = false;
     public static final boolean USE_PIXY_SPI = true;
-    public static final boolean USE_FRONT_PIXY = false;
-    public static final boolean USE_FRONT_PIXY_UART = false;
-    public static final boolean USE_REAR_PIXY = false;
     public static final boolean USE_TEXT_TO_SPEECH = false;
-    public static final boolean USE_ACCELEROMETER = false;
+    public static final boolean USE_MESSAGE_BOARD = false;
 
     private static final boolean DEBUG_DRIVE_BASE = false;
     private static final boolean DEBUG_PID_DRIVE = false;
     private static final boolean DEBUG_GRIP_VISION = false;
-    private static final boolean DEBUG_FACE_DETECTION = false;
     private static final boolean DEBUG_WINCH = false;
-    private static final boolean DEBUG_SHOOTER = true;
     private static final boolean DEBUG_PIXY = true;
     private static final double DASHBOARD_UPDATE_INTERVAL = 0.1;
 
-    public static enum MatchType
-    {
-        Practice,
-        Qualification,
-        QuarterFinal,
-        SemiFinal,
-        Final
-    }   //enum MatchType
+    // FMS provided the following info:
+    //  - alliance
+    //  - location
+    //  - match type
+    //  - match number
+    //  - event name
+    //  - replay number???
 
-    public static enum Alliance
-    {
-        RED_ALLIANCE,
-        BLUE_ALLIANCE
-    }   //enum Alliance
-
-    public DriverStation ds;
+    public DriverStation ds = DriverStation.getInstance();
     public HalDashboard dashboard = HalDashboard.getInstance();
     public TrcDbgTrace tracer = TrcDbgTrace.getGlobalTracer();
 
@@ -133,15 +118,13 @@ public class Robot extends FrcRobotBase implements TrcPidController.PidInput
     // VisionTarget subsystem.
     //
     public GripVision gripVision = null;
-    public FrcFaceDetector faceDetector = null;
     public PixyVision pixy = null;
-    public PixyVision frontPixy = null;
-    public PixyVision rearPixy = null;
 
     //
-    // Sound subsystem.
+    // Miscellaneous subsystem.
     //
     public FrcEmic2TextToSpeech tts = null;
+    public FrcI2cLEDPanel messageBoard = null;
 
     //
     // DriveBase subsystem.
@@ -168,16 +151,10 @@ public class Robot extends FrcRobotBase implements TrcPidController.PidInput
     //
     public Relay ringLightsPower;
     public Relay flashLightsPower;
-    public FrcPneumatic mailbox;
-    public GearPickup gearPickup;
+    public CubePickup cubePickup;
     public Winch winch;
-    public Shooter shooter;
-
-    //
-    // Menus.
-    //
-    public FrcChoiceMenu<MatchType> matchTypeMenu;
-    public FrcChoiceMenu<Alliance> allianceMenu;
+    public Elevator elevator;
+    public CmdAutoCubePickup cmdAutoCubePickup;
 
     public MatchType matchType;
     public int matchNumber;
@@ -215,10 +192,6 @@ public class Robot extends FrcRobotBase implements TrcPidController.PidInput
         if (USE_NAV_X)
         {
             gyro = new FrcAHRSGyro("NavX", SPI.Port.kMXP);
-        }
-        else if (USE_SPI_GYRO)
-        {
-            gyro = new FrcGyro("ADXRS450", new ADXRS450_Gyro());
         }
         else if (USE_ANALOG_GYRO)
         {
@@ -258,53 +231,16 @@ public class Robot extends FrcRobotBase implements TrcPidController.PidInput
 
             gripVision = new GripVision("GripVision", videoIn, videoOut);
         }
-        else if (USE_FACE_DETECTOR)
+
+        if (USE_PIXY_SPI)
         {
-            UsbCamera cam0 = CameraServer.getInstance().startAutomaticCapture("cam0", 0);
-            cam0.setResolution(RobotInfo.CAM_WIDTH, RobotInfo.CAM_HEIGHT);
-            cam0.setFPS(RobotInfo.CAM_FRAME_RATE);
-            CvSink videoIn = CameraServer.getInstance().getVideo(cam0);
-            CvSource videoOut =
-                CameraServer.getInstance().putVideo("FaceDetector", RobotInfo.CAM_WIDTH, RobotInfo.CAM_HEIGHT);
-
-            faceDetector = new FrcFaceDetector(
-                "FaceDetector", "/home/lvuser/cascade-files/haarcascade_frontalface_alt.xml", videoIn, videoOut);
-        }
-        else
-        {
-            if (USE_PIXY_SPI)
-            {
-                pixy = new PixyVision(
-                    "PixyCam", this, RobotInfo.PIXY_POWER_CUBE_SIGNATURE, RobotInfo.PIXY_BRIGHTNESS,
-                    RobotInfo.PIXY_ORIENTATION, SPI.Port.kOnboardCS0);
-            }
-
-            if (USE_FRONT_PIXY)
-            {
-                if (USE_FRONT_PIXY_UART)
-                {
-                    frontPixy = new PixyVision(
-                        "FrontPixy", this, RobotInfo.PIXY_LIFT_SIGNATURE, RobotInfo.PIXY_FRONT_BRIGHTNESS,
-                        RobotInfo.PIXY_FRONT_ORIENTATION, SerialPort.Port.kMXP);
-                }
-                else
-                {
-                    frontPixy = new PixyVision(
-                        "FrontPixy", this, RobotInfo.PIXY_LIFT_SIGNATURE, RobotInfo.PIXY_FRONT_BRIGHTNESS,
-                        RobotInfo.PIXY_FRONT_ORIENTATION, I2C.Port.kMXP, RobotInfo.PIXYCAM_FRONT_I2C_ADDRESS);
-                }
-            }
-
-            if (USE_REAR_PIXY)
-            {
-                rearPixy = new PixyVision(
-                    "RearPixy", this, RobotInfo.PIXY_GEAR_SIGNATURE, RobotInfo.PIXY_REAR_BRIGHTNESS,
-                    RobotInfo.PIXY_REAR_ORIENTATION, I2C.Port.kMXP, RobotInfo.PIXYCAM_REAR_I2C_ADDRESS);
-            }
+            pixy = new PixyVision(
+                "PixyCam", this, RobotInfo.PIXY_POWER_CUBE_SIGNATURE, RobotInfo.PIXY_BRIGHTNESS,
+                RobotInfo.PIXY_ORIENTATION, SPI.Port.kOnboardCS0);
         }
 
         //
-        // Sound subsystem.
+        // Miscellaneous subsystems.
         //
         if (USE_TEXT_TO_SPEECH)
         {
@@ -312,6 +248,11 @@ public class Robot extends FrcRobotBase implements TrcPidController.PidInput
             tts.setEnabled(true);
             tts.selectVoice(Voice.FrailFrank);
             tts.setVolume(1.0);
+        }
+
+        if (USE_MESSAGE_BOARD)
+        {
+            messageBoard = new FrcI2cLEDPanel("messageBoard", I2C.Port.kOnboard);
         }
 
         //
@@ -360,19 +301,19 @@ public class Robot extends FrcRobotBase implements TrcPidController.PidInput
             new PidCoefficients(
                 RobotInfo.ENCODER_X_KP, RobotInfo.ENCODER_X_KI, RobotInfo.ENCODER_X_KD, RobotInfo.ENCODER_X_KF),
             RobotInfo.ENCODER_X_TOLERANCE,
-            this);
+            driveBase::getXPosition);
         encoderYPidCtrl = new TrcPidController(
             "encoderYPidCtrl",
             new PidCoefficients(
                 RobotInfo.ENCODER_Y_KP, RobotInfo.ENCODER_Y_KI, RobotInfo.ENCODER_Y_KD, RobotInfo.ENCODER_Y_KF),
             RobotInfo.ENCODER_Y_TOLERANCE,
-            this);
+            driveBase::getYPosition);
         gyroTurnPidCtrl = new TrcPidController(
             "gyroTurnPidCtrl",
             new PidCoefficients(
                 RobotInfo.GYRO_TURN_KP, RobotInfo.GYRO_TURN_KI, RobotInfo.GYRO_TURN_KD, RobotInfo.GYRO_TURN_KF),
             RobotInfo.GYRO_TURN_TOLERANCE,
-            this);
+            driveBase::getHeading);
         gyroTurnPidCtrl.setAbsoluteSetPoint(true);
         pidDrive = new TrcPidDrive("pidDrive", driveBase, encoderXPidCtrl, encoderYPidCtrl, gyroTurnPidCtrl);
         pidDrive.setStallTimeout(RobotInfo.DRIVE_STALL_TIMEOUT);
@@ -383,7 +324,7 @@ public class Robot extends FrcRobotBase implements TrcPidController.PidInput
             new PidCoefficients(
                 RobotInfo.SONAR_KP, RobotInfo.SONAR_KI, RobotInfo.SONAR_KD, RobotInfo.SONAR_KF),
             RobotInfo.SONAR_TOLERANCE,
-            this);
+            this::getUltrasonicDistance);
         sonarDrivePidCtrl.setAbsoluteSetPoint(true);
         sonarDrivePidCtrl.setInverted(true);
         visionTurnPidCtrl = new TrcPidController(
@@ -391,7 +332,7 @@ public class Robot extends FrcRobotBase implements TrcPidController.PidInput
             new PidCoefficients(
                 RobotInfo.VISION_TURN_KP, RobotInfo.VISION_TURN_KI, RobotInfo.VISION_TURN_KD, RobotInfo.VISION_TURN_KF),
             RobotInfo.VISION_TURN_TOLERANCE,
-            this);
+            this::getPixyTargetAngle);
         visionTurnPidCtrl.setInverted(true);
         visionTurnPidCtrl.setAbsoluteSetPoint(true);
         visionPidDrive = new TrcPidDrive("visionPidDrive", driveBase, null, sonarDrivePidCtrl, visionTurnPidCtrl);
@@ -403,35 +344,16 @@ public class Robot extends FrcRobotBase implements TrcPidController.PidInput
         visionPidTurn.setMsgTracer(tracer);
 
         //
-        // Create other subsystems.
+        // Create other hardware subsystems.
         //
         ringLightsPower = new Relay(RobotInfo.RELAY_RINGLIGHT_POWER);
         ringLightsPower.setDirection(Direction.kForward);
         flashLightsPower = new Relay(RobotInfo.RELAY_FLASHLIGHT_POWER);
         flashLightsPower.setDirection(Direction.kForward);
-        mailbox = new FrcPneumatic(
-            "Mailbox", RobotInfo.CANID_PCM1, RobotInfo.SOL_MAILBOX_EXTEND, RobotInfo.SOL_MAILBOX_RETRACT);
-        gearPickup = new GearPickup();
+        cubePickup = new CubePickup();
         winch = new Winch();
-        shooter = new Shooter();
-
-        //
-        // Create Global Menus (can be used in all modes).
-        //
-        matchTypeMenu = new FrcChoiceMenu<>("Match Type");
-        allianceMenu = new FrcChoiceMenu<>("Alliance");
-
-        //
-        // Populate Global Menus.
-        //
-        matchTypeMenu.addChoice("Practice", MatchType.Practice, true);
-        matchTypeMenu.addChoice("Qualification", MatchType.Qualification, false);
-        matchTypeMenu.addChoice("Quater-final", MatchType.QuarterFinal, false);
-        matchTypeMenu.addChoice("Semi-final", MatchType.SemiFinal, false);
-        matchTypeMenu.addChoice("Final", MatchType.Final, false);
-
-        allianceMenu.addChoice("Red", Alliance.RED_ALLIANCE, true);
-        allianceMenu.addChoice("Blue", Alliance.BLUE_ALLIANCE, false);
+        elevator = new Elevator();
+        cmdAutoCubePickup = new CmdAutoCubePickup(this);
 
         //
         // Robot Modes.
@@ -442,12 +364,20 @@ public class Robot extends FrcRobotBase implements TrcPidController.PidInput
     public void robotStartMode()
     {
         battery.setEnabled(true);
-        //
-        // Retrieve Global Choices.
-        //
-        matchType = matchTypeMenu.getCurrentChoiceObject();
-        matchNumber = (int)HalDashboard.getNumber("MatchNumber", 0.0);
-        alliance = allianceMenu.getCurrentChoiceObject();
+        tracer.traceInfo("Robot Start Mode", "FMS Connected: %b", ds.isFMSAttached());
+        tracer.traceInfo("Robot Start Mode", "Switch/Scale/Switch randomization: ", ds.getGameSpecificMessage());
+        if(ds.isFMSAttached())
+        {
+        	matchType = ds.getMatchType();
+        	matchNumber = ds.getMatchNumber();
+        	alliance = ds.getAlliance();
+        }
+        else
+        {
+        	matchType = MatchType.None;
+        	matchNumber = 0;
+        	alliance = ds.getAlliance();
+        }
         driveTime = HalDashboard.getNumber("DriveTime", 5.0);
         drivePower = HalDashboard.getNumber("DrivePower", 0.2);
         driveDistance = HalDashboard.getNumber("DriveDistance", 6.0);
@@ -459,7 +389,6 @@ public class Robot extends FrcRobotBase implements TrcPidController.PidInput
         tuneKi = HalDashboard.getNumber("TuneKi", RobotInfo.GYRO_TURN_KI);
         tuneKd = HalDashboard.getNumber("TuneKd", RobotInfo.GYRO_TURN_KD);
         tuneKf = HalDashboard.getNumber("TuneKf", 0.05);
-        shooter.setPID(tuneKp, tuneKi, tuneKd, tuneKf, 300, 48.0, 0);
     }   //robotStartMode
 
     public void robotStopMode()
@@ -467,16 +396,6 @@ public class Robot extends FrcRobotBase implements TrcPidController.PidInput
         driveBase.stop();
         battery.setEnabled(false);
     }   //robotStopMode
-
-    public double getPressure()
-    {
-        return 50.0*pressureSensor.getVoltage() - 25.0;
-    }   //getPressure
-
-    public double getUltrasonicDistance()
-    {
-        return ultrasonicSensor.getVoltage()/RobotInfo.SONAR_MILLIVOLTS_PER_INCH;
-    }   //getUltrasonicDistance
 
     public void setVisionEnabled(boolean enabled)
     {
@@ -487,27 +406,11 @@ public class Robot extends FrcRobotBase implements TrcPidController.PidInput
             gripVision.setEnabled(enabled);
             tracer.traceInfo("Vision", "Grip Vision is %s!", enabled? "enabled": "disabled");
         }
-        else if (faceDetector != null)
-        {
-            faceDetector.setVideoOutEnabled(enabled);
-            faceDetector.setEnabled(enabled);
-            tracer.traceInfo("Vision", "Face Detector is %s!", enabled? "enabled": "disabled");
-        }
-        else
-        {
-            ringLightsPower.set(enabled? Value.kOn: Value.kOff);
 
-            if (frontPixy != null)
-            {
-                frontPixy.setEnabled(enabled);
-                tracer.traceInfo("Vision", "Front pixy is %s!", enabled? "enabled": "disabled");
-            }
-
-            if (rearPixy != null)
-            {
-                rearPixy.setEnabled(enabled);
-                tracer.traceInfo("Vision", "Rear pixy is %s!", enabled? "enabled": "disabled");
-            }
+        if (pixy != null)
+        {
+            pixy.setEnabled(enabled);
+            tracer.traceInfo("Vision", "Pixy is %s!", enabled? "enabled": "disabled");
         }
     }   //setVisionEnabled
 
@@ -561,52 +464,19 @@ public class Robot extends FrcRobotBase implements TrcPidController.PidInput
                 }
             }
 
-            if (DEBUG_FACE_DETECTION)
-            {
-                if (faceDetector != null && faceDetector.isEnabled())
-                {
-                    Rect[] faceRects = faceDetector.getFaceRects();
-                    if (faceRects != null)
-                    {
-                        for (int i = 0; i < faceRects.length; i++)
-                        {
-                            dashboard.displayPrintf(8 + i, "x=%d, y=%d, width=%d, height=%d",
-                                faceRects[i].x, faceRects[i].y, faceRects[i].width, faceRects[i].height);
-                            tracer.traceInfo("FaceRect", "%02d: x=%d, y=%d, width=%d, height=%d",
-                                i, faceRects[i].x, faceRects[i].y, faceRects[i].width, faceRects[i].height);
-                        }
-                    }
-                }
-            }
-
             if (DEBUG_WINCH)
             {
                 dashboard.displayPrintf(8, "Winch: power=%.1f, position=%.1f, touch=%s/%s",
                     winch.getPower(), winch.getPosition(),
                     Boolean.toString(winch.isUpperLimitSwitchActive()),
                     Boolean.toString(winch.isLowerLimitSwitchActive()));
-                double tilt = winch.getRobotTilt();
-                double zGForce = winch.getZValue();
-                dashboard.displayPrintf(9, "Winch: current=%.1f/%.1f (%.1f)",
-                    winch.getMasterCurrent(), winch.getSlaveCurrent(), winch.getMaxCurrent());
-                dashboard.displayPrintf(10, "Winch: OffGround=%s", Boolean.toString(winch.isOffGround()));
-                dashboard.displayPrintf(11, "Winch: MotorSlowed=%s", Boolean.toString(winch.isMotorSlowed()));
-                dashboard.displayPrintf(12, "Winch: TouchPlate=%s", Boolean.toString(winch.touchingPlate()));
-                dashboard.displayPrintf(13, "Winch: tilt=%.1f, Z=%.1f", tilt, zGForce);
-                HalDashboard.putNumber("Tilt", tilt);
-            }
-
-            if (DEBUG_SHOOTER)
-            {
-                dashboard.displayPrintf(8, "Shooter: power=%.3f, speed=%.1f/%.1f, current=%.3f",
-                    shooter.getPower(), shooter.getSpeed(), shooter.getSetPoint(), shooter.getCurrent());
             }
 
             if (DEBUG_PIXY)
             {
-                if (frontPixy != null && frontPixy.isEnabled())
+                if (pixy != null && pixy.isEnabled())
                 {
-                    PixyVision.TargetInfo targetInfo = frontPixy.getTargetInfo();
+                    PixyVision.TargetInfo targetInfo = pixy.getTargetInfo();
                     if (targetInfo == null)
                     {
                         dashboard.displayPrintf(14, "Pixy: Target not found!");
@@ -643,44 +513,34 @@ public class Robot extends FrcRobotBase implements TrcPidController.PidInput
     }   //traceStateInfo
 
     //
-    // Implements TrcPidController.PidInput.
+    // Getters for sensor values.
     //
-    @Override
-    public double getInput(TrcPidController pidCtrl)
-    {
-        double value = 0.0;
 
-        if (pidCtrl == encoderXPidCtrl)
+    public double getPressure()
+    {
+        return 50.0*pressureSensor.getVoltage() - 25.0;
+    }   //getPressure
+
+    public double getUltrasonicDistance()
+    {
+        double value = ultrasonicSensor.getVoltage()/RobotInfo.SONAR_MILLIVOLTS_PER_INCH;
+
+        if (value == 0.0)
         {
-            value = driveBase.getXPosition();
+            value = lastUltrasonicDistance;
         }
-        else if (pidCtrl == encoderYPidCtrl)
+        else
         {
-            value = driveBase.getYPosition();
-        }
-        else if (pidCtrl == gyroTurnPidCtrl)
-        {
-            value = driveBase.getHeading();
-        }
-        else if (pidCtrl == sonarDrivePidCtrl)
-        {
-            value = getUltrasonicDistance();
-            if (value == 0.0)
-            {
-                value = lastUltrasonicDistance;
-            }
-            else
-            {
-                lastUltrasonicDistance = value;
-            }
-        }
-        else if (pidCtrl == visionTurnPidCtrl)
-        {
-            TargetInfo targetInfo = frontPixy.getTargetInfo();
-            value = targetInfo != null? targetInfo.angle: 0.0;
+            lastUltrasonicDistance = value;
         }
 
         return value;
-    }   //getInput
+    }   //getUltrasonicDistance
+
+    public double getPixyTargetAngle()
+    {
+        TargetInfo targetInfo = pixy.getTargetInfo();
+        return targetInfo != null? targetInfo.angle: 0.0;
+    }
 
 }   //class Robot

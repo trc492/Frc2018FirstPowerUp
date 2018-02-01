@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017 Titan Robotics Club (http://www.titanrobotics.com)
+ * Copyright (c) 2018 Titan Robotics Club (http://www.titanrobotics.com)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -62,6 +62,7 @@ public class GripVision extends FrcVisionTarget
 
     public Rect getTargetRect()
     {
+        //CodeReview: this is last year's algorithm, needs updating... Or do we need it?
         Rect targetRect = null;
         Rect[] objectRects = getObjectRects();
 

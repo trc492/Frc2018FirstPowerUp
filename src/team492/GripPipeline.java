@@ -38,6 +38,7 @@ import org.opencv.imgproc.*;
  */
 public class GripPipeline
 {
+    // CodeReview: If we use Grip, we need to generate new pipeline code for this year.
     // Outputs
     private Mat hsvThresholdOutput = new Mat();
     private Mat cvErodeOutput = new Mat();
