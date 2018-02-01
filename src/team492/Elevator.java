@@ -44,6 +44,9 @@ public class Elevator
         //CodeReview: where do you initialize elevatorLowerLimitSwitch? There may also be an upperLimitSwitch.
         // We are currently using soft limit switch, no need.
         elevatorMotor = new FrcCANTalon("elevatorMotor", RobotInfo.ELEVATOR_MOTOR_ID); // the name and the device number
+        elevatorMotor.setSoftLimitEnabled(true, true);
+        elevatorMotor.setSoftLowerLimit(RobotInfo.ELEVATOR_MIN_HEIGHT);
+        elevatorMotor.setSoftLowerLimit(RobotInfo.ELEVATOR_MAX_HEIGHT);
         elevatorPidCtrl = new TrcPidController(
             "elevatorPidController",
             new TrcPidController.PidCoefficients(RobotInfo.ELEVATOR_KP, RobotInfo.ELEVATOR_KI, RobotInfo.ELEVATOR_KD),
