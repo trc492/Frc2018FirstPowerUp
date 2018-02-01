@@ -42,7 +42,7 @@ public class Elevator
     public Elevator()
     {
         //CodeReview: where do you initialize elevatorLowerLimitSwitch? There may also be an upperLimitSwitch.
-        // We are currently using soft limit switch, no need.
+    	// Still needs lowerLimitSwitch
         elevatorMotor = new FrcCANTalon("elevatorMotor", RobotInfo.ELEVATOR_MOTOR_ID); // the name and the device number
         elevatorMotor.setSoftLimitEnabled(true, true);
         elevatorMotor.setSoftLowerLimit(RobotInfo.ELEVATOR_MIN_HEIGHT);
