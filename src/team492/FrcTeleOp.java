@@ -167,7 +167,8 @@ public class FrcTeleOp implements TrcRobot.RobotMode
                 waltzTurnOn = false;
             }
         }
-        robot.autoAssist.cubePickupPeriodic(elapsedTime);
+        robot.cmdAutoCubePickup.cmdPeriodic(elapsedTime);
+        robot.cmdPickupCube.cmdPeriodic(elapsedTime);
     }   // runContinuous
 
     //

@@ -34,6 +34,8 @@ import edu.wpi.first.wpilibj.AnalogGyro;
 import edu.wpi.first.wpilibj.AnalogInput;
 import edu.wpi.first.wpilibj.CameraServer;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.wpilibj.DriverStation.MatchType;
 import edu.wpi.first.wpilibj.I2C;
 import edu.wpi.first.wpilibj.Relay;
 import edu.wpi.first.wpilibj.SPI;
@@ -42,7 +44,6 @@ import edu.wpi.first.wpilibj.Relay.Direction;
 import edu.wpi.first.wpilibj.Relay.Value;
 import frclib.FrcAHRSGyro;
 import frclib.FrcCANTalon;
-import frclib.FrcChoiceMenu;
 import frclib.FrcEmic2TextToSpeech;
 import frclib.FrcGyro;
 import frclib.FrcI2cLEDPanel;
@@ -88,7 +89,6 @@ public class Robot extends FrcRobotBase
     private static final boolean DEBUG_PIXY = true;
     private static final double DASHBOARD_UPDATE_INTERVAL = 0.1;
 
-    // CodeReview: get rid of Match type because we can get it from FMS now.
     // FMS provided the following info:
     //  - alliance
     //  - location
@@ -96,21 +96,6 @@ public class Robot extends FrcRobotBase
     //  - match number
     //  - event name
     //  - replay number???
-    public static enum MatchType
-    {
-        Practice,
-        Qualification,
-        QuarterFinal,
-        SemiFinal,
-        Final
-    }   //enum MatchType
-
-    // CodeReview: get rid of Alliance type because we can get it from FMS.
-    public static enum Alliance
-    {
-        RED_ALLIANCE,
-        BLUE_ALLIANCE
-    }   //enum Alliance
 
     public DriverStation ds = DriverStation.getInstance();
     public HalDashboard dashboard = HalDashboard.getInstance();
@@ -169,14 +154,8 @@ public class Robot extends FrcRobotBase
     public CubePickup cubePickup;
     public Winch winch;
     public Elevator elevator;
-    public AutoAssist autoAssist;
-
-    //
-    // Menus.
-    //
-    // CodeReview: get rid of Match type, alliance, match number.
-    public FrcChoiceMenu<MatchType> matchTypeMenu;
-    public FrcChoiceMenu<Alliance> allianceMenu;
+    public CmdAutoCubePickup cmdAutoCubePickup;
+    public CmdPickupCube cmdPickupCube;
 
     public MatchType matchType;
     public int matchNumber;
@@ -375,26 +354,8 @@ public class Robot extends FrcRobotBase
         cubePickup = new CubePickup();
         winch = new Winch();
         elevator = new Elevator();
-        autoAssist = new AutoAssist(this);
-
-        //
-        // Create Global Menus (can be used in all modes).
-        //
-        // CodeReview: get rid of Match type, alliance, match number, alliance, 
-        matchTypeMenu = new FrcChoiceMenu<>("Match Type");
-        allianceMenu = new FrcChoiceMenu<>("Alliance");
-
-        //
-        // Populate Global Menus.
-        //
-        matchTypeMenu.addChoice("Practice", MatchType.Practice, true);
-        matchTypeMenu.addChoice("Qualification", MatchType.Qualification, false);
-        matchTypeMenu.addChoice("Quarter-final", MatchType.QuarterFinal, false);
-        matchTypeMenu.addChoice("Semi-final", MatchType.SemiFinal, false);
-        matchTypeMenu.addChoice("Final", MatchType.Final, false);
-
-        allianceMenu.addChoice("Red", Alliance.RED_ALLIANCE, true);
-        allianceMenu.addChoice("Blue", Alliance.BLUE_ALLIANCE, false);
+        cmdAutoCubePickup = new CmdAutoCubePickup(this);
+        cmdPickupCube = new CmdPickupCube(this);
 
         //
         // Robot Modes.
@@ -405,13 +366,20 @@ public class Robot extends FrcRobotBase
     public void robotStartMode()
     {
         battery.setEnabled(true);
-        //
-        // Retrieve Global Choices.
-        //
-        // CodeReview: get rid of Match type, match number alliance. Get them from FMS.
-        matchType = matchTypeMenu.getCurrentChoiceObject();
-        matchNumber = (int)HalDashboard.getNumber("MatchNumber", 0.0);
-        alliance = allianceMenu.getCurrentChoiceObject();
+        tracer.traceInfo("Robot Start Mode", "FMS Connected: %b", ds.isFMSAttached());
+        tracer.traceInfo("Robot Start Mode", "Switch/Scale/Switch randomization: ", ds.getGameSpecificMessage());
+        if(ds.isFMSAttached())
+        {
+        	matchType = ds.getMatchType();
+        	matchNumber = ds.getMatchNumber();
+        	alliance = ds.getAlliance();
+        }
+        else
+        {
+        	matchType = MatchType.None;
+        	matchNumber = 0;
+        	alliance = ds.getAlliance();
+        }
         driveTime = HalDashboard.getNumber("DriveTime", 5.0);
         drivePower = HalDashboard.getNumber("DrivePower", 0.2);
         driveDistance = HalDashboard.getNumber("DriveDistance", 6.0);
@@ -454,7 +422,7 @@ public class Robot extends FrcRobotBase
 
         if (currTime >= nextUpdateTime)
         {
-            nextUpdateTime = currTime + DASHBOARD_UPDATE_INTERVAL;
+        	nextUpdateTime = currTime + DASHBOARD_UPDATE_INTERVAL;
 
             if (DEBUG_DRIVE_BASE)
             {

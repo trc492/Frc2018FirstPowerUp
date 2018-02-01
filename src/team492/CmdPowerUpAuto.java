@@ -43,7 +43,6 @@ class CmdPowerUpAuto implements TrcRobot.RobotCommand
         TURN_ROBOT,
         DEPOSIT_CUBE,
         STRAFE_TO_PLATFORM_ZONE,
-        PICK_UP_SECOND_CUBE,
         DONE
     } // enum State
 
@@ -102,7 +101,11 @@ class CmdPowerUpAuto implements TrcRobot.RobotCommand
         //
         State state = sm.getState();
         robot.dashboard.displayPrintf(1, "State: %s", state != null ? state.toString() : "Disabled");
-
+        
+        
+        robot.cmdAutoCubePickup.cmdPeriodic(elapsedTime);
+        robot.cmdPickupCube.cmdPeriodic(elapsedTime);
+        
         if (sm.isReady())
         {
             state = sm.getState();
@@ -144,9 +147,9 @@ class CmdPowerUpAuto implements TrcRobot.RobotCommand
                     break;
 
                 case MOVE_SIDEWAYS:
-                    xDistance = 0;
+                    xDistance = 12;
                     yDistance = 0;
-
+                	//TODO: Change to actual x distance
                     robot.encoderYPidCtrl.setOutputRange(-1.0, 1.0);
                     robot.pidDrive.setTarget(xDistance, yDistance, robot.targetHeading, false, event);
                     sm.waitForSingleEvent(event, State.DONE);
@@ -154,32 +157,44 @@ class CmdPowerUpAuto implements TrcRobot.RobotCommand
 
                 case DRIVE_TO_TARGET:
                     xDistance = 0.0;
+                    //TODO: Check numbers for yDistance expression
                     if (targetType == 0)
                     {
-                        // When the target is the switch
+                    	// When the target is the switch
+                    	yDistance = 168 - forwardDistance;
+                    	robot.pidDrive.setTarget(xDistance, yDistance, robot.targetHeading, false, event);
+                    	
                     }
                     else if (targetType == 1)
                     {
                         // if the target is the scale
+                    	yDistance = 299.65 - forwardDistance;
+                    	robot.pidDrive.setTarget(xDistance, yDistance, robot.targetHeading, false, event);
                     }
 
-                    robot.encoderYPidCtrl.setOutputRange(-1.0, 1.0);
-                    robot.pidDrive.setTarget(xDistance, forwardDistance, robot.targetHeading, false, event);
-                    sm.waitForSingleEvent(event, State.DEPOSIT_CUBE);
+                    sm.waitForSingleEvent(event, State.TURN_ROBOT);
                     break;
 
                 case TURN_ROBOT:
+                	xDistance = 0;
+                    yDistance = 0;
+                    robot.targetHeading = 90;
+                	robot.pidDrive.setTarget(xDistance, yDistance, robot.targetHeading, false, event);
+                	sm.waitForSingleEvent(event, State.DEPOSIT_CUBE);
                     break;
 
                 case DEPOSIT_CUBE:
                     break;
 
                 case STRAFE_TO_PLATFORM_ZONE:
+                	xDistance = 30;
+                    yDistance = 0;
+                	//TODO: Get actual xDistance
+                    robot.encoderYPidCtrl.setOutputRange(-1.0, 1.0);
+                    robot.pidDrive.setTarget(xDistance, yDistance, robot.targetHeading, false, event);
+                    sm.waitForSingleEvent(event, State.DONE);
                     break;
-
-                case PICK_UP_SECOND_CUBE:
-                    break;
-
+                  
                 case DONE:
                 default:
                     //
