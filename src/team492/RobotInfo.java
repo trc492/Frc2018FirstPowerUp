@@ -219,6 +219,6 @@ public class RobotInfo
     public static final double ELEVATOR_CAL_POWER              = 0.3;               // this too
     public static final double ELEVATOR_SENSOR_ZERO_OFFSET    = -0.529;            // this too
     public static final double ELEVATOR_SENSOR_SCALE           = 11.18586208869386; // and this
-    public static final double ELEVATOR_STARTING_HEIGHT       = 55.0;
+    public static final double ELEVATOR_SCALE_MIDDLE_HEIGHT       = 55.0;
     
 }   // class RobotInfo
