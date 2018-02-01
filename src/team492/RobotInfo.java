@@ -207,13 +207,13 @@ public class RobotInfo
     // Elevator subsystem.
     //
     public static final int ELEVATOR_MOTOR_ID                   = 1;    
-	public static final int ELEVATOR_LOWER_LIMIT_ID             = 2;
+    public static final int ELEVATOR_LOWER_LIMIT_ID             = 2;
     
     public static final double ELEVATOR_INCHES_PER_COUNT        = 0.002822426329889;  // we will need to change this, later during calibration
     public static final double ELEVATOR_KP                      = 0.3;                // this too
     public static final double ELEVATOR_KI                      = 0.0;                // hopefully not this
     public static final double ELEVATOR_KD                      = 0.0;                // this too
-    public static final double ELEVATOR_SCALE_MIDDLE_HEIGHT       = 55.0;
+    public static final double ELEVATOR_SCALE_MIDDLE_HEIGHT     = 55.0;
     public static final double ELEVATOR_TOLERANCE               = 0.5;				  // this too
     public static final double ELEVATOR_MIN_HEIGHT              = 0.0;
     public static final double ELEVATOR_MAX_HEIGHT              = 85.0;              
