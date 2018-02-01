@@ -74,20 +74,24 @@ public class CmdAutoCubePickup implements TrcRobot.RobotCommand
         boolean done = !sm.isEnabled();
 
         if (done)
-            return true;
+        {
+        	return true;
+        }
 
         State state = sm.getState();
         robot.dashboard.displayPrintf(1, "State: %s", state != null ? state.toString() : "Disabled");
-
+        
         if (sm.isReady())
         {
             switch (state)
             {
                 case START:
+                	robot.cubePickup.deployPickup();
                     robot.cubePickup.openClaw(); // TODO: Talk to Chris about
                                                  // singular method to init Claw
                                                  // subystem
-                    double pos = 6.0; // 6.0 inches. According to Victor, pos
+                    robot.cmdPickupCube.start();
+                    double pos = RobotInfo.ELEVATOR_FLOOR_PICKUP_HEIGHT; // 6.0 inches. According to Victor, pos
                                       // parameter is in inches
                     //CodeReview: you may want to put the 6.0 inches in RobotInfo so it can be tuned.
                     //Besides, it will give it a nice name instead of a magic number.
@@ -100,8 +104,7 @@ public class CmdAutoCubePickup implements TrcRobot.RobotCommand
 
                 case DRIVE:
                     TargetInfo target = getCubeCoords();
-                    //CodeReview: turn target is a double not a "d". Also, don't set "hold" to true.
-                    robot.visionPidDrive.setTarget(target.xDistance, target.yDistance, 0d, true, event);
+                    robot.visionPidDrive.setTarget(target.xDistance*1.1, target.yDistance*1.1, 0.0, false, event); // Scale by 110% to overshoot
                     //CodeReview: you may want to combine visionPidDrive.setTarget with calling Chris to grab the cube.
                     //After all, you are moving and grabbing at the same time.
                     // robot.cubePickup.setCubeTriggerEnabled(true)

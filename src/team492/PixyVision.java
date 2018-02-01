@@ -76,9 +76,9 @@ public class PixyVision
 
     private static final double PIXY_DISTANCE_SCALE = 2300.0;   //DistanceInInches*targetWidthdInPixels
 //    private static final double TAPE_WIDTH_INCHES = 2.0;
-    private static final double TAPE_HEIGHT_INCHES = 5.0;
-    private static final double TARGET_WIDTH_INCHES = 10.0;
-    private static final double TARGET_HEIGHT_INCHES = TAPE_HEIGHT_INCHES;
+    private static final double POWER_CUBE_HEIGHT_INCHES = 11.0; // 11 in tall
+    private static final double TARGET_WIDTH_INCHES = 13.0 * Math.sqrt(2); // 13x13 square, diagonal is 13*sqrt(2) inches
+    private static final double TARGET_HEIGHT_INCHES = POWER_CUBE_HEIGHT_INCHES;
 
     private FrcPixyCam pixyCamera;
     private Robot robot;

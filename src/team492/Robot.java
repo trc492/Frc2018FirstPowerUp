@@ -155,6 +155,7 @@ public class Robot extends FrcRobotBase
     public Winch winch;
     public Elevator elevator;
     public CmdAutoCubePickup cmdAutoCubePickup;
+    public CmdPickupCube cmdPickupCube;
 
     public MatchType matchType;
     public int matchNumber;
@@ -354,6 +355,7 @@ public class Robot extends FrcRobotBase
         winch = new Winch();
         elevator = new Elevator();
         cmdAutoCubePickup = new CmdAutoCubePickup(this);
+        cmdPickupCube = new CmdPickupCube(this);
 
         //
         // Robot Modes.
