@@ -86,30 +86,23 @@ public class CmdAutoCubePickup implements TrcRobot.RobotCommand
             switch (state)
             {
                 case START:
+                	// Deploy and open cube pickup
                 	robot.cubePickup.deployPickup();
-                    robot.cubePickup.openClaw(); // TODO: Talk to Chris about
-                                                 // singular method to init Claw
-                                                 // subystem
-                    robot.cmdPickupCube.start();
-                    double pos = RobotInfo.ELEVATOR_FLOOR_PICKUP_HEIGHT; // 6.0 inches. According to Victor, pos
-                                      // parameter is in inches
-                    //CodeReview: you may want to put the 6.0 inches in RobotInfo so it can be tuned.
-                    //Besides, it will give it a nice name instead of a magic number.
-                    robot.elevator.setPosition(pos, event, 5.0); // Need to tune
-                                                                 // timeout
-                                                                 // section of
-                                                                 // this
+                    robot.cubePickup.openClaw();
+                    
+                    // 6.0 inches above the ground. pos is in inches
+                    double pos = RobotInfo.ELEVATOR_FLOOR_PICKUP_HEIGHT;
+                    robot.elevator.setPosition(pos, event, 0.0);
+                    
                     sm.waitForSingleEvent(event, State.DRIVE);
                     break;
 
                 case DRIVE:
                     TargetInfo target = getCubeCoords();
                     robot.visionPidDrive.setTarget(target.xDistance*1.1, target.yDistance*1.1, 0.0, false, event); // Scale by 110% to overshoot
-                    //CodeReview: you may want to combine visionPidDrive.setTarget with calling Chris to grab the cube.
-                    //After all, you are moving and grabbing at the same time.
-                    // robot.cubePickup.setCubeTriggerEnabled(true)
-                    // TODO: Talk to Chris to provide TrcDigitalTrigger to
-                    // monitor proximity sensor
+                    
+                    robot.cubePickup.grabCube(0.5, event);
+                    
                     sm.waitForSingleEvent(event, State.PICKUP);
                     break;
 
