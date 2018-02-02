@@ -28,6 +28,7 @@ import frclib.FrcPneumatic;
 import frclib.FrcCANTalon;
 import frclib.FrcDigitalInput;
 import trclib.TrcDigitalTrigger;
+import trclib.TrcEvent;
 
 public class CubePickup
 {
@@ -35,6 +36,7 @@ public class CubePickup
     private FrcPneumatic claw, deployer;
     private FrcDigitalInput cubeSensor;
     private TrcDigitalTrigger cubeTrigger;
+    private TrcEvent cubeEvent;
 
     /**
      * Initialize the CubePickup class.
@@ -151,6 +153,15 @@ public class CubePickup
     {
         controlMotor.setPower(power);
     }
+    
+    /**
+     * spins the motors to pickup a cube and signals an event when done
+     */
+    public void grabCube(double power, TrcEvent event) {
+    	controlMotor.setPower(power);
+    	cubeTrigger.setEnabled(true);
+    	cubeEvent = event;
+    }
 
     /**
      * spin the motors to push out a cube
@@ -171,6 +182,9 @@ public class CubePickup
     
     public void triggerEvent(boolean active) {
         stopPickup();
+        if(cubeEvent != null) {
+        	cubeEvent.set(true);
+        }
+        cubeTrigger.setEnabled(false);
     } // DigitalTriggerEvent
-
 }
