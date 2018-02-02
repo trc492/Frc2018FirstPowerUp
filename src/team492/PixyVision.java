@@ -42,7 +42,6 @@ public class PixyVision
     private static final double PERCENT_TOLERANCE = 0.3;    // 30% tolerance
     private static final double PERCENT_TOLERANCE_LOWER = 1.0 - PERCENT_TOLERANCE;
     private static final double PERCENT_TOLERANCE_UPPER = 1.0 + PERCENT_TOLERANCE;
-    private static final double PERCENT_TOLERANCE_CENTER_Y = 0.9;
 
     public class TargetInfo
     {
@@ -221,40 +220,28 @@ public class PixyVision
             if (FILTER_ENABLED)
             {
                 //
-                // For all remaining objects, pair them in all combinations and find the first pair that matches the
-                // expected size and aspect ratio.
+                // Filter objects out if they aren't close enough to the expected dimensions
+            	// If there's more than a PERCENT_TOLERANCE error, then remove it from the arraylist
                 //
                 if (objectList.size() > 1)
                 {
-                    for (int i = 0; targetRect == null && i < objectList.size() - 1; i++)
+                    for (int i = 0; i < objectList.size(); i++)
                     {
                         Rect rect = objectList.get(i);
                         
                         double widthRatio = rect.width/expectedWidth;
                         double heightRatio = rect.height/expectedHeight;
                         
-                        if (clamp(widthRatio, PERCENT_TOLERANCE_LOWER, PERCENT_TOLERANCE_UPPER) == widthRatio && 
-                        		clamp(heightRatio, PERCENT_TOLERANCE_LOWER, PERCENT_TOLERANCE_UPPER) == heightRatio)
+                        if (clamp(widthRatio, PERCENT_TOLERANCE_LOWER, PERCENT_TOLERANCE_UPPER) != widthRatio || 
+                        		clamp(heightRatio, PERCENT_TOLERANCE_LOWER, PERCENT_TOLERANCE_UPPER) != heightRatio)
                         {
-                        	targetRect = rect;
-                        	
-                        	if (debugEnabled)
-                        	{
-                        		robot.tracer.traceInfo(
-                        				moduleName, "***TargetRect***: [%d] x=%d, y=%d, w=%d, h=%d",
-                        				i, targetRect.x, targetRect.y, targetRect.width, targetRect.height);
-                        	}
+                        	objectList.remove(i);
                         }
                     }
                 }
             }
-            
-            if(objectList.size() == 1)
-            {
-            	targetRect = objectList.get(0);
-            }
 
-            if (targetRect == null && objectList.size() > 1)
+            if (targetRect == null && objectList.size() >= 1)
             {
             	Rect maxRect = objectList.get(0);
             	for(Rect rect:objectList)
