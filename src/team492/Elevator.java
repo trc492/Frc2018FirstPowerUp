@@ -23,37 +23,30 @@
 package team492;
 
 import trclib.TrcEvent;
-import trclib.TrcMotor;
 import trclib.TrcPidActuator;
 import trclib.TrcPidController;
 import frclib.FrcCANTalon;
-import frclib.FrcDigitalInput;
-import trclib.TrcDigitalInput;
 
 public class Elevator
 {
     public TrcPidActuator elevator;
-    public TrcMotor elevatorMotor;
+    public FrcCANTalon elevatorMotor;
     public TrcPidController elevatorPidCtrl;
-    public TrcDigitalInput elevatorLowerLimitSwitch;
-//S    private TrcAnalogInput dogLeash = null; // this needs to be decided later.
-
+    
     private double elevatorPower = 0.0;
 
     public Elevator()
     {
-    	// Still (maybe) needed: UpperLimitSwitch
-    	elevatorLowerLimitSwitch = new FrcDigitalInput("elevatorLowerLimitSwitch", RobotInfo.ELEVATOR_LOWER_LIMIT_ID);
         elevatorMotor = new FrcCANTalon("elevatorMotor", RobotInfo.ELEVATOR_MOTOR_ID); // the name and the device number
-        elevatorMotor.setSoftLimitEnabled(true, true);
-        elevatorMotor.setSoftLowerLimit(RobotInfo.ELEVATOR_MIN_HEIGHT);
-        elevatorMotor.setSoftLowerLimit(RobotInfo.ELEVATOR_MAX_HEIGHT);
+        // elevatorMotor.setSoftLimitEnabled(true, true);
+        // elevatorMotor.setSoftLowerLimit(RobotInfo.ELEVATOR_MIN_HEIGHT);
+        // elevatorMotor.setSoftLowerLimit(RobotInfo.ELEVATOR_MAX_HEIGHT);
         elevatorPidCtrl = new TrcPidController(
             "elevatorPidController",
             new TrcPidController.PidCoefficients(RobotInfo.ELEVATOR_KP, RobotInfo.ELEVATOR_KI, RobotInfo.ELEVATOR_KD),
             RobotInfo.ELEVATOR_TOLERANCE, elevator::getPosition);
         elevator = new TrcPidActuator(
-            "elevator", elevatorMotor, elevatorLowerLimitSwitch, elevatorPidCtrl,
+            "elevator", elevatorMotor, null, elevatorPidCtrl,
             RobotInfo.ELEVATOR_MIN_HEIGHT, RobotInfo.ELEVATOR_MAX_HEIGHT);
     }
 
