@@ -104,7 +104,6 @@ class CmdPowerUpAuto implements TrcRobot.RobotCommand
         
         
         robot.cmdAutoCubePickup.cmdPeriodic(elapsedTime);
-        robot.cmdPickupCube.cmdPeriodic(elapsedTime);
         
         if (sm.isReady())
         {
