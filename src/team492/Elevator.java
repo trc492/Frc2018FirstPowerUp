@@ -26,6 +26,7 @@ import trclib.TrcEvent;
 import trclib.TrcPidActuator;
 import trclib.TrcPidController;
 import frclib.FrcCANTalon;
+import frclib.FrcCANTalonLimitSwitch;
 
 public class Elevator
 {
@@ -46,7 +47,7 @@ public class Elevator
             new TrcPidController.PidCoefficients(RobotInfo.ELEVATOR_KP, RobotInfo.ELEVATOR_KI, RobotInfo.ELEVATOR_KD),
             RobotInfo.ELEVATOR_TOLERANCE, elevator::getPosition);
         elevator = new TrcPidActuator(
-            "elevator", elevatorMotor, null, elevatorPidCtrl,
+            "elevator", elevatorMotor, new FrcCANTalonLimitSwitch("elevatorLowerLimit", elevatorMotor, false), elevatorPidCtrl,
             RobotInfo.ELEVATOR_MIN_HEIGHT, RobotInfo.ELEVATOR_MAX_HEIGHT);
     }
 
