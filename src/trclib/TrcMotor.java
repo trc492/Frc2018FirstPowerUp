@@ -31,7 +31,7 @@ package trclib;
  * If the motor controller hardware support these features, the platform dependent class should override these methods
  * to provide the support in hardware.
  */
-public abstract class TrcMotor implements TrcMotorController, TrcTaskMgr.Task, TrcDigitalTrigger.TriggerHandler
+public abstract class TrcMotor implements TrcMotorController, TrcTaskMgr.Task
 {
     private static final String moduleName = "TrcMotor";
     private static final boolean debugEnabled = false;
@@ -89,7 +89,7 @@ public abstract class TrcMotor implements TrcMotorController, TrcTaskMgr.Task, T
             dbgTrace.traceExit(funcName, TrcDbgTrace.TraceLevel.API);
         }
 
-        digitalTrigger = new TrcDigitalTrigger(instanceName, digitalInput, this);
+        digitalTrigger = new TrcDigitalTrigger(instanceName, digitalInput, this::triggerEvent);
         digitalTrigger.setEnabled(true);
     }   //resetPositionOnDigitalInput
 
@@ -240,14 +240,13 @@ public abstract class TrcMotor implements TrcMotorController, TrcTaskMgr.Task, T
      *
      * @param active specifies true if the digital device state is active, false otherwise.
      */
-    @Override
     public void triggerEvent(boolean active)
     {
         final String funcName = "triggerEvent";
 
         if (debugEnabled)
         {
-            dbgTrace.traceEnter(funcName, TrcDbgTrace.TraceLevel.API,
+            dbgTrace.traceEnter(funcName, TrcDbgTrace.TraceLevel.CALLBK,
                     "trigger=%s,active=%s", digitalTrigger, Boolean.toString(active));
         }
 
@@ -255,7 +254,7 @@ public abstract class TrcMotor implements TrcMotorController, TrcTaskMgr.Task, T
 
         if (debugEnabled)
         {
-            dbgTrace.traceExit(funcName, TrcDbgTrace.TraceLevel.API);
+            dbgTrace.traceExit(funcName, TrcDbgTrace.TraceLevel.CALLBK);
         }
     }   //triggerEvent
 
