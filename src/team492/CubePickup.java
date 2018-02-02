@@ -29,7 +29,7 @@ import frclib.FrcCANTalon;
 import frclib.FrcDigitalInput;
 import trclib.TrcDigitalTrigger;
 
-public class CubePickup implements TrcDigitalTrigger.TriggerHandler
+public class CubePickup
 {
     private FrcCANTalon controlMotor, slaveMotor;
     private FrcPneumatic claw, deployer;
@@ -53,7 +53,7 @@ public class CubePickup implements TrcDigitalTrigger.TriggerHandler
             "CubePickupDeploy", RobotInfo.CANID_PCM1,
             RobotInfo.SOL_CUBEPICKUP_ARM_EXTEND, RobotInfo.SOL_CUBEPICKUP_ARM_RETRACT);
         cubeSensor = new FrcDigitalInput("CubeSensor", RobotInfo.DIN_CUBE_SENSOR);
-        cubeTrigger = new TrcDigitalTrigger("CubeTrigger", cubeSensor, this);
+        cubeTrigger = new TrcDigitalTrigger("CubeTrigger", cubeSensor, this::triggerEvent);
     }
 
     /**
@@ -169,16 +169,8 @@ public class CubePickup implements TrcDigitalTrigger.TriggerHandler
         controlMotor.setPower(0.0);
     }
     
-    //
-    // Implements 
-    //
-    
-    @Override
-    public void triggerEvent(TrcDigitalTrigger digitalTrigger, boolean active) {
-    	if (digitalTrigger == cubeTrigger)
-        {
-            stopPickup();
-        }
+    public void triggerEvent(boolean active) {
+        stopPickup();
     } // DigitalTriggerEvent
 
 }

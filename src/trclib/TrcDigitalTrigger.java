@@ -43,10 +43,9 @@ public class TrcDigitalTrigger implements TrcTaskMgr.Task
         /**
          * This method is called when the digital input device has changed state.
          *
-         * @param digitalTrigger specifies this DigitalTrigger instance as the source of the event.
          * @param active specifies true if the digital device state is active, false otherwise.
          */
-        void triggerEvent(TrcDigitalTrigger digitalTrigger, boolean active);
+        void triggerEvent(boolean active);
 
     }   //interface TriggerHandler
 
@@ -144,7 +143,7 @@ public class TrcDigitalTrigger implements TrcTaskMgr.Task
         {
             if (eventHandler != null)
             {
-                eventHandler.triggerEvent(this, currState);
+                eventHandler.triggerEvent(currState);
             }
             prevState = currState;
 

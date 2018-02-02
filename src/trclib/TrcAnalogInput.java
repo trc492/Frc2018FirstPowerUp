@@ -44,6 +44,7 @@ public abstract class TrcAnalogInput extends TrcSensor<TrcAnalogInput.DataType>
     //
     public enum DataType
     {
+        RAW_DATA,
         INPUT_DATA,
         NORMALIZED_DATA,
         INTEGRATED_DATA,

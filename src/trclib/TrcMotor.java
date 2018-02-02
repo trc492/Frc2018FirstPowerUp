@@ -238,11 +238,10 @@ public abstract class TrcMotor implements TrcMotorController, TrcTaskMgr.Task, T
     /**
      * This method is called when the digital input device has changed state.
      *
-     * @param digitalTrigger specifies this DigitalTrigger instance as the source of the event.
      * @param active specifies true if the digital device state is active, false otherwise.
      */
     @Override
-    public void triggerEvent(TrcDigitalTrigger digitalTrigger, boolean active)
+    public void triggerEvent(boolean active)
     {
         final String funcName = "triggerEvent";
 

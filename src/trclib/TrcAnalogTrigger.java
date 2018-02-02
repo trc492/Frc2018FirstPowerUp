@@ -47,11 +47,10 @@ public class TrcAnalogTrigger<D> implements TrcTaskMgr.Task
         /**
          * This method is called when a threshold has been crossed.
          *
-         * @param analogTrigger specifies the TrcAnalogTrigger object that detected the trigger.
          * @param zoneIndex specifies the zone index it is crossing into.
          * @param zoneValue specifies the actual sensor value.
          */
-        void triggerEvent(TrcAnalogTrigger<?> analogTrigger, int zoneIndex, double zoneValue);
+        void triggerEvent(int zoneIndex, double zoneValue);
 
     }   //interface TriggerHandler
 
@@ -269,7 +268,7 @@ public class TrcAnalogTrigger<D> implements TrcTaskMgr.Task
                 //
                 if (triggerHandler != null)
                 {
-                    triggerHandler.triggerEvent(this, currZone, sample);
+                    triggerHandler.triggerEvent(currZone, sample);
                 }
                 zone = currZone;
                 value = sample;
