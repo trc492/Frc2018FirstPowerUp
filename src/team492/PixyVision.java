@@ -150,12 +150,12 @@ public class PixyVision
                 detectedObjects != null? "" + detectedObjects.length: "null");
         }
         //
-        // Make sure the camera detected at least two objects.
+        // Make sure the camera detected at least one objects.
         //
-        if (detectedObjects != null && detectedObjects.length >= 2)
+        if (detectedObjects != null && detectedObjects.length >= 1)
         {
             ArrayList<Rect> objectList = new ArrayList<>();
-            double targetDistance = robot.getUltrasonicDistance() + 8.0;
+            double targetDistance = robot.getUltrasonicDistance() + RobotInfo.PIXY_CAM_OFFSET;
             //
             // Filter out objects that don't have the correct signature.
             //
@@ -221,102 +221,52 @@ public class PixyVision
             if (FILTER_ENABLED)
             {
                 //
-                // Filter out objects that don't have the right size and aspect ratio.
-                // Knowing the target distance from the ultrasonic sensor, we can calculate the expected pixel width
-                // and height of the targets.
-                //
-//                if (objectList.size() >= 2)
-//                {
-//                    double expectedObjWidth =
-//                        (PIXY_DISTANCE_SCALE/targetDistance)/(TAPE_WIDTH_INCHES/TARGET_WIDTH_INCHES);
-//                    double expectedObjHeight =
-//                        (PIXY_DISTANCE_SCALE/targetDistance)/(TAPE_HEIGHT_INCHES/TARGET_WIDTH_INCHES);
-//
-//                    if (debugEnabled)
-//                    {
-//                        robot.tracer.traceInfo(moduleName, "Expected Object: distance=%.1f, width=%.1f, height=%.1f",
-//                            targetDistance, expectedObjWidth, expectedObjHeight);
-//                    }
-//
-//                    for (int i = objectList.size() - 1; i >= 0; i--)
-//                    {
-//                        Rect r = objectList.get(i);
-//                        double widthRatio = r.width/expectedObjWidth;
-//                        double heightRatio = r.height/expectedObjHeight;
-//                        //
-//                        // If either the width or the height of the object is in the ball park (+/- 20%), let it pass.
-//                        //
-//                        if (widthRatio >= PERCENT_TOLERANCE_LOWER && widthRatio <= PERCENT_TOLERANCE_UPPER ||
-//                            heightRatio >= PERCENT_TOLERANCE_LOWER && heightRatio <= PERCENT_TOLERANCE_UPPER)
-//                        {
-//                            continue;
-//                        }
-//
-//                        objectList.remove(i);
-//
-//                        if (debugEnabled)
-//                        {
-//                            robot.tracer.traceInfo(moduleName, "Removing: x=%d, y=%d, width=%d, height=%d",
-//                                r.x, r.y, r.width, r.height);
-//                        }
-//                    }
-//                }
-                //
                 // For all remaining objects, pair them in all combinations and find the first pair that matches the
                 // expected size and aspect ratio.
                 //
-                if (objectList.size() > 2)
+                if (objectList.size() > 1)
                 {
                     for (int i = 0; targetRect == null && i < objectList.size() - 1; i++)
                     {
-                        Rect r1 = objectList.get(i);
-
-                        for (int j = i + 1; targetRect == null && j < objectList.size(); j++)
+                        Rect rect = objectList.get(i);
+                        
+                        double widthRatio = rect.width/expectedWidth;
+                        double heightRatio = rect.height/expectedHeight;
+                        
+                        if (clamp(widthRatio, PERCENT_TOLERANCE_LOWER, PERCENT_TOLERANCE_UPPER) == widthRatio && 
+                        		clamp(heightRatio, PERCENT_TOLERANCE_LOWER, PERCENT_TOLERANCE_UPPER) == heightRatio)
                         {
-                            Rect r2 = objectList.get(j);
-                            int r1CenterY = (r1.y + r1.height)/2;
-                            int r2CenterY = (r2.y + r2.height)/2;
-                            int targetX1 = Math.min(r1.x, r2.x);
-                            int targetY1 = Math.min(r1.y, r2.y);
-                            int targetX2 = Math.max(r1.x + r1.width,  r2.x + r2.width);
-                            int targetY2 = Math.max(r1.y + r1.height, r2.y + r2.height);
-                            int targetWidth = targetX2 - targetX1;
-                            int targetHeight = targetY2 - targetY1;
-                            double widthRatio = targetWidth/expectedWidth;
-                            double heightRatio = targetHeight/expectedHeight;
-                            double minCenterY = Math.min(r1CenterY, r2CenterY);
-                            double maxCenterY = Math.max(r1CenterY, r2CenterY);
-
-                            if (widthRatio >= PERCENT_TOLERANCE_LOWER && widthRatio <= PERCENT_TOLERANCE_UPPER &&
-                                heightRatio >= PERCENT_TOLERANCE_LOWER && heightRatio <= PERCENT_TOLERANCE_UPPER ||
-                                minCenterY/maxCenterY >= PERCENT_TOLERANCE_CENTER_Y)
-                            {
-                                targetRect = new Rect(targetX1, targetY1, targetWidth, targetHeight);
-
-                                if (debugEnabled)
-                                {
-                                    robot.tracer.traceInfo(
-                                        moduleName, "***TargetRect***: [%d,%d] x=%d, y=%d, w=%d, h=%d",
-                                        i, j, targetRect.x, targetRect.y, targetRect.width, targetRect.height);
-                                }
-                            }
+                        	targetRect = rect;
+                        	
+                        	if (debugEnabled)
+                        	{
+                        		robot.tracer.traceInfo(
+                        				moduleName, "***TargetRect***: [%d] x=%d, y=%d, w=%d, h=%d",
+                        				i, targetRect.x, targetRect.y, targetRect.width, targetRect.height);
+                        	}
                         }
                     }
                 }
             }
-
-            if (targetRect == null && objectList.size() >= 2)
+            
+            if(objectList.size() == 1)
             {
-                Rect r1 = objectList.get(0);
-                Rect r2 = objectList.get(1);
-                int targetX1 = Math.min(r1.x, r2.x);
-                int targetY1 = Math.min(r1.y, r2.y);
-                int targetX2 = Math.max(r1.x + r1.width,  r2.x + r2.width);
-                int targetY2 = Math.max(r1.y + r1.height, r2.y + r2.height);
-                int targetWidth = targetX2 - targetX1;
-                int targetHeight = targetY2 - targetY1;
+            	targetRect = objectList.get(0);
+            }
 
-                targetRect = new Rect(targetX1, targetY1, targetWidth, targetHeight);
+            if (targetRect == null && objectList.size() > 1)
+            {
+            	Rect maxRect = objectList.get(0);
+            	for(Rect rect:objectList)
+            	{
+            		double size = rect.width * rect.height;
+            		if(size > maxRect.width * maxRect.height)
+            		{
+            			maxRect = rect;
+            		}
+            	}
+
+                targetRect = maxRect;
 
                 if (debugEnabled)
                 {
@@ -328,6 +278,10 @@ public class PixyVision
 
         return targetRect;
     }   //getTargetRect
+    
+    private double clamp(double d, double min, double max) {
+    	return Math.min(Math.max(d, min), max);
+    }
 
     public TargetInfo getTargetInfo()
     {
