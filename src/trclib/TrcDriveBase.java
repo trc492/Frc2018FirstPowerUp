@@ -989,8 +989,8 @@ public class TrcDriveBase implements TrcTaskMgr.Task
 
         double cosA = Math.cos(Math.toRadians(gyroAngle));
         double sinA = Math.sin(Math.toRadians(gyroAngle));
-        x = x*cosA - y*sinA;
-        y = x*sinA + y*cosA;
+        double x1 = x*cosA - y*sinA;
+        double y1 = x*sinA + y*cosA;
 
         if (gyroAssistEnabled)
         {
@@ -998,10 +998,10 @@ public class TrcDriveBase implements TrcTaskMgr.Task
         }
 
         double wheelSpeeds[] = new double[4];
-        wheelSpeeds[MotorType.LEFT_FRONT.value] = x + y + rotation;
-        wheelSpeeds[MotorType.RIGHT_FRONT.value] = -x + y - rotation;
-        wheelSpeeds[MotorType.LEFT_REAR.value] = -x + y + rotation;
-        wheelSpeeds[MotorType.RIGHT_REAR.value] = x + y - rotation;
+        wheelSpeeds[MotorType.LEFT_FRONT.value] = x1 + y1 + rotation;
+        wheelSpeeds[MotorType.RIGHT_FRONT.value] = -x1 + y1 - rotation;
+        wheelSpeeds[MotorType.LEFT_REAR.value] = -x1 + y1 + rotation;
+        wheelSpeeds[MotorType.RIGHT_REAR.value] = x1 + y1 - rotation;
         normalize(wheelSpeeds);
 
         for (int i = 0; i < wheelSpeeds.length; i++)
