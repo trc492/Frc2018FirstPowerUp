@@ -43,9 +43,9 @@ public class CubePickup
      */
     public CubePickup()
     {
-        controlMotor = new FrcCANTalon("RightPickupMotor", RobotInfo.CANID_RIGHT_PICKUP);
-        slaveMotor = new FrcCANTalon("LeftPickupMotor", RobotInfo.CANID_LEFT_PICKUP);
-        slaveMotor.motor.set(ControlMode.Follower, RobotInfo.CANID_RIGHT_PICKUP);
+        controlMotor = new FrcCANTalon("LeftPickupMotor", RobotInfo.CANID_LEFT_PICKUP);
+        slaveMotor = new FrcCANTalon("RightPickupMotor", RobotInfo.CANID_RIGHT_PICKUP);
+        slaveMotor.motor.set(ControlMode.Follower, RobotInfo.CANID_LEFT_PICKUP);
         slaveMotor.motor.setInverted(true);
 
         claw = new FrcPneumatic(

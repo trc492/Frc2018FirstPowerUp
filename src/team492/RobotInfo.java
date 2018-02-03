@@ -71,8 +71,9 @@ public class RobotInfo
     public static final int CANID_RIGHTREARWHEEL                = 6;    // 40A: Blue
     public static final int CANID_WINCH_MASTER                  = 7;    // 40A: Purple
     public static final int CANID_WINCH_SLAVE                   = 8;    // 40A: Gray
-    public static final int CANID_RIGHT_PICKUP                  = 9;    // 30A: White
-    public static final int CANID_LEFT_PICKUP                   = 10;   // 30A: Orange
+    public static final int CANID_LEFT_PICKUP                   = 9;    // 30A: White
+    public static final int CANID_RIGHT_PICKUP                  = 10;   // 30A: Orange
+    public static final int CANID_ELEVATOR                      = 11;   // 30A: Yellow
 
     public static final int CANID_PDP                           = 16;
     public static final int CANID_PCM1                          = 17;
@@ -203,26 +204,18 @@ public class RobotInfo
     public static final double WINCH_SPIKE_TIMEOUT              = 0.5;
     public static final double WINCH_TILT_THRESHOLD             = 35.0;
 
-    
-    // 
+   // 
     // Elevator subsystem.
     //
-    public static final int ELEVATOR_MOTOR_ID                   = 1;    
-    public static final int ELEVATOR_LOWER_LIMIT_ID             = 2;
-    
     public static final double ELEVATOR_INCHES_PER_COUNT        = 0.002822426329889;  // we will need to change this, later during calibration
     public static final double ELEVATOR_KP                      = 0.3;                // this too
     public static final double ELEVATOR_KI                      = 0.0;                // hopefully not this
     public static final double ELEVATOR_KD                      = 0.0;                // this too
-    public static final double ELEVATOR_SCALE_MIDDLE_HEIGHT     = 55.0;
-    public static final double ELEVATOR_TOLERANCE               = 0.5;				  // this too
+    public static final double ELEVATOR_TOLERANCE               = 0.5;                // this too
     public static final double ELEVATOR_MIN_HEIGHT              = 0.0;
-    public static final double ELEVATOR_MAX_HEIGHT              = 85.0;              
+    public static final double ELEVATOR_MAX_HEIGHT              = 85.0;
     public static final double ELEVATOR_MID_HEIGHT              = 4.0;
     public static final double ELEVATOR_CAL_POWER               = 0.3;               // this too
-    public static final double ELEVATOR_SENSOR_ZERO_OFFSET      = -0.529;            // this too
-    public static final double ELEVATOR_SENSOR_SCALE            = 11.18586208869386; // and this
-    public static final double ELEVATOR_STARTING_HEIGHT         = 55.0;
     public static final double ELEVATOR_FLOOR_PICKUP_HEIGHT     = 6.0; // 6 inches off the ground
     
 }   // class RobotInfo

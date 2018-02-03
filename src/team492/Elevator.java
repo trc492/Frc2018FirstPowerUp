@@ -38,7 +38,7 @@ public class Elevator
 
     public Elevator()
     {
-        elevatorMotor = new FrcCANTalon("elevatorMotor", RobotInfo.ELEVATOR_MOTOR_ID); // the name and the device number
+        elevatorMotor = new FrcCANTalon("elevatorMotor", RobotInfo.CANID_ELEVATOR); // the name and the device number
         // elevatorMotor.setSoftLimitEnabled(true, true);
         // elevatorMotor.setSoftLowerLimit(RobotInfo.ELEVATOR_MIN_HEIGHT);
         // elevatorMotor.setSoftLowerLimit(RobotInfo.ELEVATOR_MAX_HEIGHT);
