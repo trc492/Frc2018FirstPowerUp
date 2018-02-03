@@ -204,7 +204,7 @@ public class RobotInfo
     public static final double WINCH_SPIKE_TIMEOUT              = 0.5;
     public static final double WINCH_TILT_THRESHOLD             = 35.0;
 
-   // 
+    //
     // Elevator subsystem.
     //
     public static final double ELEVATOR_INCHES_PER_COUNT        = 0.002822426329889;  // we will need to change this, later during calibration
