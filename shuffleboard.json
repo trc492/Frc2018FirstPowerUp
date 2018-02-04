@@ -1,0 +1,329 @@
+{
+  "dividerPosition": 0.17823343848580442,
+  "tabPane": [
+    {
+      "title": "Match Info",
+      "autoPopulate": false,
+      "autoPopulatePrefix": "",
+      "widgetPane": {
+        "gridSize": 32.0,
+        "hgap": 16.0,
+        "vgap": 16.0,
+        "tiles": {
+          "0,4": {
+            "size": [
+              4,
+              2
+            ],
+            "content": {
+              "_type": "Boolean Box",
+              "_source0": "network_table:///FMSInfo/IsRedAlliance",
+              "_title": "FMSInfo/IsRedAlliance",
+              "colorWhenTrue": "#7CFC00FF",
+              "colorWhenFalse": "#8B0000FF"
+            }
+          },
+          "4,0": {
+            "size": [
+              8,
+              2
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///FMSInfo/EventName",
+              "_title": "FMSInfo/EventName"
+            }
+          },
+          "4,2": {
+            "size": [
+              4,
+              2
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///FMSInfo/MatchNumber",
+              "_title": "FMSInfo/MatchNumber"
+            }
+          },
+          "0,2": {
+            "size": [
+              4,
+              2
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///FMSInfo/MatchType",
+              "_title": "FMSInfo/MatchType"
+            }
+          },
+          "4,4": {
+            "size": [
+              4,
+              2
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///FMSInfo/StationNumber",
+              "_title": "FMSInfo/StationNumber"
+            }
+          },
+          "0,6": {
+            "size": [
+              8,
+              2
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///FMSInfo/GameSpecificMessage",
+              "_title": "FMSInfo/GameSpecificMessage"
+            }
+          }
+        }
+      }
+    },
+    {
+      "title": "Dashboard",
+      "autoPopulate": false,
+      "autoPopulatePrefix": "",
+      "widgetPane": {
+        "gridSize": 32.0,
+        "hgap": 16.0,
+        "vgap": 16.0,
+        "tiles": {
+          "0,0": {
+            "size": [
+              16,
+              2
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/00",
+              "_title": "SmartDashboard/00"
+            }
+          },
+          "0,2": {
+            "size": [
+              16,
+              2
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/01",
+              "_title": "SmartDashboard/01"
+            }
+          },
+          "0,4": {
+            "size": [
+              16,
+              2
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/02",
+              "_title": "SmartDashboard/02"
+            }
+          },
+          "0,6": {
+            "size": [
+              16,
+              2
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/03",
+              "_title": "SmartDashboard/03"
+            }
+          },
+          "0,8": {
+            "size": [
+              16,
+              2
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/04",
+              "_title": "SmartDashboard/04"
+            }
+          },
+          "0,12": {
+            "size": [
+              16,
+              2
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/06",
+              "_title": "SmartDashboard/06"
+            }
+          },
+          "0,14": {
+            "size": [
+              16,
+              2
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/07",
+              "_title": "SmartDashboard/07"
+            }
+          },
+          "0,10": {
+            "size": [
+              16,
+              2
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/05",
+              "_title": "SmartDashboard/05"
+            }
+          },
+          "16,0": {
+            "size": [
+              16,
+              2
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/08",
+              "_title": "SmartDashboard/08"
+            }
+          },
+          "16,2": {
+            "size": [
+              16,
+              7
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/09",
+              "_title": "SmartDashboard/09"
+            }
+          },
+          "16,4": {
+            "size": [
+              16,
+              2
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/10",
+              "_title": "SmartDashboard/10"
+            }
+          },
+          "16,6": {
+            "size": [
+              16,
+              2
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/11",
+              "_title": "SmartDashboard/11"
+            }
+          },
+          "16,8": {
+            "size": [
+              16,
+              2
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/12",
+              "_title": "SmartDashboard/12"
+            }
+          },
+          "16,10": {
+            "size": [
+              16,
+              2
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/13",
+              "_title": "SmartDashboard/13"
+            }
+          },
+          "16,12": {
+            "size": [
+              16,
+              2
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/14",
+              "_title": "SmartDashboard/14"
+            }
+          },
+          "16,14": {
+            "size": [
+              16,
+              2
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/15",
+              "_title": "SmartDashboard/15"
+            }
+          }
+        }
+      }
+    },
+    {
+      "title": "Autonomous",
+      "autoPopulate": false,
+      "autoPopulatePrefix": "",
+      "widgetPane": {
+        "gridSize": 32.0,
+        "hgap": 16.0,
+        "vgap": 16.0,
+        "tiles": {
+          "0,0": {
+            "size": [
+              10,
+              2
+            ],
+            "content": {
+              "_type": "ComboBox Chooser",
+              "_source0": "network_table:///SmartDashboard/Autonomous Strategies",
+              "_title": "SmartDashboard/Autonomous Strategies"
+            }
+          }
+        }
+      }
+    },
+    {
+      "title": "Tab 4",
+      "autoPopulate": false,
+      "autoPopulatePrefix": "",
+      "widgetPane": {
+        "gridSize": 128.0,
+        "hgap": 16.0,
+        "vgap": 16.0,
+        "tiles": {}
+      }
+    },
+    {
+      "title": "Tab 5",
+      "autoPopulate": false,
+      "autoPopulatePrefix": "",
+      "widgetPane": {
+        "gridSize": 128.0,
+        "hgap": 16.0,
+        "vgap": 16.0,
+        "tiles": {}
+      }
+    },
+    {
+      "title": "Tab 6",
+      "autoPopulate": false,
+      "autoPopulatePrefix": "",
+      "widgetPane": {
+        "gridSize": 128.0,
+        "hgap": 16.0,
+        "vgap": 16.0,
+        "tiles": {}
+      }
+    }
+  ]
+}
