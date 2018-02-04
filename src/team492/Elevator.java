@@ -45,11 +45,19 @@ public class Elevator
         elevatorPidCtrl = new TrcPidController(
             "elevatorPidController",
             new TrcPidController.PidCoefficients(RobotInfo.ELEVATOR_KP, RobotInfo.ELEVATOR_KI, RobotInfo.ELEVATOR_KD),
-            RobotInfo.ELEVATOR_TOLERANCE, elevator::getPosition);
+            RobotInfo.ELEVATOR_TOLERANCE, this::getPosition);
         elevator = new TrcPidActuator(
-            "elevator", elevatorMotor, new FrcCANTalonLimitSwitch("elevatorLowerLimit", elevatorMotor, false), elevatorPidCtrl,
-            RobotInfo.ELEVATOR_MIN_HEIGHT, RobotInfo.ELEVATOR_MAX_HEIGHT);
+            "elevator", elevatorMotor,
+            new FrcCANTalonLimitSwitch("elevatorLowerLimit", elevatorMotor, false),
+            elevatorPidCtrl, RobotInfo.ELEVATOR_MIN_HEIGHT, RobotInfo.ELEVATOR_MAX_HEIGHT,
+            this::getGravityCompensation);
+        elevator.setPositionScale(RobotInfo.ELEVATOR_INCHES_PER_COUNT);
     }
+
+    public void setManualOverride(boolean manualOverride)
+    {
+        elevator.setManualOverride(manualOverride);
+    }   //setManualOverride
 
     public void zeroCalibrate()
     {
@@ -93,5 +101,9 @@ public class Elevator
     {
         return elevator.getPosition();
     }
-    
+
+    public double getGravityCompensation()
+    {
+        return RobotInfo.ELEVATOR_GRAVITY_COMPENSATION;
+    }
 }

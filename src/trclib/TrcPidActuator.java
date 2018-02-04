@@ -63,7 +63,7 @@ public class TrcPidActuator extends TrcPidMotor
      */
     public TrcPidActuator(
             final String instanceName, TrcMotor motor, TrcDigitalInput lowerLimitSwitch, TrcPidController pidCtrl,
-            double minPos,double maxPos,PowerCompensation powerCompensation)
+            double minPos,double maxPos, PowerCompensation powerCompensation)
     {
         super(instanceName, motor, pidCtrl, powerCompensation);
 
