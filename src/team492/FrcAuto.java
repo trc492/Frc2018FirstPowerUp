@@ -41,6 +41,37 @@ public class FrcAuto implements TrcRobot.RobotMode
         TURN_DEGREES,
         DO_NOTHING
     }   //enum AutoStrategy
+    
+    public static enum TargetType
+    {
+        //Different choices for targets
+    	SWITCH,
+    	SCALE
+    }   //enum TargetTypes
+    
+    public static enum ForwardDistance
+    {
+        //Different choices for forward distances
+    	FWD_DISTANCE_1,
+    	FWD_DISTANCE_2,
+    	FWD_DISTANCE_3,
+    	CUSTOM
+    }   //enum ForwardDistances
+    
+    public static enum Approach
+    {
+        //Different choices for approaches
+    	SIDE,
+    	FRONT
+    }   //enum Approaches
+    
+    public static enum AfterAction
+    {
+        //Different choices for after actions
+    	DO_NOTHING,
+    	SECOND_SCALE_CUBE,
+    	CUBE_IN_SWITCH
+    }   //enum AfterActions
 
     private Robot robot;
     private boolean useVision = false;
@@ -49,9 +80,21 @@ public class FrcAuto implements TrcRobot.RobotMode
     // Menus.
     //
     private FrcChoiceMenu<FrcAuto.AutoStrategy> autoStrategyMenu;
+    private FrcChoiceMenu<FrcAuto.TargetType> targetTypeMenu;
+    private FrcChoiceMenu<FrcAuto.ForwardDistance> forwardDistanceMenu;
+    private FrcChoiceMenu<FrcAuto.Approach> approachMenu;
+    private FrcChoiceMenu<FrcAuto.AfterAction> afterActionMenu;
+
 
     private AutoStrategy autoStrategy;
+    private ForwardDistance forwardDistance;
+    private Approach approach;
+    private AfterAction afterAction;
     private double delay;
+    
+    public static int targetTypeTransfer = 0;
+    // int used to give target type to CmdPowerUpAuto, default 0 is Switch,
+    // set to 1 in startMode for Scale if Scale is chosen
 
     private TrcRobot.RobotCommand autoCommand;
 
@@ -62,6 +105,11 @@ public class FrcAuto implements TrcRobot.RobotMode
         // Create Autonomous Mode specific menus.
         //
         autoStrategyMenu = new FrcChoiceMenu<>("Autonomous Strategies");
+        targetTypeMenu = new FrcChoiceMenu<>("Target Types");
+        forwardDistanceMenu = new FrcChoiceMenu<>("Target Types");
+        approachMenu = new FrcChoiceMenu<>("Target Types");
+        afterActionMenu = new FrcChoiceMenu<>("Target Types");
+        
         //
         // Populate Autonomous Mode menus.
         //
@@ -72,6 +120,21 @@ public class FrcAuto implements TrcRobot.RobotMode
         autoStrategyMenu.addChoice("Y Distance Drive", FrcAuto.AutoStrategy.Y_DISTANCE_DRIVE, false);
         autoStrategyMenu.addChoice("Turn Degrees", FrcAuto.AutoStrategy.TURN_DEGREES, false);
         autoStrategyMenu.addChoice("Do Nothing", FrcAuto.AutoStrategy.DO_NOTHING, false);
+        
+        targetTypeMenu.addChoice("Switch", FrcAuto.TargetType.SWITCH, true);
+        targetTypeMenu.addChoice("Scale", FrcAuto.TargetType.SCALE, false);
+        
+        forwardDistanceMenu.addChoice("Distance 1", FrcAuto.ForwardDistance.FWD_DISTANCE_1, false);
+        forwardDistanceMenu.addChoice("Distance 2", FrcAuto.ForwardDistance.FWD_DISTANCE_2, false);
+        forwardDistanceMenu.addChoice("Distance 3", FrcAuto.ForwardDistance.FWD_DISTANCE_3, false);
+        forwardDistanceMenu.addChoice("Custom Distance", FrcAuto.ForwardDistance.CUSTOM, false);
+        
+        approachMenu.addChoice("Front", FrcAuto.Approach.FRONT, false);
+        approachMenu.addChoice("Side", FrcAuto.Approach.SIDE, false);
+        
+        afterActionMenu.addChoice("Do Nothing", FrcAuto.AfterAction.DO_NOTHING, false);
+        afterActionMenu.addChoice("Second Scale Cube", FrcAuto.AfterAction.SECOND_SCALE_CUBE, false);
+        afterActionMenu.addChoice("Switch Cube", FrcAuto.AfterAction.CUBE_IN_SWITCH, false);
     }   //FrcAuto
 
     //
@@ -128,6 +191,31 @@ public class FrcAuto implements TrcRobot.RobotMode
                 autoCommand = null;
                 break;
         }
+        
+        if(targetTypeMenu.getCurrentChoiceObject() == FrcAuto.TargetType.SCALE)
+        {
+        	targetTypeTransfer = 1;
+        }
+        
+        forwardDistance = forwardDistanceMenu.getCurrentChoiceObject();
+        // TODO: make these cases do something
+        switch(forwardDistance)
+        {
+            case FWD_DISTANCE_1:
+            	break;
+        	
+            case FWD_DISTANCE_2:
+            	break;
+            
+            case FWD_DISTANCE_3:
+            	break;
+            	
+            case CUSTOM:
+            	break;
+        }
+        
+        // TODO: use other choice menus
+        
         //
         // Start vision thread if necessary.
         //
@@ -184,5 +272,6 @@ public class FrcAuto implements TrcRobot.RobotMode
             robot.updateDashboard();
         }
     }   //runContinuous
+    
 
 }   //class FrcAuto
