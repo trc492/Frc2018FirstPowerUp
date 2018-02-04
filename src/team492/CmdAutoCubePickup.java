@@ -48,12 +48,18 @@ public class CmdAutoCubePickup implements TrcRobot.RobotCommand
         sm = new TrcStateMachine<>(moduleName);
     }
 
+    /**
+     * Reset the state machine and start it
+     */
     public void start()
     {
         stop();
         sm.start(State.START);
     }
 
+    /**
+     * Stop the state machine. cmdPeriodic won't do anything
+     */
     public void stop()
     {
         if (robot.visionPidDrive.isActive())
@@ -63,11 +69,18 @@ public class CmdAutoCubePickup implements TrcRobot.RobotCommand
         sm.stop();
     }
 
+    /**
+     * Is the state machine enabled?
+     * @return Is the state machine enabled?
+     */
     public boolean isEnabled()
     {
         return sm.isEnabled();
     }
 
+    /**
+     * Execute one cycle of the state machine and stuff.
+     */
     @Override
     public boolean cmdPeriodic(double elapsedTime)
     {
