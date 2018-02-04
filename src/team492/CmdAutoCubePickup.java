@@ -120,9 +120,7 @@ public class CmdAutoCubePickup implements TrcRobot.RobotCommand
                     break;
 
                 case PICKUP:
-                    robot.cubePickup.closeClaw(); // TODO: Talk to Chris about
-                                                  // singular method to grab
-                                                  // cube
+                    robot.cubePickup.closeClaw();
                     //CodeReview: Chris has the CmdPickupCube to grab the cube.
                     sm.setState(State.DONE);
                     break;

@@ -150,7 +150,6 @@ public class Robot extends FrcRobotBase
     // Define our subsystems for Auto and TeleOp modes.
     //
     public Relay ringLightsPower;
-    public Relay flashLightsPower;
     public CubePickup cubePickup;
     public Winch winch;
     public Elevator elevator;
@@ -348,8 +347,6 @@ public class Robot extends FrcRobotBase
         //
         ringLightsPower = new Relay(RobotInfo.RELAY_RINGLIGHT_POWER);
         ringLightsPower.setDirection(Direction.kForward);
-        flashLightsPower = new Relay(RobotInfo.RELAY_FLASHLIGHT_POWER);
-        flashLightsPower.setDirection(Direction.kForward);
         cubePickup = new CubePickup();
         winch = new Winch();
         elevator = new Elevator();

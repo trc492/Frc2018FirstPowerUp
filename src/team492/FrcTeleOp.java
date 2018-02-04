@@ -22,7 +22,6 @@
 
 package team492;
 
-import edu.wpi.first.wpilibj.Relay.Value;
 import frclib.FrcJoystick;
 import hallib.HalDashboard;
 import trclib.TrcRobot;
@@ -45,13 +44,11 @@ public class FrcTeleOp implements TrcRobot.RobotMode
     private FrcJoystick rightDriveStick;
     private FrcJoystick operatorStick;
     private CmdWaltzTurn cmdWaltzTurn;
-    private String message = null;
 
     private boolean slowDriveOverride = false;
     private DriveMode driveMode = DriveMode.MECANUM_MODE;
 
     private boolean driveInverted = false;
-    private boolean flashLightsOn = false;
     private boolean waltzTurnOn = false;
 
     public FrcTeleOp(Robot robot)
@@ -73,7 +70,6 @@ public class FrcTeleOp implements TrcRobot.RobotMode
         operatorStick.setYInverted(true);
 
         cmdWaltzTurn = new CmdWaltzTurn(robot);
-        message = HalDashboard.getString("Message", "Hello, Titans!");
     }   // FrcTeleOp
 
     //
@@ -149,8 +145,8 @@ public class FrcTeleOp implements TrcRobot.RobotMode
                     break;
             }
 
-            double winchPower = operatorStick.getYWithDeadband(true);
-            robot.winch.setPower(winchPower);
+            double elevatorPower = operatorStick.getYWithDeadband(true);
+            robot.elevator.setPower(elevatorPower);
         }
 
         robot.updateDashboard();
@@ -184,38 +180,18 @@ public class FrcTeleOp implements TrcRobot.RobotMode
                 break;
 
             case FrcJoystick.LOGITECH_BUTTON2:
-                if (pressed && robot.tts != null)
-                {
-                    robot.tts.speak("Kevin, drop the rope!");
-                }
                 break;
 
             case FrcJoystick.LOGITECH_BUTTON3:
-                if (pressed && robot.tts != null)
-                {
-                    robot.tts.speak("Kevin, spin the rotor!");
-                }
                 break;
 
             case FrcJoystick.LOGITECH_BUTTON4:
-                if (pressed && robot.tts != null)
-                {
-                    robot.tts.speak("Kevin, pick up the gear!");
-                }
                 break;
 
             case FrcJoystick.LOGITECH_BUTTON5:
-                if (pressed && robot.tts != null)
-                {
-                    robot.tts.speak("Kevin, pick up the free gear!");
-                }
                 break;
 
             case FrcJoystick.LOGITECH_BUTTON6:
-                if (pressed && robot.tts != null && message != null)
-                {
-                    robot.tts.speak(message);
-                }
                 break;
 
             case FrcJoystick.LOGITECH_BUTTON7:
@@ -299,26 +275,48 @@ public class FrcTeleOp implements TrcRobot.RobotMode
         switch (button)
         {
             case FrcJoystick.LOGITECH_TRIGGER:
+            	if(pressed && !robot.cubePickup.cubeDetected())
+            	{
+            		robot.cubePickup.grabCube(0.5);
+            	} else
+            	{
+            		robot.cubePickup.stopPickup();
+            	}
                 break;
 
             case FrcJoystick.LOGITECH_BUTTON2:
-                //
-                // Arm down.
-                //
-                if (pressed)
-                {
-                    robot.cubePickup.deployPickup();
-                }
+            	if(pressed)
+            	{
+            		if(robot.cmdAutoCubePickup.isEnabled())
+            		{
+            			robot.cmdAutoCubePickup.stop();
+            		} else
+            		{
+            			robot.cmdAutoCubePickup.start();
+            		}
+            	}
                 break;
 
             case FrcJoystick.LOGITECH_BUTTON3:
-                //
-                // Arm up.
-                //
-                if (pressed)
-                {
-                    robot.cubePickup.raisePickup();
-                }
+            	if(pressed)
+            	{
+            		if(operatorStick.getTrigger())
+            		{
+            			if(robot.cubePickup.cubeDetected())
+            			{
+            				robot.cubePickup.dropCube(0.5);
+            			} else
+            			{
+            				robot.cubePickup.grabCube(0.5);
+            			}
+            		} else
+            		{
+            			robot.cubePickup.dropCube(0.5);
+            		}            		
+            	} else
+            	{
+            		robot.cubePickup.stopPickup();
+            	}
                 break;
 
             case FrcJoystick.LOGITECH_BUTTON4:
@@ -342,26 +340,50 @@ public class FrcTeleOp implements TrcRobot.RobotMode
                 break;
 
             case FrcJoystick.LOGITECH_BUTTON6:
+            	//
+            	// Arm down.
+            	//
+            	if (pressed)
+            	{
+            		robot.cubePickup.deployPickup();
+            	}
                 break;
 
             case FrcJoystick.LOGITECH_BUTTON7:
+            	//
+            	// Arm up.
+            	//
+            	if (pressed)
+            	{
+            		robot.cubePickup.raisePickup();
+            	}
                 break;
 
             case FrcJoystick.LOGITECH_BUTTON8:
                 break;
 
             case FrcJoystick.LOGITECH_BUTTON9:
-                if (pressed)
-                {
-                    flashLightsOn = !flashLightsOn;
-                    robot.flashLightsPower.set(flashLightsOn? Value.kOn: Value.kOff);
-                }
                 break;
 
             case FrcJoystick.LOGITECH_BUTTON10:
+            	if(pressed)
+            	{
+            		
+            		robot.winch.setPower(-RobotInfo.WINCH_TELEOP_POWER); // Go down
+            	} else
+            	{
+            		robot.winch.setPower(0.0);
+            	}
                 break;
 
             case FrcJoystick.LOGITECH_BUTTON11:
+            	if(pressed)
+            	{
+            		robot.winch.setPower(RobotInfo.WINCH_TELEOP_POWER); // Go up
+            	} else
+            	{
+            		robot.winch.setPower(0.0);
+            	}
                 break;
 
             case FrcJoystick.LOGITECH_BUTTON12:
