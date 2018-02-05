@@ -39,6 +39,8 @@ public class Elevator
     public Elevator()
     {
         elevatorMotor = new FrcCANTalon("elevatorMotor", RobotInfo.CANID_ELEVATOR); // the name and the device number
+        elevatorMotor.ConfigFwdLimitSwitchNormallyOpen(false);
+        elevatorMotor.ConfigRevLimitSwitchNormallyOpen(false);
         // elevatorMotor.setSoftLimitEnabled(true, true);
         // elevatorMotor.setSoftLowerLimit(RobotInfo.ELEVATOR_MIN_HEIGHT);
         // elevatorMotor.setSoftLowerLimit(RobotInfo.ELEVATOR_MAX_HEIGHT);
@@ -80,8 +82,9 @@ public class Elevator
     {
         double pos = getPosition();
 
-        if (power > 0.0 && pos >= RobotInfo.ELEVATOR_MAX_HEIGHT ||
-            power < 0.0 && pos <= RobotInfo.ELEVATOR_MIN_HEIGHT)
+        if (!elevator.isManualOverride() &&
+        	(power > 0.0 && pos >= RobotInfo.ELEVATOR_MAX_HEIGHT ||
+            power < 0.0 && pos <= RobotInfo.ELEVATOR_MIN_HEIGHT))
         {
             power = 0.0;
         }

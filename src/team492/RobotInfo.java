@@ -220,7 +220,7 @@ public class RobotInfo
     public static final double ELEVATOR_MID_HEIGHT              = 4.0;
     public static final double ELEVATOR_CAL_POWER               = 0.3;               // this too
     public static final double ELEVATOR_FLOOR_PICKUP_HEIGHT     = 6.0; // 6 inches off the ground
-    public static final double ELEVATOR_GRAVITY_COMPENSATION    = 0.15; //TODO: need to tune this
+    public static final double ELEVATOR_GRAVITY_COMPENSATION    = 0.0; //TODO: need to tune this
     
     //
     // AutoAssist subsystem
