@@ -59,6 +59,8 @@ class CmdPowerUpAuto implements TrcRobot.RobotCommand
     private int startLocation;
     private double forwardDistance;
     private int targetType;
+    private CmdAutoCubePickup cmdAutoCubePickup;
+    private double elevatorTargetHeight;
 
     CmdPowerUpAuto(Robot robot, double delay)
     {
@@ -74,7 +76,9 @@ class CmdPowerUpAuto implements TrcRobot.RobotCommand
                                                                            // Need
                                                                            // Default
                                                                            // Number
-        targetType = (int) HalDashboard.getNumber("targetType", 60.0); // TODO:
+        
+        targetType = FrcAuto.targetTypeTransfer;
+//        targetType = (int) HalDashboard.getNumber("targetType", 60.0); // TODO:
                                                                        // What
                                                                        // type?
 
@@ -116,9 +120,20 @@ class CmdPowerUpAuto implements TrcRobot.RobotCommand
                     //
                     // pick up cube from floor
                     //
+                	if(cmdAutoCubePickup.cmdPeriodic(elapsedTime)) {
+                		sm.setState(State.RAISE_ELEVATOR);
+                	}
                     break;
 
                 case RAISE_ELEVATOR:
+                	if(targetType == 1) {
+                		elevatorTargetHeight = 60;
+                	}
+                	else {
+                		elevatorTargetHeight = 27;
+                	}
+                	robot.elevator.setPosition(elevatorTargetHeight, event, 0.0);
+                	sm.waitForSingleEvent(event, State.DO_DELAY);
                     break;
 
                 case DO_DELAY:
