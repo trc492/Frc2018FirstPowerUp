@@ -61,6 +61,8 @@ public class RobotInfo
     // Digital Input ports.
     //
     public static final int DIN_CUBE_SENSOR                     = 0;
+    public static final int DIN_LEFT_PROXIMITY_SENSOR           = 1;
+    public static final int DIN_RIGHT_PROXIMITY_SENSOR          = 2;
 
     //
     // CAN IDs.
@@ -220,4 +222,8 @@ public class RobotInfo
     public static final double ELEVATOR_FLOOR_PICKUP_HEIGHT     = 6.0; // 6 inches off the ground
     public static final double ELEVATOR_GRAVITY_COMPENSATION    = 0.15; //TODO: need to tune this
     
+    //
+    // AutoAssist subsystem
+    //
+    public static final double PORTAL_ALIGN_STRAFE_DIST         = 36.0; // 3 feet
 }   // class RobotInfo
