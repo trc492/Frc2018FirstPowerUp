@@ -39,8 +39,9 @@ public class Elevator
     public Elevator()
     {
         elevatorMotor = new FrcCANTalon("elevatorMotor", RobotInfo.CANID_ELEVATOR); // the name and the device number
-        elevatorMotor.ConfigFwdLimitSwitchNormallyOpen(false);
-        elevatorMotor.ConfigRevLimitSwitchNormallyOpen(false);
+        elevatorMotor.configFwdLimitSwitchNormallyOpen(false);
+        elevatorMotor.configRevLimitSwitchNormallyOpen(false);
+        elevatorMotor.motor.overrideLimitSwitchesEnable(true);
         // elevatorMotor.setSoftLimitEnabled(true, true);
         // elevatorMotor.setSoftLowerLimit(RobotInfo.ELEVATOR_MIN_HEIGHT);
         // elevatorMotor.setSoftLowerLimit(RobotInfo.ELEVATOR_MAX_HEIGHT);

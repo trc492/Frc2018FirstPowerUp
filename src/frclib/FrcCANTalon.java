@@ -103,9 +103,9 @@ public class FrcCANTalon extends TrcMotor
      *
      * @param normalOpen specifies true for normal open, false for normal close.
      */
-    public void ConfigFwdLimitSwitchNormallyOpen(boolean normalOpen)
+    public void configFwdLimitSwitchNormallyOpen(boolean normalOpen)
     {
-        final String funcName = "ConfigFwdLimitSwitchNormallyOpen";
+        final String funcName = "configFwdLimitSwitchNormallyOpen";
 
         if (debugEnabled)
         {
@@ -118,16 +118,16 @@ public class FrcCANTalon extends TrcMotor
             normalOpen? LimitSwitchNormal.NormallyOpen: LimitSwitchNormal.NormallyClosed,
             0);
         fwdLimitSwitchNormalOpen = normalOpen;
-    }   //ConfigFwdLimitSwitchNormallyOpen
+    }   //configFwdLimitSwitchNormallyOpen
 
     /**
      * This method configures the reverse limit switch to be normally open (i.e. active when close).
      *
      * @param normalOpen specifies true for normal open, false for normal close.
      */
-    public void ConfigRevLimitSwitchNormallyOpen(boolean normalOpen)
+    public void configRevLimitSwitchNormallyOpen(boolean normalOpen)
     {
-        final String funcName = "ConfigRevLimitSwitchNormallyOpen";
+        final String funcName = "configRevLimitSwitchNormallyOpen";
 
         if (debugEnabled)
         {
@@ -140,7 +140,7 @@ public class FrcCANTalon extends TrcMotor
             normalOpen? LimitSwitchNormal.NormallyOpen: LimitSwitchNormal.NormallyClosed,
             0);
         revLimitSwitchNormalOpen = normalOpen;
-    }   //ConfigRevLimitSwitchNormallyOpen
+    }   //configRevLimitSwitchNormallyOpen
 
     /**
      * This method sets the feedback device type.
