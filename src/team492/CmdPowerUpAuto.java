@@ -62,7 +62,7 @@ class CmdPowerUpAuto implements TrcRobot.RobotCommand
     private CmdAutoCubePickup cmdAutoCubePickup;
     private double elevatorTargetHeight;
 
-    CmdPowerUpAuto(Robot robot, double delay)
+    CmdPowerUpAuto(Robot robot, double delay, int targetType, double forwardDistance)
     {
         DriverStation ds = DriverStation.getInstance();
         this.robot = robot;
@@ -72,15 +72,17 @@ class CmdPowerUpAuto implements TrcRobot.RobotCommand
         this.targetSide = ds.getGameSpecificMessage();
         this.startLocation = ds.getLocation();
 
-        forwardDistance = HalDashboard.getNumber("forwardDistance", 85.0); // TODO:
-                                                                           // Need
-                                                                           // Default
-                                                                           // Number
+        if(-1.0 == forwardDistance) 
+        {
+            this.forwardDistance = HalDashboard.getNumber("forwardDistance", 85.0); //TODO: change
+        }                                                                           // default number
+        else
+        {
+        	this.forwardDistance = forwardDistance;
+        }
         
-        targetType = FrcAuto.targetTypeTransfer;
-//        targetType = (int) HalDashboard.getNumber("targetType", 60.0); // TODO:
-                                                                       // What
-                                                                       // type?
+        this.targetType = targetType;
+
 
         event = new TrcEvent(moduleName);
         timer = new TrcTimer(moduleName);
