@@ -86,7 +86,8 @@ public class Robot extends FrcRobotBase
     private static final boolean DEBUG_PID_DRIVE = false;
     private static final boolean DEBUG_GRIP_VISION = false;
     private static final boolean DEBUG_WINCH = false;
-    private static final boolean DEBUG_PIXY = true;
+    private static final boolean DEBUG_ELEVATOR = true;
+    private static final boolean DEBUG_PIXY = false;
     private static final double DASHBOARD_UPDATE_INTERVAL = 0.1;
 
     // FMS provided the following info:
@@ -467,6 +468,14 @@ public class Robot extends FrcRobotBase
                     winch.getPower(), winch.getPosition(),
                     Boolean.toString(winch.isUpperLimitSwitchActive()),
                     Boolean.toString(winch.isLowerLimitSwitchActive()));
+            }
+
+            if (DEBUG_ELEVATOR)
+            {
+                dashboard.displayPrintf(8, "Elevator: power=%.1f, position=%.1f(%.1f), touch=%s/%s",
+                    elevator.getPower(), elevator.getPosition(), elevator.elevatorMotor.getPosition(),
+                    Boolean.toString(elevator.elevatorMotor.isLowerLimitSwitchActive()),
+                    Boolean.toString(elevator.elevatorMotor.isUpperLimitSwitchActive()));
             }
 
             if (DEBUG_PIXY)
