@@ -92,9 +92,13 @@ public class FrcAuto implements TrcRobot.RobotMode
     private AfterAction afterAction;
     private double delay;
     
-    public static int targetTypeTransfer = 0;
-    // int used to give target type to CmdPowerUpAuto, default 0 is Switch,
-    // set to 1 in startMode for Scale if Scale is chosen
+    private int targetType = 0;
+    private double forwardDriveDistance;
+    
+    // TODO: Put these constants in RobotInfo and use the actual values
+    private static final double FWD_DISTANCE_1 = 0.0;
+    private static final double FWD_DISTANCE_2 = 0.0;
+    private static final double FWD_DISTANCE_3 = 0.0;
 
     private TrcRobot.RobotCommand autoCommand;
 
@@ -154,13 +158,41 @@ public class FrcAuto implements TrcRobot.RobotMode
         //
         // Retrieve menu choice values.
         //
+        if(targetTypeMenu.getCurrentChoiceObject() == FrcAuto.TargetType.SCALE)
+        {
+        	targetType = 1;
+        }
+        
+        forwardDistance = forwardDistanceMenu.getCurrentChoiceObject();
+        
+        switch(forwardDistance)
+        {
+            case FWD_DISTANCE_1:
+            	forwardDriveDistance = FWD_DISTANCE_1;
+            	break;
+        	
+            case FWD_DISTANCE_2:
+            	forwardDriveDistance = FWD_DISTANCE_2;
+            	break;
+            
+            case FWD_DISTANCE_3:
+            	forwardDriveDistance = FWD_DISTANCE_3;
+            	break;
+            	
+            case CUSTOM:
+            	forwardDriveDistance = -1.0;
+            	break;
+        }
+        
+        // TODO: use other choice menus
+        
         autoStrategy = autoStrategyMenu.getCurrentChoiceObject();
         delay = HalDashboard.getNumber("Delay", 0.0);
 
         switch (autoStrategy)
         {
             case POWER_UP_AUTO:
-                autoCommand = new CmdPowerUpAuto(robot, delay);
+                autoCommand = new CmdPowerUpAuto(robot, delay, targetType, forwardDriveDistance);
                 break;
 
             case X_TIMED_DRIVE:
@@ -192,30 +224,7 @@ public class FrcAuto implements TrcRobot.RobotMode
                 break;
         }
         
-        if(targetTypeMenu.getCurrentChoiceObject() == FrcAuto.TargetType.SCALE)
-        {
-        	targetTypeTransfer = 1;
-        }
-        
-        forwardDistance = forwardDistanceMenu.getCurrentChoiceObject();
-        // TODO: make these cases do something
-        switch(forwardDistance)
-        {
-            case FWD_DISTANCE_1:
-            	break;
-        	
-            case FWD_DISTANCE_2:
-            	break;
-            
-            case FWD_DISTANCE_3:
-            	break;
-            	
-            case CUSTOM:
-            	break;
-        }
-        
-        // TODO: use other choice menus
-        
+
         //
         // Start vision thread if necessary.
         //
