@@ -47,7 +47,7 @@ public class FrcAuto implements TrcRobot.RobotMode
         //Different choices for targets
     	SWITCH,
     	SCALE
-    }   //enum TargetTypes
+    }   //enum TargetType
     
     public static enum ForwardDistance
     {
@@ -56,14 +56,14 @@ public class FrcAuto implements TrcRobot.RobotMode
     	FWD_DISTANCE_2,
     	FWD_DISTANCE_3,
     	CUSTOM
-    }   //enum ForwardDistances
+    }   //enum ForwardDistance
     
     public static enum Approach
     {
         //Different choices for approaches
     	SIDE,
     	FRONT
-    }   //enum Approaches
+    }   //enum Approach
     
     public static enum AfterAction
     {
@@ -72,6 +72,14 @@ public class FrcAuto implements TrcRobot.RobotMode
     	SECOND_SCALE_CUBE,
     	CUBE_IN_SWITCH
     }   //enum AfterActions
+    
+    public static enum StartPosition
+    {
+        //Different choices for start positions
+    	START_POS_1,
+    	START_POS_2,
+    	START_POS_3
+    }   //enum StartPosition
 
     private Robot robot;
     private boolean useVision = false;
@@ -84,21 +92,27 @@ public class FrcAuto implements TrcRobot.RobotMode
     private FrcChoiceMenu<FrcAuto.ForwardDistance> forwardDistanceMenu;
     private FrcChoiceMenu<FrcAuto.Approach> approachMenu;
     private FrcChoiceMenu<FrcAuto.AfterAction> afterActionMenu;
-
+    private FrcChoiceMenu<FrcAuto.StartPosition> startPositionMenu;
 
     private AutoStrategy autoStrategy;
     private ForwardDistance forwardDistance;
-    private Approach approach;
     private AfterAction afterAction;
+    private StartPosition startPosition;
     private double delay;
     
     private int targetType = 0;
     private double forwardDriveDistance;
+    private boolean sideApproach;
+    private int selectedAfterAction;
+    private double robotStartPosition;
     
     // TODO: Put these constants in RobotInfo and use the actual values
     private static final double FWD_DISTANCE_1 = 0.0;
     private static final double FWD_DISTANCE_2 = 0.0;
     private static final double FWD_DISTANCE_3 = 0.0;
+    private static final double START_POS_1 = 0.0;
+    private static final double START_POS_2 = 0.0;
+    private static final double START_POS_3 = 0.0;
 
     private TrcRobot.RobotCommand autoCommand;
 
@@ -184,7 +198,44 @@ public class FrcAuto implements TrcRobot.RobotMode
             	break;
         }
         
-        // TODO: use other choice menus
+        if(approachMenu.getCurrentChoiceObject() == FrcAuto.Approach.SIDE)
+        {
+        	sideApproach = true;
+        }
+        else
+        {
+        	sideApproach = false;
+        }
+        
+        afterAction = afterActionMenu.getCurrentChoiceObject();
+        
+        switch(afterAction)
+        {
+            case DO_NOTHING:
+            	selectedAfterAction = 0;
+        	    break;
+            case SECOND_SCALE_CUBE:
+            	selectedAfterAction = 1;
+        	    break;
+            case CUBE_IN_SWITCH:
+            	selectedAfterAction = 2;
+        	    break;
+        }
+        
+        startPosition = startPositionMenu.getCurrentChoiceObject();
+        
+        switch(startPosition)
+        {
+        case START_POS_1:
+        	robotStartPosition = START_POS_1;
+        	break;
+        case START_POS_2:
+        	robotStartPosition = START_POS_2;
+        	break;
+        case START_POS_3:
+        	robotStartPosition = START_POS_3;
+        	break;
+        }
         
         autoStrategy = autoStrategyMenu.getCurrentChoiceObject();
         delay = HalDashboard.getNumber("Delay", 0.0);
@@ -192,7 +243,7 @@ public class FrcAuto implements TrcRobot.RobotMode
         switch (autoStrategy)
         {
             case POWER_UP_AUTO:
-                autoCommand = new CmdPowerUpAuto(robot, delay, targetType, forwardDriveDistance);
+                autoCommand = new CmdPowerUpAuto(robot, delay, targetType, forwardDriveDistance, sideApproach, selectedAfterAction, robotStartPosition);
                 break;
 
             case X_TIMED_DRIVE:

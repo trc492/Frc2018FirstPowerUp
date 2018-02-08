@@ -40,7 +40,10 @@ class CmdPowerUpAuto implements TrcRobot.RobotCommand
         DRIVE_FORWARD_DISTANCE,
         MOVE_SIDEWAYS,
         DRIVE_TO_TARGET,
+        APPROACH_SCALE_SIDE,
+        APPROACH_SCALE_FRONT,
         TURN_ROBOT,
+        APPROACH_TARGET,
         DEPOSIT_CUBE,
         STRAFE_TO_PLATFORM_ZONE,
         DONE
@@ -61,8 +64,27 @@ class CmdPowerUpAuto implements TrcRobot.RobotCommand
     private int targetType;
     private CmdAutoCubePickup cmdAutoCubePickup;
     private double elevatorTargetHeight;
+    private boolean sideApproach;
+    private int afterAction;
+    private boolean rightTurn;
+    private boolean lastTurn;
+    private boolean rightSwitch;
+    private boolean rightScale;
+    private double startPosition;
+    private double targetLocation;
+    //TODO: implement all of these variables
+    
+    //TODO: add these constants to RobotInfo and fix them
+    private static final double AUTO_DISTANCE_TO_SWITCH = 168;
+    private static final double AUTO_DISTANCE_TO_SCALE = 299.65;
+    private static final double SCALE_SIDE_APPROACH_DISTANCE = 21;
+    private static final double FINAL_SCALE_APPROACH_DISTANCE = 21;
+    private static final double RIGHT_SWITCH_LOCATION = 21;
+    private static final double LEFT_SWITCH_LOCATION = 21;
+    private static final double RIGHT_SCALE_LOCATION = 21;
+    private static final double LEFT_SCALE_LOCATION = 21;
 
-    CmdPowerUpAuto(Robot robot, double delay, int targetType, double forwardDistance)
+    CmdPowerUpAuto(Robot robot, double delay, int targetType, double forwardDistance, boolean sideApproach, int afterAction, double startPosition)
     {
         DriverStation ds = DriverStation.getInstance();
         this.robot = robot;
@@ -70,6 +92,22 @@ class CmdPowerUpAuto implements TrcRobot.RobotCommand
         this.alliance = ds.getAlliance();
         // Gets which side is our switch and scale
         this.targetSide = ds.getGameSpecificMessage();
+        if(targetSide.charAt(0) == 'R')
+        {
+        	rightSwitch = true;
+        }
+        else
+        {
+        	rightSwitch = false;
+        }
+        if(targetSide.charAt(1) == 'R')
+        {
+        	rightScale = true;
+        }
+        else
+        {
+        	rightScale = false;
+        }
         this.startLocation = ds.getLocation();
 
         if(-1.0 == forwardDistance) 
@@ -82,7 +120,31 @@ class CmdPowerUpAuto implements TrcRobot.RobotCommand
         }
         
         this.targetType = targetType;
-
+        this.sideApproach = sideApproach;
+        this.afterAction = afterAction;
+        this.startPosition = startPosition;
+        if(targetType == 1)
+        {
+        	if(rightScale)
+        	{
+        		this.targetLocation = RIGHT_SCALE_LOCATION;
+        	}
+        	else
+        	{
+        		this.targetLocation = LEFT_SCALE_LOCATION;
+        	}
+        }
+        else
+        {
+        	if(rightSwitch)
+        	{
+        		this.targetLocation = RIGHT_SWITCH_LOCATION;
+        	}
+        	else
+        	{
+        		this.targetLocation = LEFT_SWITCH_LOCATION;
+        	}
+        }
 
         event = new TrcEvent(moduleName);
         timer = new TrcTimer(moduleName);
@@ -157,49 +219,95 @@ class CmdPowerUpAuto implements TrcRobot.RobotCommand
                     xDistance = 0.0;
                     yDistance = forwardDistance;
 
-                    // robot.encoderYPidCtrl.setOutputRange(-1.0, 1.0);
+                    robot.encoderYPidCtrl.setOutputRange(-1.0, 1.0);
                     robot.pidDrive.setTarget(xDistance, yDistance, robot.targetHeading, false, event);
                     sm.waitForSingleEvent(event, State.MOVE_SIDEWAYS);
                     break;
 
                 case MOVE_SIDEWAYS:
-                    xDistance = 12;
+                    xDistance = targetLocation - startPosition;
                     yDistance = 0;
-                	//TODO: Change to actual x distance
-                    robot.encoderYPidCtrl.setOutputRange(-1.0, 1.0);
                     robot.pidDrive.setTarget(xDistance, yDistance, robot.targetHeading, false, event);
-                    sm.waitForSingleEvent(event, State.DONE);
+                    sm.waitForSingleEvent(event, State.DRIVE_TO_TARGET);
                     break;
 
                 case DRIVE_TO_TARGET:
                     xDistance = 0.0;
-                    //TODO: Check numbers for yDistance expression
                     if (targetType == 0)
                     {
                     	// When the target is the switch
-                    	yDistance = 168 - forwardDistance;
-                    	robot.pidDrive.setTarget(xDistance, yDistance, robot.targetHeading, false, event);
-                    	
+                    	yDistance = AUTO_DISTANCE_TO_SWITCH - forwardDistance;
                     }
-                    else if (targetType == 1)
+                    else
                     {
                         // if the target is the scale
-                    	yDistance = 299.65 - forwardDistance;
-                    	robot.pidDrive.setTarget(xDistance, yDistance, robot.targetHeading, false, event);
+                    	yDistance = AUTO_DISTANCE_TO_SCALE - forwardDistance;
                     }
-
-                    sm.waitForSingleEvent(event, State.TURN_ROBOT);
+                	robot.pidDrive.setTarget(xDistance, yDistance, robot.targetHeading, false, event);
+                	if(sideApproach)
+                	{
+                        sm.waitForSingleEvent(event, State.APPROACH_SCALE_SIDE);
+                	}
+                	else
+                	{
+                		sm.waitForSingleEvent(event, State.APPROACH_SCALE_FRONT);
+                	}
                     break;
+                    
+                case APPROACH_SCALE_SIDE:
+                    yDistance = SCALE_SIDE_APPROACH_DISTANCE;
+                	//TODO: set turn direction based on location of target
+                	xDistance = 0;
+                	robot.pidDrive.setTarget(xDistance, yDistance, robot.targetHeading, false, event);
+                	sm.waitForSingleEvent(event, State.TURN_ROBOT);
+                	if(rightScale)
+                	{
+                		rightTurn = false;
+                	}
+                	else
+                	{
+                		rightTurn = true;
+                	}
+                	lastTurn = true;
+                    break;
+                    
+                case APPROACH_SCALE_FRONT:
+                	break;
 
                 case TURN_ROBOT:
                 	xDistance = 0;
                     yDistance = 0;
-                    robot.targetHeading = 90;
+                    if(rightTurn)
+                    {
+                        robot.targetHeading += 90;
+                    }
+                    else
+                    {
+                    	robot.targetHeading -= 90;
+                    }
                 	robot.pidDrive.setTarget(xDistance, yDistance, robot.targetHeading, false, event);
-                	sm.waitForSingleEvent(event, State.DEPOSIT_CUBE);
+                	if(lastTurn)
+                	{
+                        sm.waitForSingleEvent(event, State.APPROACH_TARGET);
+                	}
+                	else
+                	{
+                        sm.waitForSingleEvent(event, State.APPROACH_SCALE_FRONT);
+                	}
                     break;
+                    
+                case APPROACH_TARGET:
+                	xDistance = 0.0;
+                    yDistance = FINAL_SCALE_APPROACH_DISTANCE;
+                    robot.pidDrive.setTarget(xDistance, yDistance, robot.targetHeading, false, event);
+                    sm.waitForSingleEvent(event, State.DEPOSIT_CUBE);
+                	break;
 
                 case DEPOSIT_CUBE:
+                	robot.cubePickup.dropCube(0.5);
+                	timer.set(500, event);
+                	sm.waitForSingleEvent(event, State.STRAFE_TO_PLATFORM_ZONE);
+                	robot.cubePickup.stopPickup();
                     break;
 
                 case STRAFE_TO_PLATFORM_ZONE:
