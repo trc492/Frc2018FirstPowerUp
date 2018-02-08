@@ -78,7 +78,8 @@ public class Robot extends FrcRobotBase
     public static final boolean USE_ANALOG_GYRO = false;
     public static final boolean USE_GRIP_VISION = false;
     public static final boolean USE_AXIS_CAMERA = false;
-    public static final boolean USE_PIXY_SPI = true;
+    public static final boolean USE_PIXY_SPI = false;
+    public static final boolean USE_PIXY_I2C = true;
     public static final boolean USE_TEXT_TO_SPEECH = false;
     public static final boolean USE_MESSAGE_BOARD = false;
 
@@ -87,7 +88,7 @@ public class Robot extends FrcRobotBase
     private static final boolean DEBUG_GRIP_VISION = false;
     private static final boolean DEBUG_WINCH = false;
     private static final boolean DEBUG_ELEVATOR = true;
-    private static final boolean DEBUG_PIXY = false;
+    private static final boolean DEBUG_PIXY = true;
     private static final double DASHBOARD_UPDATE_INTERVAL = 0.1;
 
     // FMS provided the following info:
@@ -237,6 +238,11 @@ public class Robot extends FrcRobotBase
             pixy = new PixyVision(
                 "PixyCam", this, RobotInfo.PIXY_POWER_CUBE_SIGNATURE, RobotInfo.PIXY_BRIGHTNESS,
                 RobotInfo.PIXY_ORIENTATION, SPI.Port.kOnboardCS0);
+        } else if(USE_PIXY_I2C)
+        {
+        	pixy = new PixyVision(
+                    "PixyCam", this, RobotInfo.PIXY_POWER_CUBE_SIGNATURE, RobotInfo.PIXY_BRIGHTNESS,
+                    RobotInfo.PIXY_ORIENTATION, I2C.Port.kMXP, RobotInfo.PIXYCAM_FRONT_I2C_ADDRESS);
         }
 
         //
@@ -491,8 +497,8 @@ public class Robot extends FrcRobotBase
                     {
                         dashboard.displayPrintf(14, "Pixy: x=%d, y=%d, width=%d, height=%d",
                             targetInfo.rect.x, targetInfo.rect.y, targetInfo.rect.width, targetInfo.rect.height);
-                        dashboard.displayPrintf(15, "xDistance=%.1f, yDistance=%.1f, angle=%.1f",
-                            targetInfo.xDistance, targetInfo.yDistance, targetInfo.angle);
+                        dashboard.displayPrintf(15, "xDistance=%.1f, yDistance=%.1f, angle=%.1f, ultrasonic=%.1f",
+                            targetInfo.xDistance, targetInfo.yDistance, targetInfo.angle, this.getUltrasonicDistance());
                     }
                 }
             }
