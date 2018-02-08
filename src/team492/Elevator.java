@@ -28,7 +28,7 @@ import trclib.TrcPidController;
 import frclib.FrcCANTalon;
 import frclib.FrcCANTalonLimitSwitch;
 
-public class Elevator
+public class Elevator 
 {
     public TrcPidActuator elevator;
     public FrcCANTalon elevatorMotor;
@@ -109,5 +109,5 @@ public class Elevator
     public double getGravityCompensation()
     {
         return RobotInfo.ELEVATOR_GRAVITY_COMPENSATION;
-    }
+    } // % of power needed to keep the elevator from sliding down, disregarding friction
 }
