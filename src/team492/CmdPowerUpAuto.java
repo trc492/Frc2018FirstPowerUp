@@ -227,4 +227,4 @@ class CmdPowerUpAuto implements TrcRobot.RobotCommand
         return done;
     } // cmdPeriodic
 
-} // class CmdSideGearLift
+} // class CmdPowerUpAuto

@@ -28,71 +28,59 @@ import trclib.TrcPidController;
 import frclib.FrcCANTalon;
 import frclib.FrcCANTalonLimitSwitch;
 
-public class Elevator 
+public class Elevator
 {
-    public TrcPidActuator elevator;
     public FrcCANTalon elevatorMotor;
     public TrcPidController elevatorPidCtrl;
-    
+    public TrcPidActuator elevator;
+
     private double elevatorPower = 0.0;
 
     public Elevator()
     {
-        elevatorMotor = new FrcCANTalon("elevatorMotor", RobotInfo.CANID_ELEVATOR); // the name and the device number
+        elevatorMotor = new FrcCANTalon("elevatorMotor", RobotInfo.CANID_ELEVATOR);
         elevatorMotor.configFwdLimitSwitchNormallyOpen(false);
         elevatorMotor.configRevLimitSwitchNormallyOpen(false);
         elevatorMotor.motor.overrideLimitSwitchesEnable(true);
-        // elevatorMotor.setSoftLimitEnabled(true, true);
-        // elevatorMotor.setSoftLowerLimit(RobotInfo.ELEVATOR_MIN_HEIGHT);
-        // elevatorMotor.setSoftLowerLimit(RobotInfo.ELEVATOR_MAX_HEIGHT);
-        elevatorPidCtrl = new TrcPidController(
-            "elevatorPidController",
+        elevatorPidCtrl = new TrcPidController("elevatorPidController",
             new TrcPidController.PidCoefficients(RobotInfo.ELEVATOR_KP, RobotInfo.ELEVATOR_KI, RobotInfo.ELEVATOR_KD),
             RobotInfo.ELEVATOR_TOLERANCE, this::getPosition);
-        elevator = new TrcPidActuator(
-            "elevator", elevatorMotor,
-            new FrcCANTalonLimitSwitch("elevatorLowerLimit", elevatorMotor, false),
-            elevatorPidCtrl, RobotInfo.ELEVATOR_MIN_HEIGHT, RobotInfo.ELEVATOR_MAX_HEIGHT,
-            this::getGravityCompensation);
+        elevator = new TrcPidActuator("elevator", elevatorMotor,
+            new FrcCANTalonLimitSwitch("elevatorLowerLimit", elevatorMotor, false), elevatorPidCtrl,
+            RobotInfo.ELEVATOR_MIN_HEIGHT, RobotInfo.ELEVATOR_MAX_HEIGHT, this::getGravityCompensation);
         elevator.setPositionScale(RobotInfo.ELEVATOR_INCHES_PER_COUNT);
     }
 
     public void setManualOverride(boolean manualOverride)
     {
         elevator.setManualOverride(manualOverride);
-    }   //setManualOverride
+    } // setManualOverride
 
     public void zeroCalibrate()
     {
         elevator.zeroCalibrate(RobotInfo.ELEVATOR_CAL_POWER);
-    }   //zeroCalibrate
+    } // zeroCalibrate
 
     /**
      * 
-     * @param pos (Altitude in inches)
-     * @param event (TrcEvent event)
-     * @param timeout 
-     * Set the position for Elevator to move to in inches using PID control.
+     * @param pos
+     *            (Altitude in inches)
+     * @param event
+     *            (TrcEvent event)
+     * @param timeout
+     *            Set the position for Elevator to move to in inches using PID
+     *            control.
      */
     public void setPosition(double pos, TrcEvent event, double timeout)
     {
         elevator.setTarget(pos, event, timeout);
-    }   //setPosition
+    } // setPosition
 
     public void setPower(double power)
     {
-        double pos = getPosition();
-
-        if (!elevator.isManualOverride() &&
-        	(power > 0.0 && pos >= RobotInfo.ELEVATOR_MAX_HEIGHT ||
-            power < 0.0 && pos <= RobotInfo.ELEVATOR_MIN_HEIGHT))
-        {
-            power = 0.0;
-        }
-
         elevator.setPower(power);
         elevatorPower = power;
-    }   //setPower
+    } // setPower
 
     // get the current power the elevator actuator is running at.
     public double getPower()
@@ -100,7 +88,8 @@ public class Elevator
         return elevatorPower;
     }
 
-    // get the current altitude of the elevator relative to encoder zero. (in inches)
+    // get the current altitude of the elevator relative to encoder zero. (in
+    // inches)
     public double getPosition()
     {
         return elevator.getPosition();
@@ -108,6 +97,8 @@ public class Elevator
 
     public double getGravityCompensation()
     {
+        // % of power needed to keep the elevator from sliding down,
+        // disregarding friction
         return RobotInfo.ELEVATOR_GRAVITY_COMPENSATION;
-    } // % of power needed to keep the elevator from sliding down, disregarding friction
+    }
 }
