@@ -218,9 +218,9 @@ public class RobotInfo
     public static final double ELEVATOR_MIN_HEIGHT              = 0.0;
     public static final double ELEVATOR_MAX_HEIGHT              = 85.0;
     public static final double ELEVATOR_MID_HEIGHT              = 4.0;
-    public static final double ELEVATOR_CAL_POWER               = 0.3;               // this too
-    public static final double ELEVATOR_FLOOR_PICKUP_HEIGHT     = 6.0; // 6 inches off the ground
-    public static final double ELEVATOR_GRAVITY_COMPENSATION    = 0.0; //TODO: need to tune this
+    public static final double ELEVATOR_CAL_POWER               = 0.3;                // this too
+    public static final double ELEVATOR_FLOOR_PICKUP_HEIGHT     = 6.0;                // 6 inches off the ground
+    public static final double ELEVATOR_GRAVITY_COMPENSATION    = 0.04735821;         // 76.388 N (weight of elevator) * 0.01905 m (radius of sprocket) / 12.75 (gear ratio) / 2.41 Nm (stall torque) = percent of power needed
     
     //
     // AutoAssist subsystem
