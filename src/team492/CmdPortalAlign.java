@@ -41,9 +41,9 @@ public class CmdPortalAlign implements TrcRobot.RobotCommand
 	public CmdPortalAlign(Robot robot)
 	{
 		this.robot = robot;
-		pidEvent = new TrcEvent(moduleName);
-		leftEvent = new TrcEvent(moduleName);
-		rightEvent = new TrcEvent(moduleName);
+		pidEvent = new TrcEvent(moduleName + "-pidEvent");
+		leftEvent = new TrcEvent(moduleName + "-leftEvent");
+		rightEvent = new TrcEvent(moduleName + "-rightEvent");
 		
 		leftProximitySensor = new FrcDigitalInput("LeftProximitySensor", RobotInfo.DIN_LEFT_PROXIMITY_SENSOR);
 		rightProximitySensor = new FrcDigitalInput("RightProximitySensor", RobotInfo.DIN_RIGHT_PROXIMITY_SENSOR);
@@ -128,6 +128,6 @@ public class CmdPortalAlign implements TrcRobot.RobotCommand
 	private void rightTriggerEvent(boolean enabled)
 	{
 		rightEvent.set(true);
-		leftTrigger.setEnabled(false);
+		rightTrigger.setEnabled(false);
 	}
 }

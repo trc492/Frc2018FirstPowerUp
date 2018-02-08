@@ -24,6 +24,7 @@ package team492;
 
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 import frclib.FrcChoiceMenu;
+import frclib.FrcJoystick;
 import trclib.TrcEvent;
 import trclib.TrcStateMachine;
 import trclib.TrcTimer;
@@ -71,6 +72,8 @@ public class FrcTest extends FrcTeleOp
     private CmdVisionPidTurn visionPidTurnCommand = null;
 
     private int motorIndex = 0;
+    private boolean processedInput = false;
+    private boolean overrideGrabber = false;
 
     public FrcTest(Robot robot)
     {
@@ -301,6 +304,81 @@ public class FrcTest extends FrcTeleOp
                 break;
         }
     }   //runContinuous
+    
+    @Override
+    public void operatorStickButtonEvent(int button, boolean pressed)
+    {
+    	switch (button)
+        {
+            case FrcJoystick.LOGITECH_TRIGGER:
+            	if(overrideGrabber)
+            	{
+            		if(pressed)
+            		{
+            			robot.cubePickup.grabCube(0.7);
+            		} else
+            		{
+            			robot.cubePickup.grabCube(0.0);
+            		}
+            		processedInput = true;
+            	}
+                break;
+
+            case FrcJoystick.LOGITECH_BUTTON2:
+                break;
+
+            case FrcJoystick.LOGITECH_BUTTON3:
+            	if(overrideGrabber)
+            	{
+            		if(pressed)
+            		{
+            			robot.cubePickup.grabCube(-0.7);
+            		} else
+            		{
+            			robot.cubePickup.grabCube(0.0);
+            		}
+            		processedInput = true;
+            	}
+                break;
+
+            case FrcJoystick.LOGITECH_BUTTON4:
+                break;
+
+            case FrcJoystick.LOGITECH_BUTTON5:
+                break;
+
+            case FrcJoystick.LOGITECH_BUTTON6:
+                break;
+
+            case FrcJoystick.LOGITECH_BUTTON7:
+                break;
+
+            case FrcJoystick.LOGITECH_BUTTON8:
+            	robot.elevator.setManualOverride(pressed);
+            	processedInput = true;
+                break;
+
+            case FrcJoystick.LOGITECH_BUTTON9:
+            	overrideGrabber = pressed;
+            	processedInput = true;
+                break;
+
+            case FrcJoystick.LOGITECH_BUTTON10:
+                break;
+
+            case FrcJoystick.LOGITECH_BUTTON11:
+                break;
+
+            case FrcJoystick.LOGITECH_BUTTON12:
+                break;
+        }
+    	
+    	if(!processedInput)
+    	{
+    		super.operatorStickButtonEvent(button, pressed);
+    	}
+    	processedInput = false;
+    }
 
     /**
      * This method reads all sensors and prints out their values. This is a very useful diagnostic tool to check
