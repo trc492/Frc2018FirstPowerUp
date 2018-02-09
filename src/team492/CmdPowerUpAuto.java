@@ -139,10 +139,12 @@ class CmdPowerUpAuto implements TrcRobot.RobotCommand
         		this.targetLocation = LEFT_SWITCH_LOCATION;
         	}
         }
-        if(targetType == 1) {
+        if(targetType == 1)
+        {
     		elevatorTargetHeight = SCALE_TARGET_HEIGHT;
     	}
-    	else {
+    	else 
+        {
     		elevatorTargetHeight = SWITCH_TARGET_HEIGHT;
     	}
 
