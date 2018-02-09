@@ -315,7 +315,7 @@ public class FrcTest extends FrcTeleOp
             	{
             		if(pressed)
             		{
-            			robot.cubePickup.grabCube(0.7);
+            			robot.cubePickup.grabCube(RobotInfo.TELEOP_GRABBER_POWER);
             		} else
             		{
             			robot.cubePickup.grabCube(0.0);
@@ -332,7 +332,7 @@ public class FrcTest extends FrcTeleOp
             	{
             		if(pressed)
             		{
-            			robot.cubePickup.grabCube(-0.7);
+            			robot.cubePickup.grabCube(RobotInfo.TELEOP_GRABBER_POWER);
             		} else
             		{
             			robot.cubePickup.grabCube(0.0);

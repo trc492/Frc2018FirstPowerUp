@@ -50,7 +50,13 @@ public class RobotInfo
     public static final int JSPORT_LEFT_DRIVESTICK              = 0;
     public static final int JSPORT_RIGHT_DRIVESTICK             = 1;
     public static final int JSPORT_OPERATORSTICK                = 2;
-
+    
+    //
+    // Teleop constants
+    //
+    public static final double TELEOP_ELEVATOR_POWER            = 1.0; // TODO: This needs to be calibrated
+    public static final double TELEOP_GRABBER_POWER             = 0.5; // TODO: This needs to be calibrated
+    
     //
     // Analog Input ports.
     //
@@ -205,7 +211,6 @@ public class RobotInfo
     public static final double WINCH_HEIGHT_THRESHOLD           = 28.0;
     public static final double WINCH_SPIKE_TIMEOUT              = 0.5;
     public static final double WINCH_TILT_THRESHOLD             = 35.0;
-    public static final double WINCH_TELEOP_POWER               = 1.0; // TODO: This needs to be calibrated
 
     //
     // Elevator subsystem.

@@ -283,7 +283,7 @@ public class FrcTeleOp implements TrcRobot.RobotMode
             case FrcJoystick.LOGITECH_TRIGGER:
                 if (pressed && !robot.cubePickup.cubeDetected())
                 {
-                    robot.cubePickup.grabCube(0.5);
+                    robot.cubePickup.grabCube(RobotInfo.TELEOP_GRABBER_POWER);
                 }
                 else
                 {
@@ -301,16 +301,16 @@ public class FrcTeleOp implements TrcRobot.RobotMode
                     {
                         if (robot.cubePickup.cubeDetected())
                         {
-                            robot.cubePickup.dropCube(0.5);
+                            robot.cubePickup.dropCube(RobotInfo.TELEOP_GRABBER_POWER);
                         }
                         else
                         {
-                            robot.cubePickup.grabCube(0.5);
+                            robot.cubePickup.grabCube(RobotInfo.TELEOP_GRABBER_POWER);
                         }
                     }
                     else
                     {
-                        robot.cubePickup.dropCube(0.5);
+                        robot.cubePickup.dropCube(RobotInfo.TELEOP_GRABBER_POWER);
                     }
                 }
                 else
@@ -370,7 +370,7 @@ public class FrcTeleOp implements TrcRobot.RobotMode
                 if (pressed)
                 {
 
-                    robot.winch.setPower(-RobotInfo.WINCH_TELEOP_POWER); // Go
+                    robot.winch.setPower(-RobotInfo.TELEOP_ELEVATOR_POWER); // Go
                                                                          // down
                 }
                 else
@@ -382,7 +382,7 @@ public class FrcTeleOp implements TrcRobot.RobotMode
             case FrcJoystick.LOGITECH_BUTTON11:
                 if (pressed)
                 {
-                    robot.winch.setPower(RobotInfo.WINCH_TELEOP_POWER); // Go up
+                    robot.winch.setPower(RobotInfo.TELEOP_ELEVATOR_POWER); // Go up
                 }
                 else
                 {
