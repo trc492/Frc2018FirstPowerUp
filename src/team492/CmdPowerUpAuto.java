@@ -78,6 +78,7 @@ class CmdPowerUpAuto implements TrcRobot.RobotCommand
     private static final double AUTO_DISTANCE_TO_SWITCH = 168;
     private static final double AUTO_DISTANCE_TO_SCALE = 299.65;
     private static final double SCALE_SIDE_APPROACH_DISTANCE = 21;
+    private static final double SCALE_FRONT_APPROACH_DISTANCE = 21;
     private static final double FINAL_SCALE_APPROACH_DISTANCE = 21;
     private static final double RIGHT_SWITCH_LOCATION = 21;
     private static final double LEFT_SWITCH_LOCATION = 21;
@@ -92,22 +93,8 @@ class CmdPowerUpAuto implements TrcRobot.RobotCommand
         this.alliance = ds.getAlliance();
         // Gets which side is our switch and scale
         this.targetSide = ds.getGameSpecificMessage();
-        if(targetSide.charAt(0) == 'R')
-        {
-        	rightSwitch = true;
-        }
-        else
-        {
-        	rightSwitch = false;
-        }
-        if(targetSide.charAt(1) == 'R')
-        {
-        	rightScale = true;
-        }
-        else
-        {
-        	rightScale = false;
-        }
+        this.rightSwitch = (targetSide.charAt(0) == 'R');
+        this.rightScale = (targetSide.charAt(1) == 'R');
         this.startLocation = ds.getLocation();
 
         if(-1.0 == forwardDistance) 
@@ -237,26 +224,27 @@ class CmdPowerUpAuto implements TrcRobot.RobotCommand
                     {
                     	// When the target is the switch
                     	yDistance = AUTO_DISTANCE_TO_SWITCH - forwardDistance;
+                    	robot.pidDrive.setTarget(xDistance, yDistance, robot.targetHeading, false, event);
+                		sm.waitForSingleEvent(event, State.DEPOSIT_CUBE);
                     }
                     else
                     {
                         // if the target is the scale
                     	yDistance = AUTO_DISTANCE_TO_SCALE - forwardDistance;
+                    	robot.pidDrive.setTarget(xDistance, yDistance, robot.targetHeading, false, event);
+                    	if(sideApproach)
+                	    {
+                            sm.waitForSingleEvent(event, State.APPROACH_SCALE_SIDE);
+                	    }
+                	    else
+                	    {
+                		    sm.waitForSingleEvent(event, State.APPROACH_SCALE_FRONT);
+                	    }
                     }
-                	robot.pidDrive.setTarget(xDistance, yDistance, robot.targetHeading, false, event);
-                	if(sideApproach)
-                	{
-                        sm.waitForSingleEvent(event, State.APPROACH_SCALE_SIDE);
-                	}
-                	else
-                	{
-                		sm.waitForSingleEvent(event, State.APPROACH_SCALE_FRONT);
-                	}
                     break;
                     
                 case APPROACH_SCALE_SIDE:
                     yDistance = SCALE_SIDE_APPROACH_DISTANCE;
-                	//TODO: set turn direction based on location of target
                 	xDistance = 0;
                 	robot.pidDrive.setTarget(xDistance, yDistance, robot.targetHeading, false, event);
                 	sm.waitForSingleEvent(event, State.TURN_ROBOT);
@@ -272,6 +260,17 @@ class CmdPowerUpAuto implements TrcRobot.RobotCommand
                     break;
                     
                 case APPROACH_SCALE_FRONT:
+                	yDistance = 0;
+                	if(rightScale)
+                	{
+                    	xDistance = SCALE_FRONT_APPROACH_DISTANCE;
+                	}
+                	else
+                	{
+                    	xDistance = -SCALE_FRONT_APPROACH_DISTANCE;
+                	}
+                	robot.pidDrive.setTarget(xDistance, yDistance, robot.targetHeading, false, event);
+                	sm.waitForSingleEvent(event, State.APPROACH_TARGET);
                 	break;
 
                 case TURN_ROBOT:
@@ -298,16 +297,15 @@ class CmdPowerUpAuto implements TrcRobot.RobotCommand
                     
                 case APPROACH_TARGET:
                 	xDistance = 0.0;
+                	// TODO: change yDistance based on approach if necessary
                     yDistance = FINAL_SCALE_APPROACH_DISTANCE;
                     robot.pidDrive.setTarget(xDistance, yDistance, robot.targetHeading, false, event);
                     sm.waitForSingleEvent(event, State.DEPOSIT_CUBE);
                 	break;
 
                 case DEPOSIT_CUBE:
-                	robot.cubePickup.dropCube(0.5);
-                	timer.set(500, event);
+                	robot.cubePickup.grabCube(-0.5, event);
                 	sm.waitForSingleEvent(event, State.STRAFE_TO_PLATFORM_ZONE);
-                	robot.cubePickup.stopPickup();
                     break;
 
                 case STRAFE_TO_PLATFORM_ZONE:
