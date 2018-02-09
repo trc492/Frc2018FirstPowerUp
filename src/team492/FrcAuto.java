@@ -107,12 +107,12 @@ public class FrcAuto implements TrcRobot.RobotMode
     private double robotStartPosition;
     
     // TODO: Put these constants in RobotInfo and use the actual values
-    private static final double FWD_DISTANCE_1 = 0.0;
-    private static final double FWD_DISTANCE_2 = 0.0;
-    private static final double FWD_DISTANCE_3 = 0.0;
-    private static final double START_POS_1 = 0.0;
+    private static final double FWD_DISTANCE_1 = 4.0;
+    private static final double FWD_DISTANCE_2 = 50.0;
+    private static final double FWD_DISTANCE_3 = 208.0;
+    private static final double START_POS_1 = -96.0;
     private static final double START_POS_2 = 0.0;
-    private static final double START_POS_3 = 0.0;
+    private static final double START_POS_3 = 96.0;
 
     private TrcRobot.RobotCommand autoCommand;
 
