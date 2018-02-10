@@ -26,11 +26,9 @@ import org.opencv.core.Rect;
 
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 
-import edu.wpi.cscore.AxisCamera;
 import edu.wpi.cscore.CvSink;
 import edu.wpi.cscore.CvSource;
 import edu.wpi.cscore.UsbCamera;
-import edu.wpi.first.wpilibj.AnalogGyro;
 import edu.wpi.first.wpilibj.AnalogInput;
 import edu.wpi.first.wpilibj.CameraServer;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -45,7 +43,6 @@ import edu.wpi.first.wpilibj.Relay.Value;
 import frclib.FrcAHRSGyro;
 import frclib.FrcCANTalon;
 import frclib.FrcEmic2TextToSpeech;
-import frclib.FrcGyro;
 import frclib.FrcI2cLEDPanel;
 import frclib.FrcRobotBase;
 import frclib.FrcRobotBattery;
@@ -74,10 +71,9 @@ public class Robot extends FrcRobotBase
     private static final String moduleName = "Robot";
 
     public static final boolean USE_TRACELOG = true;
-    public static final boolean USE_NAV_X = false;
-    public static final boolean USE_ANALOG_GYRO = false;
+    public static final boolean USE_NAV_X = true;
+    public static final boolean USE_USB_CAM = true;
     public static final boolean USE_GRIP_VISION = false;
-    public static final boolean USE_AXIS_CAMERA = false;
     public static final boolean USE_PIXY_SPI = false;
     public static final boolean USE_PIXY_I2C = true;
     public static final boolean USE_TEXT_TO_SPEECH = false;
@@ -90,14 +86,6 @@ public class Robot extends FrcRobotBase
     private static final boolean DEBUG_ELEVATOR = true;
     private static final boolean DEBUG_PIXY = true;
     private static final double DASHBOARD_UPDATE_INTERVAL = 0.1;
-
-    // FMS provided the following info:
-    //  - alliance
-    //  - location
-    //  - match type
-    //  - match number
-    //  - event name
-    //  - replay number???
 
     public DriverStation ds = DriverStation.getInstance();
     public HalDashboard dashboard = HalDashboard.getInstance();
@@ -157,9 +145,21 @@ public class Robot extends FrcRobotBase
     public Elevator elevator;
     public CmdAutoCubePickup cmdAutoCubePickup;
 
-    public MatchType matchType;
-    public int matchNumber;
-    public Alliance alliance;
+    // FMS provided the following info:
+    //  - event name
+    //  - match type
+    //  - match number
+    //  - alliance
+    //  - location
+    //  - replay number???
+
+    public String eventName = "Unknown";
+    public MatchType matchType = MatchType.None;
+    public int matchNumber = 0;
+    public Alliance alliance = Alliance.Red;
+    public int location = 1;
+    public String gameSpecificMessage = null;
+
     public double driveTime;
     public double drivePower;
     public double driveDistance;
@@ -194,51 +194,35 @@ public class Robot extends FrcRobotBase
         {
             gyro = new FrcAHRSGyro("NavX", SPI.Port.kMXP);
         }
-        else if (USE_ANALOG_GYRO)
-        {
-            gyro = new FrcGyro("AnalogGyro", new AnalogGyro(RobotInfo.AIN_ANALOG_GYRO));
-        }
         pressureSensor = new AnalogInput(RobotInfo.AIN_PRESSURE_SENSOR);
         ultrasonicSensor = new AnalogInput(RobotInfo.AIN_ULTRASONIC_SENSOR);
 
         //
         // VisionTarget subsystem.
         //
-        if (USE_GRIP_VISION)
+        if (USE_USB_CAM)
         {
-            CvSink videoIn;
-            CvSource videoOut;
-
-            if (USE_AXIS_CAMERA)
+            UsbCamera cam0 = CameraServer.getInstance().startAutomaticCapture("cam0", 0);
+            cam0.setResolution(RobotInfo.CAM_WIDTH, RobotInfo.CAM_HEIGHT);
+            cam0.setFPS(RobotInfo.CAM_FRAME_RATE);
+            cam0.setBrightness(RobotInfo.CAM_BRIGHTNESS);
+            if (USE_GRIP_VISION)
             {
-                AxisCamera axisCam = CameraServer.getInstance().addAxisCamera("axis-camera.local");
-                axisCam.setResolution(RobotInfo.CAM_WIDTH, RobotInfo.CAM_HEIGHT);
-                axisCam.setFPS(RobotInfo.CAM_FRAME_RATE);
-                axisCam.setBrightness(RobotInfo.CAM_BRIGHTNESS);
-                videoIn = CameraServer.getInstance().getVideo(axisCam);
-            }
-            else
-            {
-                //
-                // Use USB camera.
-                //
-                UsbCamera cam0 = CameraServer.getInstance().startAutomaticCapture("cam0", 0);
-                cam0.setResolution(RobotInfo.CAM_WIDTH, RobotInfo.CAM_HEIGHT);
-                cam0.setFPS(RobotInfo.CAM_FRAME_RATE);
-                cam0.setBrightness(RobotInfo.CAM_BRIGHTNESS);
-                videoIn = CameraServer.getInstance().getVideo(cam0);
-            }
-            videoOut = CameraServer.getInstance().putVideo("VisionTarget", RobotInfo.CAM_WIDTH, RobotInfo.CAM_HEIGHT);
+                CvSink videoIn = CameraServer.getInstance().getVideo(cam0);
+                CvSource videoOut = CameraServer.getInstance().putVideo(
+                    "VisionTarget", RobotInfo.CAM_WIDTH, RobotInfo.CAM_HEIGHT);
 
-            gripVision = new GripVision("GripVision", videoIn, videoOut);
+                gripVision = new GripVision("GripVision", videoIn, videoOut);
+            }
         }
 
         if (USE_PIXY_SPI)
         {
             pixy = new PixyVision(
                 "PixyCam", this, RobotInfo.PIXY_POWER_CUBE_SIGNATURE, RobotInfo.PIXY_BRIGHTNESS,
-                RobotInfo.PIXY_ORIENTATION, SPI.Port.kOnboardCS0);
-        } else if(USE_PIXY_I2C)
+                RobotInfo.PIXY_ORIENTATION, SPI.Port.kMXP);
+        }
+        else if(USE_PIXY_I2C)
         {
         	pixy = new PixyVision(
                     "PixyCam", this, RobotInfo.PIXY_POWER_CUBE_SIGNATURE, RobotInfo.PIXY_BRIGHTNESS,
@@ -367,21 +351,17 @@ public class Robot extends FrcRobotBase
 
     public void robotStartMode()
     {
+        if (ds.isFMSAttached())
+        {
+            eventName = ds.getEventName();
+            matchType = ds.getMatchType();
+            matchNumber = ds.getMatchNumber();
+        }
+        alliance = ds.getAlliance();
+        location = ds.getLocation();
+        gameSpecificMessage = ds.getGameSpecificMessage();
+
         battery.setEnabled(true);
-        tracer.traceInfo("Robot Start Mode", "FMS Connected: %b", ds.isFMSAttached());
-        tracer.traceInfo("Robot Start Mode", "Switch/Scale/Switch randomization: ", ds.getGameSpecificMessage());
-        if(ds.isFMSAttached())
-        {
-        	matchType = ds.getMatchType();
-        	matchNumber = ds.getMatchNumber();
-        	alliance = ds.getAlliance();
-        }
-        else
-        {
-        	matchType = MatchType.None;
-        	matchNumber = 0;
-        	alliance = ds.getAlliance();
-        }
         driveTime = HalDashboard.getNumber("DriveTime", 5.0);
         drivePower = HalDashboard.getNumber("DrivePower", 0.2);
         driveDistance = HalDashboard.getNumber("DriveDistance", 6.0);
@@ -470,18 +450,15 @@ public class Robot extends FrcRobotBase
 
             if (DEBUG_WINCH)
             {
-                dashboard.displayPrintf(8, "Winch: power=%.1f, position=%.1f, touch=%s/%s",
-                    winch.getPower(), winch.getPosition(),
-                    Boolean.toString(winch.isUpperLimitSwitchActive()),
-                    Boolean.toString(winch.isLowerLimitSwitchActive()));
+                dashboard.displayPrintf(8, "Winch: power=%.1f", winch.getPower());
             }
 
             if (DEBUG_ELEVATOR)
             {
-                dashboard.displayPrintf(8, "Elevator: power=%.1f, position=%.1f(%.1f), touch=%s/%s",
+                dashboard.displayPrintf(8, "Elevator: power=%.1f, position=%.1f(%.1f), limitSw=%b/%b",
                     elevator.getPower(), elevator.getPosition(), elevator.elevatorMotor.getPosition(),
-                    Boolean.toString(elevator.elevatorMotor.isLowerLimitSwitchActive()),
-                    Boolean.toString(elevator.elevatorMotor.isUpperLimitSwitchActive()));
+                    elevator.elevatorMotor.isLowerLimitSwitchActive(),
+                    elevator.elevatorMotor.isUpperLimitSwitchActive());
             }
 
             if (DEBUG_PIXY)
@@ -498,7 +475,7 @@ public class Robot extends FrcRobotBase
                         dashboard.displayPrintf(14, "Pixy: x=%d, y=%d, width=%d, height=%d",
                             targetInfo.rect.x, targetInfo.rect.y, targetInfo.rect.width, targetInfo.rect.height);
                         dashboard.displayPrintf(15, "xDistance=%.1f, yDistance=%.1f, angle=%.1f, ultrasonic=%.1f",
-                            targetInfo.xDistance, targetInfo.yDistance, targetInfo.angle, this.getUltrasonicDistance());
+                            targetInfo.xDistance, targetInfo.yDistance, targetInfo.angle, getUltrasonicDistance());
                     }
                 }
             }
@@ -507,7 +484,7 @@ public class Robot extends FrcRobotBase
 
     public void startTraceLog(String prefix)
     {
-        String filePrefix = prefix != null? prefix: matchType.toString();
+        String filePrefix = prefix != null? prefix: eventName + "_" + matchType.toString();
         if (prefix == null) filePrefix += String.format("%03d", matchNumber);
         tracer.openTraceLog("/home/lvuser/tracelog", filePrefix);
     }   //startTraceLog

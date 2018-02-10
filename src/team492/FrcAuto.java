@@ -8,8 +8,8 @@
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
  *
- * The above copyright notice and this permission notice shall be included in all
- * copies or substantial portions of the Software.
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
  *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
@@ -34,7 +34,7 @@ public class FrcAuto implements TrcRobot.RobotMode
 {
     public static enum AutoStrategy
     {
-        //Different choices for autonomous
+        // Different choices for autonomous
         POWER_UP_AUTO,
         X_TIMED_DRIVE,
         Y_TIMED_DRIVE,
@@ -42,46 +42,46 @@ public class FrcAuto implements TrcRobot.RobotMode
         Y_DISTANCE_DRIVE,
         TURN_DEGREES,
         DO_NOTHING
-    }   //enum AutoStrategy
-    
+    } // enum AutoStrategy
+
     public static enum TargetType
     {
-        //Different choices for targets
-    	SWITCH,
-    	SCALE
-    }   //enum TargetType
-    
+        // Different choices for targets
+        SWITCH,
+        SCALE
+    } // enum TargetType
+
     public static enum ForwardDistance
     {
-        //Different choices for forward distances
-    	FWD_DISTANCE_1,
-    	FWD_DISTANCE_2,
-    	FWD_DISTANCE_3,
-    	CUSTOM
-    }   //enum ForwardDistance
-    
+        // Different choices for forward distances
+        FWD_DISTANCE_1,
+        FWD_DISTANCE_2,
+        FWD_DISTANCE_3,
+        CUSTOM
+    } // enum ForwardDistance
+
     public static enum Approach
     {
-        //Different choices for approaches
-    	SIDE,
-    	FRONT
-    }   //enum Approach
-    
+        // Different choices for approaches
+        SIDE,
+        FRONT
+    } // enum Approach
+
     public static enum AfterAction
     {
-        //Different choices for after actions
-    	DO_NOTHING,
-    	SECOND_SCALE_CUBE,
-    	CUBE_IN_SWITCH
-    }   //enum AfterActions
-    
+        // Different choices for after actions
+        DO_NOTHING,
+        SECOND_SCALE_CUBE,
+        CUBE_IN_SWITCH
+    } // enum AfterActions
+
     public static enum StartPosition
     {
-        //Different choices for start positions
-    	START_POS_1,
-    	START_POS_2,
-    	START_POS_3
-    }   //enum StartPosition
+        // Different choices for start positions
+        START_POS_1,
+        START_POS_2,
+        START_POS_3
+    } // enum StartPosition
 
     private Robot robot;
     private boolean useVision = false;
@@ -101,15 +101,16 @@ public class FrcAuto implements TrcRobot.RobotMode
     private AfterAction afterAction;
     private StartPosition startPosition;
     private double delay;
-    
+
     private int targetType = 0;
     private double forwardDriveDistance;
     private boolean sideApproach;
     private int selectedAfterAction;
     private double robotStartPosition;
-    
-    // TODO: Put these constants in RobotInfo (now in RobotInfo) and use the actual values (done-ish)
-    
+
+    // TODO: Put these constants in RobotInfo (now in RobotInfo) and use the
+    // actual values (done-ish)
+
     private TrcRobot.RobotCommand autoCommand;
 
     public FrcAuto(Robot robot)
@@ -123,7 +124,7 @@ public class FrcAuto implements TrcRobot.RobotMode
         forwardDistanceMenu = new FrcChoiceMenu<>("Target Types");
         approachMenu = new FrcChoiceMenu<>("Target Types");
         afterActionMenu = new FrcChoiceMenu<>("Target Types");
-        
+
         //
         // Populate Autonomous Mode menus.
         //
@@ -134,22 +135,22 @@ public class FrcAuto implements TrcRobot.RobotMode
         autoStrategyMenu.addChoice("Y Distance Drive", FrcAuto.AutoStrategy.Y_DISTANCE_DRIVE, false);
         autoStrategyMenu.addChoice("Turn Degrees", FrcAuto.AutoStrategy.TURN_DEGREES, false);
         autoStrategyMenu.addChoice("Do Nothing", FrcAuto.AutoStrategy.DO_NOTHING, false);
-        
+
         targetTypeMenu.addChoice("Switch", FrcAuto.TargetType.SWITCH, true);
         targetTypeMenu.addChoice("Scale", FrcAuto.TargetType.SCALE, false);
-        
+
         forwardDistanceMenu.addChoice("Distance 1", FrcAuto.ForwardDistance.FWD_DISTANCE_1, false);
         forwardDistanceMenu.addChoice("Distance 2", FrcAuto.ForwardDistance.FWD_DISTANCE_2, false);
         forwardDistanceMenu.addChoice("Distance 3", FrcAuto.ForwardDistance.FWD_DISTANCE_3, false);
         forwardDistanceMenu.addChoice("Custom Distance", FrcAuto.ForwardDistance.CUSTOM, false);
-        
+
         approachMenu.addChoice("Front", FrcAuto.Approach.FRONT, false);
         approachMenu.addChoice("Side", FrcAuto.Approach.SIDE, false);
-        
+
         afterActionMenu.addChoice("Do Nothing", FrcAuto.AfterAction.DO_NOTHING, false);
         afterActionMenu.addChoice("Second Scale Cube", FrcAuto.AfterAction.SECOND_SCALE_CUBE, false);
         afterActionMenu.addChoice("Switch Cube", FrcAuto.AfterAction.CUBE_IN_SWITCH, false);
-    }   //FrcAuto
+    } // FrcAuto
 
     //
     // Implements TrcRobot.RunMode.
@@ -160,86 +161,90 @@ public class FrcAuto implements TrcRobot.RobotMode
     {
         HalDashboard.getInstance().clearDisplay();
 
-        if (Robot.USE_TRACELOG) robot.startTraceLog(null);
+        if (Robot.USE_TRACELOG)
+            robot.startTraceLog(null);
 
         Date now = new Date();
         robot.tracer.traceInfo(Robot.programName, "%s: ***** Starting autonomous *****", now.toString());
-
+        robot.tracer.traceInfo(Robot.programName, "%s_%s_%3d (%s%d) [FMSConnected=%b]", robot.eventName,
+            robot.matchType.toString(), robot.matchNumber, robot.alliance.toString(), robot.location,
+            robot.ds.isFMSAttached());
         //
         // Retrieve menu choice values.
         //
-        if(targetTypeMenu.getCurrentChoiceObject() == FrcAuto.TargetType.SCALE)
+        if (targetTypeMenu.getCurrentChoiceObject() == FrcAuto.TargetType.SCALE)
         {
-        	targetType = 1;
+            targetType = 1;
         }
-        
+
         forwardDistance = forwardDistanceMenu.getCurrentChoiceObject();
-        
-        switch(forwardDistance)
+
+        switch (forwardDistance)
         {
             case FWD_DISTANCE_1:
-            	forwardDriveDistance = RobotInfo.FWD_DISTANCE_1;
-            	break;
-        	
+                forwardDriveDistance = RobotInfo.FWD_DISTANCE_1;
+                break;
+
             case FWD_DISTANCE_2:
-            	forwardDriveDistance = RobotInfo.FWD_DISTANCE_2;
-            	break;
-            
+                forwardDriveDistance = RobotInfo.FWD_DISTANCE_2;
+                break;
+
             case FWD_DISTANCE_3:
-            	forwardDriveDistance = RobotInfo.FWD_DISTANCE_3;
-            	break;
-            	
+                forwardDriveDistance = RobotInfo.FWD_DISTANCE_3;
+                break;
+
             case CUSTOM:
-            	forwardDriveDistance = -1.0;
-            	break;
+                forwardDriveDistance = -1.0;
+                break;
         }
-        
-        if(approachMenu.getCurrentChoiceObject() == FrcAuto.Approach.SIDE)
+
+        if (approachMenu.getCurrentChoiceObject() == FrcAuto.Approach.SIDE)
         {
-        	sideApproach = true;
+            sideApproach = true;
         }
         else
         {
-        	sideApproach = false;
+            sideApproach = false;
         }
-        
+
         afterAction = afterActionMenu.getCurrentChoiceObject();
-        
-        switch(afterAction)
+
+        switch (afterAction)
         {
             case DO_NOTHING:
-            	selectedAfterAction = 0;
-        	    break;
+                selectedAfterAction = 0;
+                break;
             case SECOND_SCALE_CUBE:
-            	selectedAfterAction = 1;
-        	    break;
+                selectedAfterAction = 1;
+                break;
             case CUBE_IN_SWITCH:
-            	selectedAfterAction = 2;
-        	    break;
+                selectedAfterAction = 2;
+                break;
         }
-        
+
         startPosition = startPositionMenu.getCurrentChoiceObject();
-        
-        switch(startPosition)
+
+        switch (startPosition)
         {
-        case START_POS_1:
-        	robotStartPosition = RobotInfo.START_POS_1;
-        	break;
-        case START_POS_2:
-        	robotStartPosition = RobotInfo.START_POS_2;
-        	break;
-        case START_POS_3:
-        	robotStartPosition = RobotInfo.START_POS_3;
-        	break;
+            case START_POS_1:
+                robotStartPosition = RobotInfo.START_POS_1;
+                break;
+            case START_POS_2:
+                robotStartPosition = RobotInfo.START_POS_2;
+                break;
+            case START_POS_3:
+                robotStartPosition = RobotInfo.START_POS_3;
+                break;
         }
-        
+
         autoStrategy = autoStrategyMenu.getCurrentChoiceObject();
         delay = HalDashboard.getNumber("Delay", 0.0);
 
         switch (autoStrategy)
         {
             case POWER_UP_AUTO:
-                autoCommand = new CmdPowerUpAuto(robot, delay, targetType, forwardDriveDistance, sideApproach, selectedAfterAction, robotStartPosition);
+                autoCommand = new CmdPowerUpAuto(robot, delay, targetType, forwardDriveDistance, sideApproach,
+                    selectedAfterAction, robotStartPosition);
                 break;
 
             case X_TIMED_DRIVE:
@@ -251,21 +256,18 @@ public class FrcAuto implements TrcRobot.RobotMode
                 break;
 
             case X_DISTANCE_DRIVE:
-                autoCommand = new CmdPidDrive(
-                    robot, robot.pidDrive, robot.encoderXPidCtrl, robot.encoderYPidCtrl, robot.gyroTurnPidCtrl,
-                    delay, robot.driveDistance, 0.0, 0.0, robot.drivePowerLimit, false);
+                autoCommand = new CmdPidDrive(robot, robot.pidDrive, robot.encoderXPidCtrl, robot.encoderYPidCtrl,
+                    robot.gyroTurnPidCtrl, delay, robot.driveDistance, 0.0, 0.0, robot.drivePowerLimit, false);
                 break;
 
             case Y_DISTANCE_DRIVE:
-                autoCommand = new CmdPidDrive(
-                    robot, robot.pidDrive, robot.encoderXPidCtrl, robot.encoderYPidCtrl, robot.gyroTurnPidCtrl,
-                    delay, 0.0, robot.driveDistance, 0.0, robot.drivePowerLimit, false);
+                autoCommand = new CmdPidDrive(robot, robot.pidDrive, robot.encoderXPidCtrl, robot.encoderYPidCtrl,
+                    robot.gyroTurnPidCtrl, delay, 0.0, robot.driveDistance, 0.0, robot.drivePowerLimit, false);
                 break;
 
             case TURN_DEGREES:
-                autoCommand = new CmdPidDrive(
-                    robot, robot.pidDrive, robot.encoderXPidCtrl, robot.encoderYPidCtrl, robot.gyroTurnPidCtrl,
-                    delay, 0.0, 0.0, robot.turnDegrees, robot.drivePowerLimit, false);
+                autoCommand = new CmdPidDrive(robot, robot.pidDrive, robot.encoderXPidCtrl, robot.encoderYPidCtrl,
+                    robot.gyroTurnPidCtrl, delay, 0.0, 0.0, robot.turnDegrees, robot.drivePowerLimit, false);
                 break;
 
             default:
@@ -273,7 +275,6 @@ public class FrcAuto implements TrcRobot.RobotMode
                 autoCommand = null;
                 break;
         }
-        
 
         //
         // Start vision thread if necessary.
@@ -291,7 +292,7 @@ public class FrcAuto implements TrcRobot.RobotMode
         robot.gyroTurnPidCtrl.setOutputRange(-0.5, 0.5);
         robot.sonarDrivePidCtrl.setOutputRange(-0.5, 0.5);
         robot.visionTurnPidCtrl.setOutputRange(-0.5, 0.5);
-    }   //startMode
+    } // startMode
 
     @Override
     public void stopMode()
@@ -301,13 +302,14 @@ public class FrcAuto implements TrcRobot.RobotMode
             robot.setVisionEnabled(false);
         }
 
-        if (Robot.USE_TRACELOG) robot.stopTraceLog();
-    }   //stopMode
+        if (Robot.USE_TRACELOG)
+            robot.stopTraceLog();
+    } // stopMode
 
     @Override
     public void runPeriodic(double elapsedTime)
     {
-    }   //runPeriodic
+    } // runPeriodic
 
     @Override
     public void runContinuous(double elapsedTime)
@@ -330,7 +332,6 @@ public class FrcAuto implements TrcRobot.RobotMode
 
             robot.updateDashboard();
         }
-    }   //runContinuous
-    
+    } // runContinuous
 
-}   //class FrcAuto
+} // class FrcAuto
