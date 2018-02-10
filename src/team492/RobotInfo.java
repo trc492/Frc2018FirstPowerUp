@@ -234,6 +234,17 @@ public class RobotInfo
     public static final double PORTAL_ALIGN_STRAFE_DIST         = 36.0; // 3 feet
     
     //
+    // Pneumatic flipper subsystem.
+    //
+    public static final int LEFT_FLIPPER_CANID                    = 25;
+    public static final int RIGHT_FLIPPER_CANID                   = 26;
+    public static final int LEFT_FLIPPER_RETRACT                  = 0;
+    public static final int LEFT_FLIPPER_EXTEND                   = 1; 
+    public static final int RIGHT_FLIPPER_RETRACT                 = 2;
+    public static final int RIGHT_FLIPPER_EXTEND                  = 3;
+
+    
+    //
     // CmdPowerUpAuto variables.
     //
     public static final double AUTO_DISTANCE_TO_SWITCH = 110.0;
