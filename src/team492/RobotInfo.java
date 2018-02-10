@@ -226,12 +226,24 @@ public class RobotInfo
     public static final double ELEVATOR_MID_HEIGHT              = 4.0;
     public static final double ELEVATOR_CAL_POWER               = 0.3;                // this too
     public static final double ELEVATOR_FLOOR_PICKUP_HEIGHT     = 6.0;                // 6 inches off the ground
+    // this used to be 0.04735821
     public static final double ELEVATOR_GRAVITY_COMPENSATION    = 0.04735821;         // 76.388 N (weight of elevator) * 0.01905 m (radius of sprocket) / 12.75 (gear ratio) / 2.41 Nm (stall torque) = percent of power needed
     
     //
     // AutoAssist subsystem.
     //
     public static final double PORTAL_ALIGN_STRAFE_DIST         = 36.0; // 3 feet
+    
+    //
+    // Pneumatic flipper subsystem.
+    //
+    public static final int LEFT_FLIPPER_CANID                    = 25;
+    public static final int RIGHT_FLIPPER_CANID                   = 26;
+    public static final int LEFT_FLIPPER_RETRACT                  = 0;
+    public static final int LEFT_FLIPPER_EXTEND                   = 1; 
+    public static final int RIGHT_FLIPPER_RETRACT                 = 2;
+    public static final int RIGHT_FLIPPER_EXTEND                  = 3;
+
     
     //
     // CmdPowerUpAuto variables.

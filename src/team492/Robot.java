@@ -44,6 +44,7 @@ import frclib.FrcAHRSGyro;
 import frclib.FrcCANTalon;
 import frclib.FrcEmic2TextToSpeech;
 import frclib.FrcI2cLEDPanel;
+import frclib.FrcPneumatic;
 import frclib.FrcRobotBase;
 import frclib.FrcRobotBattery;
 import hallib.HalDashboard;
@@ -141,6 +142,12 @@ public class Robot extends FrcRobotBase
     public TrcPidDrive sonarPidDrive;
     public TrcPidDrive visionPidTurn;
 
+    //
+    // Flippers subsystem.
+    //
+    public FrcPneumatic leftFlipper;
+    public FrcPneumatic rightFlipper;
+    
     //
     // Define our subsystems for Auto and TeleOp modes.
     //
@@ -341,6 +348,14 @@ public class Robot extends FrcRobotBase
         visionPidTurn.setMsgTracer(tracer);
 
         //
+        // Initialize pneumatic flippers.
+        //
+        leftFlipper = new FrcPneumatic("leftFlipper", RobotInfo.LEFT_FLIPPER_CANID, 
+            RobotInfo.LEFT_FLIPPER_EXTEND, RobotInfo.LEFT_FLIPPER_RETRACT);
+        rightFlipper =  new FrcPneumatic("rightFlipper", RobotInfo.RIGHT_FLIPPER_CANID, 
+            RobotInfo.RIGHT_FLIPPER_EXTEND, RobotInfo.RIGHT_FLIPPER_RETRACT);
+        
+        //
         // Create other hardware subsystems.
         //
         ringLightsPower = new Relay(RobotInfo.RELAY_RINGLIGHT_POWER);
@@ -349,7 +364,7 @@ public class Robot extends FrcRobotBase
         winch = new Winch();
         elevator = new Elevator();
         cmdAutoCubePickup = new CmdAutoCubePickup(this);
-
+        
         //
         // Robot Modes.
         //
