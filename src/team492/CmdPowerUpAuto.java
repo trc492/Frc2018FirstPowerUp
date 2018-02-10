@@ -30,6 +30,7 @@ import trclib.TrcRobot;
 import trclib.TrcStateMachine;
 import trclib.TrcTimer;
 
+@SuppressWarnings("unused")
 class CmdPowerUpAuto implements TrcRobot.RobotCommand
 {
     private static enum State
@@ -76,21 +77,8 @@ class CmdPowerUpAuto implements TrcRobot.RobotCommand
     private double targetLocation;
     //TODO: implement all of these variables
     
-    //TODO: add these constants to RobotInfo and fix them
-    private static final double AUTO_DISTANCE_TO_SWITCH = 110.0;
-    private static final double AUTO_DISTANCE_TO_SCALE = 208.0;
-    private static final double SCALE_SIDE_APPROACH_DISTANCE = 101.0;
-    private static final double SCALE_FRONT_APPROACH_DISTANCE = 71.0;
-    private static final double FINAL_FRONT_SCALE_APPROACH_DISTANCE = 62.0;
-    private static final double FINAL_SIDE_SCALE_APPROACH_DISTANCE = 21.0;
-    private static final double RIGHT_SWITCH_LOCATION = 59.0;
-    private static final double LEFT_SWITCH_LOCATION = -59.0;
-    private static final double RIGHT_SCALE_LOCATION = 126.0;
-    private static final double LEFT_SCALE_LOCATION = -126.0;
-    private static final double SCALE_TARGET_HEIGHT = 60.0;
-    private static final double SWITCH_TARGET_HEIGHT = 27.0;
-    private static final double FRONT_SCALE_BACKUP_DISTANCE = 4200000;
-    private static final double SIDE_SCALE_BACKUP_DISTANCE = 4200000;
+    //TODO: add these constants to RobotInfo (now in RobotInfo) and fix them (done-ish)
+    
 
     CmdPowerUpAuto(Robot robot, double delay, int targetType, double forwardDistance, boolean sideApproach, int afterAction, double startPosition)
     {
@@ -121,31 +109,31 @@ class CmdPowerUpAuto implements TrcRobot.RobotCommand
         {
         	if(rightScale)
         	{
-        		this.targetLocation = RIGHT_SCALE_LOCATION;
+        		this.targetLocation = RobotInfo.RIGHT_SCALE_LOCATION;
         	}
         	else
         	{
-        		this.targetLocation = LEFT_SCALE_LOCATION;
+        		this.targetLocation = RobotInfo.LEFT_SCALE_LOCATION;
         	}
         }
         else
         {
         	if(rightSwitch)
         	{
-        		this.targetLocation = RIGHT_SWITCH_LOCATION;
+        		this.targetLocation = RobotInfo.RIGHT_SWITCH_LOCATION;
         	}
         	else
         	{
-        		this.targetLocation = LEFT_SWITCH_LOCATION;
+        		this.targetLocation = RobotInfo.LEFT_SWITCH_LOCATION;
         	}
         }
         if(targetType == 1)
         {
-    		elevatorTargetHeight = SCALE_TARGET_HEIGHT;
+    		elevatorTargetHeight = RobotInfo.SCALE_TARGET_HEIGHT;
     	}
     	else 
         {
-    		elevatorTargetHeight = SWITCH_TARGET_HEIGHT;
+    		elevatorTargetHeight = RobotInfo.SWITCH_TARGET_HEIGHT;
     	}
 
         event = new TrcEvent(moduleName);
@@ -233,14 +221,14 @@ class CmdPowerUpAuto implements TrcRobot.RobotCommand
                     if (targetType == 0)
                     {
                     	// When the target is the switch
-                    	yDistance = AUTO_DISTANCE_TO_SWITCH - forwardDistance;
+                    	yDistance = RobotInfo.AUTO_DISTANCE_TO_SWITCH - forwardDistance;
                     	robot.pidDrive.setTarget(xDistance, yDistance, robot.targetHeading, false, event);
                 		sm.waitForSingleEvent(event, State.DEPOSIT_CUBE);
                     }
                     else
                     {
                         // if the target is the scale
-                    	yDistance = AUTO_DISTANCE_TO_SCALE - forwardDistance;
+                    	yDistance = RobotInfo.AUTO_DISTANCE_TO_SCALE - forwardDistance;
                     	robot.pidDrive.setTarget(xDistance, yDistance, robot.targetHeading, false, event);
                     	if(sideApproach)
                 	    {
@@ -254,7 +242,7 @@ class CmdPowerUpAuto implements TrcRobot.RobotCommand
                     break;
                     
                 case APPROACH_SCALE_SIDE:
-                    yDistance = SCALE_SIDE_APPROACH_DISTANCE;
+                    yDistance = RobotInfo.SCALE_SIDE_APPROACH_DISTANCE;
                 	xDistance = 0;
                 	robot.pidDrive.setTarget(xDistance, yDistance, robot.targetHeading, false, event);
                 	sm.waitForSingleEvent(event, State.TURN_ROBOT);
@@ -272,11 +260,11 @@ class CmdPowerUpAuto implements TrcRobot.RobotCommand
                 	yDistance = 0;
                 	if(rightScale)
                 	{
-                    	xDistance = SCALE_FRONT_APPROACH_DISTANCE;
+                    	xDistance = RobotInfo.SCALE_FRONT_APPROACH_DISTANCE;
                 	}
                 	else
                 	{
-                    	xDistance = -SCALE_FRONT_APPROACH_DISTANCE;
+                    	xDistance = -RobotInfo.SCALE_FRONT_APPROACH_DISTANCE;
                 	}
                 	robot.pidDrive.setTarget(xDistance, yDistance, robot.targetHeading, false, event);
                 	sm.waitForSingleEvent(event, State.APPROACH_TARGET);
@@ -302,11 +290,11 @@ class CmdPowerUpAuto implements TrcRobot.RobotCommand
                 	// TODO: change yDistance based on approach if necessary
                 	if(sideApproach)
                 	{
-                        yDistance = FINAL_SIDE_SCALE_APPROACH_DISTANCE;
+                        yDistance = RobotInfo.FINAL_SIDE_SCALE_APPROACH_DISTANCE;
                 	}
                 	else
                 	{
-                        yDistance = FINAL_FRONT_SCALE_APPROACH_DISTANCE;
+                        yDistance = RobotInfo.FINAL_FRONT_SCALE_APPROACH_DISTANCE;
                 	}
 
                     robot.pidDrive.setTarget(xDistance, yDistance, robot.targetHeading, false, event);
@@ -329,11 +317,11 @@ class CmdPowerUpAuto implements TrcRobot.RobotCommand
                 	xDistance = 0;
                 	if(sideApproach)
                 	{
-                    	yDistance = FRONT_SCALE_BACKUP_DISTANCE;
+                    	yDistance = RobotInfo.FRONT_SCALE_BACKUP_DISTANCE;
                 	}
                 	else
                 	{
-                    	yDistance = FRONT_SCALE_BACKUP_DISTANCE;
+                    	yDistance = RobotInfo.FRONT_SCALE_BACKUP_DISTANCE;
                 	}
                 	robot.pidDrive.setTarget(xDistance, yDistance, robot.targetHeading, false, event);
                 	sm.waitForSingleEvent(event, State.APPROACH_TARGET);

@@ -106,14 +106,8 @@ public class FrcAuto implements TrcRobot.RobotMode
     private int selectedAfterAction;
     private double robotStartPosition;
     
-    // TODO: Put these constants in RobotInfo and use the actual values
-    private static final double FWD_DISTANCE_1 = 4.0;
-    private static final double FWD_DISTANCE_2 = 50.0;
-    private static final double FWD_DISTANCE_3 = 208.0;
-    private static final double START_POS_1 = -96.0;
-    private static final double START_POS_2 = 0.0;
-    private static final double START_POS_3 = 96.0;
-
+    // TODO: Put these constants in RobotInfo (now in RobotInfo) and use the actual values (done-ish)
+    
     private TrcRobot.RobotCommand autoCommand;
 
     public FrcAuto(Robot robot)
@@ -182,15 +176,15 @@ public class FrcAuto implements TrcRobot.RobotMode
         switch(forwardDistance)
         {
             case FWD_DISTANCE_1:
-            	forwardDriveDistance = FWD_DISTANCE_1;
+            	forwardDriveDistance = RobotInfo.FWD_DISTANCE_1;
             	break;
         	
             case FWD_DISTANCE_2:
-            	forwardDriveDistance = FWD_DISTANCE_2;
+            	forwardDriveDistance = RobotInfo.FWD_DISTANCE_2;
             	break;
             
             case FWD_DISTANCE_3:
-            	forwardDriveDistance = FWD_DISTANCE_3;
+            	forwardDriveDistance = RobotInfo.FWD_DISTANCE_3;
             	break;
             	
             case CUSTOM:
@@ -227,13 +221,13 @@ public class FrcAuto implements TrcRobot.RobotMode
         switch(startPosition)
         {
         case START_POS_1:
-        	robotStartPosition = START_POS_1;
+        	robotStartPosition = RobotInfo.START_POS_1;
         	break;
         case START_POS_2:
-        	robotStartPosition = START_POS_2;
+        	robotStartPosition = RobotInfo.START_POS_2;
         	break;
         case START_POS_3:
-        	robotStartPosition = START_POS_3;
+        	robotStartPosition = RobotInfo.START_POS_3;
         	break;
         }
         

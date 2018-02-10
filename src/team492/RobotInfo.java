@@ -228,7 +228,36 @@ public class RobotInfo
     public static final double ELEVATOR_GRAVITY_COMPENSATION    = 0.04735821;         // 76.388 N (weight of elevator) * 0.01905 m (radius of sprocket) / 12.75 (gear ratio) / 2.41 Nm (stall torque) = percent of power needed
     
     //
-    // AutoAssist subsystem
+    // AutoAssist subsystem.
     //
     public static final double PORTAL_ALIGN_STRAFE_DIST         = 36.0; // 3 feet
+    
+    //
+    // CmdPowerUpAuto variables.
+    //
+    public static final double AUTO_DISTANCE_TO_SWITCH = 110.0;
+    public static final double AUTO_DISTANCE_TO_SCALE = 208.0;
+    public static final double SCALE_SIDE_APPROACH_DISTANCE = 101.0;
+    public static final double SCALE_FRONT_APPROACH_DISTANCE = 71.0;
+    public static final double FINAL_FRONT_SCALE_APPROACH_DISTANCE = 62.0;
+    public static final double FINAL_SIDE_SCALE_APPROACH_DISTANCE = 21.0;
+    public static final double RIGHT_SWITCH_LOCATION = 59.0;
+    public static final double LEFT_SWITCH_LOCATION = -59.0;
+    public static final double RIGHT_SCALE_LOCATION = 126.0;
+    public static final double LEFT_SCALE_LOCATION = -126.0;
+    public static final double SCALE_TARGET_HEIGHT = 60.0;
+    public static final double SWITCH_TARGET_HEIGHT = 27.0;
+    public static final double FRONT_SCALE_BACKUP_DISTANCE = 4200000;
+    public static final double SIDE_SCALE_BACKUP_DISTANCE = 4200000;
+    
+    //
+    // FrcAuto constants.
+    //
+    public static final double FWD_DISTANCE_1 = 4.0;
+    public static final double FWD_DISTANCE_2 = 50.0;
+    public static final double FWD_DISTANCE_3 = 208.0;
+    public static final double START_POS_1 = -96.0;
+    public static final double START_POS_2 = 0.0;
+    public static final double START_POS_3 = 96.0;
+    
 }   // class RobotInfo
