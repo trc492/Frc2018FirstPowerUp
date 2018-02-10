@@ -24,6 +24,8 @@ package team492;
 
 import java.util.Date;
 
+import common.CmdPidDrive;
+import common.CmdTimedDrive;
 import frclib.FrcChoiceMenu;
 import hallib.HalDashboard;
 import trclib.TrcRobot;
@@ -250,17 +252,20 @@ public class FrcAuto implements TrcRobot.RobotMode
 
             case X_DISTANCE_DRIVE:
                 autoCommand = new CmdPidDrive(
-                    robot, delay, robot.driveDistance, 0.0, 0.0, robot.drivePowerLimit, false);
+                    robot, robot.pidDrive, robot.encoderXPidCtrl, robot.encoderYPidCtrl, robot.gyroTurnPidCtrl,
+                    delay, robot.driveDistance, 0.0, 0.0, robot.drivePowerLimit, false);
                 break;
 
             case Y_DISTANCE_DRIVE:
                 autoCommand = new CmdPidDrive(
-                    robot, delay, 0.0, robot.driveDistance, 0.0, robot.drivePowerLimit, false);
+                    robot, robot.pidDrive, robot.encoderXPidCtrl, robot.encoderYPidCtrl, robot.gyroTurnPidCtrl,
+                    delay, 0.0, robot.driveDistance, 0.0, robot.drivePowerLimit, false);
                 break;
 
             case TURN_DEGREES:
                 autoCommand = new CmdPidDrive(
-                    robot, delay, 0.0, 0.0, robot.turnDegrees, robot.drivePowerLimit, false);
+                    robot, robot.pidDrive, robot.encoderXPidCtrl, robot.encoderYPidCtrl, robot.gyroTurnPidCtrl,
+                    delay, 0.0, 0.0, robot.turnDegrees, robot.drivePowerLimit, false);
                 break;
 
             default:

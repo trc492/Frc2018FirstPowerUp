@@ -20,14 +20,15 @@
  * SOFTWARE.
  */
 
-package team492;
+package common;
 
+import team492.Robot;
 import trclib.TrcEvent;
 import trclib.TrcRobot;
 import trclib.TrcStateMachine;
 import trclib.TrcTimer;
 
-class CmdTimedDrive implements TrcRobot.RobotCommand
+public class CmdTimedDrive implements TrcRobot.RobotCommand
 {
     private static enum State
     {
@@ -49,7 +50,8 @@ class CmdTimedDrive implements TrcRobot.RobotCommand
     private TrcTimer timer;
     private TrcStateMachine<State> sm;
 
-    CmdTimedDrive(Robot robot, double delay, double driveTime, double xDrivePower, double yDrivePower, double turnPower)
+    public CmdTimedDrive(
+        Robot robot, double delay, double driveTime, double xDrivePower, double yDrivePower, double turnPower)
     {
         this.robot = robot;
         this.delay = delay;

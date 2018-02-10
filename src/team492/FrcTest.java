@@ -22,6 +22,8 @@
 
 package team492;
 
+import common.CmdPidDrive;
+import common.CmdTimedDrive;
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 import frclib.FrcChoiceMenu;
 import frclib.FrcJoystick;
@@ -42,8 +44,8 @@ public class FrcTest extends FrcTeleOp
         X_DISTANCE_DRIVE,
         Y_DISTANCE_DRIVE,
         TURN_DEGREES,
-        VISION_DRIVE,
         SONAR_DRIVE,
+        VISION_DRIVE,
         VISION_TURN,
         LIVE_WINDOW
     }   //enum Test
@@ -68,7 +70,6 @@ public class FrcTest extends FrcTeleOp
     private CmdTimedDrive timedDriveCommand = null;
     private CmdPidDrive pidDriveCommand = null;
     private CmdVisionPidDrive visionPidDriveCommand = null;
-    private CmdSonarPidDrive sonarPidDriveCommand = null;
     private CmdVisionPidTurn visionPidTurnCommand = null;
 
     private int motorIndex = 0;
@@ -96,8 +97,8 @@ public class FrcTest extends FrcTeleOp
         testMenu.addChoice("X Distance Drive", FrcTest.Test.X_DISTANCE_DRIVE, false);
         testMenu.addChoice("Y Distance Drive", FrcTest.Test.Y_DISTANCE_DRIVE, false);
         testMenu.addChoice("Turn Degrees", FrcTest.Test.TURN_DEGREES, false);
-        testMenu.addChoice("Vision Drive", FrcTest.Test.VISION_DRIVE, false);
         testMenu.addChoice("Sonar Drive", FrcTest.Test.SONAR_DRIVE, false);
+        testMenu.addChoice("Vision Drive", FrcTest.Test.VISION_DRIVE, false);
         testMenu.addChoice("Vision Turn", FrcTest.Test.VISION_TURN, false);
         testMenu.addChoice("Live Window", FrcTest.Test.LIVE_WINDOW, false);
      }   //FrcTest
@@ -137,31 +138,35 @@ public class FrcTest extends FrcTeleOp
             case X_DISTANCE_DRIVE:
                 useTraceLog = true;
                 pidDriveCommand = new CmdPidDrive(
-                    robot, 0.0, robot.driveDistance, 0.0, 0.0, robot.drivePowerLimit, true);
+                    robot, robot.pidDrive, robot.encoderXPidCtrl, robot.encoderYPidCtrl, robot.gyroTurnPidCtrl,
+                    0.0, robot.driveDistance, 0.0, 0.0, robot.drivePowerLimit, true);
                 break;
 
             case Y_DISTANCE_DRIVE:
                 useTraceLog = true;
                 pidDriveCommand = new CmdPidDrive(
-                    robot, 0.0, 0.0, robot.driveDistance, 0.0, robot.drivePowerLimit, true);
+                    robot, robot.pidDrive, robot.encoderXPidCtrl, robot.encoderYPidCtrl, robot.gyroTurnPidCtrl,
+                    0.0, 0.0, robot.driveDistance, 0.0, robot.drivePowerLimit, true);
                 break;
 
             case TURN_DEGREES:
                 useTraceLog = true;
                 pidDriveCommand = new CmdPidDrive(
-                    robot, 0.0, 0.0, 0.0, robot.turnDegrees, robot.drivePowerLimit, true);
+                    robot, robot.pidDrive, robot.encoderXPidCtrl, robot.encoderYPidCtrl, robot.gyroTurnPidCtrl,
+                    0.0, 0.0, 0.0, robot.turnDegrees, robot.drivePowerLimit, true);
+                break;
+
+            case SONAR_DRIVE:
+                useTraceLog = true;
+                pidDriveCommand = new CmdPidDrive(
+                    robot, robot.sonarPidDrive, robot.sonarDrivePidCtrl, robot.encoderYPidCtrl, robot.gyroTurnPidCtrl,
+                    0.0, robot.ultrasonicTarget, 0.0, 0.0, robot.drivePowerLimit, true);
                 break;
 
             case VISION_DRIVE:
                 useTraceLog = true;
                 visionPidDriveCommand = new CmdVisionPidDrive(
                     robot, 0.0, robot.ultrasonicTarget, robot.visionTurnTarget, robot.drivePowerLimit);
-                break;
-
-            case SONAR_DRIVE:
-                useTraceLog = true;
-                sonarPidDriveCommand = new CmdSonarPidDrive(
-                    robot, 0.0, robot.ultrasonicTarget, robot.drivePowerLimit);
                 break;
 
             case VISION_TURN:
@@ -240,9 +245,17 @@ public class FrcTest extends FrcTeleOp
             case X_DISTANCE_DRIVE:
             case Y_DISTANCE_DRIVE:
             case TURN_DEGREES:
+            case SONAR_DRIVE:
                 robot.dashboard.displayPrintf(2, "xPos=%.1f,yPos=%.1f,heading=%.1f",
                     robot.driveBase.getXPosition(), robot.driveBase.getYPosition(), robot.driveBase.getHeading());
-                robot.encoderXPidCtrl.displayPidInfo(3);
+                if (test == Test.SONAR_DRIVE)
+                {
+                    robot.sonarDrivePidCtrl.displayPidInfo(3);
+                }
+                else
+                {
+                    robot.encoderXPidCtrl.displayPidInfo(3);
+                }
                 robot.encoderYPidCtrl.displayPidInfo(5);
                 robot.gyroTurnPidCtrl.displayPidInfo(7);
 
@@ -260,6 +273,10 @@ public class FrcTest extends FrcTeleOp
                     {
                         robot.gyroTurnPidCtrl.printPidInfo(robot.tracer, elapsedTime, robot.battery);
                     }
+                    else if (test == Test.SONAR_DRIVE)
+                    {
+                        robot.sonarDrivePidCtrl.printPidInfo(robot.tracer, elapsedTime, robot.battery);
+                    }
                 }
                 break;
 
@@ -275,17 +292,6 @@ public class FrcTest extends FrcTeleOp
                     robot.encoderXPidCtrl.printPidInfo(robot.tracer, elapsedTime, robot.battery);
                     robot.sonarDrivePidCtrl.printPidInfo(robot.tracer, elapsedTime, robot.battery);
                     robot.visionTurnPidCtrl.printPidInfo(robot.tracer, elapsedTime, robot.battery);
-                }
-                break;
-
-            case SONAR_DRIVE:
-                robot.dashboard.displayPrintf(2, "xPos=%.1f,yPos=%.1f,heading=%.1f",
-                    robot.driveBase.getXPosition(), robot.driveBase.getYPosition(), robot.driveBase.getHeading());
-                robot.sonarDrivePidCtrl.displayPidInfo(3);
-
-                if (!sonarPidDriveCommand.cmdPeriodic(elapsedTime))
-                {
-                    robot.sonarDrivePidCtrl.printPidInfo(robot.tracer, elapsedTime, robot.battery);
                 }
                 break;
 

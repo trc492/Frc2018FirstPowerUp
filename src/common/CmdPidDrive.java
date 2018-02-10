@@ -20,15 +20,18 @@
  * SOFTWARE.
  */
 
-package team492;
+package common;
 
+import team492.Robot;
 import trclib.TrcEvent;
+import trclib.TrcPidController;
 import trclib.TrcPidController.PidCoefficients;
+import trclib.TrcPidDrive;
 import trclib.TrcRobot;
 import trclib.TrcStateMachine;
 import trclib.TrcTimer;
 
-class CmdPidDrive implements TrcRobot.RobotCommand
+public class CmdPidDrive implements TrcRobot.RobotCommand
 {
     private static enum State
     {
@@ -40,8 +43,12 @@ class CmdPidDrive implements TrcRobot.RobotCommand
     private static final String moduleName = "CmdPidDrive";
 
     private Robot robot;
-    private double delay;
+    private TrcPidDrive pidDrive;
+    private TrcPidController xPidCtrl;
+    private TrcPidController yPidCtrl;
+    private TrcPidController turnPidCtrl;
 
+    private double delay;
     private double xDistance;
     private double yDistance;
     private double heading;
@@ -52,11 +59,17 @@ class CmdPidDrive implements TrcRobot.RobotCommand
     private TrcTimer timer;
     private TrcStateMachine<State> sm;
 
-    CmdPidDrive(
-        Robot robot, double delay, double xDistance, double yDistance, double heading, double drivePowerLimit,
+    public CmdPidDrive(
+        Robot robot,
+        TrcPidDrive pidDrive, TrcPidController xPidCtrl, TrcPidController yPidCtrl, TrcPidController turnPidCtrl,
+        double delay, double xDistance, double yDistance, double heading, double drivePowerLimit,
         boolean testMode)
     {
         this.robot = robot;
+        this.pidDrive = pidDrive;
+        this.xPidCtrl = xPidCtrl;
+        this.yPidCtrl = yPidCtrl;
+        this.turnPidCtrl = turnPidCtrl;
         this.delay = delay;
         this.xDistance = xDistance;
         this.yDistance = yDistance;
@@ -69,8 +82,11 @@ class CmdPidDrive implements TrcRobot.RobotCommand
         sm.start(State.DO_DELAY);
 
         robot.tracer.traceInfo(
-            moduleName, "delay=%.3f, xDist=%.1f, yDist=%.1f, heading=%.1f, powerLimit=%.1f, testMode=%s",
-            delay, xDistance, yDistance, heading, drivePowerLimit, Boolean.toString(testMode));
+            moduleName, "pidDrive=%s, xPidCtrl=%s, yPidCtrl=%s, turnPidCtrl=%s",
+            pidDrive, xPidCtrl, yPidCtrl, turnPidCtrl);
+        robot.tracer.traceInfo(
+            moduleName, "delay=%.3f, xDist=%.1f, yDist=%.1f, heading=%.1f, powerLimit=%.1f, testMode=%b",
+            delay, xDistance, yDistance, heading, drivePowerLimit, testMode);
     }   //CmdPidDrive
 
     //
@@ -114,28 +130,31 @@ class CmdPidDrive implements TrcRobot.RobotCommand
                     //
                     if (testMode)
                     {
-                        if (xDistance != 0.0)
+                        if (xPidCtrl != null && xDistance != 0.0)
                         {
-                            robot.encoderXPidCtrl.setPidCoefficients(
+                            xPidCtrl.setPidCoefficients(
                                 new PidCoefficients(robot.tuneKp, robot.tuneKi, robot.tuneKd, 0.0));
                         }
-                        else if (yDistance != 0.0)
+                        else if (yPidCtrl != null && yDistance != 0.0)
                         {
-                            robot.encoderYPidCtrl.setPidCoefficients(
+                            yPidCtrl.setPidCoefficients(
                                 new PidCoefficients(robot.tuneKp, robot.tuneKi, robot.tuneKd, 0.0));
                         }
-                        else if (heading != 0.0)
+                        else if (turnPidCtrl != null && heading != 0.0)
                         {
                             robot.gyroTurnPidCtrl.setPidCoefficients(
                                 new PidCoefficients(robot.tuneKp, robot.tuneKi, robot.tuneKd, 0.0));
                         }
                     }
 
-                    robot.encoderXPidCtrl.setOutputRange(-drivePowerLimit, drivePowerLimit);
-                    robot.encoderYPidCtrl.setOutputRange(-drivePowerLimit, drivePowerLimit);
-                    robot.gyroTurnPidCtrl.setOutputRange(-drivePowerLimit, drivePowerLimit);
+                    if (xPidCtrl != null && xDistance != 0.0)
+                        xPidCtrl.setOutputRange(-drivePowerLimit, drivePowerLimit);
+                    if (yPidCtrl != null && yDistance != 0.0)
+                        yPidCtrl.setOutputRange(-drivePowerLimit, drivePowerLimit);
+                    if (turnPidCtrl != null && heading != 0.0)
+                        turnPidCtrl.setOutputRange(-drivePowerLimit, drivePowerLimit);
 
-                    robot.pidDrive.setTarget(xDistance, yDistance, heading, false, event);
+                    pidDrive.setTarget(xDistance, yDistance, heading, false, event);
                     sm.waitForSingleEvent(event, State.DONE);
                     break;
 
@@ -144,9 +163,9 @@ class CmdPidDrive implements TrcRobot.RobotCommand
                     //
                     // We are done.
                     //
-                    robot.encoderXPidCtrl.setOutputRange(-1.0, 1.0);
-                    robot.encoderYPidCtrl.setOutputRange(-1.0, 1.0);
-                    robot.gyroTurnPidCtrl.setOutputRange(-1.0, 1.0);
+                    if (xPidCtrl != null) xPidCtrl.setOutputRange(-1.0, 1.0);
+                    if (yPidCtrl != null) yPidCtrl.setOutputRange(-1.0, 1.0);
+                    if (turnPidCtrl != null) turnPidCtrl.setOutputRange(-1.0, 1.0);
                     done = true;
                     sm.stop();
                     break;
