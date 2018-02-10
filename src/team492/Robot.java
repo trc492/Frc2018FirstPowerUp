@@ -101,8 +101,13 @@ public class Robot extends FrcRobotBase
     public TrcRobotBattery battery = null;
     public TrcGyro gyro = null;
     public AnalogInput pressureSensor = null;
-    public AnalogInput ultrasonicSensor = null;
-    private double lastUltrasonicDistance = 0.0;
+    public AnalogInput frontSonarSensor = null;
+    public AnalogInput leftSonarSensor = null;
+    public AnalogInput rightSonarSensor = null;
+    private double lastFrontSonarDistance = 0.0;
+    private double lastLeftSonarDistance = 0.0;
+    private double lastRightSonarDistance = 0.0;
+    
 
     //
     // VisionTarget subsystem.
@@ -165,7 +170,7 @@ public class Robot extends FrcRobotBase
     public double driveDistance;
     public double drivePowerLimit;
     public double turnDegrees;
-    public double ultrasonicTarget;
+    public double frontSonarTarget;
     public double visionTurnTarget;
     public double tuneKp;
     public double tuneKi;
@@ -195,7 +200,9 @@ public class Robot extends FrcRobotBase
             gyro = new FrcAHRSGyro("NavX", SPI.Port.kMXP);
         }
         pressureSensor = new AnalogInput(RobotInfo.AIN_PRESSURE_SENSOR);
-        ultrasonicSensor = new AnalogInput(RobotInfo.AIN_ULTRASONIC_SENSOR);
+        frontSonarSensor = new AnalogInput(RobotInfo.AIN_FRONT_SONAR_SENSOR);
+        leftSonarSensor = new AnalogInput(RobotInfo.AIN_LEFT_SONAR_SENSOR);
+        rightSonarSensor = new AnalogInput(RobotInfo.AIN_RIGHT_SONAR_SENSOR);
 
         //
         // VisionTarget subsystem.
@@ -314,7 +321,7 @@ public class Robot extends FrcRobotBase
             new PidCoefficients(
                 RobotInfo.SONAR_KP, RobotInfo.SONAR_KI, RobotInfo.SONAR_KD, RobotInfo.SONAR_KF),
             RobotInfo.SONAR_TOLERANCE,
-            this::getUltrasonicDistance);
+            this::getFrontSonarDistance);
         sonarDrivePidCtrl.setAbsoluteSetPoint(true);
         sonarDrivePidCtrl.setInverted(true);
         visionTurnPidCtrl = new TrcPidController(
@@ -330,7 +337,7 @@ public class Robot extends FrcRobotBase
         visionPidDrive.setMsgTracer(tracer);
         sonarPidDrive = new TrcPidDrive("sonarPidDrive", driveBase, null, sonarDrivePidCtrl, null);
         sonarPidDrive.setMsgTracer(tracer);
-        visionPidTurn = new TrcPidDrive("cameraPidDrive", driveBase, null, null, gyroTurnPidCtrl);
+        visionPidTurn = new TrcPidDrive("visionPidTurn", driveBase, null, null, visionTurnPidCtrl);
         visionPidTurn.setMsgTracer(tracer);
 
         //
@@ -367,7 +374,7 @@ public class Robot extends FrcRobotBase
         driveDistance = HalDashboard.getNumber("DriveDistance", 6.0);
         drivePowerLimit = HalDashboard.getNumber("DrivePowerLimit", 0.5);
         turnDegrees = HalDashboard.getNumber("TurnDegrees", 90.0);
-        ultrasonicTarget = HalDashboard.getNumber("UltrasonicTarget", 7.0);
+        frontSonarTarget = HalDashboard.getNumber("FrontSonarTarget", 7.0);
         visionTurnTarget = HalDashboard.getNumber("VisionTurnTarget", 0.0);
         tuneKp = HalDashboard.getNumber("TuneKp", RobotInfo.GYRO_TURN_KP);
         tuneKi = HalDashboard.getNumber("TuneKi", RobotInfo.GYRO_TURN_KI);
@@ -475,7 +482,7 @@ public class Robot extends FrcRobotBase
                         dashboard.displayPrintf(14, "Pixy: x=%d, y=%d, width=%d, height=%d",
                             targetInfo.rect.x, targetInfo.rect.y, targetInfo.rect.width, targetInfo.rect.height);
                         dashboard.displayPrintf(15, "xDistance=%.1f, yDistance=%.1f, angle=%.1f, ultrasonic=%.1f",
-                            targetInfo.xDistance, targetInfo.yDistance, targetInfo.angle, getUltrasonicDistance());
+                            targetInfo.xDistance, targetInfo.yDistance, targetInfo.angle, getFrontSonarDistance());
                     }
                 }
             }
@@ -510,21 +517,53 @@ public class Robot extends FrcRobotBase
         return 50.0*pressureSensor.getVoltage() - 25.0;
     }   //getPressure
 
-    public double getUltrasonicDistance()
+    public double getFrontSonarDistance()
     {
-        double value = ultrasonicSensor.getVoltage()/RobotInfo.SONAR_MILLIVOLTS_PER_INCH;
+        double value = frontSonarSensor.getVoltage()/RobotInfo.SONAR_MILLIVOLTS_PER_INCH;
 
         if (value == 0.0)
         {
-            value = lastUltrasonicDistance;
+            value = lastFrontSonarDistance;
         }
         else
         {
-            lastUltrasonicDistance = value;
+            lastFrontSonarDistance = value;
         }
 
         return value;
-    }   //getUltrasonicDistance
+    }   //getFrontSonarDistance
+
+    public double getLeftSonarDistance()
+    {
+        double value = leftSonarSensor.getVoltage()/RobotInfo.SONAR_MILLIVOLTS_PER_INCH;
+
+        if (value == 0.0)
+        {
+            value = lastLeftSonarDistance;
+        }
+        else
+        {
+            lastLeftSonarDistance = value;
+        }
+
+        return value;
+    }   //getLeftSonarDistance
+
+    public double getRightSonarDistance()
+    {
+        double value = rightSonarSensor.getVoltage()/RobotInfo.SONAR_MILLIVOLTS_PER_INCH;
+
+        if (value == 0.0)
+        {
+            value = lastRightSonarDistance;
+        }
+        else
+        {
+            lastRightSonarDistance = value;
+        }
+
+        return value;
+    }   //getRightSonarDistance
 
     public double getPixyTargetAngle()
     {

@@ -154,7 +154,7 @@ public class PixyVision
         if (detectedObjects != null && detectedObjects.length >= 1)
         {
             ArrayList<Rect> objectList = new ArrayList<>();
-            double targetDistance = robot.getUltrasonicDistance() + RobotInfo.PIXY_CAM_OFFSET;
+            double targetDistance = robot.getFrontSonarDistance() + RobotInfo.PIXY_CAM_OFFSET;
             //
             // Filter out objects that don't have the correct signature.
             //

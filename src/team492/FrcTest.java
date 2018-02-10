@@ -8,8 +8,8 @@
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
  *
- * The above copyright notice and this permission notice shall be included in all
- * copies or substantial portions of the Software.
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
  *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
@@ -45,16 +45,15 @@ public class FrcTest extends FrcTeleOp
         Y_DISTANCE_DRIVE,
         TURN_DEGREES,
         SONAR_DRIVE,
-        VISION_DRIVE,
         VISION_TURN,
         LIVE_WINDOW
-    }   //enum Test
+    } // enum Test
 
     private enum State
     {
         START,
         DONE
-    }   //State
+    } // State
 
     private TrcEvent event;
     private TrcTimer timer;
@@ -69,8 +68,6 @@ public class FrcTest extends FrcTeleOp
 
     private CmdTimedDrive timedDriveCommand = null;
     private CmdPidDrive pidDriveCommand = null;
-    private CmdVisionPidDrive visionPidDriveCommand = null;
-    private CmdVisionPidTurn visionPidTurnCommand = null;
 
     private int motorIndex = 0;
     private boolean processedInput = false;
@@ -98,10 +95,9 @@ public class FrcTest extends FrcTeleOp
         testMenu.addChoice("Y Distance Drive", FrcTest.Test.Y_DISTANCE_DRIVE, false);
         testMenu.addChoice("Turn Degrees", FrcTest.Test.TURN_DEGREES, false);
         testMenu.addChoice("Sonar Drive", FrcTest.Test.SONAR_DRIVE, false);
-        testMenu.addChoice("Vision Drive", FrcTest.Test.VISION_DRIVE, false);
-        testMenu.addChoice("Vision Turn", FrcTest.Test.VISION_TURN, false);
+        testMenu.addChoice("VisionTurn", FrcTest.Test.VISION_TURN, false);
         testMenu.addChoice("Live Window", FrcTest.Test.LIVE_WINDOW, false);
-     }   //FrcTest
+    } // FrcTest
 
     //
     // Overriding TrcRobot.RobotMode.
@@ -137,52 +133,44 @@ public class FrcTest extends FrcTeleOp
 
             case X_DISTANCE_DRIVE:
                 useTraceLog = true;
-                pidDriveCommand = new CmdPidDrive(
-                    robot, robot.pidDrive, robot.encoderXPidCtrl, robot.encoderYPidCtrl, robot.gyroTurnPidCtrl,
-                    0.0, robot.driveDistance, 0.0, 0.0, robot.drivePowerLimit, true);
+                pidDriveCommand = new CmdPidDrive(robot, robot.pidDrive, robot.encoderXPidCtrl, robot.encoderYPidCtrl,
+                    robot.gyroTurnPidCtrl, 0.0, robot.driveDistance, 0.0, 0.0, robot.drivePowerLimit, true);
                 break;
 
             case Y_DISTANCE_DRIVE:
                 useTraceLog = true;
-                pidDriveCommand = new CmdPidDrive(
-                    robot, robot.pidDrive, robot.encoderXPidCtrl, robot.encoderYPidCtrl, robot.gyroTurnPidCtrl,
-                    0.0, 0.0, robot.driveDistance, 0.0, robot.drivePowerLimit, true);
+                pidDriveCommand = new CmdPidDrive(robot, robot.pidDrive, robot.encoderXPidCtrl, robot.encoderYPidCtrl,
+                    robot.gyroTurnPidCtrl, 0.0, 0.0, robot.driveDistance, 0.0, robot.drivePowerLimit, true);
                 break;
 
             case TURN_DEGREES:
                 useTraceLog = true;
-                pidDriveCommand = new CmdPidDrive(
-                    robot, robot.pidDrive, robot.encoderXPidCtrl, robot.encoderYPidCtrl, robot.gyroTurnPidCtrl,
-                    0.0, 0.0, 0.0, robot.turnDegrees, robot.drivePowerLimit, true);
+                pidDriveCommand = new CmdPidDrive(robot, robot.pidDrive, robot.encoderXPidCtrl, robot.encoderYPidCtrl,
+                    robot.gyroTurnPidCtrl, 0.0, 0.0, 0.0, robot.turnDegrees, robot.drivePowerLimit, true);
                 break;
 
             case SONAR_DRIVE:
                 useTraceLog = true;
-                pidDriveCommand = new CmdPidDrive(
-                    robot, robot.sonarPidDrive, robot.sonarDrivePidCtrl, robot.encoderYPidCtrl, robot.gyroTurnPidCtrl,
-                    0.0, robot.ultrasonicTarget, 0.0, 0.0, robot.drivePowerLimit, true);
-                break;
-
-            case VISION_DRIVE:
-                useTraceLog = true;
-                visionPidDriveCommand = new CmdVisionPidDrive(
-                    robot, 0.0, robot.ultrasonicTarget, robot.visionTurnTarget, robot.drivePowerLimit);
+                pidDriveCommand = new CmdPidDrive(robot, robot.sonarPidDrive, null, robot.sonarDrivePidCtrl,
+                    robot.gyroTurnPidCtrl, 0.0, 0.0, robot.frontSonarTarget, 0.0, robot.drivePowerLimit, true);
                 break;
 
             case VISION_TURN:
                 useTraceLog = true;
-                visionPidTurnCommand = new CmdVisionPidTurn(robot, 0.0, 0.0, robot.drivePowerLimit);
+                pidDriveCommand = new CmdPidDrive(robot, robot.visionPidTurn, null, null, robot.visionTurnPidCtrl,
+                    0.0, 0.0, robot.frontSonarTarget, 0.0, robot.drivePowerLimit, true);
                 break;
 
             default:
                 break;
         }
 
-        if (Robot.USE_TRACELOG && useTraceLog) robot.startTraceLog("Test");
+        if (Robot.USE_TRACELOG && useTraceLog)
+            robot.startTraceLog("Test");
 
         LiveWindow.setEnabled(liveWindowEnabled);
         sm.start(State.START);
-    }   //startMode
+    } // startMode
 
     @Override
     public void stopMode()
@@ -191,8 +179,9 @@ public class FrcTest extends FrcTeleOp
         // Call TeleOp stopMode.
         //
         super.stopMode();
-        if (Robot.USE_TRACELOG && useTraceLog) robot.stopTraceLog();
-    }   //stopMode
+        if (Robot.USE_TRACELOG && useTraceLog)
+            robot.stopTraceLog();
+    } // stopMode
 
     //
     // Must override TeleOp so it doesn't fight with us.
@@ -204,7 +193,8 @@ public class FrcTest extends FrcTeleOp
         {
             case SENSORS_TEST:
                 //
-                // Allow TeleOp to run so we can control the robot in sensors test mode.
+                // Allow TeleOp to run so we can control the robot in sensors
+                // test mode.
                 //
                 super.runPeriodic(elapsedTime);
                 doSensorsTest();
@@ -217,7 +207,7 @@ public class FrcTest extends FrcTeleOp
             default:
                 break;
         }
-    }   //runPeriodic
+    } // runPeriodic
 
     @Override
     public void runContinuous(double elapsedTime)
@@ -236,9 +226,9 @@ public class FrcTest extends FrcTeleOp
                 double rrEnc = robot.rightRearWheel.getPosition();
                 robot.dashboard.displayPrintf(2, "Enc:lf=%.0f,rf=%.0f", lfEnc, rfEnc);
                 robot.dashboard.displayPrintf(3, "Enc:lr=%.0f,rr=%.0f", lrEnc, rrEnc);
-                robot.dashboard.displayPrintf(4, "average=%f", (lfEnc + rfEnc + lrEnc + rrEnc)/4.0);
-                robot.dashboard.displayPrintf(5, "xPos=%.1f,yPos=%.1f,heading=%.1f",
-                    robot.driveBase.getXPosition(), robot.driveBase.getYPosition(), robot.driveBase.getHeading());
+                robot.dashboard.displayPrintf(4, "average=%f", (lfEnc + rfEnc + lrEnc + rrEnc) / 4.0);
+                robot.dashboard.displayPrintf(5, "xPos=%.1f,yPos=%.1f,heading=%.1f", robot.driveBase.getXPosition(),
+                    robot.driveBase.getYPosition(), robot.driveBase.getHeading());
                 timedDriveCommand.cmdPeriodic(elapsedTime);
                 break;
 
@@ -246,18 +236,26 @@ public class FrcTest extends FrcTeleOp
             case Y_DISTANCE_DRIVE:
             case TURN_DEGREES:
             case SONAR_DRIVE:
-                robot.dashboard.displayPrintf(2, "xPos=%.1f,yPos=%.1f,heading=%.1f",
-                    robot.driveBase.getXPosition(), robot.driveBase.getYPosition(), robot.driveBase.getHeading());
+            case VISION_TURN:
+                robot.dashboard.displayPrintf(2, "xPos=%.1f,yPos=%.1f,heading=%.1f", robot.driveBase.getXPosition(),
+                    robot.driveBase.getYPosition(), robot.driveBase.getHeading());
+                robot.encoderXPidCtrl.displayPidInfo(3);
                 if (test == Test.SONAR_DRIVE)
                 {
-                    robot.sonarDrivePidCtrl.displayPidInfo(3);
+                    robot.sonarDrivePidCtrl.displayPidInfo(5);
                 }
                 else
                 {
-                    robot.encoderXPidCtrl.displayPidInfo(3);
+                    robot.encoderYPidCtrl.displayPidInfo(5);
                 }
-                robot.encoderYPidCtrl.displayPidInfo(5);
-                robot.gyroTurnPidCtrl.displayPidInfo(7);
+                if (test == Test.VISION_TURN)
+                {
+                    robot.visionTurnPidCtrl.displayPidInfo(7);
+                }
+                else
+                {
+                    robot.gyroTurnPidCtrl.displayPidInfo(7);
+                }
 
                 if (!pidDriveCommand.cmdPeriodic(elapsedTime))
                 {
@@ -277,74 +275,54 @@ public class FrcTest extends FrcTeleOp
                     {
                         robot.sonarDrivePidCtrl.printPidInfo(robot.tracer, elapsedTime, robot.battery);
                     }
-                }
-                break;
-
-            case VISION_DRIVE:
-                robot.dashboard.displayPrintf(2, "xPos=%.1f,yPos=%.1f,heading=%.1f",
-                    robot.driveBase.getXPosition(), robot.driveBase.getYPosition(), robot.driveBase.getHeading());
-                robot.encoderXPidCtrl.displayPidInfo(3);
-                robot.sonarDrivePidCtrl.displayPidInfo(5);
-                robot.visionTurnPidCtrl.displayPidInfo(7);
-
-                if (!visionPidDriveCommand.cmdPeriodic(elapsedTime))
-                {
-                    robot.encoderXPidCtrl.printPidInfo(robot.tracer, elapsedTime, robot.battery);
-                    robot.sonarDrivePidCtrl.printPidInfo(robot.tracer, elapsedTime, robot.battery);
-                    robot.visionTurnPidCtrl.printPidInfo(robot.tracer, elapsedTime, robot.battery);
-                }
-                break;
-
-            case VISION_TURN:
-                robot.dashboard.displayPrintf(2, "xPos=%.1f,yPos=%.1f,heading=%.1f",
-                    robot.driveBase.getXPosition(), robot.driveBase.getYPosition(), robot.driveBase.getHeading());
-                robot.visionTurnPidCtrl.displayPidInfo(3);
-
-                if (!visionPidTurnCommand.cmdPeriodic(elapsedTime))
-                {
-                    robot.visionTurnPidCtrl.printPidInfo(robot.tracer, elapsedTime, robot.battery);
+                    else if (test == Test.VISION_TURN)
+                    {
+                        robot.visionTurnPidCtrl.printPidInfo(robot.tracer, elapsedTime, robot.battery);
+                    }
                 }
                 break;
 
             default:
                 break;
         }
-    }   //runContinuous
-    
+    } // runContinuous
+
     @Override
     public void operatorStickButtonEvent(int button, boolean pressed)
     {
-    	switch (button)
+        switch (button)
         {
             case FrcJoystick.LOGITECH_TRIGGER:
-            	if(overrideGrabber)
-            	{
-            		if(pressed)
-            		{
-            			robot.cubePickup.grabCube(RobotInfo.TELEOP_GRABBER_POWER);
-            		} else
-            		{
-            			robot.cubePickup.grabCube(0.0);
-            		}
-            		processedInput = true;
-            	}
+                if (overrideGrabber)
+                {
+                    if (pressed)
+                    {
+                        robot.cubePickup.grabCube(RobotInfo.TELEOP_GRABBER_POWER);
+                    }
+                    else
+                    {
+                        robot.cubePickup.grabCube(0.0);
+                    }
+                    processedInput = true;
+                }
                 break;
 
             case FrcJoystick.LOGITECH_BUTTON2:
                 break;
 
             case FrcJoystick.LOGITECH_BUTTON3:
-            	if(overrideGrabber)
-            	{
-            		if(pressed)
-            		{
-            			robot.cubePickup.grabCube(RobotInfo.TELEOP_GRABBER_POWER);
-            		} else
-            		{
-            			robot.cubePickup.grabCube(0.0);
-            		}
-            		processedInput = true;
-            	}
+                if (overrideGrabber)
+                {
+                    if (pressed)
+                    {
+                        robot.cubePickup.grabCube(RobotInfo.TELEOP_GRABBER_POWER);
+                    }
+                    else
+                    {
+                        robot.cubePickup.grabCube(0.0);
+                    }
+                    processedInput = true;
+                }
                 break;
 
             case FrcJoystick.LOGITECH_BUTTON4:
@@ -360,13 +338,13 @@ public class FrcTest extends FrcTeleOp
                 break;
 
             case FrcJoystick.LOGITECH_BUTTON8:
-            	robot.elevator.setManualOverride(pressed);
-            	processedInput = true;
+                robot.elevator.setManualOverride(pressed);
+                processedInput = true;
                 break;
 
             case FrcJoystick.LOGITECH_BUTTON9:
-            	overrideGrabber = pressed;
-            	processedInput = true;
+                overrideGrabber = pressed;
+                processedInput = true;
                 break;
 
             case FrcJoystick.LOGITECH_BUTTON10:
@@ -378,48 +356,51 @@ public class FrcTest extends FrcTeleOp
             case FrcJoystick.LOGITECH_BUTTON12:
                 break;
         }
-    	
-    	if(!processedInput)
-    	{
-    		super.operatorStickButtonEvent(button, pressed);
-    	}
-    	processedInput = false;
+
+        if (!processedInput)
+        {
+            super.operatorStickButtonEvent(button, pressed);
+        }
+        processedInput = false;
     }
 
     /**
-     * This method reads all sensors and prints out their values. This is a very useful diagnostic tool to check
-     * if all sensors are working properly. For encoders, since test sensor mode is also teleop mode, you can
-     * operate the gamepads to turn the motors and check the corresponding encoder counts.
+     * This method reads all sensors and prints out their values. This is a very
+     * useful diagnostic tool to check if all sensors are working properly. For
+     * encoders, since test sensor mode is also teleop mode, you can operate the
+     * gamepads to turn the motors and check the corresponding encoder counts.
      */
     private void doSensorsTest()
     {
-        robot.dashboard.displayPrintf(1, "Sensors Test (Batt=%.1f/%.1f):",
-            robot.battery.getVoltage(), robot.battery.getLowestVoltage());
+        robot.dashboard.displayPrintf(1, "Sensors Test (Batt=%.1f/%.1f):", robot.battery.getVoltage(),
+            robot.battery.getLowestVoltage());
         robot.dashboard.displayPrintf(2, "DriveBase: lf=%.0f, rf=%.0f, lr=%.0f, rr=%.0f",
-            robot.leftFrontWheel.getPosition(), robot.rightFrontWheel.getPosition(),
-            robot.leftRearWheel.getPosition(), robot.rightRearWheel.getPosition());
-        robot.dashboard.displayPrintf(3, "DriveBase: X=%.1f, Y=%.1f, Heading=%.1f",
-            robot.driveBase.getXPosition(), robot.driveBase.getYPosition(), robot.driveBase.getHeading());
-        robot.dashboard.displayPrintf(4, "Gyro: Rate=%.3f, Heading=%.1f",
-            robot.gyro.getZRotationRate().value, robot.gyro.getZHeading().value);
+            robot.leftFrontWheel.getPosition(), robot.rightFrontWheel.getPosition(), robot.leftRearWheel.getPosition(),
+            robot.rightRearWheel.getPosition());
+        robot.dashboard.displayPrintf(3, "DriveBase: X=%.1f, Y=%.1f, Heading=%.1f", robot.driveBase.getXPosition(),
+            robot.driveBase.getYPosition(), robot.driveBase.getHeading());
+        robot.dashboard.displayPrintf(4, "Gyro: Rate=%.3f, Heading=%.1f", robot.gyro.getZRotationRate().value,
+            robot.gyro.getZHeading().value);
         robot.dashboard.displayPrintf(5, "CubePickup: cube=%s", robot.cubePickup.cubeDetected());
         robot.dashboard.displayPrintf(6, "PressureSensor: pressure=%.1f", robot.getPressure());
-        robot.dashboard.displayPrintf(7, "Ultrasonic=%.1f inches", robot.getUltrasonicDistance());
-    }   //doSensorsTest
+        robot.dashboard.displayPrintf(7, "Ultrasonic: front=%.1f, left=%.1f, right=%.1f", robot.getFrontSonarDistance(),
+            robot.getLeftSonarDistance(), robot.getRightSonarDistance());
+    } // doSensorsTest
 
     /**
-     * This method runs each of the four wheels in sequence for a fixed number of seconds. It is for diagnosing
-     * problems with the drive train. At the end of the run, you should check the amount of encoder counts each
-     * wheel has accumulated. They should be about the same. If not, you need to check the problem wheel for
-     * friction or chain tension etc. You can also use this test to check if a motor needs to be "inverted"
-     * (i.e. turning in the wrong direction).
+     * This method runs each of the four wheels in sequence for a fixed number
+     * of seconds. It is for diagnosing problems with the drive train. At the
+     * end of the run, you should check the amount of encoder counts each wheel
+     * has accumulated. They should be about the same. If not, you need to check
+     * the problem wheel for friction or chain tension etc. You can also use
+     * this test to check if a motor needs to be "inverted" (i.e. turning in the
+     * wrong direction).
      */
     private void doDriveMotorsTest()
     {
         robot.dashboard.displayPrintf(1, "Motors Test: index=%d", motorIndex);
-        robot.dashboard.displayPrintf(2, "Enc: lf=%.0f, rf=%.0f, lr=%.0f, rr=%.0f",
-            robot.leftFrontWheel.getPosition(), robot.rightFrontWheel.getPosition(),
-            robot.leftRearWheel.getPosition(), robot.rightRearWheel.getPosition());
+        robot.dashboard.displayPrintf(2, "Enc: lf=%.0f, rf=%.0f, lr=%.0f, rr=%.0f", robot.leftFrontWheel.getPosition(),
+            robot.rightFrontWheel.getPosition(), robot.leftRearWheel.getPosition(), robot.rightRearWheel.getPosition());
 
         if (sm.isReady())
         {
@@ -474,7 +455,7 @@ public class FrcTest extends FrcTeleOp
                     }
                     motorIndex = motorIndex + 1;
                     timer.set(robot.driveTime, event);
-                    sm.waitForSingleEvent(event, motorIndex < 4? State.START: State.DONE);
+                    sm.waitForSingleEvent(event, motorIndex < 4 ? State.START : State.DONE);
                     break;
 
                 case DONE:
@@ -487,6 +468,6 @@ public class FrcTest extends FrcTeleOp
                     break;
             }
         }
-    }   //doMotorsTest
+    } // doMotorsTest
 
-}   //class FrcTest
+} // class FrcTest
