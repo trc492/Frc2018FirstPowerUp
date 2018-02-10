@@ -350,8 +350,10 @@ public class Robot extends FrcRobotBase
         //
         // Initialize pneumatic flippers.
         //
-        leftFlipper = new FrcPneumatic("leftFlipper", location, location);
-        rightFlipper =  new FrcPneumatic("rightFlipper", location, location);
+        leftFlipper = new FrcPneumatic("leftFlipper", RobotInfo.LEFT_FLIPPER_CANID, 
+            RobotInfo.LEFT_FLIPPER_EXTEND, RobotInfo.LEFT_FLIPPER_RETRACT);
+        rightFlipper =  new FrcPneumatic("rightFlipper", RobotInfo.RIGHT_FLIPPER_CANID, 
+            RobotInfo.RIGHT_FLIPPER_EXTEND, RobotInfo.RIGHT_FLIPPER_RETRACT);
         
         //
         // Create other hardware subsystems.
