@@ -70,7 +70,6 @@ public class FrcTest extends FrcTeleOp
     private CmdPidDrive pidDriveCommand = null;
 
     private int motorIndex = 0;
-    private boolean processedInput = false;
     private boolean overrideGrabber = false;
 
     public FrcTest(Robot robot)
@@ -290,6 +289,8 @@ public class FrcTest extends FrcTeleOp
     @Override
     public void operatorStickButtonEvent(int button, boolean pressed)
     {
+        boolean processedInput = false;
+
         switch (button)
         {
             case FrcJoystick.LOGITECH_TRIGGER:
@@ -468,6 +469,6 @@ public class FrcTest extends FrcTeleOp
                     break;
             }
         }
-    } // doMotorsTest
+    } // doDriveMotorsTest
 
 } // class FrcTest
