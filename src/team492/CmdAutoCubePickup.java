@@ -51,6 +51,10 @@ public class CmdAutoCubePickup implements TrcTaskMgr.Task
     	sm = new TrcStateMachine<>(moduleName);    	
     }
     
+    /**
+     * Enable or disable this Task. When disabled, startTask() and stopTask() will NOT do anything
+     * @param enabled
+     */
     public void setEnabled(boolean enabled)
     {
     	TrcTaskMgr taskManager = TrcTaskMgr.getInstance();
@@ -88,7 +92,7 @@ public class CmdAutoCubePickup implements TrcTaskMgr.Task
 	public void startTaskWithEvent(TrcEvent onFinishedEvent)
 	{
 		this.onFinishedEvent = onFinishedEvent;
-		TrcTaskMgr.getInstance().registerTask(moduleName, this, taskType);
+		sm.start(State.START);
 	}
 
 	/**
