@@ -226,6 +226,7 @@ public class RobotInfo
     public static final double ELEVATOR_MID_HEIGHT              = 4.0;
     public static final double ELEVATOR_CAL_POWER               = 0.3;                // this too
     public static final double ELEVATOR_FLOOR_PICKUP_HEIGHT     = 6.0;                // 6 inches off the ground
+    // this used to be 0.04735821
     public static final double ELEVATOR_GRAVITY_COMPENSATION    = 0.04735821;         // 76.388 N (weight of elevator) * 0.01905 m (radius of sprocket) / 12.75 (gear ratio) / 2.41 Nm (stall torque) = percent of power needed
     
     //
@@ -250,7 +251,7 @@ public class RobotInfo
     public static final double AUTO_DISTANCE_TO_SWITCH = 110.0;
     public static final double AUTO_DISTANCE_TO_SCALE = 208.0;
     public static final double SCALE_SIDE_APPROACH_DISTANCE = 101.0;
-    public static final double SCALE_FRONT_APPROACH_DISTANCE = 71.0;
+    public static final double SCALE_FRONT_APPROACH_DISTANCE = 46.0;
     public static final double FINAL_FRONT_SCALE_APPROACH_DISTANCE = 62.0;
     public static final double FINAL_SIDE_SCALE_APPROACH_DISTANCE = 21.0;
     public static final double RIGHT_SWITCH_LOCATION = 59.0;
@@ -259,8 +260,12 @@ public class RobotInfo
     public static final double LEFT_SCALE_LOCATION = -126.0;
     public static final double SCALE_TARGET_HEIGHT = 60.0;
     public static final double SWITCH_TARGET_HEIGHT = 27.0;
-    public static final double FRONT_SCALE_BACKUP_DISTANCE = 4200000;
-    public static final double SIDE_SCALE_BACKUP_DISTANCE = 4200000;
+    public static final double ADVANCE_TO_SECOND_CUBE_DISTANCE = 73.0;
+    public static final double STRAFE_TO_SECOND_CUBE_DISTANCE = 10.0;
+    public static final double SECOND_CUBE_BACKUP_DISTANCE = 8.0;
+    public static final double SHORT_SWITCH_STRAFE_DISTANCE = 8.0;
+    public static final double LONG_SWITCH_STRAFE_DISTANCE = 126.0;
+    public static final double SECOND_SWITCH_APPROACH_DISTANCE = 12.0;
     
     //
     // FrcAuto constants.
