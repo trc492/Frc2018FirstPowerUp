@@ -333,9 +333,17 @@ public class FrcTest extends FrcTeleOp
                 break;
 
             case FrcJoystick.LOGITECH_BUTTON6:
+                if(pressed)
+                {
+                    robot.elevator.setPosition(24.0);
+                }
                 break;
 
             case FrcJoystick.LOGITECH_BUTTON7:
+                if(pressed)
+                {
+                    robot.elevator.setPosition(48.0);
+                }
                 break;
 
             case FrcJoystick.LOGITECH_BUTTON8:
@@ -349,6 +357,10 @@ public class FrcTest extends FrcTeleOp
                 break;
 
             case FrcJoystick.LOGITECH_BUTTON10:
+                if(pressed)
+                {
+                    robot.elevator.setPosition(60.0);
+                }
                 break;
 
             case FrcJoystick.LOGITECH_BUTTON11:

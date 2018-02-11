@@ -42,13 +42,15 @@ public class Elevator
         elevatorMotor.configFwdLimitSwitchNormallyOpen(false);
         elevatorMotor.configRevLimitSwitchNormallyOpen(false);
         elevatorMotor.motor.overrideLimitSwitchesEnable(true);
+        elevatorMotor.setInverted(true);
+        elevatorMotor.setBrakeModeEnabled(true);
         elevatorPidCtrl = new TrcPidController("elevatorPidController",
             new TrcPidController.PidCoefficients(RobotInfo.ELEVATOR_KP, RobotInfo.ELEVATOR_KI, RobotInfo.ELEVATOR_KD),
             RobotInfo.ELEVATOR_TOLERANCE, this::getPosition);
         elevator = new TrcPidActuator("elevator", elevatorMotor,
             new FrcCANTalonLimitSwitch("elevatorLowerLimit", elevatorMotor, false), elevatorPidCtrl,
             RobotInfo.ELEVATOR_MIN_HEIGHT, RobotInfo.ELEVATOR_MAX_HEIGHT, this::getGravityCompensation);
-        elevator.setPositionScale(RobotInfo.ELEVATOR_INCHES_PER_COUNT);
+        elevator.setPositionScale(RobotInfo.ELEVATOR_INCHES_PER_COUNT, RobotInfo.ELEVATOR_POSITION_OFFSET);
     }
 
     public void setManualOverride(boolean manualOverride)
@@ -71,10 +73,15 @@ public class Elevator
      *            Set the position for Elevator to move to in inches using PID
      *            control.
      */
+    public void setPosition(double pos)
+    {
+        elevator.setTarget(pos, true);
+    } // setPosition
+
     public void setPosition(double pos, TrcEvent event, double timeout)
     {
-        elevator.setTarget(pos, event, timeout);
-    } // setPosition
+        elevator.setTarget(pos,  event, timeout);
+    }
 
     public void setPower(double power)
     {

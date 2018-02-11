@@ -216,7 +216,7 @@ public class RobotInfo
     //
     // Elevator subsystem.
     //
-    public static final double ELEVATOR_INCHES_PER_COUNT        = 0.002822426329889;  // we will need to change this, later during calibration
+    public static final double ELEVATOR_INCHES_PER_COUNT        = 0.00577778;   // 39 inches in 6750 ticks
     public static final double ELEVATOR_KP                      = 0.3;                // this too
     public static final double ELEVATOR_KI                      = 0.0;                // hopefully not this
     public static final double ELEVATOR_KD                      = 0.0;                // this too
@@ -227,7 +227,8 @@ public class RobotInfo
     public static final double ELEVATOR_CAL_POWER               = 0.3;                // this too
     public static final double ELEVATOR_FLOOR_PICKUP_HEIGHT     = 0.0;                // Lowest point on elevator
     // this used to be 0.04735821
-    public static final double ELEVATOR_GRAVITY_COMPENSATION    = 0.04735821;         // 76.388 N (weight of elevator) * 0.01905 m (radius of sprocket) / 12.75 (gear ratio) / 2.41 Nm (stall torque) = percent of power needed
+    public static final double ELEVATOR_GRAVITY_COMPENSATION    = 0.08;               // Tuned during testing
+    public static final double ELEVATOR_POSITION_OFFSET         = 8.0;
     
     //
     // AutoAssist subsystem.
