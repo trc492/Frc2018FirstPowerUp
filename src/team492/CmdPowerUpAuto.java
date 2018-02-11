@@ -181,7 +181,7 @@ class CmdPowerUpAuto implements TrcRobot.RobotCommand
                     // pick up cube from floor
                     //
                 	
-                	cmdAutoCubePickup.startTaskWithEvent(event);
+                	cmdAutoCubePickup.start(event);
                     sm.waitForSingleEvent(event, State.DO_DELAY);
                     break;
                     
@@ -404,7 +404,7 @@ class CmdPowerUpAuto implements TrcRobot.RobotCommand
                 	break;
                 	
                 case PICKUP_SECOND_CUBE:
-                	cmdAutoCubePickup.startTaskWithEvent(event);
+                	cmdAutoCubePickup.start(event);
                     sm.waitForSingleEvent(event, State.BACKUP_WITH_SECOND_CUBE);
                 	break;
                 	
