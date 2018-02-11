@@ -84,7 +84,7 @@ public class Robot extends FrcRobotBase
     private static final boolean DEBUG_PID_DRIVE = false;
     private static final boolean DEBUG_GRIP_VISION = false;
     private static final boolean DEBUG_WINCH = false;
-    private static final boolean DEBUG_ELEVATOR = false;
+    private static final boolean DEBUG_ELEVATOR = true;
     private static final boolean DEBUG_CUBE_PICKUP = true;
     private static final boolean DEBUG_PIXY = true;
     private static final double DASHBOARD_UPDATE_INTERVAL = 0.1;
@@ -283,8 +283,8 @@ public class Robot extends FrcRobotBase
 
         leftFrontWheel.setPositionSensorInverted(false);
         leftRearWheel.setPositionSensorInverted(false);
-        rightFrontWheel.setPositionSensorInverted(true);
-        rightRearWheel.setPositionSensorInverted(true);
+        rightFrontWheel.setPositionSensorInverted(false);
+        rightRearWheel.setPositionSensorInverted(false);
 
         leftFrontWheel.setFeedbackDevice(FeedbackDevice.QuadEncoder);
         leftRearWheel.setFeedbackDevice(FeedbackDevice.QuadEncoder);
@@ -487,7 +487,7 @@ public class Robot extends FrcRobotBase
 
             if (DEBUG_CUBE_PICKUP)
             {
-                dashboard.displayPrintf(8, "CubePickup: power=%.1f, detected=%b",
+                dashboard.displayPrintf(9, "CubePickup: power=%.1f, detected=%b",
                     cubePickup.getPower(), cubePickup.cubeDetected());
             }
 

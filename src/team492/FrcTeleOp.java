@@ -292,6 +292,14 @@ public class FrcTeleOp implements TrcRobot.RobotMode
                 break;
 
             case FrcJoystick.LOGITECH_BUTTON2:
+                if (pressed)
+                {
+                    robot.cubePickup.grabCube(0.5);
+                }
+                else
+                {
+                    robot.cubePickup.grabCube(0.0);
+                }
                 break;
 
             case FrcJoystick.LOGITECH_BUTTON3:
