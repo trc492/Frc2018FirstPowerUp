@@ -85,9 +85,6 @@ class CmdPowerUpAuto implements TrcRobot.RobotCommand
     private boolean rightScale;
     private double startPosition;
     private double targetLocation;
-    //TODO: implement all of these variables
-    
-    //TODO: add these constants to RobotInfo (now in RobotInfo) and fix them (done-ish)
     
 
     CmdPowerUpAuto(Robot robot, double delay, int targetType, double forwardDistance, boolean sideApproach, int afterAction, double startPosition)
@@ -104,8 +101,8 @@ class CmdPowerUpAuto implements TrcRobot.RobotCommand
 
         if(-1.0 == forwardDistance) 
         {
-            this.forwardDistance = HalDashboard.getNumber("forwardDistance", 85.0); //TODO: change
-        }                                                                           // default number
+            this.forwardDistance = HalDashboard.getNumber("Forward Distance", 4.0); 
+        }                                                                           
         else
         {
         	this.forwardDistance = forwardDistance;
