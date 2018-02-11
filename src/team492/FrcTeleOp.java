@@ -180,14 +180,14 @@ public class FrcTeleOp implements TrcRobot.RobotMode
             case FrcJoystick.LOGITECH_BUTTON2:
                 if (pressed && !robot.cmdAutoCubePickup.isEnabled())
                 {
-                    robot.cmdAutoCubePickup.startTask(RunMode.TELEOP_MODE);
+                    robot.cmdAutoCubePickup.start();
                 }
                 break;
 
             case FrcJoystick.LOGITECH_BUTTON3:
                 if (pressed && robot.cmdAutoCubePickup.isEnabled())
                 {
-                    robot.cmdAutoCubePickup.stopTask(RunMode.TELEOP_MODE);
+                    robot.cmdAutoCubePickup.stop();
                 }
                 break;
 

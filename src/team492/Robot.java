@@ -364,7 +364,6 @@ public class Robot extends FrcRobotBase
         winch = new Winch();
         elevator = new Elevator();
         cmdAutoCubePickup = new CmdAutoCubePickup(this);
-        cmdAutoCubePickup.setEnabled(true);
         
         //
         // Robot Modes.

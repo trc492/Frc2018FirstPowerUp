@@ -22,7 +22,6 @@
 
 package team492;
 
-import team492.PixyVision.TargetInfo;
 import trclib.TrcEvent;
 import trclib.TrcRobot.RunMode;
 import trclib.TrcStateMachine;
@@ -42,13 +41,15 @@ public class CmdAutoCubePickup implements TrcTaskMgr.Task
     private TrcEvent event, onFinishedEvent;
     private TrcStateMachine<State> sm;
     private Robot robot;
+    private double startTime;
 
     public CmdAutoCubePickup(Robot robot)
     {
     	this.robot = robot;
     	
     	event = new TrcEvent(moduleName);
-    	sm = new TrcStateMachine<>(moduleName);    	
+    	sm = new TrcStateMachine<>(moduleName);
+    	setEnabled(true);
     }
     
     /**
@@ -76,12 +77,14 @@ public class CmdAutoCubePickup implements TrcTaskMgr.Task
     {
         return sm.isEnabled();
     }
-
-    /**
-     * Start this task without signaling any event when done
-     */
-	@Override
-	public void startTask(RunMode runMode) {
+    
+    public double elapsedTime()
+    {
+    	return Robot.getModeElapsedTime() - startTime;
+    }
+	
+	public void start()
+	{
 		startTaskWithEvent(null);
 	}
 	
@@ -92,20 +95,24 @@ public class CmdAutoCubePickup implements TrcTaskMgr.Task
 	public void startTaskWithEvent(TrcEvent onFinishedEvent)
 	{
 		this.onFinishedEvent = onFinishedEvent;
+		startTime = Robot.getModeElapsedTime();
 		sm.start(State.START);
 	}
-
-	/**
-	 * Stop this task but don't deregister it
-	 */
-	@Override
-	public void stopTask(RunMode runMode) {
+	
+	public void stop()
+	{
 		if (robot.visionPidDrive.isActive())
         {
             robot.visionPidDrive.cancel();
         }
         sm.stop();
 	}
+	
+	@Override
+	public void startTask(RunMode runMode) {}
+	
+	@Override
+	public void stopTask(RunMode runMode) {}
 	
 	@Override
 	public void prePeriodicTask(RunMode runMode) {}
@@ -142,20 +149,19 @@ public class CmdAutoCubePickup implements TrcTaskMgr.Task
 					// 6.0 inches above the ground. pos is in inches
 					double pos = RobotInfo.ELEVATOR_FLOOR_PICKUP_HEIGHT;
 					robot.elevator.setPosition(pos, event, 0.0);
-	
+					
 					sm.waitForSingleEvent(event, State.DRIVE);
 					break;
 	
 				case DRIVE:
-					TargetInfo target = getCubeCoords();
-					robot.visionPidDrive.setTarget(target.xDistance*1.1, target.yDistance*1.1, 0.0, false, event); // Scale by 110% to overshoot
-	
+					robot.visionPidDrive.driveMaintainHeading(0.0, 0.6, 0.0); // Go forward at 60% power facing the cube
 					robot.cubePickup.grabCube(0.5, event);
 	
 					sm.waitForSingleEvent(event, State.PICKUP);
 					break;
 	
 				case PICKUP:
+					robot.visionPidDrive.cancel();
 					robot.cubePickup.closeClaw();
 					sm.setState(State.DONE);
 					break;
@@ -168,16 +174,9 @@ public class CmdAutoCubePickup implements TrcTaskMgr.Task
 					{
 						onFinishedEvent.set(true);
 					}
-					TrcTaskMgr.getInstance().unregisterTask(this, taskType);
 					break;
 			}
 			robot.traceStateInfo(elapsedTime, state.toString());
 		}
-	}
-	
-	private TargetInfo getCubeCoords()
-	{
-		TargetInfo target = robot.pixy.getTargetInfo();
-		return target;
 	}
 }
