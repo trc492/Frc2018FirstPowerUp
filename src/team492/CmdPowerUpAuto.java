@@ -245,14 +245,7 @@ class CmdPowerUpAuto implements TrcRobot.RobotCommand
                 	xDistance = 0;
                 	robot.pidDrive.setTarget(xDistance, yDistance, robot.targetHeading, false, event);
                 	sm.waitForSingleEvent(event, State.TURN_ROBOT);
-                	if(rightScale)
-                	{
-                		rightTurn = false;
-                	}
-                	else
-                	{
-                		rightTurn = true;
-                	}
+                	rightTurn = !rightScale;
                     break;
                     
                 case APPROACH_SCALE_FRONT:
