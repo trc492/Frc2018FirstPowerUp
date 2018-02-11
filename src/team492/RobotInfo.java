@@ -267,6 +267,7 @@ public class RobotInfo
     public static final double SHORT_SWITCH_STRAFE_DISTANCE = 8.0;
     public static final double LONG_SWITCH_STRAFE_DISTANCE = 126.0;
     public static final double SECOND_SWITCH_APPROACH_DISTANCE = 12.0;
+    public static final double FIRST_ELEVATOR_HEIGHT = 20.0;
     
     //
     // FrcAuto constants.
@@ -274,8 +275,8 @@ public class RobotInfo
     public static final double FWD_DISTANCE_1 = 4.0;
     public static final double FWD_DISTANCE_2 = 50.0;
     public static final double FWD_DISTANCE_3 = 208.0;
-    public static final double START_POS_1 = -96.0;
+    public static final double START_POS_1 = -126.0;
     public static final double START_POS_2 = 0.0;
-    public static final double START_POS_3 = 96.0;
+    public static final double START_POS_3 = 126.0;
     
 }   // class RobotInfo

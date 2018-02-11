@@ -36,6 +36,7 @@ class CmdPowerUpAuto implements TrcRobot.RobotCommand
     private static enum State
     {
         PICK_UP_CUBE,
+        START_RAISING_ELEVATOR,
         RAISE_ELEVATOR,
         DO_DELAY,
         DRIVE_FORWARD_DISTANCE,
@@ -85,9 +86,6 @@ class CmdPowerUpAuto implements TrcRobot.RobotCommand
     private boolean rightScale;
     private double startPosition;
     private double targetLocation;
-    //TODO: implement all of these variables
-    
-    //TODO: add these constants to RobotInfo (now in RobotInfo) and fix them (done-ish)
     
 
     CmdPowerUpAuto(Robot robot, double delay, int targetType, double forwardDistance, boolean sideApproach, int afterAction, double startPosition)
@@ -104,8 +102,8 @@ class CmdPowerUpAuto implements TrcRobot.RobotCommand
 
         if(-1.0 == forwardDistance) 
         {
-            this.forwardDistance = HalDashboard.getNumber("forwardDistance", 85.0); //TODO: change
-        }                                                                           // default number
+            this.forwardDistance = HalDashboard.getNumber("Forward Distance", 4.0); 
+        }                                                                           
         else
         {
         	this.forwardDistance = forwardDistance;
@@ -171,8 +169,6 @@ class CmdPowerUpAuto implements TrcRobot.RobotCommand
         robot.dashboard.displayPrintf(1, "State: %s", state != null ? state.toString() : "Disabled");
         
         
-        robot.cmdAutoCubePickup.cmdPeriodic(elapsedTime);
-        
         if (sm.isReady())
         {
             state = sm.getState();
@@ -184,10 +180,15 @@ class CmdPowerUpAuto implements TrcRobot.RobotCommand
                     //
                     // pick up cube from floor
                     //
-                	if(cmdAutoCubePickup.cmdPeriodic(elapsedTime)) {
-                		sm.setState(State.DO_DELAY);
-                	}
+                	
+                	cmdAutoCubePickup.startTaskWithEvent(event);
+                    sm.waitForSingleEvent(event, State.DO_DELAY);
                     break;
+                    
+                case START_RAISING_ELEVATOR:
+                	robot.elevator.setPosition(RobotInfo.FIRST_ELEVATOR_HEIGHT, event, 0.0);
+                	sm.waitForSingleEvent(event, State.DO_DELAY);
+                	break;
 
                 case DO_DELAY:
                     //
@@ -250,14 +251,7 @@ class CmdPowerUpAuto implements TrcRobot.RobotCommand
                 	xDistance = 0;
                 	robot.pidDrive.setTarget(xDistance, yDistance, robot.targetHeading, false, event);
                 	sm.waitForSingleEvent(event, State.TURN_ROBOT);
-                	if(rightScale)
-                	{
-                		rightTurn = false;
-                	}
-                	else
-                	{
-                		rightTurn = true;
-                	}
+                	rightTurn = !rightScale;
                     break;
                     
                 case APPROACH_SCALE_FRONT:
@@ -291,7 +285,6 @@ class CmdPowerUpAuto implements TrcRobot.RobotCommand
                     
                 case APPROACH_TARGET:
                 	xDistance = 0.0;
-                	// TODO: change yDistance based on approach if necessary
                 	if(sideApproach)
                 	{
                         yDistance = RobotInfo.FINAL_SIDE_SCALE_APPROACH_DISTANCE;
@@ -411,18 +404,8 @@ class CmdPowerUpAuto implements TrcRobot.RobotCommand
                 	break;
                 	
                 case PICKUP_SECOND_CUBE:
-                	if(afterAction == 1)
-                	{
-                		if(cmdAutoCubePickup.cmdPeriodic(elapsedTime)) {
-                    		sm.setState(State.BACKUP_WITH_SECOND_CUBE);
-                    	}
-                	}
-                	else
-                	{
-                		if(cmdAutoCubePickup.cmdPeriodic(elapsedTime)) {
-                    		sm.setState(State.BACKUP_WITH_SECOND_CUBE);
-                    	}
-                	}
+                	cmdAutoCubePickup.startTaskWithEvent(event);
+                    sm.waitForSingleEvent(event, State.BACKUP_WITH_SECOND_CUBE);
                 	break;
                 	
                 case BACKUP_WITH_SECOND_CUBE:

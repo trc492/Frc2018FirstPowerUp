@@ -24,12 +24,15 @@ package team492;
 
 import team492.PixyVision.TargetInfo;
 import trclib.TrcEvent;
-import trclib.TrcRobot;
+import trclib.TrcRobot.RunMode;
 import trclib.TrcStateMachine;
+import trclib.TrcTaskMgr;
+import trclib.TrcTaskMgr.TaskType;
 
-public class CmdAutoCubePickup implements TrcRobot.RobotCommand
+public class CmdAutoCubePickup implements TrcTaskMgr.Task
 {
     private static final String moduleName = "CmdAutoCubePickup";
+    private static final TaskType taskType = TaskType.POSTCONTINUOUS_TASK;
 
     private static enum State
     {
@@ -49,33 +52,20 @@ public class CmdAutoCubePickup implements TrcRobot.RobotCommand
     }
     
     /**
-     * Reset the state machine and start auto cube pickup.
+     * Enable or disable this Task. When disabled, startTask() and stopTask() will NOT do anything
+     * @param enabled
      */
-    public void start()
+    public void setEnabled(boolean enabled)
     {
-    	start(null);
-    }
-
-    /**
-     * Reset the state machine and start auto cube pickup. Signal event when done.
-     */
-    public void start(TrcEvent event)
-    {
-        stop();
-        this.onFinishedEvent = event;
-        sm.start(State.START);
-    }
-
-    /**
-     * Stop the state machine. cmdPeriodic won't do anything
-     */
-    public void stop()
-    {
-        if (robot.visionPidDrive.isActive())
-        {
-            robot.visionPidDrive.cancel();
-        }
-        sm.stop();
+    	TrcTaskMgr taskManager = TrcTaskMgr.getInstance();
+    	if(enabled)
+    	{
+    		taskManager.registerTask(moduleName, this, taskType);
+    	} else
+    	{
+    		this.stopTask(null);
+    		taskManager.unregisterTask(this, taskType);
+    	}
     }
 
     /**
@@ -88,71 +78,106 @@ public class CmdAutoCubePickup implements TrcRobot.RobotCommand
     }
 
     /**
-     * Execute one cycle of the state machine and stuff.
+     * Start this task without signaling any event when done
      */
-    @Override
-    public boolean cmdPeriodic(double elapsedTime)
-    {
-        boolean done = !sm.isEnabled();
+	@Override
+	public void startTask(RunMode runMode) {
+		startTaskWithEvent(null);
+	}
+	
+	/**
+	 * Start this task, and signal onFinishedEvent when done
+	 * @param onFinishedEvent TrcEvent to signal when finished
+	 */
+	public void startTaskWithEvent(TrcEvent onFinishedEvent)
+	{
+		this.onFinishedEvent = onFinishedEvent;
+		sm.start(State.START);
+	}
 
-        if (done)
+	/**
+	 * Stop this task but don't deregister it
+	 */
+	@Override
+	public void stopTask(RunMode runMode) {
+		if (robot.visionPidDrive.isActive())
         {
-        	return true;
+            robot.visionPidDrive.cancel();
         }
+        sm.stop();
+	}
+	
+	@Override
+	public void prePeriodicTask(RunMode runMode) {}
 
-        State state = sm.getState();
-        robot.dashboard.displayPrintf(1, "State: %s", state != null ? state.toString() : "Disabled");
-        
-        if (sm.isReady())
-        {
-            switch (state)
-            {
-                case START:
-                	// Deploy and open cube pickup
-                	robot.cubePickup.deployPickup();
-                    robot.cubePickup.openClaw();
-                    
-                    // 6.0 inches above the ground. pos is in inches
-                    double pos = RobotInfo.ELEVATOR_FLOOR_PICKUP_HEIGHT;
-                    robot.elevator.setPosition(pos, event, 0.0);
-                    
-                    sm.waitForSingleEvent(event, State.DRIVE);
-                    break;
+	@Override
+	public void postPeriodicTask(RunMode runMode) {}
 
-                case DRIVE:
-                    TargetInfo target = getCubeCoords();
-                    robot.visionPidDrive.setTarget(target.xDistance*1.1, target.yDistance*1.1, 0.0, false, event); // Scale by 110% to overshoot
-                    
-                    robot.cubePickup.grabCube(0.5, event);
-                    
-                    sm.waitForSingleEvent(event, State.PICKUP);
-                    break;
+	@Override
+	public void preContinuousTask(RunMode runMode) {}
 
-                case PICKUP:
-                    robot.cubePickup.closeClaw();
-                    //CodeReview: Chris has the CmdPickupCube to grab the cube.
-                    sm.setState(State.DONE);
-                    break;
-
-                case DONE:
-                default:
-                    sm.stop();
-                    done = true;
-                    if(onFinishedEvent != null)
-                    {
-                    	onFinishedEvent.set(true);
-                    }
-                    break;
-            }
-            robot.traceStateInfo(elapsedTime, state.toString());
-        }
-        return done;
-    }
-
-    private TargetInfo getCubeCoords()
-    {
-        TargetInfo target = robot.pixy.getTargetInfo();
-        return target;
-    }
-
+	@Override
+	public void postContinuousTask(RunMode runMode) {
+		boolean done = !sm.isEnabled();
+		
+		if (done)
+		{
+			return;
+		}
+		
+		double elapsedTime = Robot.getModeElapsedTime();
+		
+		State state = sm.getState();
+		robot.dashboard.displayPrintf(1, "State: %s", state != null ? state.toString() : "Disabled");
+		
+		if (sm.isReady())
+		{
+			switch (state)
+			{
+				case START:
+					// Deploy and open cube pickup
+					robot.cubePickup.deployPickup();
+					robot.cubePickup.openClaw();
+	
+					// 6.0 inches above the ground. pos is in inches
+					double pos = RobotInfo.ELEVATOR_FLOOR_PICKUP_HEIGHT;
+					robot.elevator.setPosition(pos, event, 0.0);
+	
+					sm.waitForSingleEvent(event, State.DRIVE);
+					break;
+	
+				case DRIVE:
+					TargetInfo target = getCubeCoords();
+					robot.visionPidDrive.setTarget(target.xDistance*1.1, target.yDistance*1.1, 0.0, false, event); // Scale by 110% to overshoot
+	
+					robot.cubePickup.grabCube(0.5, event);
+	
+					sm.waitForSingleEvent(event, State.PICKUP);
+					break;
+	
+				case PICKUP:
+					robot.cubePickup.closeClaw();
+					sm.setState(State.DONE);
+					break;
+	
+				case DONE:
+				default:
+					stopTask(null);
+					done = true;
+					if(onFinishedEvent != null)
+					{
+						onFinishedEvent.set(true);
+					}
+					TrcTaskMgr.getInstance().unregisterTask(this, taskType);
+					break;
+			}
+			robot.traceStateInfo(elapsedTime, state.toString());
+		}
+	}
+	
+	private TargetInfo getCubeCoords()
+	{
+		TargetInfo target = robot.pixy.getTargetInfo();
+		return target;
+	}
 }
