@@ -78,7 +78,7 @@ public class Elevator
 
     public void setPower(double power)
     {
-        elevator.setPower(power);
+        elevator.setPower(power, true);
         elevatorPower = power;
     } // setPower
 
