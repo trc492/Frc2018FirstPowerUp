@@ -108,9 +108,6 @@ public class FrcAuto implements TrcRobot.RobotMode
     private int selectedAfterAction;
     private double robotStartPosition;
 
-    // TODO: Put these constants in RobotInfo (now in RobotInfo) and use the
-    // actual values (done-ish)
-
     private TrcRobot.RobotCommand autoCommand;
 
     public FrcAuto(Robot robot)
@@ -121,9 +118,10 @@ public class FrcAuto implements TrcRobot.RobotMode
         //
         autoStrategyMenu = new FrcChoiceMenu<>("Autonomous Strategies");
         targetTypeMenu = new FrcChoiceMenu<>("Target Types");
-        forwardDistanceMenu = new FrcChoiceMenu<>("Target Types");
-        approachMenu = new FrcChoiceMenu<>("Target Types");
-        afterActionMenu = new FrcChoiceMenu<>("Target Types");
+        forwardDistanceMenu = new FrcChoiceMenu<>("Forward Distances");
+        approachMenu = new FrcChoiceMenu<>("Approaches");
+        afterActionMenu = new FrcChoiceMenu<>("After Actions");
+        startPositionMenu = new FrcChoiceMenu<>("Start Positions");
 
         //
         // Populate Autonomous Mode menus.
@@ -144,12 +142,16 @@ public class FrcAuto implements TrcRobot.RobotMode
         forwardDistanceMenu.addChoice("Distance 3", FrcAuto.ForwardDistance.FWD_DISTANCE_3, false);
         forwardDistanceMenu.addChoice("Custom Distance", FrcAuto.ForwardDistance.CUSTOM, false);
 
-        approachMenu.addChoice("Front", FrcAuto.Approach.FRONT, false);
-        approachMenu.addChoice("Side", FrcAuto.Approach.SIDE, false);
+        approachMenu.addChoice("Front Approach", FrcAuto.Approach.FRONT, false);
+        approachMenu.addChoice("Side Approach", FrcAuto.Approach.SIDE, false);
 
         afterActionMenu.addChoice("Do Nothing", FrcAuto.AfterAction.DO_NOTHING, false);
-        afterActionMenu.addChoice("Second Scale Cube", FrcAuto.AfterAction.SECOND_SCALE_CUBE, false);
-        afterActionMenu.addChoice("Switch Cube", FrcAuto.AfterAction.CUBE_IN_SWITCH, false);
+        afterActionMenu.addChoice("Second Cube Scale", FrcAuto.AfterAction.SECOND_SCALE_CUBE, false);
+        afterActionMenu.addChoice("Second Cube Switch", FrcAuto.AfterAction.CUBE_IN_SWITCH, false);
+        
+        startPositionMenu.addChoice("Left Side Start", FrcAuto.StartPosition.START_POS_1, false);
+        startPositionMenu.addChoice("Middle Start", FrcAuto.StartPosition.START_POS_2, false);
+        startPositionMenu.addChoice("Right Side Start", FrcAuto.StartPosition.START_POS_3, false);
     } // FrcAuto
 
     //
@@ -182,6 +184,7 @@ public class FrcAuto implements TrcRobot.RobotMode
         switch (forwardDistance)
         {
             case FWD_DISTANCE_1:
+            default:
                 forwardDriveDistance = RobotInfo.FWD_DISTANCE_1;
                 break;
 
@@ -212,6 +215,7 @@ public class FrcAuto implements TrcRobot.RobotMode
         switch (afterAction)
         {
             case DO_NOTHING:
+            default:
                 selectedAfterAction = 0;
                 break;
             case SECOND_SCALE_CUBE:
