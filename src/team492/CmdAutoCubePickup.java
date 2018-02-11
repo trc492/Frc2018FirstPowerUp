@@ -42,6 +42,7 @@ public class CmdAutoCubePickup implements TrcTaskMgr.Task
     private TrcStateMachine<State> sm;
     private Robot robot;
     private double startTime;
+    private double startX, startY;
 
     public CmdAutoCubePickup(Robot robot)
     {
@@ -49,14 +50,13 @@ public class CmdAutoCubePickup implements TrcTaskMgr.Task
     	
     	event = new TrcEvent(moduleName);
     	sm = new TrcStateMachine<>(moduleName);
-    	setEnabled(true);
     }
     
     /**
      * Enable or disable this Task. When disabled, startTask() and stopTask() will NOT do anything
      * @param enabled
      */
-    public void setEnabled(boolean enabled)
+    private void setEnabled(boolean enabled)
     {
     	TrcTaskMgr taskManager = TrcTaskMgr.getInstance();
     	if(enabled)
@@ -64,7 +64,6 @@ public class CmdAutoCubePickup implements TrcTaskMgr.Task
     		taskManager.registerTask(moduleName, this, taskType);
     	} else
     	{
-    		this.stopTask(null);
     		taskManager.unregisterTask(this, taskType);
     	}
     }
@@ -82,6 +81,13 @@ public class CmdAutoCubePickup implements TrcTaskMgr.Task
     {
     	return Robot.getModeElapsedTime() - startTime;
     }
+    
+    public double[] distanceMoved()
+    {
+    	double changeX = robot.driveBase.getXPosition() - startX;
+    	double changeY = robot.driveBase.getYPosition() - startY;
+    	return new double[] {changeX, changeY };
+    }
 	
 	public void start()
 	{
@@ -96,6 +102,9 @@ public class CmdAutoCubePickup implements TrcTaskMgr.Task
 	{
 		this.onFinishedEvent = onFinishedEvent;
 		startTime = Robot.getModeElapsedTime();
+		startX = robot.driveBase.getXPosition();
+		startY = robot.driveBase.getYPosition();
+		setEnabled(true);
 		sm.start(State.START);
 	}
 	
@@ -106,6 +115,7 @@ public class CmdAutoCubePickup implements TrcTaskMgr.Task
             robot.visionPidDrive.cancel();
         }
         sm.stop();
+        setEnabled(false);
 	}
 	
 	@Override
