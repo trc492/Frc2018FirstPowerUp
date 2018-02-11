@@ -36,24 +36,33 @@ public class CmdAutoCubePickup implements TrcRobot.RobotCommand
         START, DRIVE, PICKUP, DONE
     }
 
-    private TrcEvent event;
+    private TrcEvent event, onFinishedEvent;
     private TrcStateMachine<State> sm;
     private Robot robot;
 
     public CmdAutoCubePickup(Robot robot)
     {
-        this.robot = robot;
-
-        event = new TrcEvent(moduleName);
-        sm = new TrcStateMachine<>(moduleName);
+    	this.robot = robot;
+    	
+    	event = new TrcEvent(moduleName);
+    	sm = new TrcStateMachine<>(moduleName);    	
     }
-
+    
     /**
-     * Reset the state machine and start it
+     * Reset the state machine and start auto cube pickup.
      */
     public void start()
     {
+    	start(null);
+    }
+
+    /**
+     * Reset the state machine and start auto cube pickup. Signal event when done.
+     */
+    public void start(TrcEvent event)
+    {
         stop();
+        this.onFinishedEvent = event;
         sm.start(State.START);
     }
 
@@ -129,6 +138,10 @@ public class CmdAutoCubePickup implements TrcRobot.RobotCommand
                 default:
                     sm.stop();
                     done = true;
+                    if(onFinishedEvent != null)
+                    {
+                    	onFinishedEvent.set(true);
+                    }
                     break;
             }
             robot.traceStateInfo(elapsedTime, state.toString());
