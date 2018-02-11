@@ -168,8 +168,6 @@ class CmdPowerUpAuto implements TrcRobot.RobotCommand
         robot.dashboard.displayPrintf(1, "State: %s", state != null ? state.toString() : "Disabled");
         
         
-        robot.cmdAutoCubePickup.cmdPeriodic(elapsedTime);
-        
         if (sm.isReady())
         {
             state = sm.getState();
@@ -181,9 +179,9 @@ class CmdPowerUpAuto implements TrcRobot.RobotCommand
                     //
                     // pick up cube from floor
                     //
-                	if(cmdAutoCubePickup.cmdPeriodic(elapsedTime)) {
-                		sm.setState(State.DO_DELAY);
-                	}
+                	
+                	cmdAutoCubePickup.startTaskWithEvent(event);
+                    sm.waitForSingleEvent(event, State.DO_DELAY);
                     break;
 
                 case DO_DELAY:
@@ -288,7 +286,6 @@ class CmdPowerUpAuto implements TrcRobot.RobotCommand
                     
                 case APPROACH_TARGET:
                 	xDistance = 0.0;
-                	// TODO: change yDistance based on approach if necessary
                 	if(sideApproach)
                 	{
                         yDistance = RobotInfo.FINAL_SIDE_SCALE_APPROACH_DISTANCE;
@@ -408,18 +405,8 @@ class CmdPowerUpAuto implements TrcRobot.RobotCommand
                 	break;
                 	
                 case PICKUP_SECOND_CUBE:
-                	if(afterAction == 1)
-                	{
-                		if(cmdAutoCubePickup.cmdPeriodic(elapsedTime)) {
-                    		sm.setState(State.BACKUP_WITH_SECOND_CUBE);
-                    	}
-                	}
-                	else
-                	{
-                		if(cmdAutoCubePickup.cmdPeriodic(elapsedTime)) {
-                    		sm.setState(State.BACKUP_WITH_SECOND_CUBE);
-                    	}
-                	}
+                	cmdAutoCubePickup.startTaskWithEvent(event);
+                    sm.waitForSingleEvent(event, State.BACKUP_WITH_SECOND_CUBE);
                 	break;
                 	
                 case BACKUP_WITH_SECOND_CUBE:
