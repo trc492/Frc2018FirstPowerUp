@@ -36,6 +36,7 @@ class CmdPowerUpAuto implements TrcRobot.RobotCommand
     private static enum State
     {
         PICK_UP_CUBE,
+        START_RAISING_ELEVATOR,
         RAISE_ELEVATOR,
         DO_DELAY,
         DRIVE_FORWARD_DISTANCE,
@@ -183,6 +184,11 @@ class CmdPowerUpAuto implements TrcRobot.RobotCommand
                 	cmdAutoCubePickup.startTaskWithEvent(event);
                     sm.waitForSingleEvent(event, State.DO_DELAY);
                     break;
+                    
+                case START_RAISING_ELEVATOR:
+                	robot.elevator.setPosition(RobotInfo.FIRST_ELEVATOR_HEIGHT, event, 0.0);
+                	sm.waitForSingleEvent(event, State.DO_DELAY);
+                	break;
 
                 case DO_DELAY:
                     //
@@ -245,14 +251,7 @@ class CmdPowerUpAuto implements TrcRobot.RobotCommand
                 	xDistance = 0;
                 	robot.pidDrive.setTarget(xDistance, yDistance, robot.targetHeading, false, event);
                 	sm.waitForSingleEvent(event, State.TURN_ROBOT);
-                	if(rightScale)
-                	{
-                		rightTurn = false;
-                	}
-                	else
-                	{
-                		rightTurn = true;
-                	}
+                	rightTurn = !rightScale;
                     break;
                     
                 case APPROACH_SCALE_FRONT:

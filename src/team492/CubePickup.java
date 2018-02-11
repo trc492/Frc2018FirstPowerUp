@@ -26,7 +26,7 @@ import com.ctre.phoenix.motorcontrol.ControlMode;
 
 import frclib.FrcPneumatic;
 import frclib.FrcCANTalon;
-import frclib.FrcDigitalInput;
+import frclib.FrcCANTalonLimitSwitch;
 import trclib.TrcDigitalTrigger;
 import trclib.TrcEvent;
 
@@ -34,7 +34,7 @@ public class CubePickup
 {
     private FrcCANTalon controlMotor, slaveMotor;
     private FrcPneumatic claw, deployer;
-    private FrcDigitalInput cubeSensor;
+    private FrcCANTalonLimitSwitch cubeSensor;
     private TrcDigitalTrigger cubeTrigger;
     private TrcEvent cubeEvent;
 
@@ -44,6 +44,9 @@ public class CubePickup
     public CubePickup()
     {
         controlMotor = new FrcCANTalon("LeftPickupMotor", RobotInfo.CANID_LEFT_PICKUP);
+        controlMotor.configFwdLimitSwitchNormallyOpen(true);
+        controlMotor.motor.overrideLimitSwitchesEnable(true);
+
         slaveMotor = new FrcCANTalon("RightPickupMotor", RobotInfo.CANID_RIGHT_PICKUP);
         slaveMotor.motor.set(ControlMode.Follower, RobotInfo.CANID_LEFT_PICKUP);
         slaveMotor.motor.setInverted(true);
@@ -54,7 +57,7 @@ public class CubePickup
         deployer = new FrcPneumatic(
             "CubePickupDeploy", RobotInfo.CANID_PCM1,
             RobotInfo.SOL_CUBEPICKUP_ARM_EXTEND, RobotInfo.SOL_CUBEPICKUP_ARM_RETRACT);
-        cubeSensor = new FrcDigitalInput("CubeSensor", RobotInfo.DIN_CUBE_SENSOR);
+        cubeSensor = new FrcCANTalonLimitSwitch("CubeSensor", controlMotor, false);
         cubeTrigger = new TrcDigitalTrigger("CubeTrigger", cubeSensor, this::triggerEvent);
     }
 
@@ -144,6 +147,11 @@ public class CubePickup
     public boolean cubeDetected()
     {
         return cubeSensor.isActive();
+    }
+
+    public double getPower()
+    {
+        return controlMotor.getPower();
     }
 
     /**
