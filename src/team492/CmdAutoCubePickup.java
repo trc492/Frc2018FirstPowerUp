@@ -85,14 +85,14 @@ public class CmdAutoCubePickup implements TrcTaskMgr.Task
 	
 	public void start()
 	{
-		startTaskWithEvent(null);
+		start(null);
 	}
 	
 	/**
 	 * Start this task, and signal onFinishedEvent when done
 	 * @param onFinishedEvent TrcEvent to signal when finished
 	 */
-	public void startTaskWithEvent(TrcEvent onFinishedEvent)
+	public void start(TrcEvent onFinishedEvent)
 	{
 		this.onFinishedEvent = onFinishedEvent;
 		startTime = Robot.getModeElapsedTime();
