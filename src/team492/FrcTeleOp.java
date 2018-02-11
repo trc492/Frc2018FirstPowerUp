@@ -25,6 +25,7 @@ package team492;
 import frclib.FrcJoystick;
 import hallib.HalDashboard;
 import trclib.TrcRobot;
+import trclib.TrcRobot.RunMode;
 
 public class FrcTeleOp implements TrcRobot.RobotMode
 {
@@ -161,7 +162,6 @@ public class FrcTeleOp implements TrcRobot.RobotMode
                 waltzTurnOn = false;
             }
         }
-        robot.cmdAutoCubePickup.cmdPeriodic(elapsedTime);
     } // runContinuous
 
     //
@@ -180,14 +180,14 @@ public class FrcTeleOp implements TrcRobot.RobotMode
             case FrcJoystick.LOGITECH_BUTTON2:
                 if (pressed && !robot.cmdAutoCubePickup.isEnabled())
                 {
-                    robot.cmdAutoCubePickup.start();
+                    robot.cmdAutoCubePickup.startTask(RunMode.TELEOP_MODE);
                 }
                 break;
 
             case FrcJoystick.LOGITECH_BUTTON3:
                 if (pressed && robot.cmdAutoCubePickup.isEnabled())
                 {
-                    robot.cmdAutoCubePickup.stop();
+                    robot.cmdAutoCubePickup.stopTask(RunMode.TELEOP_MODE);
                 }
                 break;
 
