@@ -77,7 +77,7 @@ public class Robot extends FrcRobotBase
     public static final boolean USE_GRIP_VISION = false;
     public static final boolean USE_PIXY_SPI = false;
     public static final boolean USE_PIXY_I2C = true;
-    public static final boolean USE_TEXT_TO_SPEECH = false;
+    public static final boolean USE_TEXT_TO_SPEECH = true;
     public static final boolean USE_MESSAGE_BOARD = false;
 
     private static final boolean DEBUG_DRIVE_BASE = false;
@@ -122,6 +122,7 @@ public class Robot extends FrcRobotBase
     //
     public FrcEmic2TextToSpeech tts = null;
     public FrcI2cLEDPanel messageBoard = null;
+    public SpeakStandClearWhenEnabledTask speakWhenRobotEnabled = null;
 
     //
     // DriveBase subsystem.
@@ -253,6 +254,8 @@ public class Robot extends FrcRobotBase
             tts.setEnabled(true);
             tts.selectVoice(Voice.FrailFrank);
             tts.setVolume(1.0);
+            
+            speakWhenRobotEnabled = new SpeakStandClearWhenEnabledTask(tts);
         }
 
         if (USE_MESSAGE_BOARD)
