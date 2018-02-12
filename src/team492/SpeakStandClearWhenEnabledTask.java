@@ -26,7 +26,7 @@ public class SpeakStandClearWhenEnabledTask
 
     public void startTask(RunMode runMode)
     {
-        if (runMode != RunMode.DISABLED_MODE && runMode != RunMode.INVALID_MODE)
+        if (runMode != RunMode.DISABLED_MODE)
         {
             // Robot is unsafe
             nextTimeToSpeakSeconds = TrcUtil.getCurrentTime();

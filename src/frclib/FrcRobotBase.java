@@ -198,7 +198,6 @@ public abstract class FrcRobotBase extends RobotBase
             double timeSliceStart = Timer.getFPGATimestamp();
 
             prevMode = currMode;
-
             //
             // Determine the current run mode.
             //
@@ -232,7 +231,6 @@ public abstract class FrcRobotBase extends RobotBase
                 {
                     dbgTrace.traceInfo(funcName, "Mode Transition: %s->%s.", prevMode.toString(), currMode.toString());
                 }
-
                 //
                 // Execute all stop tasks for previous mode.
                 //
@@ -240,7 +238,6 @@ public abstract class FrcRobotBase extends RobotBase
                 {
                     taskMgr.executeTaskType(TrcTaskMgr.TaskType.STOP_TASK, prevMode);
                 }
-
                 //
                 // Stop previous mode.
                 // 
@@ -261,7 +258,6 @@ public abstract class FrcRobotBase extends RobotBase
                     teleOpMode.stopMode();
                 }
                 robotStopMode();
-
                 //
                 // Start current mode.
                 //
@@ -299,7 +295,6 @@ public abstract class FrcRobotBase extends RobotBase
                         teleOpMode.startMode();
                     }
                 }
-
                 //
                 // Execute all start tasks for current mode.
                 //
