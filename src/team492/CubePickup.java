@@ -49,8 +49,8 @@ public class CubePickup
         controlMotor.motor.overrideLimitSwitchesEnable(true);
 
         slaveMotor = new FrcCANTalon("RightPickupMotor", RobotInfo.CANID_RIGHT_PICKUP);
+        slaveMotor.setInverted(true);
         slaveMotor.motor.set(ControlMode.Follower, RobotInfo.CANID_LEFT_PICKUP);
-        slaveMotor.motor.setInverted(true);
 
         claw = new FrcPneumatic(
             "CubePickupClaw", RobotInfo.CANID_PCM1,
@@ -133,8 +133,8 @@ public class CubePickup
     /**
      * Is the pickup up or down?
      * 
-     * @return Returns true if the pickup is up, (claw is off ground) and returns
-     *         false if the pickup is down. (claw is on ground)
+     * @return Returns true if the pickup is up, (claw is off ground) and
+     *         returns false if the pickup is down. (claw is on ground)
      */
     public boolean isPickupDeployed()
     {
@@ -155,21 +155,28 @@ public class CubePickup
         return controlMotor.getPower();
     }
 
+    // CodeReview: grabCube should always enable the digital trigger so it will turn off the motor when cube is
+    // detected. So it should first turn on the pickup motor, then enable the digital trigger. When trigger event
+    // is called, it will turn off the motor and disable the digital trigger.
+
+    /**
+     * spins the motors to pickup a cube and signals an event when done
+     */
+    public void grabCube(double power, TrcEvent event)
+    {
+        controlMotor.setPower(power);
+        cubeTrigger.setEnabled(true);
+        cubeEvent = event;
+    }
+
+    // CodeReview: this method should call the grabCube with the event parameter but set the event parameter to null.
+
     /**
      * spin the pickup motors to pull in a cube
      */
     public void grabCube(double power)
     {
         controlMotor.setPower(power);
-    }
-    
-    /**
-     * spins the motors to pickup a cube and signals an event when done
-     */
-    public void grabCube(double power, TrcEvent event) {
-    	controlMotor.setPower(power);
-    	cubeTrigger.setEnabled(true);
-    	cubeEvent = event;
     }
 
     /**
@@ -181,19 +188,21 @@ public class CubePickup
     }
 
     /**
-     * stops the pickup motors,
-     * use after cube has been picked up or dropped
+     * stops the pickup motors, use after cube has been picked up or dropped
      */
     public void stopPickup()
     {
         controlMotor.setPower(0.0);
     }
-    
-    public void triggerEvent(boolean active) {
+
+    public void triggerEvent(boolean active)
+    {
         stopPickup();
-        if(cubeEvent != null) {
-        	cubeEvent.set(true);
+        if (cubeEvent != null)
+        {
+            cubeEvent.set(true);
         }
         cubeTrigger.setEnabled(false);
     } // DigitalTriggerEvent
+
 }

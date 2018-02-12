@@ -99,7 +99,7 @@ public class FrcTeleOp implements TrcRobot.RobotMode
     @Override
     public void runPeriodic(double elapsedTime)
     {
-        if (!waltzTurnOn)
+        if (!waltzTurnOn && !robot.cmdAutoCubePickup.isEnabled())
         {
             //
             // DriveBase operation.
@@ -160,6 +160,10 @@ public class FrcTeleOp implements TrcRobot.RobotMode
             {
                 waltzTurnOn = false;
             }
+        }
+        else if (robot.cmdAutoCubePickup.isEnabled())
+        {
+            robot.cmdAutoCubePickup.cmdPeriodic(elapsedTime);
         }
     } // runContinuous
 

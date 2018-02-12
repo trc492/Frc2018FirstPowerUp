@@ -23,12 +23,10 @@
 package team492;
 
 import trclib.TrcEvent;
-import trclib.TrcRobot.RunMode;
+import trclib.TrcRobot;
 import trclib.TrcStateMachine;
-import trclib.TrcTaskMgr;
-import trclib.TrcTaskMgr.TaskType;
 
-public class CmdAutoCubePickup
+public class CmdAutoCubePickup implements TrcRobot.RobotCommand
 {
     private static final String moduleName = "CmdAutoCubePickup";
 
@@ -37,37 +35,16 @@ public class CmdAutoCubePickup
         START, DRIVE, PICKUP, DONE
     }
 
+    private Robot robot;
     private TrcEvent event, onFinishedEvent;
     private TrcStateMachine<State> sm;
-    private Robot robot;
-    private double startTime;
     private double startX, startY;
 
     public CmdAutoCubePickup(Robot robot)
     {
         this.robot = robot;
-
         event = new TrcEvent(moduleName);
         sm = new TrcStateMachine<>(moduleName);
-    }
-
-    /**
-     * Enable or disable this Task. When disabled, startTask() and stopTask()
-     * will NOT do anything
-     * 
-     * @param enabled
-     */
-    private void setEnabled(boolean enabled)
-    {
-        TrcTaskMgr taskManager = TrcTaskMgr.getInstance();
-        if (enabled)
-        {
-            taskManager.registerTask(moduleName, this::postContinuousTask, TaskType.POSTCONTINUOUS_TASK);
-        }
-        else
-        {
-            taskManager.unregisterTask(this::postContinuousTask, TaskType.POSTCONTINUOUS_TASK);
-        }
     }
 
     /**
@@ -78,11 +55,6 @@ public class CmdAutoCubePickup
     public boolean isEnabled()
     {
         return sm.isEnabled();
-    }
-
-    public double elapsedTime()
-    {
-        return Robot.getModeElapsedTime() - startTime;
     }
 
     public double[] distanceMoved()
@@ -106,10 +78,8 @@ public class CmdAutoCubePickup
     public void start(TrcEvent onFinishedEvent)
     {
         this.onFinishedEvent = onFinishedEvent;
-        startTime = Robot.getModeElapsedTime();
         startX = robot.driveBase.getXPosition();
         startY = robot.driveBase.getYPosition();
-        setEnabled(true);
         sm.start(State.START);
     }
 
@@ -120,19 +90,17 @@ public class CmdAutoCubePickup
             robot.visionPidDrive.cancel();
         }
         sm.stop();
-        setEnabled(false);
     }
 
-    public void postContinuousTask(RunMode runMode)
+    @Override
+    public boolean cmdPeriodic(double elapsedTime)
     {
         boolean done = !sm.isEnabled();
 
         if (done)
         {
-            return;
+            return true;
         }
-
-        double elapsedTime = Robot.getModeElapsedTime();
 
         State state = sm.getState();
         robot.dashboard.displayPrintf(1, "State: %s", state != null ? state.toString() : "Disabled");
@@ -178,5 +146,7 @@ public class CmdAutoCubePickup
             }
             robot.traceStateInfo(elapsedTime, state.toString());
         }
+
+        return done;
     }
 }
