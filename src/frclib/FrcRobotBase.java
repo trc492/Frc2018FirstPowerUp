@@ -310,12 +310,42 @@ public abstract class FrcRobotBase extends RobotBase
             }
 
             modeElapsedTime = TrcUtil.getCurrentTime() - modeStartTime;
-            if (nextPeriodReady())
+            boolean periodReady = nextPeriodReady();
+            //
+            // PreContinuous
+            //
+            taskMgr.executeTaskType(TrcTaskMgr.TaskType.PRECONTINUOUS_TASK, currMode);
+            //
+            // PrePeriodic
+            //
+            if (periodReady)
             {
-                //
-                // Run periodic mode.
-                //
                 taskMgr.executeTaskType(TrcTaskMgr.TaskType.PREPERIODIC_TASK, currMode);
+            }
+            //
+            // Continuous
+            //
+            if (currMode == RunMode.DISABLED_MODE && disabledMode != null)
+            {
+                disabledMode.runContinuous(modeElapsedTime);
+            }
+            else if (currMode == RunMode.TEST_MODE && testMode != null)
+            {
+                testMode.runContinuous(modeElapsedTime);
+            }
+            else if (currMode == RunMode.AUTO_MODE && autoMode != null)
+            {
+                autoMode.runContinuous(modeElapsedTime);
+            }
+            else if (currMode == RunMode.TELEOP_MODE && teleOpMode != null)
+            {
+                teleOpMode.runContinuous(modeElapsedTime);
+            }
+            //
+            // Periodic
+            //
+            if (periodReady)
+            {
                 if (currMode == RunMode.DISABLED_MODE)
                 {
                     HAL.observeUserProgramDisabled();
@@ -348,34 +378,22 @@ public abstract class FrcRobotBase extends RobotBase
                         teleOpMode.runPeriodic(modeElapsedTime);
                     }
                 }
+            }
+            //
+            // PostContinuous
+            //
+            taskMgr.executeTaskType(TrcTaskMgr.TaskType.POSTCONTINUOUS_TASK, currMode);
+            //
+            // PostPeriodic
+            //
+            if (periodReady)
+            {
 
                 //
                 // Run post periodic tasks.
                 //
                 taskMgr.executeTaskType(TrcTaskMgr.TaskType.POSTPERIODIC_TASK, currMode);
             }
-
-            //
-            // Run continuous mode.
-            //
-            taskMgr.executeTaskType(TrcTaskMgr.TaskType.PRECONTINUOUS_TASK, currMode);
-            if (currMode == RunMode.DISABLED_MODE && disabledMode != null)
-            {
-                disabledMode.runContinuous(modeElapsedTime);
-            }
-            else if (currMode == RunMode.TEST_MODE && testMode != null)
-            {
-                testMode.runContinuous(modeElapsedTime);
-            }
-            else if (currMode == RunMode.AUTO_MODE && autoMode != null)
-            {
-                autoMode.runContinuous(modeElapsedTime);
-            }
-            else if (currMode == RunMode.TELEOP_MODE && teleOpMode != null)
-            {
-                teleOpMode.runContinuous(modeElapsedTime);
-            }
-            taskMgr.executeTaskType(TrcTaskMgr.TaskType.POSTCONTINUOUS_TASK, currMode);
 
             if (dashboardEnabled)
             {
