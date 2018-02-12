@@ -158,6 +158,7 @@ public class Robot extends FrcRobotBase
     public Winch winch;
     public Elevator elevator;
     public CmdAutoCubePickup cmdAutoCubePickup;
+    public CmdStrafeUntilCube cmdStrafeUntilCube;
 
     // FMS provided the following info:
     //  - event name
@@ -368,6 +369,7 @@ public class Robot extends FrcRobotBase
         winch = new Winch();
         elevator = new Elevator();
         cmdAutoCubePickup = new CmdAutoCubePickup(this);
+        cmdStrafeUntilCube = new CmdStrafeUntilCube(this);
         
         //
         // Robot Modes.
