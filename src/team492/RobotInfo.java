@@ -234,8 +234,9 @@ public class RobotInfo
     // AutoAssist subsystem.
     //
     public static final double PORTAL_ALIGN_STRAFE_DIST         = 36.0; // 3 feet
-    public static final double AUTO_PICKUP_STRAFE_DIST          = 60.0;
-    public static final double AUTO_PICKUP_CUBE_MAX_ANGLE       = 15.0;
+    public static final double AUTO_PICKUP_MOVE_POWER           = 0.6; // 60% power
+    public static final double FIND_CUBE_MAX_ANGLE              = 15.0; // 15 degrees
+    public static final double FIND_CUBE_STRAFE_POWER           = 0.6; // 60% power
     
     //
     // Pneumatic flipper subsystem.

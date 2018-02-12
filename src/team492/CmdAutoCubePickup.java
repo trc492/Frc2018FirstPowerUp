@@ -164,7 +164,7 @@ public class CmdAutoCubePickup implements TrcTaskMgr.Task
 					break;
 	
 				case DRIVE:
-					robot.visionPidDrive.driveMaintainHeading(0.0, 0.6, 0.0); // Go forward at 60% power facing the cube
+					robot.visionPidDrive.driveMaintainHeading(0.0, RobotInfo.AUTO_PICKUP_MOVE_POWER, 0.0); // Go forward at 60% power facing the cube
 					robot.cubePickup.grabCube(0.5, event);
 	
 					sm.waitForSingleEvent(event, State.PICKUP);
