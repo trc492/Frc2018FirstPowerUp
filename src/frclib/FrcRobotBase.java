@@ -388,10 +388,6 @@ public abstract class FrcRobotBase extends RobotBase
             //
             if (periodReady)
             {
-
-                //
-                // Run post periodic tasks.
-                //
                 taskMgr.executeTaskType(TrcTaskMgr.TaskType.POSTPERIODIC_TASK, currMode);
             }
 
