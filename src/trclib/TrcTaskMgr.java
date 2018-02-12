@@ -82,62 +82,45 @@ public class TrcTaskMgr
      */
     public interface Task
     {
+        /**
+         * This method is called at the appropriate time this task is registered for.
+         *
+         * StartTask:
+         *  This contains code that will initialize the task before a competition mode is about to start.
+         *  Typically, if the task is a robot subsystem, you may put last minute mode specific initialization code
+         *  here. Most of the time, you don't need to register StartTask because all initialization is done in
+         *  initRobot(). But sometimes, you may want to delay a certain initialization until right before competition
+         *  starts. For example, you may want to reset the gyro heading right before competition starts to prevent
+         *  drifting.
+         *
+         * StopTask:
+         *  This contains code that will clean up the task before a competition mode is about to end. Typically,
+         *  if the task is a robot subsystem, you may put code to stop the robot here. Most of the time, you don't
+         *  need to register StopTask because the system will cut power to all the motors after a competition mode
+         *  has ended.
+         *
+         * PrePeriodicTask:
+         *  This contains code that will run before runPeriodic() is called. Typically, you will put code that deals
+         *  with any input or sensor readings here so that the code in runPeriodic() will be able to make use of the
+         *  input/sensor readings produced by the code here.
+         *
+         * PostPeriodicTask:
+         *  This contains code that will run after runPeriodic() is called. Typically, you will put code that deals
+         *  with actions such as programming the motors here.
+         *
+         * PreContinuousTask:
+         *  This contains code that will run before runContinuous() is called. Typically, you will put code that deals
+         *  with any input or sensor readings that requires more frequent processing here such as integrating the gyro
+         *  rotation rate to heading.
+         *
+         * PostContinuousTask:
+         *  This contains code that will run after runContinuous() is called. Typically, you will put code that deals
+         *  with actions that requires more frequent processing.
+         *
+         * @param runMode specifies the competition mode that is about to end (e.g. Autonomous, TeleOp, Test).
+         */
         void runTask(TrcRobot.RunMode runMode);
 
-//        /**
-//         * This method contains code that will initialize the task before a competition mode is about to start.
-//         * Typically, if the task is a robot subsystem, you may put last minute mode specific initialization code
-//         * here. Most of the time, you don't put any code here because all initialization is done in initRobot().
-//         * But sometimes, you may want to delay a certain initialization until right before competition starts.
-//         * For example, you may want to reset the gyro heading right before competition starts to prevent drifting.
-//         *
-//         * @param runMode specifies the competition mode that is about to start (e.g. Autonomous, TeleOp, Test).
-//         */
-//        void startTask(TrcRobot.RunMode runMode);
-//
-//        /**
-//         * This method contains code that will clean up the task before a competition mode is about to end. Typically,
-//         * if the task is a robot subsystem, you may put code to stop the robot here. Most of the time, you don't put
-//         * any code here because the system will cut power to all the motors after a competition mode has ended.
-//         *
-//         * @param runMode specifies the competition mode that is about to end (e.g. Autonomous, TeleOp, Test).
-//         */
-//        void stopTask(TrcRobot.RunMode runMode);
-//
-//        /**
-//         * This method contains code that will run before runPeriodic() is called. Typically, you will put code that
-//         * deals with any input or sensor readings here so that the code in runPeriodic() will be able to make use of
-//         * the input/sensor readings produced by the code here.
-//         *
-//         * @param runMode specifies the competition mode that is running. (e.g. Autonomous, TeleOp, Test).
-//         */
-//        void prePeriodicTask(TrcRobot.RunMode runMode);
-//
-//        /**
-//         * This method contains code that will run after runPeriodic() is called. Typically, you will put code that
-//         * deals with actions such as programming the motors here.
-//         *
-//         * @param runMode specifies the competition mode that is running. (e.g. Autonomous, TeleOp, Test).
-//         */
-//        void postPeriodicTask(TrcRobot.RunMode runMode);
-//
-//        /**
-//         * This method contains code that will run before runContinuous() is called. Typically, you will put code that
-//         * deals with any input or sensor readings that requires more frequent processing here such as integrating the
-//         * gyro rotation rate to heading.
-//         *
-//         * @param runMode specifies the competition mode that is running. (e.g. Autonomous, TeleOp, Test).
-//         */
-//        void preContinuousTask(TrcRobot.RunMode runMode);
-//
-//        /**
-//         * This method contains code that will run after runContinuous() is called. Typically, you will put code that
-//         * deals with actions that requires more frequent processing.
-//         *
-//         * @param runMode specifies the competition mode that is running. (e.g. Autonomous, TeleOp, Test).
-//         */
-//        void postContinuousTask(TrcRobot.RunMode runMode);
-//
     }   //interface Task
 
     /**
