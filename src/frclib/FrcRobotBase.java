@@ -31,6 +31,7 @@ import edu.wpi.first.wpilibj.hal.FRCNetComm.tInstances;
 import edu.wpi.first.wpilibj.hal.FRCNetComm.tResourceType; 
 import edu.wpi.first.wpilibj.hal.HAL;
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import hallib.HalDashboard;
 import hallib.HalDbgLog;
 import trclib.TrcDbgTrace;
@@ -273,7 +274,7 @@ public abstract class FrcRobotBase extends RobotBase
                 }
                 else if (currMode == RunMode.TEST_MODE)
                 {
-//                    LiveWindow.setEnabled(true);
+                    LiveWindow.setEnabled(true);
                     if (testMode != null)
                     {
                         testMode.startMode();
@@ -385,6 +386,9 @@ public abstract class FrcRobotBase extends RobotBase
             {
                 taskMgr.executeTaskType(TrcTaskMgr.TaskType.POSTPERIODIC_TASK, currMode);
             }
+
+            SmartDashboard.updateValues();
+            LiveWindow.updateValues();
 
             if (dashboardEnabled)
             {
