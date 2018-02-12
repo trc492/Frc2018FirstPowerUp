@@ -119,6 +119,7 @@ public class CmdPortalAlign implements TrcRobot.RobotCommand
 		return done;
 	}
 
+	// CodeReview: triggerEvent will be called on both enabled and disabled! You need to pick one.
 	private void leftTriggerEvent(boolean enabled)
 	{
 		leftEvent.set(true);
