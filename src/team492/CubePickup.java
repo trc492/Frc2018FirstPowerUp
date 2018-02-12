@@ -44,6 +44,7 @@ public class CubePickup
     public CubePickup()
     {
         controlMotor = new FrcCANTalon("LeftPickupMotor", RobotInfo.CANID_LEFT_PICKUP);
+        controlMotor.setInverted(true);
         controlMotor.configFwdLimitSwitchNormallyOpen(true);
         controlMotor.motor.overrideLimitSwitchesEnable(true);
 
@@ -57,7 +58,7 @@ public class CubePickup
         deployer = new FrcPneumatic(
             "CubePickupDeploy", RobotInfo.CANID_PCM1,
             RobotInfo.SOL_CUBEPICKUP_ARM_EXTEND, RobotInfo.SOL_CUBEPICKUP_ARM_RETRACT);
-        cubeSensor = new FrcCANTalonLimitSwitch("CubeSensor", controlMotor, false);
+        cubeSensor = new FrcCANTalonLimitSwitch("CubeSensor", controlMotor, true);
         cubeTrigger = new TrcDigitalTrigger("CubeTrigger", cubeSensor, this::triggerEvent);
     }
 

@@ -1,5 +1,5 @@
 {
-  "dividerPosition": 0.17823343848580442,
+  "dividerPosition": 0.13204747774480713,
   "tabPane": [
     {
       "title": "Match Info",
@@ -23,7 +23,7 @@
               "colorWhenFalse": "#8B0000FF"
             }
           },
-          "4,0": {
+          "0,0": {
             "size": [
               8,
               2
@@ -92,7 +92,7 @@
         "tiles": {
           "0,0": {
             "size": [
-              16,
+              12,
               2
             ],
             "content": {
@@ -103,7 +103,7 @@
           },
           "0,2": {
             "size": [
-              16,
+              12,
               2
             ],
             "content": {
@@ -114,7 +114,7 @@
           },
           "0,4": {
             "size": [
-              16,
+              12,
               2
             ],
             "content": {
@@ -125,7 +125,7 @@
           },
           "0,6": {
             "size": [
-              16,
+              12,
               2
             ],
             "content": {
@@ -136,7 +136,7 @@
           },
           "0,8": {
             "size": [
-              16,
+              12,
               2
             ],
             "content": {
@@ -169,7 +169,7 @@
           },
           "0,10": {
             "size": [
-              16,
+              12,
               2
             ],
             "content": {
@@ -178,9 +178,9 @@
               "_title": "SmartDashboard/05"
             }
           },
-          "16,0": {
+          "12,0": {
             "size": [
-              16,
+              12,
               2
             ],
             "content": {
@@ -189,10 +189,10 @@
               "_title": "SmartDashboard/08"
             }
           },
-          "16,2": {
+          "12,2": {
             "size": [
-              16,
-              7
+              12,
+              2
             ],
             "content": {
               "_type": "Text View",
@@ -200,9 +200,9 @@
               "_title": "SmartDashboard/09"
             }
           },
-          "16,4": {
+          "12,4": {
             "size": [
-              16,
+              12,
               2
             ],
             "content": {
@@ -211,9 +211,9 @@
               "_title": "SmartDashboard/10"
             }
           },
-          "16,6": {
+          "12,6": {
             "size": [
-              16,
+              12,
               2
             ],
             "content": {
@@ -222,9 +222,9 @@
               "_title": "SmartDashboard/11"
             }
           },
-          "16,8": {
+          "12,8": {
             "size": [
-              16,
+              12,
               2
             ],
             "content": {
@@ -233,9 +233,9 @@
               "_title": "SmartDashboard/12"
             }
           },
-          "16,10": {
+          "12,10": {
             "size": [
-              16,
+              12,
               2
             ],
             "content": {
@@ -246,7 +246,7 @@
           },
           "16,12": {
             "size": [
-              16,
+              13,
               2
             ],
             "content": {
@@ -257,7 +257,7 @@
           },
           "16,14": {
             "size": [
-              16,
+              13,
               2
             ],
             "content": {
@@ -281,48 +281,26 @@
           "0,0": {
             "size": [
               10,
-              2
+              4
             ],
             "content": {
               "_type": "ComboBox Chooser",
               "_source0": "network_table:///SmartDashboard/Autonomous Strategies",
               "_title": "SmartDashboard/Autonomous Strategies"
             }
+          },
+          "0,4": {
+            "size": [
+              7,
+              2
+            ],
+            "content": {
+              "_type": "ComboBox Chooser",
+              "_source0": "network_table:///SmartDashboard/Tests",
+              "_title": "SmartDashboard/Tests"
+            }
           }
         }
-      }
-    },
-    {
-      "title": "Tab 4",
-      "autoPopulate": false,
-      "autoPopulatePrefix": "",
-      "widgetPane": {
-        "gridSize": 128.0,
-        "hgap": 16.0,
-        "vgap": 16.0,
-        "tiles": {}
-      }
-    },
-    {
-      "title": "Tab 5",
-      "autoPopulate": false,
-      "autoPopulatePrefix": "",
-      "widgetPane": {
-        "gridSize": 128.0,
-        "hgap": 16.0,
-        "vgap": 16.0,
-        "tiles": {}
-      }
-    },
-    {
-      "title": "Tab 6",
-      "autoPopulate": false,
-      "autoPopulatePrefix": "",
-      "widgetPane": {
-        "gridSize": 128.0,
-        "hgap": 16.0,
-        "vgap": 16.0,
-        "tiles": {}
       }
     }
   ]
