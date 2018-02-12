@@ -45,7 +45,7 @@ public class SpeakStandClearWhenEnabledTask implements TrcTaskMgr.Task
 		double currentTime = TrcUtil.getCurrentTime();
 		if (nextTimeToSpeakSeconds > 0 && currentTime >= nextTimeToSpeakSeconds) 
 		{
-			tts.speak("stand clear");
+			tts.speak("please stand clear");
 			nextTimeToSpeakSeconds = currentTime + SPEAK_PERIOD_SECONDS; 
 		}
 	}
