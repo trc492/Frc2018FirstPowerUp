@@ -30,7 +30,7 @@ import trclib.TrcTaskMgr.TaskType;
  * implement the abstract methods required by this class. The abstract methods allow this class to control each light
  * channel ON and OFF.
  */
-public abstract class TrcRGBLight implements TrcTaskMgr.Task
+public abstract class TrcRGBLight
 {
     private static final String moduleName = "TrcRGBLight";
     private static final boolean debugEnabled = false;
@@ -209,11 +209,11 @@ public abstract class TrcRGBLight implements TrcTaskMgr.Task
 
         if (enabled)
         {
-            TrcTaskMgr.getInstance().registerTask(moduleName, this, TaskType.POSTCONTINUOUS_TASK);
+            TrcTaskMgr.getInstance().registerTask(moduleName, this::postContinuousTask, TaskType.POSTCONTINUOUS_TASK);
         }
         else
         {
-            TrcTaskMgr.getInstance().unregisterTask(this, TaskType.POSTCONTINUOUS_TASK);
+            TrcTaskMgr.getInstance().unregisterTask(this::postContinuousTask, TaskType.POSTCONTINUOUS_TASK);
         }
     }   //setTaskEnabled
 
@@ -365,38 +365,16 @@ public abstract class TrcRGBLight implements TrcTaskMgr.Task
     // Implements TrcTaskMgr.Task
     //
 
-    @Override
-    public void startTask(TrcRobot.RunMode runMode)
-    {
-    }   //startTask
-
-    @Override
     public void stopTask(TrcRobot.RunMode runMode)
     {
         setColor(RGBColor.RGB_BLACK);
     }   //stopTask
-
-    @Override
-    public void prePeriodicTask(TrcRobot.RunMode runMode)
-    {
-    }   //prePeriodicTask
-
-    @Override
-    public void postPeriodicTask(TrcRobot.RunMode runMode)
-    {
-    }   //postPeriodicTask
-
-    @Override
-    public void preContinuousTask(TrcRobot.RunMode runMode)
-    {
-    }   //preContinuousTask
 
     /**
      * This method is called periodically to execute the RGB light operation.
      *
      * @param runMode specifies the competition mode that is running. (e.g. Autonomous, TeleOp, Test).
      */
-    @Override
     public void postContinuousTask(TrcRobot.RunMode runMode)
     {
         final String funcName = "postContinuousTask";

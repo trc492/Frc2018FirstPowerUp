@@ -32,7 +32,7 @@ import trclib.TrcStateMachine;
 import trclib.TrcTaskMgr;
 import trclib.TrcTimer;
 
-public class FrcPneumatic implements TrcTaskMgr.Task
+public class FrcPneumatic
 {
     private static final String moduleName = "FrcPneumatic";
     private static final boolean debugEnabled = false;
@@ -456,17 +456,17 @@ public class FrcPneumatic implements TrcTaskMgr.Task
         {
             taskMgr.registerTask(
                     instanceName,
-                    this, TrcTaskMgr.TaskType.POSTCONTINUOUS_TASK);
+                    this::postContinuousTask, TrcTaskMgr.TaskType.POSTCONTINUOUS_TASK);
             taskMgr.registerTask(
                     instanceName,
-                    this, TrcTaskMgr.TaskType.STOP_TASK);
+                    this::stopTask, TrcTaskMgr.TaskType.STOP_TASK);
         }
         else
         {
             taskMgr.unregisterTask(
-                    this, TrcTaskMgr.TaskType.POSTCONTINUOUS_TASK);
+                    this::postContinuousTask, TrcTaskMgr.TaskType.POSTCONTINUOUS_TASK);
             taskMgr.unregisterTask(
-                    this, TrcTaskMgr.TaskType.STOP_TASK);
+                    this::stopTask, TrcTaskMgr.TaskType.STOP_TASK);
         }
 
         if (debugEnabled)
@@ -499,9 +499,6 @@ public class FrcPneumatic implements TrcTaskMgr.Task
     //
     // Implements TrcTaskMgr.Task
     //
-    public void startTask(TrcRobot.RunMode runMode)
-    {
-    }   //startTask
 
     public void stopTask(TrcRobot.RunMode runMode)
     {
@@ -520,18 +517,6 @@ public class FrcPneumatic implements TrcTaskMgr.Task
             dbgTrace.traceExit(funcName, TrcDbgTrace.TraceLevel.TASK);
         }
     }   //stopTask
-
-    public void prePeriodicTask(TrcRobot.RunMode runMode)
-    {
-    }   //prePeriodicTask
-
-    public void postPeriodicTask(TrcRobot.RunMode runMode)
-    {
-    }   //postPeriodicTask
-
-    public void preContinuousTask(TrcRobot.RunMode runMode)
-    {
-    }   //preContinuousTask
 
     public void postContinuousTask(TrcRobot.RunMode runMode)
     {

@@ -31,7 +31,7 @@ package trclib;
  * steady state error. When stall condition is detected, PID drive will be aborted so that the robot won't get stuck
  * waiting forever trying to reach target.
  */
-public class TrcPidDrive implements TrcTaskMgr.Task
+public class TrcPidDrive
 {
     private static final String moduleName = "TrcPidDrive";
     private static final boolean debugEnabled = false;
@@ -598,13 +598,13 @@ public class TrcPidDrive implements TrcTaskMgr.Task
         TrcTaskMgr taskMgr = TrcTaskMgr.getInstance();
         if (enabled)
         {
-            taskMgr.registerTask(instanceName, this, TrcTaskMgr.TaskType.STOP_TASK);
-            taskMgr.registerTask(instanceName, this, TrcTaskMgr.TaskType.POSTCONTINUOUS_TASK);
+            taskMgr.registerTask(instanceName, this::stopTask, TrcTaskMgr.TaskType.STOP_TASK);
+            taskMgr.registerTask(instanceName, this::postContinuousTask, TrcTaskMgr.TaskType.POSTCONTINUOUS_TASK);
         }
         else
         {
-            taskMgr.unregisterTask(this, TrcTaskMgr.TaskType.STOP_TASK);
-            taskMgr.unregisterTask(this, TrcTaskMgr.TaskType.POSTCONTINUOUS_TASK);
+            taskMgr.unregisterTask(this::stopTask, TrcTaskMgr.TaskType.STOP_TASK);
+            taskMgr.unregisterTask(this::postContinuousTask, TrcTaskMgr.TaskType.POSTCONTINUOUS_TASK);
         }
         active = enabled;
 
@@ -618,17 +618,11 @@ public class TrcPidDrive implements TrcTaskMgr.Task
     // Implements TrcTaskMgr.Task
     //
 
-    @Override
-    public void startTask(TrcRobot.RunMode runMode)
-    {
-    }   //startTask
-
     /**
      * This method is called before the competition mode is about the end to stop the PID drive operation if any.
      *
      * @param runMode specifies the competition mode that is about to end (e.g. Autonomous, TeleOp, Test).
      */
-    @Override
     public void stopTask(TrcRobot.RunMode runMode)
     {
         final String funcName = "stopTask";
@@ -646,27 +640,11 @@ public class TrcPidDrive implements TrcTaskMgr.Task
         }
     }   //stopTask
 
-    @Override
-    public void prePeriodicTask(TrcRobot.RunMode runMode)
-    {
-    }   //prePeriodicTask
-
-    @Override
-    public void postPeriodicTask(TrcRobot.RunMode runMode)
-    {
-    }   //postPeriodicTask
-
-    @Override
-    public void preContinuousTask(TrcRobot.RunMode runMode)
-    {
-    }   //preContinuousTask
-
     /**
      * This method is called periodically to execute the PID drive operation.
      *
      * @param runMode specifies the competition mode that is running. (e.g. Autonomous, TeleOp, Test).
      */
-    @Override
     public void postContinuousTask(TrcRobot.RunMode runMode)
     {
         final String funcName = "postContinuousTask";

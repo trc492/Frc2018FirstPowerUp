@@ -28,7 +28,7 @@ package trclib;
  * buttons. If the caller of this class provides a button notification handler, it will call it when there are
  * button events.
  */
-public abstract class TrcGameController implements TrcTaskMgr.Task
+public abstract class TrcGameController
 {
     protected static final String moduleName = "TrcGameController";
     protected static final boolean debugEnabled = false;
@@ -91,7 +91,8 @@ public abstract class TrcGameController implements TrcTaskMgr.Task
 
         if (buttonHandler != null)
         {
-            TrcTaskMgr.getInstance().registerTask(instanceName, this, TrcTaskMgr.TaskType.PREPERIODIC_TASK);
+            TrcTaskMgr.getInstance().registerTask(
+                instanceName, this::prePeriodicTask, TrcTaskMgr.TaskType.PREPERIODIC_TASK);
         }
     }   //TrcGameController
 
@@ -295,23 +296,12 @@ public abstract class TrcGameController implements TrcTaskMgr.Task
     // Implements TrcTaskMgr.Task
     //
 
-    @Override
-    public void startTask(TrcRobot.RunMode runMode)
-    {
-    }   //startTask
-
-    @Override
-    public void stopTask(TrcRobot.RunMode runMode)
-    {
-    }   //stopTask
-
     /**
      * This method runs periodically and checks for changes in the button states. If any button changed state,
      * the button handler is called if one exists.
      *
      * @param runMode specifies the current robot run mode.
      */
-    @Override
     public void prePeriodicTask(TrcRobot.RunMode runMode)
     {
         final String funcName = "prePeriodic";
@@ -365,20 +355,5 @@ public abstract class TrcGameController implements TrcTaskMgr.Task
             dbgTrace.traceExit(funcName, TrcDbgTrace.TraceLevel.TASK);
         }
     }   //prePeriodicTask
-
-    @Override
-    public void postPeriodicTask(TrcRobot.RunMode runMode)
-    {
-    }   //postPeriodicTask
-
-    @Override
-    public void preContinuousTask(TrcRobot.RunMode runMode)
-    {
-    }   //preContinuousTask
-
-    @Override
-    public void postContinuousTask(TrcRobot.RunMode runMode)
-    {
-    }   //postContinuousTask
 
 }   //class TrcGameController

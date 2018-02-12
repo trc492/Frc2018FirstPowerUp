@@ -31,7 +31,7 @@ package trclib;
  * If the motor controller hardware support these features, the platform dependent class should override these methods
  * to provide the support in hardware.
  */
-public abstract class TrcMotor implements TrcMotorController, TrcTaskMgr.Task
+public abstract class TrcMotor implements TrcMotorController
 {
     private static final String moduleName = "TrcMotor";
     private static final boolean debugEnabled = false;
@@ -115,13 +115,13 @@ public abstract class TrcMotor implements TrcMotorController, TrcTaskMgr.Task
         {
             prevTime = TrcUtil.getCurrentTime();
             prevPos = getPosition();
-            taskMgr.registerTask(instanceName, this, TrcTaskMgr.TaskType.STOP_TASK);
-            taskMgr.registerTask(instanceName, this, TrcTaskMgr.TaskType.PRECONTINUOUS_TASK);
+            taskMgr.registerTask(instanceName, this::stopTask, TrcTaskMgr.TaskType.STOP_TASK);
+            taskMgr.registerTask(instanceName, this::preContinuousTask, TrcTaskMgr.TaskType.PRECONTINUOUS_TASK);
         }
         else
         {
-            taskMgr.unregisterTask(this, TrcTaskMgr.TaskType.STOP_TASK);
-            taskMgr.unregisterTask(this, TrcTaskMgr.TaskType.PRECONTINUOUS_TASK);
+            taskMgr.unregisterTask(this::stopTask, TrcTaskMgr.TaskType.STOP_TASK);
+            taskMgr.unregisterTask(this::preContinuousTask, TrcTaskMgr.TaskType.PRECONTINUOUS_TASK);
         }
 
         if (debugEnabled)
@@ -166,12 +166,6 @@ public abstract class TrcMotor implements TrcMotorController, TrcTaskMgr.Task
     // Implements TrcTaskMgr.Task
     //
 
-    @Override
-    public void startTask(TrcRobot.RunMode runMode)
-    {
-    }   //startTask
-
-    @Override
     public void stopTask(TrcRobot.RunMode runMode)
     {
         final String funcName = "stopTask";
@@ -189,22 +183,11 @@ public abstract class TrcMotor implements TrcMotorController, TrcTaskMgr.Task
         }
     }   //stopTask
 
-    @Override
-    public void prePeriodicTask(TrcRobot.RunMode runMode)
-    {
-    }   //prePeriodicTask
-
-    @Override
-    public void postPeriodicTask(TrcRobot.RunMode runMode)
-    {
-    }   //postPeriodicTask
-
     /**
      * This task is run periodically to calculate he speed of the motor.
      *
      * @param runMode specifies the competition mode that is running.
      */
-    @Override
     public void preContinuousTask(TrcRobot.RunMode runMode)
     {
         final String funcName = "preContinuousTask";
@@ -225,11 +208,6 @@ public abstract class TrcMotor implements TrcMotorController, TrcTaskMgr.Task
             dbgTrace.traceExit(funcName, TrcDbgTrace.TraceLevel.TASK);
         }
     }   //preContinuousTask
-
-    @Override
-    public void postContinuousTask(TrcRobot.RunMode runMode)
-    {
-    }   //postContinuousTask
 
     //
     // Implements TrcDigitalTrigger.TriggerHandler.

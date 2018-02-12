@@ -28,7 +28,7 @@ package trclib;
  * a lower limit switch or even an upper limit switch. In addition, it has stall protection support which will detect
  * motor stall condition and will cut power to the motor preventing it from burning out.
  */
-public class TrcPidMotor implements TrcTaskMgr.Task
+public class TrcPidMotor
 {
     private static final String moduleName = "TrcPidMotor";
     private static final boolean debugEnabled = false;
@@ -855,13 +855,13 @@ public class TrcPidMotor implements TrcTaskMgr.Task
         TrcTaskMgr taskMgr = TrcTaskMgr.getInstance();
         if (enabled)
         {
-            taskMgr.registerTask(instanceName, this, TrcTaskMgr.TaskType.STOP_TASK);
-            taskMgr.registerTask(instanceName, this, TrcTaskMgr.TaskType.POSTCONTINUOUS_TASK);
+            taskMgr.registerTask(instanceName, this::stopTask, TrcTaskMgr.TaskType.STOP_TASK);
+            taskMgr.registerTask(instanceName, this::postContinuousTask, TrcTaskMgr.TaskType.POSTCONTINUOUS_TASK);
         }
         else
         {
-            taskMgr.unregisterTask(this, TrcTaskMgr.TaskType.STOP_TASK);
-            taskMgr.unregisterTask(this, TrcTaskMgr.TaskType.POSTCONTINUOUS_TASK);
+            taskMgr.unregisterTask(this::stopTask, TrcTaskMgr.TaskType.STOP_TASK);
+            taskMgr.unregisterTask(this::postContinuousTask, TrcTaskMgr.TaskType.POSTCONTINUOUS_TASK);
         }
         this.active = enabled;
 
@@ -875,17 +875,11 @@ public class TrcPidMotor implements TrcTaskMgr.Task
     // Implements TrcTaskMgr.Task
     //
 
-    @Override
-    public void startTask(TrcRobot.RunMode runMode)
-    {
-    }   //startTask
-
     /**
      * This method is called when the competition mode is about to end. It stops the PID motor operation if any.
      *
      * @param runMode specifies the competition mode that is about to
      */
-    @Override
     public void stopTask(TrcRobot.RunMode runMode)
     {
         final String funcName = "stopTask";
@@ -903,21 +897,6 @@ public class TrcPidMotor implements TrcTaskMgr.Task
         }
     }   //stopTask
 
-    @Override
-    public void prePeriodicTask(TrcRobot.RunMode runMode)
-    {
-    }   //prePeriodicTask
-
-    @Override
-    public void postPeriodicTask(TrcRobot.RunMode runMode)
-    {
-    }   //postPeriodicTask
-
-    @Override
-    public void preContinuousTask(TrcRobot.RunMode runMode)
-    {
-    }   //preContinuousTask
-
     /**
      * This method is called periodically to perform the PID motor task. The PID motor task can be in one of two
      * mode: zero calibration mode and normal mode. In zero calibration mode, it will drive the motor with the
@@ -927,7 +906,6 @@ public class TrcPidMotor implements TrcTaskMgr.Task
      *
      * @param runMode specifies the competition mode that is running.
      */
-    @Override
     public void postContinuousTask(TrcRobot.RunMode runMode)
     {
         final String funcName = "postContinuous";

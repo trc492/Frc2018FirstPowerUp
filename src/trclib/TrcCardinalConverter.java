@@ -38,7 +38,7 @@ import java.util.Arrays;
  * boundary, it will keep track of the number of crossovers and will adjust the value so it doesn't wrap in effect
  * converting cardinal heading back to cartesian heading.
  */
-public class TrcCardinalConverter<D> implements TrcTaskMgr.Task
+public class TrcCardinalConverter<D>
 {
     private static final String moduleName = "TrcCardinalConverter";
     private static final boolean debugEnabled = false;
@@ -142,12 +142,13 @@ public class TrcCardinalConverter<D> implements TrcTaskMgr.Task
         if (!this.enabled && enabled)
         {
             reset();
-            TrcTaskMgr.getInstance().registerTask(instanceName, this, TrcTaskMgr.TaskType.PRECONTINUOUS_TASK);
+            TrcTaskMgr.getInstance().registerTask(
+                instanceName, this::preContinuousTask, TrcTaskMgr.TaskType.PRECONTINUOUS_TASK);
         }
         else if (this.enabled && !enabled)
         {
             reset();
-            TrcTaskMgr.getInstance().unregisterTask(this, TrcTaskMgr.TaskType.PRECONTINUOUS_TASK);
+            TrcTaskMgr.getInstance().unregisterTask(this::preContinuousTask, TrcTaskMgr.TaskType.PRECONTINUOUS_TASK);
         }
         this.enabled = enabled;
     }   //setEnabled
@@ -248,32 +249,11 @@ public class TrcCardinalConverter<D> implements TrcTaskMgr.Task
     // Implements TrcTaskMgr.Task
     //
 
-    @Override
-    public void startTask(TrcRobot.RunMode runMode)
-    {
-    }   //startTask
-
-    @Override
-    public void stopTask(TrcRobot.RunMode runMode)
-    {
-    }   //stopTask
-
-    @Override
-    public void prePeriodicTask(TrcRobot.RunMode runMode)
-    {
-    }   //prePeriodicTask
-
-    @Override
-    public void postPeriodicTask(TrcRobot.RunMode runMode)
-    {
-    }   //postPeriodicTask
-
     /**
      * This method is called periodically to check for range crossovers.
      *
      * @param runMode specifies the competition mode that is running.
      */
-    @Override
     public void preContinuousTask(TrcRobot.RunMode runMode)
     {
         final String funcName = "preContinuousTask";
@@ -307,10 +287,5 @@ public class TrcCardinalConverter<D> implements TrcTaskMgr.Task
                                "! (numCrossovers=%s)", Arrays.toString(numCrossovers));
         }
     }   //preContinuousTask
-
-    @Override
-    public void postContinuousTask(TrcRobot.RunMode runMode)
-    {
-    }   //postContinuousTask
 
 }   //class TrcCardinalConverter

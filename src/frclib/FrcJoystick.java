@@ -33,7 +33,7 @@ import trclib.TrcUtil;
  * This class implements the platform dependent joystick. It provides monitoring of the joystick buttons. If the
  * caller of this class provides a button notification handler, it will call it when there are button events.
  */
-public class FrcJoystick extends Joystick implements TrcTaskMgr.Task
+public class FrcJoystick extends Joystick
 {
     private static final String moduleName = "FrcJoystick";
     private static final boolean debugEnabled = false;
@@ -152,7 +152,8 @@ public class FrcJoystick extends Joystick implements TrcTaskMgr.Task
         ds = DriverStation.getInstance();
         prevButtons = ds.getStickButtons(port);
         ySign = 1;
-        TrcTaskMgr.getInstance().registerTask(instanceName, this, TrcTaskMgr.TaskType.PREPERIODIC_TASK);
+        TrcTaskMgr.getInstance().registerTask(
+            instanceName, this::prePeriodicTask, TrcTaskMgr.TaskType.PREPERIODIC_TASK);
     }   //FrcJoystick
 
     /**
@@ -527,14 +528,6 @@ public class FrcJoystick extends Joystick implements TrcTaskMgr.Task
     // Implements TrcTaskMgr.Task interface.
     //
 
-    public void startTask(TrcRobot.RunMode runMode)
-    {
-    }   //startTask
-
-    public void stopTask(TrcRobot.RunMode runMode)
-    {
-    }   //stopTask
-
     /**
      * This method runs periodically and checks for changes in the button states. If any button changed state,
      * the button handler is called if one exists.
@@ -603,18 +596,6 @@ public class FrcJoystick extends Joystick implements TrcTaskMgr.Task
             dbgTrace.traceExit(funcName, TrcDbgTrace.TraceLevel.TASK);
         }
     }   //prePeriodicTask
-
-    public void postPeriodicTask(TrcRobot.RunMode runMode)
-    {
-    }   //postPeriodicTask
-
-    public void preContinuousTask(TrcRobot.RunMode runMode)
-    {
-    }   //preContinuousTask
-
-    public void postContinuousTask(TrcRobot.RunMode runMode)
-    {
-    }   //postContinuousTask
 
     /**
      * This method applies deadband to the value and squared the output if necessary.

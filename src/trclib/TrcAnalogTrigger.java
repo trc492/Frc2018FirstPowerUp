@@ -29,7 +29,7 @@ import java.util.Arrays;
  * values. If the sensor reading crosses any of the thresholds in the array, it will call a notification handler so
  * that an action could be performed.
  */
-public class TrcAnalogTrigger<D> implements TrcTaskMgr.Task
+public class TrcAnalogTrigger<D>
 {
     private static final String moduleName = "TrcAnalogTrigger";
     private static final boolean debugEnabled = false;
@@ -161,11 +161,12 @@ public class TrcAnalogTrigger<D> implements TrcTaskMgr.Task
         this.enabled = enabled;
         if (enabled)
         {
-            TrcTaskMgr.getInstance().registerTask(instanceName, this, TrcTaskMgr.TaskType.PRECONTINUOUS_TASK);
+            TrcTaskMgr.getInstance().registerTask(
+                instanceName, this::preContinuousTask, TrcTaskMgr.TaskType.PRECONTINUOUS_TASK);
         }
         else
         {
-            TrcTaskMgr.getInstance().unregisterTask(this, TrcTaskMgr.TaskType.PRECONTINUOUS_TASK);
+            TrcTaskMgr.getInstance().unregisterTask(this::preContinuousTask, TrcTaskMgr.TaskType.PRECONTINUOUS_TASK);
         }
     }   //setEnabled
 
@@ -203,33 +204,12 @@ public class TrcAnalogTrigger<D> implements TrcTaskMgr.Task
     // Implements TrcTaskMgr.Task
     //
 
-    @Override
-    public void startTask(TrcRobot.RunMode runMode)
-    {
-    }   //startTask
-
-    @Override
-    public void stopTask(TrcRobot.RunMode runMode)
-    {
-    }   //stopTask
-
-    @Override
-    public void prePeriodicTask(TrcRobot.RunMode runMode)
-    {
-    }   //prePeriodicTask
-
-    @Override
-    public void postPeriodicTask(TrcRobot.RunMode runMode)
-    {
-    }   //postPeriodicTask
-
     /**
      * This method is called periodically to check the current sensor value against the threshold array to see it
      * crosses a new threshold.
      *
      * @param runMode specifies the competition mode that is running. (e.g. Autonomous, TeleOp, Test).
      */
-    @Override
     public void preContinuousTask(TrcRobot.RunMode runMode)
     {
         final String funcName = "preContinuousTask";
@@ -280,10 +260,5 @@ public class TrcAnalogTrigger<D> implements TrcTaskMgr.Task
             }
         }
     }   //preContinuousTask
-
-    @Override
-    public void postContinuousTask(TrcRobot.RunMode runMode)
-    {
-    }   //postContinuousTask
 
 }   //class TrcAnalogTrigger

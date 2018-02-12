@@ -26,7 +26,7 @@ package trclib;
  * This class implements a song player that can parse a notated song in a string buffer and play the notes on a Tone
  * device.
  */
-public class TrcSongPlayer implements TrcTaskMgr.Task
+public class TrcSongPlayer
 {
     private static final String moduleName = "TrcSongPlayer";
     private static final boolean debugEnabled = false;
@@ -86,13 +86,13 @@ public class TrcSongPlayer implements TrcTaskMgr.Task
         TrcTaskMgr taskMgr = TrcTaskMgr.getInstance();
         if (enabled)
         {
-            taskMgr.registerTask(instanceName, this, TrcTaskMgr.TaskType.STOP_TASK);
-            taskMgr.registerTask(instanceName, this, TrcTaskMgr.TaskType.POSTCONTINUOUS_TASK);
+            taskMgr.registerTask(instanceName, this::stopTask, TrcTaskMgr.TaskType.STOP_TASK);
+            taskMgr.registerTask(instanceName, this::postContinuousTask, TrcTaskMgr.TaskType.POSTCONTINUOUS_TASK);
         }
         else
         {
-            taskMgr.unregisterTask(this, TrcTaskMgr.TaskType.STOP_TASK);
-            taskMgr.unregisterTask(this, TrcTaskMgr.TaskType.POSTCONTINUOUS_TASK);
+            taskMgr.unregisterTask(this::stopTask, TrcTaskMgr.TaskType.STOP_TASK);
+            taskMgr.unregisterTask(this::postContinuousTask, TrcTaskMgr.TaskType.POSTCONTINUOUS_TASK);
         }
 
         if (debugEnabled)
@@ -533,17 +533,11 @@ public class TrcSongPlayer implements TrcTaskMgr.Task
     // Implements TrcTaskMgr.Task
     //
 
-    @Override
-    public void startTask(TrcRobot.RunMode runMode)
-    {
-    }   //startTask
-
     /**
      * This method is called when the competition mode is about to end. It stops the player if sound is playing.
      *
      * @param runMode specifies the competition mode that is about to
      */
-    @Override
     public void stopTask(TrcRobot.RunMode runMode)
     {
         final String funcName = "stopTask";
@@ -561,27 +555,11 @@ public class TrcSongPlayer implements TrcTaskMgr.Task
         }
     }   //stopTask
 
-    @Override
-    public void prePeriodicTask(TrcRobot.RunMode runMode)
-    {
-    }   //prePeriodicTask
-
-    @Override
-    public void postPeriodicTask(TrcRobot.RunMode runMode)
-    {
-    }   //postPeriodicTask
-
-    @Override
-    public void preContinuousTask(TrcRobot.RunMode runMode)
-    {
-    }   //preContinuousTask
-
     /**
      * This method is called periodically to check and play the next note in the song.
      *
      * @param runMode specifies the competition mode that is running.
      */
-    @Override
     public void postContinuousTask(TrcRobot.RunMode runMode)
     {
         final String funcName = "postContinuous";

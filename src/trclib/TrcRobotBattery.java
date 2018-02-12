@@ -26,7 +26,7 @@ package trclib;
  * This class monitors the robot battery level and provides methods to get the current battery voltage as well as
  * the lowest voltage it has ever seen during the monitoring session.
  */
-public abstract class TrcRobotBattery implements TrcTaskMgr.Task
+public abstract class TrcRobotBattery
 {
     private static final String moduleName = "TrcRobotBattery";
     private static final boolean debugEnabled = false;
@@ -131,11 +131,12 @@ public abstract class TrcRobotBattery implements TrcTaskMgr.Task
                 }
             }
 
-            TrcTaskMgr.getInstance().registerTask(moduleName, this, TrcTaskMgr.TaskType.PRECONTINUOUS_TASK);
+            TrcTaskMgr.getInstance().registerTask(
+                moduleName, this::preContinuousTask, TrcTaskMgr.TaskType.PRECONTINUOUS_TASK);
         }
         else
         {
-            TrcTaskMgr.getInstance().unregisterTask(this, TrcTaskMgr.TaskType.PRECONTINUOUS_TASK);
+            TrcTaskMgr.getInstance().unregisterTask(this::preContinuousTask, TrcTaskMgr.TaskType.PRECONTINUOUS_TASK);
         }
     }   //setEnabled
 
@@ -239,33 +240,12 @@ public abstract class TrcRobotBattery implements TrcTaskMgr.Task
     // Implements TrcTaskMgr.Task
     //
 
-    @Override
-    public void startTask(TrcRobot.RunMode runMode)
-    {
-    }   //startTask
-
-    @Override
-    public void stopTask(TrcRobot.RunMode runMode)
-    {
-    }   //stopTask
-
-    @Override
-    public void prePeriodicTask(TrcRobot.RunMode runMode)
-    {
-    }   //prePeriodicTask
-
-    @Override
-    public void postPeriodicTask(TrcRobot.RunMode runMode)
-    {
-    }   //postPeriodicTask
-
     /**
      * This method is called periodically to monitor the battery voltage and to keep track of the lowest voltage it
      * has ever seen.
      *
      * @param runMode specifies the competition mode that is running.
      */
-    @Override
     public void preContinuousTask(TrcRobot.RunMode runMode)
     {
         final String funcName = "preContinuousTask";
@@ -315,10 +295,5 @@ public abstract class TrcRobotBattery implements TrcTaskMgr.Task
             }
         }
     }   //preContinuousTask
-
-    @Override
-    public void postContinuousTask(TrcRobot.RunMode runMode)
-    {
-    }   //postContinuousTask
 
 }   //class TrcRobotBattery

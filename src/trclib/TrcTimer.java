@@ -26,7 +26,7 @@ package trclib;
  * This class implements a timer that will generate an event when the time has expired. This is useful for doing
  * delays in autonomous.
  */
-public class TrcTimer implements TrcTaskMgr.Task
+public class TrcTimer
 {
     private static final String moduleName = "TrcTimer";
     private static final boolean debugEnabled = false;
@@ -184,11 +184,12 @@ public class TrcTimer implements TrcTaskMgr.Task
 
         if (enabled)
         {
-            TrcTaskMgr.getInstance().registerTask(instanceName, this, TrcTaskMgr.TaskType.PRECONTINUOUS_TASK);
+            TrcTaskMgr.getInstance().registerTask(
+                instanceName, this::preContinuousTask, TrcTaskMgr.TaskType.PRECONTINUOUS_TASK);
         }
         else
         {
-            TrcTaskMgr.getInstance().unregisterTask(this, TrcTaskMgr.TaskType.PRECONTINUOUS_TASK);
+            TrcTaskMgr.getInstance().unregisterTask(this::preContinuousTask, TrcTaskMgr.TaskType.PRECONTINUOUS_TASK);
         }
         this.enabled = enabled;
 
@@ -202,33 +203,12 @@ public class TrcTimer implements TrcTaskMgr.Task
     // Implements TrcTaskMgr.Task
     //
 
-    @Override
-    public void startTask(TrcRobot.RunMode runMode)
-    {
-    }   //startTask
-
-    @Override
-    public void stopTask(TrcRobot.RunMode runMode)
-    {
-    }   //stopTask
-
-    @Override
-    public void prePeriodicTask(TrcRobot.RunMode runMode)
-    {
-    }   //prePeriodicTask
-
-    @Override
-    public void postPeriodicTask(TrcRobot.RunMode runMode)
-    {
-    }   //postPeriodicTask
-
     /**
      * This method runs periodically at the fastest rate and checks if the timer has expired. After the timer expired,
      * the task is disabled and if there is an event object, it will be signaled.
      *
      * @param runMode specifies the current robot run mode.
      */
-    @Override
     public void preContinuousTask(TrcRobot.RunMode runMode)
     {
         final String funcName = "preContinuousTask";
@@ -262,10 +242,5 @@ public class TrcTimer implements TrcTaskMgr.Task
             dbgTrace.traceExit(funcName, TrcDbgTrace.TraceLevel.TASK);
         }
     }   //preContinuousTask
-
-    @Override
-    public void postContinuousTask(TrcRobot.RunMode runMode)
-    {
-    }   //postContinuousTask
 
 }   //class TrcTimer

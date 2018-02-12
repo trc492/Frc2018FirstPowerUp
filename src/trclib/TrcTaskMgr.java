@@ -82,60 +82,62 @@ public class TrcTaskMgr
      */
     public interface Task
     {
-        /**
-         * This method contains code that will initialize the task before a competition mode is about to start.
-         * Typically, if the task is a robot subsystem, you may put last minute mode specific initialization code
-         * here. Most of the time, you don't put any code here because all initialization is done in initRobot().
-         * But sometimes, you may want to delay a certain initialization until right before competition starts.
-         * For example, you may want to reset the gyro heading right before competition starts to prevent drifting.
-         *
-         * @param runMode specifies the competition mode that is about to start (e.g. Autonomous, TeleOp, Test).
-         */
-        void startTask(TrcRobot.RunMode runMode);
+        void runTask(TrcRobot.RunMode runMode);
 
-        /**
-         * This method contains code that will clean up the task before a competition mode is about to end. Typically,
-         * if the task is a robot subsystem, you may put code to stop the robot here. Most of the time, you don't put
-         * any code here because the system will cut power to all the motors after a competition mode has ended.
-         *
-         * @param runMode specifies the competition mode that is about to end (e.g. Autonomous, TeleOp, Test).
-         */
-        void stopTask(TrcRobot.RunMode runMode);
-
-        /**
-         * This method contains code that will run before runPeriodic() is called. Typically, you will put code that
-         * deals with any input or sensor readings here so that the code in runPeriodic() will be able to make use of
-         * the input/sensor readings produced by the code here.
-         *
-         * @param runMode specifies the competition mode that is running. (e.g. Autonomous, TeleOp, Test).
-         */
-        void prePeriodicTask(TrcRobot.RunMode runMode);
-
-        /**
-         * This method contains code that will run after runPeriodic() is called. Typically, you will put code that
-         * deals with actions such as programming the motors here.
-         *
-         * @param runMode specifies the competition mode that is running. (e.g. Autonomous, TeleOp, Test).
-         */
-        void postPeriodicTask(TrcRobot.RunMode runMode);
-
-        /**
-         * This method contains code that will run before runContinuous() is called. Typically, you will put code that
-         * deals with any input or sensor readings that requires more frequent processing here such as integrating the
-         * gyro rotation rate to heading.
-         *
-         * @param runMode specifies the competition mode that is running. (e.g. Autonomous, TeleOp, Test).
-         */
-        void preContinuousTask(TrcRobot.RunMode runMode);
-
-        /**
-         * This method contains code that will run after runContinuous() is called. Typically, you will put code that
-         * deals with actions that requires more frequent processing.
-         *
-         * @param runMode specifies the competition mode that is running. (e.g. Autonomous, TeleOp, Test).
-         */
-        void postContinuousTask(TrcRobot.RunMode runMode);
-
+//        /**
+//         * This method contains code that will initialize the task before a competition mode is about to start.
+//         * Typically, if the task is a robot subsystem, you may put last minute mode specific initialization code
+//         * here. Most of the time, you don't put any code here because all initialization is done in initRobot().
+//         * But sometimes, you may want to delay a certain initialization until right before competition starts.
+//         * For example, you may want to reset the gyro heading right before competition starts to prevent drifting.
+//         *
+//         * @param runMode specifies the competition mode that is about to start (e.g. Autonomous, TeleOp, Test).
+//         */
+//        void startTask(TrcRobot.RunMode runMode);
+//
+//        /**
+//         * This method contains code that will clean up the task before a competition mode is about to end. Typically,
+//         * if the task is a robot subsystem, you may put code to stop the robot here. Most of the time, you don't put
+//         * any code here because the system will cut power to all the motors after a competition mode has ended.
+//         *
+//         * @param runMode specifies the competition mode that is about to end (e.g. Autonomous, TeleOp, Test).
+//         */
+//        void stopTask(TrcRobot.RunMode runMode);
+//
+//        /**
+//         * This method contains code that will run before runPeriodic() is called. Typically, you will put code that
+//         * deals with any input or sensor readings here so that the code in runPeriodic() will be able to make use of
+//         * the input/sensor readings produced by the code here.
+//         *
+//         * @param runMode specifies the competition mode that is running. (e.g. Autonomous, TeleOp, Test).
+//         */
+//        void prePeriodicTask(TrcRobot.RunMode runMode);
+//
+//        /**
+//         * This method contains code that will run after runPeriodic() is called. Typically, you will put code that
+//         * deals with actions such as programming the motors here.
+//         *
+//         * @param runMode specifies the competition mode that is running. (e.g. Autonomous, TeleOp, Test).
+//         */
+//        void postPeriodicTask(TrcRobot.RunMode runMode);
+//
+//        /**
+//         * This method contains code that will run before runContinuous() is called. Typically, you will put code that
+//         * deals with any input or sensor readings that requires more frequent processing here such as integrating the
+//         * gyro rotation rate to heading.
+//         *
+//         * @param runMode specifies the competition mode that is running. (e.g. Autonomous, TeleOp, Test).
+//         */
+//        void preContinuousTask(TrcRobot.RunMode runMode);
+//
+//        /**
+//         * This method contains code that will run after runContinuous() is called. Typically, you will put code that
+//         * deals with actions that requires more frequent processing.
+//         *
+//         * @param runMode specifies the competition mode that is running. (e.g. Autonomous, TeleOp, Test).
+//         */
+//        void postContinuousTask(TrcRobot.RunMode runMode);
+//
     }   //interface Task
 
     /**
@@ -363,7 +365,6 @@ public class TrcTaskMgr
         long startNanoTime;
 
         for (int i = 0; i < taskList.size(); i++)
-//        for (TaskObject taskObj: taskList)
         {
             TaskObject taskObj = taskList.get(i);
             if (taskObj.hasType(type))
@@ -376,7 +377,7 @@ public class TrcTaskMgr
                         {
                             dbgTrace.traceInfo(funcName, "Executing StartTask %s", taskObj.toString());
                         }
-                        task.startTask(mode);
+                        task.runTask(mode);
                         break;
 
                     case STOP_TASK:
@@ -384,7 +385,7 @@ public class TrcTaskMgr
                         {
                             dbgTrace.traceInfo(funcName, "Executing StopTask %s", taskObj.toString());
                         }
-                        task.stopTask(mode);
+                        task.runTask(mode);
                         break;
 
                     case PREPERIODIC_TASK:
@@ -393,7 +394,7 @@ public class TrcTaskMgr
                             dbgTrace.traceInfo(funcName, "Executing PrePeriodicTask %s", taskObj.toString());
                         }
                         startNanoTime = TrcUtil.getCurrentTimeNanos();
-                        task.prePeriodicTask(mode);
+                        task.runTask(mode);
                         taskObj.prePeriodicTaskTotalNanoTime += TrcUtil.getCurrentTimeNanos() - startNanoTime;
                         taskObj.prePeriodicTaskTimeSlotCount++;
                         break;
@@ -404,7 +405,7 @@ public class TrcTaskMgr
                             dbgTrace.traceInfo(funcName, "Executing PostPeriodicTask %s", taskObj.toString());
                         }
                         startNanoTime = TrcUtil.getCurrentTimeNanos();
-                        task.postPeriodicTask(mode);
+                        task.runTask(mode);
                         taskObj.postPeriodicTaskTotalNanoTime += TrcUtil.getCurrentTimeNanos() - startNanoTime;
                         taskObj.postPeriodicTaskTimeSlotCount++;
                         break;
@@ -415,7 +416,7 @@ public class TrcTaskMgr
                             dbgTrace.traceInfo(funcName, "Executing PreContinuousTask %s", taskObj.toString());
                         }
                         startNanoTime = TrcUtil.getCurrentTimeNanos();
-                        task.preContinuousTask(mode);
+                        task.runTask(mode);
                         taskObj.preContinuousTaskTotalNanoTime += TrcUtil.getCurrentTimeNanos() - startNanoTime;
                         taskObj.preContinuousTaskTimeSlotCount++;
                         break;
@@ -426,7 +427,7 @@ public class TrcTaskMgr
                             dbgTrace.traceInfo(funcName, "Executing PostContinuousTask %s", taskObj.toString());
                         }
                         startNanoTime = TrcUtil.getCurrentTimeNanos();
-                        task.postContinuousTask(mode);
+                        task.runTask(mode);
                         taskObj.postContinuousTaskTotalNanoTime += TrcUtil.getCurrentTimeNanos() - startNanoTime;
                         taskObj.postContinuousTaskTimeSlotCount++;
                         break;

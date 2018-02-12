@@ -27,7 +27,7 @@ package trclib;
  * consist of 2 to 6 motors. It supports tank drive, arcade drive and mecanum drive with motor stalled detection and
  * inverted drive mode. It also supports gyro assisted drive to keep robot driving straight.
  */
-public class TrcDriveBase implements TrcTaskMgr.Task
+public class TrcDriveBase
 {
     private static final String moduleName = "TrcDriveBase";
     private static final boolean debugEnabled = false;
@@ -132,8 +132,8 @@ public class TrcDriveBase implements TrcTaskMgr.Task
         resetStallTimer();
 
         TrcTaskMgr taskMgr = TrcTaskMgr.getInstance();
-        taskMgr.registerTask(moduleName, this, TrcTaskMgr.TaskType.STOP_TASK);
-        taskMgr.registerTask(moduleName, this, TrcTaskMgr.TaskType.PRECONTINUOUS_TASK);
+        taskMgr.registerTask(moduleName, this::stopTask, TrcTaskMgr.TaskType.STOP_TASK);
+        taskMgr.registerTask(moduleName, this::preContinuousTask, TrcTaskMgr.TaskType.PRECONTINUOUS_TASK);
     }   //commonInit
 
     /**
@@ -1154,17 +1154,11 @@ public class TrcDriveBase implements TrcTaskMgr.Task
     // Implements TrcTaskMgr.Task
     //
 
-    @Override
-    public void startTask(TrcRobot.RunMode runMode)
-    {
-    }   //startTask
-
     /**
      * This method is called when the competition mode is about to end.
      *
      * @param runMode specifies the competition mode that is about to end (e.g. Autonomous, TeleOp, Test).
      */
-    @Override
     public void stopTask(TrcRobot.RunMode runMode)
     {
         final String funcName = "stopTask";
@@ -1185,22 +1179,11 @@ public class TrcDriveBase implements TrcTaskMgr.Task
         }
     }   //stopTask
 
-    @Override
-    public void prePeriodicTask(TrcRobot.RunMode runMode)
-    {
-    }   //prePeriodicTask
-
-    @Override
-    public void postPeriodicTask(TrcRobot.RunMode runMode)
-    {
-    }   //postPeriodicTask
-
     /**
      * This method is called periodically to monitor the encoders and gyro to update the odometry data.
      *
      * @param runMode specifies the competition mode that is running. (e.g. Autonomous, TeleOp, Test).
      */
-    @Override
     public void preContinuousTask(TrcRobot.RunMode runMode)
     {
         final String funcName = "preContinuousTask";
@@ -1348,10 +1331,5 @@ public class TrcDriveBase implements TrcTaskMgr.Task
             dbgTrace.traceExit(funcName, TrcDbgTrace.TraceLevel.TASK);
         }
     }   //preContinuousTask
-
-    @Override
-    public void postContinuousTask(TrcRobot.RunMode runMode)
-    {
-    }   //postContinuousTask
 
 }   //class TrcDriveBase

@@ -30,7 +30,7 @@ package trclib;
  * two servos to handle bigger load as a single servo, equivalent to connecting two servos with a Y splitter cable
  * except doing it with software instead.
  */
-public class TrcEnhancedServo implements TrcTaskMgr.Task
+public class TrcEnhancedServo
 {
     private static final String moduleName = "TrcEnhancedServo";
     private static final boolean debugEnabled = false;
@@ -168,13 +168,14 @@ public class TrcEnhancedServo implements TrcTaskMgr.Task
 
         if (enabled && !servoStepping)
         {
-            TrcTaskMgr.getInstance().registerTask("ServoSteppingTask", this, TrcTaskMgr.TaskType.POSTCONTINUOUS_TASK);
-            TrcTaskMgr.getInstance().registerTask("ServoSteppingTask", this, TrcTaskMgr.TaskType.STOP_TASK);
+            TrcTaskMgr.getInstance().registerTask(
+                "ServoSteppingTask", this::postContinuousTask, TrcTaskMgr.TaskType.POSTCONTINUOUS_TASK);
+            TrcTaskMgr.getInstance().registerTask("ServoSteppingTask", this::stopTask, TrcTaskMgr.TaskType.STOP_TASK);
         }
         else if (!enabled && servoStepping)
         {
-            TrcTaskMgr.getInstance().unregisterTask(this, TrcTaskMgr.TaskType.STOP_TASK);
-            TrcTaskMgr.getInstance().unregisterTask(this, TrcTaskMgr.TaskType.POSTCONTINUOUS_TASK);
+            TrcTaskMgr.getInstance().unregisterTask(this::stopTask, TrcTaskMgr.TaskType.STOP_TASK);
+            TrcTaskMgr.getInstance().unregisterTask(this::postContinuousTask, TrcTaskMgr.TaskType.POSTCONTINUOUS_TASK);
         }
         servoStepping = enabled;
 
@@ -381,31 +382,10 @@ public class TrcEnhancedServo implements TrcTaskMgr.Task
     // Implements TrcTaskMgr.Task
     //
 
-    @Override
-    public void startTask(TrcRobot.RunMode runMode)
-    {
-    }   //startTask
-
-    @Override
     public void stopTask(TrcRobot.RunMode runMode)
     {
         stop();
     }   //stopTask
-
-    @Override
-    public void prePeriodicTask(TrcRobot.RunMode runMode)
-    {
-    }   //prePeriodicTask
-
-    @Override
-    public void postPeriodicTask(TrcRobot.RunMode runMode)
-    {
-    }   //postPeriodicTask
-
-    @Override
-    public void preContinuousTask(TrcRobot.RunMode runMode)
-    {
-    }   //preContinuousTask
 
     /**
      * This method is called periodically to check whether the servo has reached target. If not, it will calculate
@@ -413,7 +393,6 @@ public class TrcEnhancedServo implements TrcTaskMgr.Task
      *
      * @param runMode specifies the competition mode that is running. (e.g. Autonomous, TeleOp, Test).
      */
-    @Override
     public void postContinuousTask(TrcRobot.RunMode runMode)
     {
         final String funcName = "postContinuousTask";

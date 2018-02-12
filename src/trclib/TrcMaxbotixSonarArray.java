@@ -28,7 +28,7 @@ package trclib;
  * supports both regular chain config and loop chain config.
  * https://www.maxbotix.com/documents/LV-MaxSonar-EZ_Datasheet.pdf
  */
-public class TrcMaxbotixSonarArray implements TrcTaskMgr.Task
+public class TrcMaxbotixSonarArray
 {
     private static final String moduleName = "TrcMaxbotixSonarArray";
     private static final boolean debugEnabled = false;
@@ -190,13 +190,13 @@ public class TrcMaxbotixSonarArray implements TrcTaskMgr.Task
         TrcTaskMgr taskMgr = TrcTaskMgr.getInstance();
         if (enabled)
         {
-            taskMgr.registerTask(instanceName, this, TrcTaskMgr.TaskType.PRECONTINUOUS_TASK);
+            taskMgr.registerTask(instanceName, this::preContinuousTask, TrcTaskMgr.TaskType.PRECONTINUOUS_TASK);
             sm.start(State.PULL_RX_HIGH);
         }
         else
         {
             sm.stop();
-            taskMgr.unregisterTask(this, TrcTaskMgr.TaskType.PRECONTINUOUS_TASK);
+            taskMgr.unregisterTask(this::preContinuousTask, TrcTaskMgr.TaskType.PRECONTINUOUS_TASK);
         }
 
         if (debugEnabled)
@@ -209,32 +209,11 @@ public class TrcMaxbotixSonarArray implements TrcTaskMgr.Task
     // Implements TrcTaskMgr.Task interface.
     //
 
-    @Override
-    public void startTask(TrcRobot.RunMode runMode)
-    {
-    }   //startTask
-
-    @Override
-    public void stopTask(TrcRobot.RunMode runMode)
-    {
-    }   //stopTask
-
-    @Override
-    public void prePeriodicTask(TrcRobot.RunMode runMode)
-    {
-    }   //prePeriodicTask
-
-    @Override
-    public void postPeriodicTask(TrcRobot.RunMode runMode)
-    {
-    }   //postPeriodicTask
-
     /**
      * This method is called periodically to run the state machine that generates teh RX pulse.
      *
      * @param runMode specifies the competition mode that is running. (e.g. Autonomous, TeleOp, Test).
      */
-    @Override
     public void preContinuousTask(TrcRobot.RunMode runMode)
     {
         final String funcName = "preContinuousTask";
@@ -281,10 +260,5 @@ public class TrcMaxbotixSonarArray implements TrcTaskMgr.Task
             dbgTrace.traceExit(funcName, TrcDbgTrace.TraceLevel.TASK);
         }
     }   //preContinuousTask
-
-    @Override
-    public void postContinuousTask(TrcRobot.RunMode runMode)
-    {
-    }   //postContinuousTask
 
 }   //class TrcMaxbotixSonarArray

@@ -31,7 +31,7 @@ import java.util.Queue;
  * I2C device class. The platform dependent I2C device class must implement the abstract methods required by this
  * class. The abstract methods allow this class to perform platform independent operations on the I2C device.
  */
-public abstract class TrcI2cDevice implements TrcTaskMgr.Task
+public abstract class TrcI2cDevice
 {
     private static final String moduleName = "TrcI2cDevice";
     private static final boolean debugEnabled = false;
@@ -219,13 +219,14 @@ public abstract class TrcI2cDevice implements TrcTaskMgr.Task
 
         if (enabled)
         {
-            TrcTaskMgr.getInstance().registerTask(instanceName, this, TrcTaskMgr.TaskType.PRECONTINUOUS_TASK);
+            TrcTaskMgr.getInstance().registerTask(
+                instanceName, this::preContinuousTask, TrcTaskMgr.TaskType.PRECONTINUOUS_TASK);
             portCommandSM.start(PortCommandState.START);
         }
         else
         {
             portCommandSM.stop();
-            TrcTaskMgr.getInstance().unregisterTask(this, TrcTaskMgr.TaskType.PRECONTINUOUS_TASK);
+            TrcTaskMgr.getInstance().unregisterTask(this::preContinuousTask, TrcTaskMgr.TaskType.PRECONTINUOUS_TASK);
         }
     }   //setTaskEnabled
 
@@ -382,32 +383,11 @@ public abstract class TrcI2cDevice implements TrcTaskMgr.Task
     // Implements TrcTaskMgr.Task
     //
 
-    @Override
-    public void startTask(TrcRobot.RunMode runMode)
-    {
-    }   //startTask
-
-    @Override
-    public void stopTask(TrcRobot.RunMode runMode)
-    {
-    }   //stopTask
-
-    @Override
-    public void prePeriodicTask(TrcRobot.RunMode runMode)
-    {
-    }   //prePeriodicTask
-
-    @Override
-    public void postPeriodicTask(TrcRobot.RunMode runMode)
-    {
-    }   //postPeriodicTask
-
     /**
      * This method is called periodically to run the PortCommand state machines.
      *
      * @param runMode specifies the competition mode that is running.
      */
-    @Override
     public void preContinuousTask(TrcRobot.RunMode runMode)
     {
         final String funcName = "preContinuousTask";
@@ -606,10 +586,5 @@ public abstract class TrcI2cDevice implements TrcTaskMgr.Task
             dbgTrace.traceExit(funcName, TrcDbgTrace.TraceLevel.TASK);
         }
     }   //preContinuousTask
-
-    @Override
-    public void postContinuousTask(TrcRobot.RunMode runMode)
-    {
-    }   //postContinuousTask
 
 }   //class TrcI2cDevice
