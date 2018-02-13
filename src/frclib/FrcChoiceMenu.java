@@ -91,15 +91,16 @@ public class FrcChoiceMenu<T>
      * @param choiceText specifies the choice text that will be displayed on the dashboard.
      * @param choiceObject specifies the object to be returned if the choice is selected.
      * @param defChoice specifies true to set it the default choice, false otherwise.
+     * @param lastChoice specifies true if this is the last choice added to the choice menu, false otherwise.
      */
-    public void addChoice(String choiceText, T choiceObject, boolean defChoice)
+    public void addChoice(String choiceText, T choiceObject, boolean defChoice, boolean lastChoice)
     {
         final String funcName = "addChoice";
 
         if (debugEnabled)
         {
-            dbgTrace.traceEnter(funcName, TrcDbgTrace.TraceLevel.API, "text=%s,obj=%s,def=%s",
-                choiceText, choiceObject.toString(), Boolean.toString(defChoice));
+            dbgTrace.traceEnter(funcName, TrcDbgTrace.TraceLevel.API, "text=%s,obj=%s,def=%b,last=%b",
+                choiceText, choiceObject.toString(), defChoice, lastChoice);
         }
 
         hashMap.put(choiceObject, choiceText);
@@ -112,7 +113,10 @@ public class FrcChoiceMenu<T>
             chooser.addObject(choiceText, choiceObject);
         }
 
-        HalDashboard.putData(menuTitle, chooser);
+        if (lastChoice)
+        {
+            HalDashboard.putData(menuTitle, chooser);
+        }
 
         if (debugEnabled)
         {

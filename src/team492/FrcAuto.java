@@ -126,32 +126,32 @@ public class FrcAuto implements TrcRobot.RobotMode
         //
         // Populate Autonomous Mode menus.
         //
-        autoStrategyMenu.addChoice("Power Up Auto", FrcAuto.AutoStrategy.POWER_UP_AUTO, false);
-        autoStrategyMenu.addChoice("X Timed Drive", FrcAuto.AutoStrategy.X_TIMED_DRIVE, false);
-        autoStrategyMenu.addChoice("Y Timed Drive", FrcAuto.AutoStrategy.Y_TIMED_DRIVE, false);
-        autoStrategyMenu.addChoice("X Distance Drive", FrcAuto.AutoStrategy.X_DISTANCE_DRIVE, false);
-        autoStrategyMenu.addChoice("Y Distance Drive", FrcAuto.AutoStrategy.Y_DISTANCE_DRIVE, false);
-        autoStrategyMenu.addChoice("Turn Degrees", FrcAuto.AutoStrategy.TURN_DEGREES, false);
-        autoStrategyMenu.addChoice("Do Nothing", FrcAuto.AutoStrategy.DO_NOTHING, false);
+        autoStrategyMenu.addChoice("Power Up Auto", FrcAuto.AutoStrategy.POWER_UP_AUTO, true, false);
+        autoStrategyMenu.addChoice("X Timed Drive", FrcAuto.AutoStrategy.X_TIMED_DRIVE, false, false);
+        autoStrategyMenu.addChoice("Y Timed Drive", FrcAuto.AutoStrategy.Y_TIMED_DRIVE, false, false);
+        autoStrategyMenu.addChoice("X Distance Drive", FrcAuto.AutoStrategy.X_DISTANCE_DRIVE, false, false);
+        autoStrategyMenu.addChoice("Y Distance Drive", FrcAuto.AutoStrategy.Y_DISTANCE_DRIVE, false, false);
+        autoStrategyMenu.addChoice("Turn Degrees", FrcAuto.AutoStrategy.TURN_DEGREES, false, false);
+        autoStrategyMenu.addChoice("Do Nothing", FrcAuto.AutoStrategy.DO_NOTHING, false, true);
 
-        targetTypeMenu.addChoice("Switch", FrcAuto.TargetType.SWITCH, true);
-        targetTypeMenu.addChoice("Scale", FrcAuto.TargetType.SCALE, false);
+        targetTypeMenu.addChoice("Switch", FrcAuto.TargetType.SWITCH, true, false);
+        targetTypeMenu.addChoice("Scale", FrcAuto.TargetType.SCALE, false, true);
 
-        forwardDistanceMenu.addChoice("Distance 1", FrcAuto.ForwardDistance.FWD_DISTANCE_1, false);
-        forwardDistanceMenu.addChoice("Distance 2", FrcAuto.ForwardDistance.FWD_DISTANCE_2, false);
-        forwardDistanceMenu.addChoice("Distance 3", FrcAuto.ForwardDistance.FWD_DISTANCE_3, false);
-        forwardDistanceMenu.addChoice("Custom Distance", FrcAuto.ForwardDistance.CUSTOM, false);
+        forwardDistanceMenu.addChoice("Distance 1", FrcAuto.ForwardDistance.FWD_DISTANCE_1, false, false);
+        forwardDistanceMenu.addChoice("Distance 2", FrcAuto.ForwardDistance.FWD_DISTANCE_2, true, false);
+        forwardDistanceMenu.addChoice("Distance 3", FrcAuto.ForwardDistance.FWD_DISTANCE_3, false, false);
+        forwardDistanceMenu.addChoice("Custom Distance", FrcAuto.ForwardDistance.CUSTOM, false, true);
 
-        approachMenu.addChoice("Front Approach", FrcAuto.Approach.FRONT, false);
-        approachMenu.addChoice("Side Approach", FrcAuto.Approach.SIDE, false);
+        approachMenu.addChoice("Front Approach", FrcAuto.Approach.FRONT, true, false);
+        approachMenu.addChoice("Side Approach", FrcAuto.Approach.SIDE, false, true);
 
-        afterActionMenu.addChoice("Do Nothing", FrcAuto.AfterAction.DO_NOTHING, false);
-        afterActionMenu.addChoice("Second Cube Scale", FrcAuto.AfterAction.SECOND_SCALE_CUBE, false);
-        afterActionMenu.addChoice("Second Cube Switch", FrcAuto.AfterAction.CUBE_IN_SWITCH, false);
+        afterActionMenu.addChoice("Do Nothing", FrcAuto.AfterAction.DO_NOTHING, true, false);
+        afterActionMenu.addChoice("Second Cube Scale", FrcAuto.AfterAction.SECOND_SCALE_CUBE, false, false);
+        afterActionMenu.addChoice("Second Cube Switch", FrcAuto.AfterAction.CUBE_IN_SWITCH, false, true);
         
-        startPositionMenu.addChoice("Left Side Start", FrcAuto.StartPosition.START_POS_1, false);
-        startPositionMenu.addChoice("Middle Start", FrcAuto.StartPosition.START_POS_2, false);
-        startPositionMenu.addChoice("Right Side Start", FrcAuto.StartPosition.START_POS_3, false);
+        startPositionMenu.addChoice("Left Side Start", FrcAuto.StartPosition.START_POS_1, true, false);
+        startPositionMenu.addChoice("Middle Start", FrcAuto.StartPosition.START_POS_2, false, false);
+        startPositionMenu.addChoice("Right Side Start", FrcAuto.StartPosition.START_POS_3, false, true);
     } // FrcAuto
 
     //
