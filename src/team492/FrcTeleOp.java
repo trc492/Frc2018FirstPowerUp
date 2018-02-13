@@ -144,7 +144,7 @@ public class FrcTeleOp implements TrcRobot.RobotMode
             }
 
             double elevatorPower = operatorStick.getYWithDeadband(true);
-            robot.elevator.setPower(elevatorPower);
+            robot.elevator.setPower(-elevatorPower); // Pull joystick back -> move elevator up
         }
 
         robot.updateDashboard();
@@ -381,7 +381,7 @@ public class FrcTeleOp implements TrcRobot.RobotMode
                 if (pressed)
                 {
 
-                    robot.winch.setPower(RobotInfo.TELEOP_ELEVATOR_POWER); // Go
+                    robot.winch.setPower(RobotInfo.TELEOP_WINCH_POWER); // Go
                                                                          // down
                 }
                 else
