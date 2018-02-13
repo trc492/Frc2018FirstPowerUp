@@ -24,7 +24,7 @@ public class SpeakStandClearWhenEnabledTask
         taskMgr.registerTask(TASK_NAME, this::postPeriodicTask, TaskType.POSTPERIODIC_TASK);
     }
 
-    public void startTask(RunMode runMode)
+    public void startTask(TrcTaskMgr.TaskType taskType, RunMode runMode)
     {
         if (runMode != RunMode.DISABLED_MODE)
         {
@@ -38,7 +38,7 @@ public class SpeakStandClearWhenEnabledTask
         }
     }
 
-    public void postPeriodicTask(RunMode runMode)
+    public void postPeriodicTask(TrcTaskMgr.TaskType taskType, RunMode runMode)
     {
         double currentTime = TrcUtil.getCurrentTime();
         if (nextTimeToSpeakSeconds > 0 && currentTime >= nextTimeToSpeakSeconds)

@@ -621,15 +621,16 @@ public class TrcPidDrive
     /**
      * This method is called before the competition mode is about the end to stop the PID drive operation if any.
      *
+     * @param taskType specifies the type of task being run.
      * @param runMode specifies the competition mode that is about to end (e.g. Autonomous, TeleOp, Test).
      */
-    public void stopTask(TrcRobot.RunMode runMode)
+    public void stopTask(TrcTaskMgr.TaskType taskType, TrcRobot.RunMode runMode)
     {
         final String funcName = "stopTask";
 
         if (debugEnabled)
         {
-            dbgTrace.traceEnter(funcName, TrcDbgTrace.TraceLevel.TASK, "mode=%s", runMode.toString());
+            dbgTrace.traceEnter(funcName, TrcDbgTrace.TraceLevel.TASK, "taskType=%s,runMode=%s", taskType, runMode);
         }
 
         stop();
@@ -643,15 +644,16 @@ public class TrcPidDrive
     /**
      * This method is called periodically to execute the PID drive operation.
      *
+     * @param taskType specifies the type of task being run.
      * @param runMode specifies the competition mode that is running. (e.g. Autonomous, TeleOp, Test).
      */
-    public void postContinuousTask(TrcRobot.RunMode runMode)
+    public void postContinuousTask(TrcTaskMgr.TaskType taskType, TrcRobot.RunMode runMode)
     {
         final String funcName = "postContinuousTask";
 
         if (debugEnabled)
         {
-            dbgTrace.traceEnter(funcName, TrcDbgTrace.TraceLevel.TASK, "mode=%s", runMode.toString());
+            dbgTrace.traceEnter(funcName, TrcDbgTrace.TraceLevel.TASK, "taskType=%s,runMode=%s", taskType, runMode);
         }
 
         double xPower = turnOnly || xPidCtrl == null? 0.0: xPidCtrl.getOutput();

@@ -111,12 +111,18 @@ public class TrcDigitalTrigger
     /**
      * This method is called periodically to check if the digital input device has changed state.
      *
+     * @param taskType specifies the type of task being run.
      * @param runMode specifies the competition mode that is running. (e.g. Autonomous, TeleOp, Test).
      */
-    public void preContinuousTask(TrcRobot.RunMode runMode)
+    public void preContinuousTask(TrcTaskMgr.TaskType taskType, TrcRobot.RunMode runMode)
     {
         final String funcName = "preContinuousTask";
         boolean currState = digitalInput.isActive();
+
+        if (debugEnabled)
+        {
+            dbgTrace.traceEnter(funcName, TrcDbgTrace.TraceLevel.TASK, "taskType=%s,runMode=%s", taskType, runMode);
+        }
 
         if (currState != prevState)
         {
@@ -130,6 +136,11 @@ public class TrcDigitalTrigger
             {
                 dbgTrace.traceInfo(funcName, "%s triggered (state=%s)", instanceName, Boolean.toString(currState));
             }
+        }
+
+        if (debugEnabled)
+        {
+            dbgTrace.traceExit(funcName, TrcDbgTrace.TraceLevel.TASK);
         }
     }   //preContinuousTask
 

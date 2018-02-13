@@ -1157,15 +1157,16 @@ public class TrcDriveBase
     /**
      * This method is called when the competition mode is about to end.
      *
+     * @param taskType specifies the type of task being run.
      * @param runMode specifies the competition mode that is about to end (e.g. Autonomous, TeleOp, Test).
      */
-    public void stopTask(TrcRobot.RunMode runMode)
+    public void stopTask(TrcTaskMgr.TaskType taskType, TrcRobot.RunMode runMode)
     {
         final String funcName = "stopTask";
 
         if (debugEnabled)
         {
-            dbgTrace.traceEnter(funcName, TrcDbgTrace.TraceLevel.TASK, "mode=%s", runMode.toString());
+            dbgTrace.traceEnter(funcName, TrcDbgTrace.TraceLevel.TASK, "taskType=%s,runMode=%s", taskType, runMode);
         }
 
         if (runMode != TrcRobot.RunMode.DISABLED_MODE)
@@ -1182,15 +1183,16 @@ public class TrcDriveBase
     /**
      * This method is called periodically to monitor the encoders and gyro to update the odometry data.
      *
+     * @param taskType specifies the type of task being run.
      * @param runMode specifies the competition mode that is running. (e.g. Autonomous, TeleOp, Test).
      */
-    public void preContinuousTask(TrcRobot.RunMode runMode)
+    public void preContinuousTask(TrcTaskMgr.TaskType taskType, TrcRobot.RunMode runMode)
     {
         final String funcName = "preContinuousTask";
 
         if (debugEnabled)
         {
-            dbgTrace.traceEnter(funcName, TrcDbgTrace.TraceLevel.TASK, "mode=%s", runMode.toString());
+            dbgTrace.traceEnter(funcName, TrcDbgTrace.TraceLevel.TASK, "taskType=%s,runMode=%s", taskType, runMode);
         }
 
         //

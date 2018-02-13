@@ -365,23 +365,38 @@ public abstract class TrcRGBLight
     // Implements TrcTaskMgr.Task
     //
 
-    public void stopTask(TrcRobot.RunMode runMode)
+    /**
+     * This method is called when the competition mode is about to end.
+     *
+     * @param taskType specifies the type of task being run.
+     * @param runMode specifies the competition mode that is running. (e.g. Autonomous, TeleOp, Test).
+     */
+    public void stopTask(TrcTaskMgr.TaskType taskType, TrcRobot.RunMode runMode)
     {
+        final String funcName = "stopTask";
+
+        if (debugEnabled)
+        {
+            dbgTrace.traceEnter(funcName, TrcDbgTrace.TraceLevel.TASK, "taskType=%s,runMode=%s", taskType, runMode);
+            dbgTrace.traceExit(funcName, TrcDbgTrace.TraceLevel.TASK);
+        }
+
         setColor(RGBColor.RGB_BLACK);
     }   //stopTask
 
     /**
      * This method is called periodically to execute the RGB light operation.
      *
+     * @param taskType specifies the type of task being run.
      * @param runMode specifies the competition mode that is running. (e.g. Autonomous, TeleOp, Test).
      */
-    public void postContinuousTask(TrcRobot.RunMode runMode)
+    public void postContinuousTask(TrcTaskMgr.TaskType taskType, TrcRobot.RunMode runMode)
     {
         final String funcName = "postContinuousTask";
 
         if (debugEnabled)
         {
-            dbgTrace.traceEnter(funcName, TrcDbgTrace.TraceLevel.TASK, "mode=%s", runMode.toString());
+            dbgTrace.traceEnter(funcName, TrcDbgTrace.TraceLevel.TASK, "taskType=%s,runMode=%s", taskType, runMode);
             dbgTrace.traceExit(funcName, TrcDbgTrace.TraceLevel.TASK);
         }
 

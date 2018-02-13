@@ -386,15 +386,16 @@ public abstract class TrcI2cDevice
     /**
      * This method is called periodically to run the PortCommand state machines.
      *
+     * @param taskType specifies the type of task being run.
      * @param runMode specifies the competition mode that is running.
      */
-    public void preContinuousTask(TrcRobot.RunMode runMode)
+    public void preContinuousTask(TrcTaskMgr.TaskType taskType, TrcRobot.RunMode runMode)
     {
         final String funcName = "preContinuousTask";
 
         if (debugEnabled)
         {
-            dbgTrace.traceEnter(funcName, TrcDbgTrace.TraceLevel.TASK, "runMode=%s", runMode.toString());
+            dbgTrace.traceEnter(funcName, TrcDbgTrace.TraceLevel.TASK, "taskType=%s,runMode=%s", taskType, runMode);
         }
 
         if (portCommandSM.isReady())

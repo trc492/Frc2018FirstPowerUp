@@ -208,12 +208,18 @@ public class TrcAnalogTrigger<D>
      * This method is called periodically to check the current sensor value against the threshold array to see it
      * crosses a new threshold.
      *
+     * @param taskType specifies the type of task being run.
      * @param runMode specifies the competition mode that is running. (e.g. Autonomous, TeleOp, Test).
      */
-    public void preContinuousTask(TrcRobot.RunMode runMode)
+    public void preContinuousTask(TrcTaskMgr.TaskType taskType, TrcRobot.RunMode runMode)
     {
         final String funcName = "preContinuousTask";
         TrcSensor.SensorData<Double> data = sensor.getProcessedData(index, dataType);
+
+        if (debugEnabled)
+        {
+            dbgTrace.traceEnter(funcName, TrcDbgTrace.TraceLevel.TASK, "taskType=%s,runMode=%s", taskType, runMode);
+        }
 
         if (data.value != null)
         {
@@ -258,6 +264,11 @@ public class TrcAnalogTrigger<D>
                     dbgTrace.traceInfo(funcName, "%s entering zone %d (value=%f)", instanceName, zone, value);
                 }
             }
+        }
+
+        if (debugEnabled)
+        {
+            dbgTrace.traceExit(funcName, TrcDbgTrace.TraceLevel.TASK);
         }
     }   //preContinuousTask
 

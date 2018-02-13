@@ -382,24 +382,43 @@ public class TrcEnhancedServo
     // Implements TrcTaskMgr.Task
     //
 
-    public void stopTask(TrcRobot.RunMode runMode)
+    /**
+     * This method is called when the competition mode is about to end so it will stop the servo if necessary.
+     *
+     * @param taskType specifies the type of task being run.
+     * @param runMode specifies the competition mode that is running. (e.g. Autonomous, TeleOp, Test).
+     */
+    public void stopTask(TrcTaskMgr.TaskType taskType, TrcRobot.RunMode runMode)
     {
+        final String funcName = "stopTask";
+
+        if (debugEnabled)
+        {
+            dbgTrace.traceEnter(funcName, TrcDbgTrace.TraceLevel.TASK, "taskType=%s,runMode=%s", taskType, runMode);
+        }
+
         stop();
+
+        if (debugEnabled)
+        {
+            dbgTrace.traceExit(funcName, TrcDbgTrace.TraceLevel.TASK);
+        }
     }   //stopTask
 
     /**
      * This method is called periodically to check whether the servo has reached target. If not, it will calculate
      * the next position to set the servo to according to its step rate.
      *
+     * @param taskType specifies the type of task being run.
      * @param runMode specifies the competition mode that is running. (e.g. Autonomous, TeleOp, Test).
      */
-    public void postContinuousTask(TrcRobot.RunMode runMode)
+    public void postContinuousTask(TrcTaskMgr.TaskType taskType, TrcRobot.RunMode runMode)
     {
         final String funcName = "postContinuousTask";
 
         if (debugEnabled)
         {
-            dbgTrace.traceEnter(funcName, TrcDbgTrace.TraceLevel.TASK, "runMode=%s", runMode.toString());
+            dbgTrace.traceEnter(funcName, TrcDbgTrace.TraceLevel.TASK, "taskType=%s,runMode=%s", taskType, runMode);
         }
 
         if (runMode != TrcRobot.RunMode.DISABLED_MODE)

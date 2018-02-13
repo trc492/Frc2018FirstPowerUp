@@ -244,16 +244,16 @@ public abstract class TrcRobotBattery
      * This method is called periodically to monitor the battery voltage and to keep track of the lowest voltage it
      * has ever seen.
      *
+     * @param taskType specifies the type of task being run.
      * @param runMode specifies the competition mode that is running.
      */
-    public void preContinuousTask(TrcRobot.RunMode runMode)
+    public void preContinuousTask(TrcTaskMgr.TaskType taskType, TrcRobot.RunMode runMode)
     {
         final String funcName = "preContinuousTask";
 
         if (debugEnabled)
         {
-            dbgTrace.traceEnter(funcName, TrcDbgTrace.TraceLevel.TASK, "runMode=%s", runMode.toString());
-            dbgTrace.traceExit(funcName, TrcDbgTrace.TraceLevel.TASK);
+            dbgTrace.traceEnter(funcName, TrcDbgTrace.TraceLevel.TASK, "taskType=%s,runMode=%s", taskType, runMode);
         }
 
         if (voltageSupported)
@@ -293,6 +293,11 @@ public abstract class TrcRobotBattery
             {
                 highestPower = power;
             }
+        }
+
+        if (debugEnabled)
+        {
+            dbgTrace.traceExit(funcName, TrcDbgTrace.TraceLevel.TASK);
         }
     }   //preContinuousTask
 

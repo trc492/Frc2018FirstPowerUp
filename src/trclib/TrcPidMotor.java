@@ -878,15 +878,16 @@ public class TrcPidMotor
     /**
      * This method is called when the competition mode is about to end. It stops the PID motor operation if any.
      *
+     * @param taskType specifies the type of task being run.
      * @param runMode specifies the competition mode that is about to
      */
-    public void stopTask(TrcRobot.RunMode runMode)
+    public void stopTask(TrcTaskMgr.TaskType taskType, TrcRobot.RunMode runMode)
     {
         final String funcName = "stopTask";
 
         if (debugEnabled)
         {
-            dbgTrace.traceEnter(funcName, TrcDbgTrace.TraceLevel.TASK, "mode=%s", runMode.toString());
+            dbgTrace.traceEnter(funcName, TrcDbgTrace.TraceLevel.TASK, "taskType=%s,runMode=%s", taskType, runMode);
         }
 
         stop(true);
@@ -904,15 +905,16 @@ public class TrcPidMotor
      * the motor position sensor. In normal mode, it calls the PID control to calculate and set the motor power.
      * It also checks if the motor has reached the set target and disables the task.
      *
+     * @param taskType specifies the type of task being run.
      * @param runMode specifies the competition mode that is running.
      */
-    public void postContinuousTask(TrcRobot.RunMode runMode)
+    public void postContinuousTask(TrcTaskMgr.TaskType taskType, TrcRobot.RunMode runMode)
     {
         final String funcName = "postContinuous";
 
         if (debugEnabled)
         {
-            dbgTrace.traceEnter(funcName, TrcDbgTrace.TraceLevel.TASK, "mode=%s", runMode.toString());
+            dbgTrace.traceEnter(funcName, TrcDbgTrace.TraceLevel.TASK, "taskType=%s,runMode=%s", taskType, runMode);
         }
 
         if (calPower != 0.0)

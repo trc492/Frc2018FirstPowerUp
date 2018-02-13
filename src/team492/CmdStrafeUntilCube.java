@@ -144,7 +144,7 @@ public class CmdStrafeUntilCube
         }
     }
 
-    public void postContinuousTask(RunMode runMode)
+    public void postContinuousTask(TrcTaskMgr.TaskType taskType, RunMode runMode)
     {
         State state = sm.getState();
         robot.dashboard.displayPrintf(1, "State: %s", state != null ? state.toString() : "Disabled");

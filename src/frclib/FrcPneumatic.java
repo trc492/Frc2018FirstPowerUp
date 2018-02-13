@@ -500,14 +500,13 @@ public class FrcPneumatic
     // Implements TrcTaskMgr.Task
     //
 
-    public void stopTask(TrcRobot.RunMode runMode)
+    public void stopTask(TrcTaskMgr.TaskType taskType, TrcRobot.RunMode runMode)
     {
         final String funcName = "stopTask";
+
         if (debugEnabled)
         {
-            dbgTrace.traceEnter(
-                    funcName, TrcDbgTrace.TraceLevel.TASK,
-                    "mode=%s", runMode.toString());
+            dbgTrace.traceEnter(funcName, TrcDbgTrace.TraceLevel.TASK, "taskType=%s,runMode=%s", taskType, runMode);
         }
 
         set((byte)0xff, false);
@@ -518,9 +517,14 @@ public class FrcPneumatic
         }
     }   //stopTask
 
-    public void postContinuousTask(TrcRobot.RunMode runMode)
+    public void postContinuousTask(TrcTaskMgr.TaskType taskType, TrcRobot.RunMode runMode)
     {
         final String funcName = "postContinuous";
+
+        if (debugEnabled)
+        {
+            dbgTrace.traceEnter(funcName, TrcDbgTrace.TraceLevel.TASK, "taskType=%s,runMode=%s", taskType, runMode);
+        }
 
         if (solSM.isReady())
         {
@@ -625,6 +629,11 @@ public class FrcPneumatic
                 solSM.stop();
                 break;
             }
+        }
+
+        if (debugEnabled)
+        {
+            dbgTrace.traceExit(funcName, TrcDbgTrace.TraceLevel.TASK);
         }
     }   //PostContinuousTask
 

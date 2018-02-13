@@ -536,15 +536,16 @@ public class TrcSongPlayer
     /**
      * This method is called when the competition mode is about to end. It stops the player if sound is playing.
      *
+     * @param taskType specifies the type of task being run.
      * @param runMode specifies the competition mode that is about to
      */
-    public void stopTask(TrcRobot.RunMode runMode)
+    public void stopTask(TrcTaskMgr.TaskType taskType, TrcRobot.RunMode runMode)
     {
         final String funcName = "stopTask";
 
         if (debugEnabled)
         {
-            dbgTrace.traceEnter(funcName, TrcDbgTrace.TraceLevel.TASK, "mode=%s", runMode.toString());
+            dbgTrace.traceEnter(funcName, TrcDbgTrace.TraceLevel.TASK, "taskType=%s,runMode=%s", taskType, runMode);
         }
 
         stop();
@@ -558,15 +559,16 @@ public class TrcSongPlayer
     /**
      * This method is called periodically to check and play the next note in the song.
      *
+     * @param taskType specifies the type of task being run.
      * @param runMode specifies the competition mode that is running.
      */
-    public void postContinuousTask(TrcRobot.RunMode runMode)
+    public void postContinuousTask(TrcTaskMgr.TaskType taskType, TrcRobot.RunMode runMode)
     {
         final String funcName = "postContinuous";
 
         if (debugEnabled)
         {
-            dbgTrace.traceEnter(funcName, TrcDbgTrace.TraceLevel.TASK, "mode=%s", runMode.toString());
+            dbgTrace.traceEnter(funcName, TrcDbgTrace.TraceLevel.TASK, "taskType=%s,runMode=%s", taskType, runMode);
         }
 
         //

@@ -255,15 +255,16 @@ public class TrcDataIntegrator<D>
     /**
      * This method is called periodically to do data integration.
      *
+     * @param taskType specifies the type of task being run.
      * @param runMode specifies the competition mode that is running.
      */
-    public void preContinuousTask(TrcRobot.RunMode runMode)
+    public void preContinuousTask(TrcTaskMgr.TaskType taskType, TrcRobot.RunMode runMode)
     {
         final String funcName = "preContinuousTask";
 
         if (debugEnabled)
         {
-            dbgTrace.traceEnter(funcName, TrcDbgTrace.TraceLevel.TASK, "mode=%s", runMode.toString());
+            dbgTrace.traceEnter(funcName, TrcDbgTrace.TraceLevel.TASK, "taskType=%s,runMode=%s", taskType, runMode);
         }
 
         boolean allZeroAxis = true;

@@ -117,9 +117,10 @@ public class TrcTaskMgr
          *  This contains code that will run after runContinuous() is called. Typically, you will put code that deals
          *  with actions that requires more frequent processing.
          *
+         * @param taskType specifies the type of task being run. This may be useful for handling multiple task types.
          * @param runMode specifies the competition mode that is about to end (e.g. Autonomous, TeleOp, Test).
          */
-        void runTask(TrcRobot.RunMode runMode);
+        void runTask(TaskType taskType, TrcRobot.RunMode runMode);
 
     }   //interface Task
 
@@ -360,7 +361,7 @@ public class TrcTaskMgr
                         {
                             dbgTrace.traceInfo(funcName, "Executing StartTask %s", taskObj.toString());
                         }
-                        task.runTask(mode);
+                        task.runTask(TaskType.START_TASK, mode);
                         break;
 
                     case STOP_TASK:
@@ -368,7 +369,7 @@ public class TrcTaskMgr
                         {
                             dbgTrace.traceInfo(funcName, "Executing StopTask %s", taskObj.toString());
                         }
-                        task.runTask(mode);
+                        task.runTask(TaskType.STOP_TASK, mode);
                         break;
 
                     case PREPERIODIC_TASK:
@@ -377,7 +378,7 @@ public class TrcTaskMgr
                             dbgTrace.traceInfo(funcName, "Executing PrePeriodicTask %s", taskObj.toString());
                         }
                         startNanoTime = TrcUtil.getCurrentTimeNanos();
-                        task.runTask(mode);
+                        task.runTask(TaskType.PREPERIODIC_TASK, mode);
                         taskObj.prePeriodicTaskTotalNanoTime += TrcUtil.getCurrentTimeNanos() - startNanoTime;
                         taskObj.prePeriodicTaskTimeSlotCount++;
                         break;
@@ -388,7 +389,7 @@ public class TrcTaskMgr
                             dbgTrace.traceInfo(funcName, "Executing PostPeriodicTask %s", taskObj.toString());
                         }
                         startNanoTime = TrcUtil.getCurrentTimeNanos();
-                        task.runTask(mode);
+                        task.runTask(TaskType.POSTPERIODIC_TASK, mode);
                         taskObj.postPeriodicTaskTotalNanoTime += TrcUtil.getCurrentTimeNanos() - startNanoTime;
                         taskObj.postPeriodicTaskTimeSlotCount++;
                         break;
@@ -399,7 +400,7 @@ public class TrcTaskMgr
                             dbgTrace.traceInfo(funcName, "Executing PreContinuousTask %s", taskObj.toString());
                         }
                         startNanoTime = TrcUtil.getCurrentTimeNanos();
-                        task.runTask(mode);
+                        task.runTask(TaskType.PRECONTINUOUS_TASK, mode);
                         taskObj.preContinuousTaskTotalNanoTime += TrcUtil.getCurrentTimeNanos() - startNanoTime;
                         taskObj.preContinuousTaskTimeSlotCount++;
                         break;
@@ -410,7 +411,7 @@ public class TrcTaskMgr
                             dbgTrace.traceInfo(funcName, "Executing PostContinuousTask %s", taskObj.toString());
                         }
                         startNanoTime = TrcUtil.getCurrentTimeNanos();
-                        task.runTask(mode);
+                        task.runTask(TaskType.POSTCONTINUOUS_TASK, mode);
                         taskObj.postContinuousTaskTotalNanoTime += TrcUtil.getCurrentTimeNanos() - startNanoTime;
                         taskObj.postContinuousTaskTimeSlotCount++;
                         break;

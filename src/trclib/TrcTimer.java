@@ -207,15 +207,16 @@ public class TrcTimer
      * This method runs periodically at the fastest rate and checks if the timer has expired. After the timer expired,
      * the task is disabled and if there is an event object, it will be signaled.
      *
+     * @param taskType specifies the type of task being run.
      * @param runMode specifies the current robot run mode.
      */
-    public void preContinuousTask(TrcRobot.RunMode runMode)
+    public void preContinuousTask(TrcTaskMgr.TaskType taskType, TrcRobot.RunMode runMode)
     {
         final String funcName = "preContinuousTask";
 
         if (debugEnabled)
         {
-            dbgTrace.traceEnter(funcName, TrcDbgTrace.TraceLevel.TASK, "mode=%s", runMode.toString());
+            dbgTrace.traceEnter(funcName, TrcDbgTrace.TraceLevel.TASK, "taskType=%s,runMode=%s", taskType, runMode);
         }
 
         if (enabled && !expired && TrcUtil.getCurrentTime() >= expiredTime)

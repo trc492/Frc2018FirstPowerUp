@@ -166,13 +166,19 @@ public abstract class TrcMotor implements TrcMotorController
     // Implements TrcTaskMgr.Task
     //
 
-    public void stopTask(TrcRobot.RunMode runMode)
+    /**
+     * This method is called when the competition mode is about to end to stop the task.
+     *
+     * @param taskType specifies the type of task being run.
+     * @param runMode specifies the competition mode that is running.
+     */
+    public void stopTask(TrcTaskMgr.TaskType taskType, TrcRobot.RunMode runMode)
     {
         final String funcName = "stopTask";
 
         if (debugEnabled)
         {
-            dbgTrace.traceEnter(funcName, TrcDbgTrace.TraceLevel.TASK, "mode=%s", runMode.toString());
+            dbgTrace.traceEnter(funcName, TrcDbgTrace.TraceLevel.TASK, "taskType=%s,runMode=%s", taskType, runMode);
         }
 
         setSpeedTaskEnabled(false);
@@ -186,15 +192,16 @@ public abstract class TrcMotor implements TrcMotorController
     /**
      * This task is run periodically to calculate he speed of the motor.
      *
+     * @param taskType specifies the type of task being run.
      * @param runMode specifies the competition mode that is running.
      */
-    public void preContinuousTask(TrcRobot.RunMode runMode)
+    public void preContinuousTask(TrcTaskMgr.TaskType taskType, TrcRobot.RunMode runMode)
     {
         final String funcName = "preContinuousTask";
 
         if (debugEnabled)
         {
-            dbgTrace.traceEnter(funcName, TrcDbgTrace.TraceLevel.TASK, "mode=%s", runMode.toString());
+            dbgTrace.traceEnter(funcName, TrcDbgTrace.TraceLevel.TASK, "taskType=%s,runMode=%s", taskType, runMode);
         }
 
         double currTime = TrcUtil.getCurrentTime();

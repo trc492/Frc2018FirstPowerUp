@@ -300,15 +300,16 @@ public abstract class TrcGameController
      * This method runs periodically and checks for changes in the button states. If any button changed state,
      * the button handler is called if one exists.
      *
+     * @param taskType specifies the type of task being run.
      * @param runMode specifies the current robot run mode.
      */
-    public void prePeriodicTask(TrcRobot.RunMode runMode)
+    public void prePeriodicTask(TrcTaskMgr.TaskType taskType, TrcRobot.RunMode runMode)
     {
         final String funcName = "prePeriodic";
 
         if (debugEnabled)
         {
-            dbgTrace.traceEnter(funcName, TrcDbgTrace.TraceLevel.TASK, "mode=%s", runMode.toString());
+            dbgTrace.traceEnter(funcName, TrcDbgTrace.TraceLevel.TASK, "taskType=%s,runMode=%s", taskType, runMode);
         }
 
         int currButtons = getButtons();
