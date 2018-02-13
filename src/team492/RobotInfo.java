@@ -97,10 +97,10 @@ public class RobotInfo
     //
     // Solenoid channels.
     //
-    public static final int SOL_CUBEPICKUP_CLAW_RETRACT         = 0;
-    public static final int SOL_CUBEPICKUP_CLAW_EXTEND          = 1;
-    public static final int SOL_CUBEPICKUP_ARM_RETRACT          = 2;
-    public static final int SOL_CUBEPICKUP_ARM_EXTEND           = 3;
+    public static final int SOL_CUBEPICKUP_ARM_RETRACT          = 0;
+    public static final int SOL_CUBEPICKUP_ARM_EXTEND           = 1;
+    public static final int SOL_CUBEPICKUP_CLAW_RETRACT         = 2;
+    public static final int SOL_CUBEPICKUP_CLAW_EXTEND          = 3;
 
     public static final int SOL_TARGET_FOUND_LED                = 6;    // White LED
     public static final int SOL_TARGET_ALIGNED_LED              = 7;    // Blue LED
