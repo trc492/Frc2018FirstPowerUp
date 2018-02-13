@@ -280,8 +280,8 @@
         "tiles": {
           "0,0": {
             "size": [
-              10,
-              4
+              4,
+              2
             ],
             "content": {
               "_type": "ComboBox Chooser",
@@ -289,15 +289,181 @@
               "_title": "SmartDashboard/Autonomous Strategies"
             }
           },
-          "0,4": {
+          "4,0": {
             "size": [
-              7,
+              4,
+              2
+            ],
+            "content": {
+              "_type": "ComboBox Chooser",
+              "_source0": "network_table:///SmartDashboard/Start Positions",
+              "_title": "SmartDashboard/Start Positions"
+            }
+          },
+          "8,0": {
+            "size": [
+              4,
+              2
+            ],
+            "content": {
+              "_type": "ComboBox Chooser",
+              "_source0": "network_table:///SmartDashboard/Forward Distances",
+              "_title": "SmartDashboard/Forward Distances"
+            }
+          },
+          "12,0": {
+            "size": [
+              4,
+              2
+            ],
+            "content": {
+              "_type": "ComboBox Chooser",
+              "_source0": "network_table:///SmartDashboard/Target Types",
+              "_title": "SmartDashboard/Target Types"
+            }
+          },
+          "0,2": {
+            "size": [
+              4,
+              2
+            ],
+            "content": {
+              "_type": "ComboBox Chooser",
+              "_source0": "network_table:///SmartDashboard/Approaches",
+              "_title": "SmartDashboard/Approaches"
+            }
+          },
+          "4,2": {
+            "size": [
+              4,
+              2
+            ],
+            "content": {
+              "_type": "ComboBox Chooser",
+              "_source0": "network_table:///SmartDashboard/After Actions",
+              "_title": "SmartDashboard/After Actions"
+            }
+          }
+        }
+      }
+    },
+    {
+      "title": "Tests",
+      "autoPopulate": false,
+      "autoPopulatePrefix": "",
+      "widgetPane": {
+        "gridSize": 32.0,
+        "hgap": 16.0,
+        "vgap": 16.0,
+        "tiles": {
+          "0,0": {
+            "size": [
+              4,
               2
             ],
             "content": {
               "_type": "ComboBox Chooser",
               "_source0": "network_table:///SmartDashboard/Tests",
               "_title": "SmartDashboard/Tests"
+            }
+          },
+          "4,0": {
+            "size": [
+              4,
+              2
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/DriveDistance",
+              "_title": "SmartDashboard/DriveDistance"
+            }
+          },
+          "12,0": {
+            "size": [
+              4,
+              2
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/DrivePowerLimit",
+              "_title": "SmartDashboard/DrivePowerLimit"
+            }
+          },
+          "0,2": {
+            "size": [
+              4,
+              2
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/DrivePower",
+              "_title": "SmartDashboard/DrivePower"
+            }
+          },
+          "4,2": {
+            "size": [
+              4,
+              2
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/DriveTime",
+              "_title": "SmartDashboard/DriveTime"
+            }
+          },
+          "8,4": {
+            "size": [
+              4,
+              2
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/TuneKd",
+              "_title": "SmartDashboard/TuneKd"
+            }
+          },
+          "12,4": {
+            "size": [
+              4,
+              2
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/TuneKf",
+              "_title": "SmartDashboard/TuneKf"
+            }
+          },
+          "4,4": {
+            "size": [
+              4,
+              2
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/TuneKi",
+              "_title": "SmartDashboard/TuneKi"
+            }
+          },
+          "0,4": {
+            "size": [
+              4,
+              2
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/TuneKp",
+              "_title": "SmartDashboard/TuneKp"
+            }
+          },
+          "8,0": {
+            "size": [
+              4,
+              2
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/TurnDegrees",
+              "_title": "SmartDashboard/TurnDegrees"
             }
           }
         }
