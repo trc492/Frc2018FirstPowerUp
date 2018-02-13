@@ -254,7 +254,7 @@ public class Robot extends FrcRobotBase
             tts = new FrcEmic2TextToSpeech("TextToSpeech", SerialPort.Port.kMXP, 9600);
             tts.setEnabled(true);
             tts.selectVoice(Voice.FrailFrank);
-            tts.setVolume(1.0);
+            tts.setVolume(0.72);
             
             speakWhenRobotEnabled = new SpeakStandClearWhenEnabledTask(tts);
         }

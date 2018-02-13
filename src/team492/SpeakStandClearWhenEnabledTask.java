@@ -9,7 +9,7 @@ import trclib.TrcUtil;
 public class SpeakStandClearWhenEnabledTask
 {
 
-    private static final double SPEAK_PERIOD_SECONDS = 10.0; // Speaks once every this # of second.
+    private static final double SPEAK_PERIOD_SECONDS = 20.0; // Speaks once every this # of second.
     private static final String TASK_NAME = "SpeakStandClearWhenEnabledTask";
 
     private final FrcEmic2TextToSpeech tts;
