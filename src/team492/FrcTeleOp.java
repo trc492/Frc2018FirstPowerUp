@@ -65,7 +65,7 @@ public class FrcTeleOp implements TrcRobot.RobotMode
 
         operatorStick = new FrcJoystick("operatorStick", RobotInfo.JSPORT_OPERATORSTICK,
             this::operatorStickButtonEvent);
-        operatorStick.setYInverted(true);
+        operatorStick.setYInverted(false);
 
         cmdWaltzTurn = new CmdWaltzTurn(robot);
     } // FrcTeleOp
@@ -144,7 +144,7 @@ public class FrcTeleOp implements TrcRobot.RobotMode
             }
 
             double elevatorPower = operatorStick.getYWithDeadband(true);
-            robot.elevator.setPower(-elevatorPower); // Pull joystick back -> move elevator up
+            robot.elevator.setPower(elevatorPower); // Pull joystick back -> move elevator up
         }
 
         robot.updateDashboard();
