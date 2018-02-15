@@ -54,6 +54,8 @@ public class FrcPneumatic
     }   //enum State
     
     private String instanceName;
+    private TrcTaskMgr.TaskObject stopTaskObj;
+    private TrcTaskMgr.TaskObject postContinuousTaskObj;
     private TrcStateMachine<State> solSM;
     private TrcTimer solTimer;
     private TrcEvent timerEvent;
@@ -74,6 +76,9 @@ public class FrcPneumatic
         }
 
         this.instanceName = instanceName;
+        TrcTaskMgr taskMgr = TrcTaskMgr.getInstance();
+        stopTaskObj = taskMgr.createTask(instanceName + ".stop", this::stopTask);
+        postContinuousTaskObj = taskMgr.createTask(instanceName + ".postContinuous", this::postContinuousTask);
         solSM = new TrcStateMachine<>(instanceName);
         solTimer = new TrcTimer(instanceName);
         timerEvent = new TrcEvent(instanceName);
@@ -131,6 +136,16 @@ public class FrcPneumatic
         }
         initPneumatic(instanceName);
     }   //FrcPneumatic
+
+    /**
+     * This method returns the instance name.
+     *
+     * @return instance name.
+     */
+    public String toString()
+    {
+        return instanceName;
+    }   //toString
 
     public void set(byte bitMask, boolean on)
     {
@@ -221,7 +236,7 @@ public class FrcPneumatic
             }
             this.notifyEvent = event;
             actionIndex = 0;
-            setEnabled(true);
+            setTaskEnabled(true);
             solSM.start(State.START);
         }
 
@@ -441,39 +456,30 @@ public class FrcPneumatic
         return state;
     }   //isExtended
 
-    private void setEnabled(boolean enabled)
+    private void setTaskEnabled(boolean enabled)
     {
-        final String funcName = "setEnabled";
+        final String funcName = "setTaskEnabled";
         if (debugEnabled)
         {
-            dbgTrace.traceEnter(
-                    funcName, TrcDbgTrace.TraceLevel.FUNC,
-                    "enabled=%s", Boolean.toString(enabled));
+            dbgTrace.traceEnter(funcName, TrcDbgTrace.TraceLevel.FUNC, "enabled=%b", enabled);
         }
 
-        TrcTaskMgr taskMgr = TrcTaskMgr.getInstance();
         if (enabled)
         {
-            taskMgr.registerTask(
-                    instanceName,
-                    this::postContinuousTask, TrcTaskMgr.TaskType.POSTCONTINUOUS_TASK);
-            taskMgr.registerTask(
-                    instanceName,
-                    this::stopTask, TrcTaskMgr.TaskType.STOP_TASK);
+            stopTaskObj.registerTask(TrcTaskMgr.TaskType.STOP_TASK);
+            postContinuousTaskObj.registerTask(TrcTaskMgr.TaskType.POSTCONTINUOUS_TASK);
         }
         else
         {
-            taskMgr.unregisterTask(
-                    this::postContinuousTask, TrcTaskMgr.TaskType.POSTCONTINUOUS_TASK);
-            taskMgr.unregisterTask(
-                    this::stopTask, TrcTaskMgr.TaskType.STOP_TASK);
+            stopTaskObj.unregisterTask(TrcTaskMgr.TaskType.STOP_TASK);
+            postContinuousTaskObj.unregisterTask(TrcTaskMgr.TaskType.POSTCONTINUOUS_TASK);
         }
 
         if (debugEnabled)
         {
             dbgTrace.traceExit(funcName, TrcDbgTrace.TraceLevel.FUNC);
         }
-    }   //setEnabled
+    }   //setTaskEnabled
 
     private void cancel()
     {
@@ -485,7 +491,7 @@ public class FrcPneumatic
 
         if (solSM.isEnabled())
         {
-            setEnabled(false);
+            setTaskEnabled(false);
             solTimer.cancel();
             solSM.stop();
         }
@@ -616,7 +622,7 @@ public class FrcPneumatic
                 {
                     dbgTrace.traceInfo(funcName, "Done!");
                 }
-                setEnabled(false);
+                setTaskEnabled(false);
                 if (notifyEvent != null)
                 {
                     notifyEvent.set(true);

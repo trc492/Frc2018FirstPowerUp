@@ -165,7 +165,7 @@ public class CubePickup
     public void grabCube(double power, TrcEvent event)
     {
         controlMotor.setPower(power);
-        cubeTrigger.setEnabled(true);
+        cubeTrigger.setTaskEnabled(true);
         cubeEvent = event;
     }
 
@@ -202,7 +202,7 @@ public class CubePickup
         {
             cubeEvent.set(true);
         }
-        cubeTrigger.setEnabled(false);
+        cubeTrigger.setTaskEnabled(false);
     } // DigitalTriggerEvent
 
 }

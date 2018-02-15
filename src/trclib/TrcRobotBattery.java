@@ -56,6 +56,7 @@ public abstract class TrcRobotBattery
      */
     public abstract double getPower();
 
+    private final TrcTaskMgr.TaskObject preContinuousTaskObj;
     private double lowestVoltage = 0.0;
     private double highestVoltage = 0.0;
     private boolean voltageSupported = true;
@@ -75,6 +76,8 @@ public abstract class TrcRobotBattery
         {
             dbgTrace = new TrcDbgTrace(moduleName, tracingEnabled, traceLevel, msgLevel);
         }
+        preContinuousTaskObj = TrcTaskMgr.getInstance().createTask(
+            moduleName + ".preContinuous", this::preContinuousTask);
     }   //TrcRobotBattery
 
     /**
@@ -83,14 +86,13 @@ public abstract class TrcRobotBattery
      *
      * @param enabled specifies true to enable the task, false to disable.
      */
-    public void setEnabled(boolean enabled)
+    public void setTaskEnabled(boolean enabled)
     {
-        final String funcName = "setEnabled";
+        final String funcName = "setTaskEnabled";
 
         if (debugEnabled)
         {
-            dbgTrace.traceEnter(funcName, TrcDbgTrace.TraceLevel.FUNC, "enabled=%s", Boolean.toString(enabled));
-            dbgTrace.traceExit(funcName, TrcDbgTrace.TraceLevel.FUNC);
+            dbgTrace.traceEnter(funcName, TrcDbgTrace.TraceLevel.FUNC, "enabled=%b", enabled);
         }
 
         if (enabled)
@@ -131,14 +133,18 @@ public abstract class TrcRobotBattery
                 }
             }
 
-            TrcTaskMgr.getInstance().registerTask(
-                moduleName, this::preContinuousTask, TrcTaskMgr.TaskType.PRECONTINUOUS_TASK);
+            preContinuousTaskObj.registerTask(TrcTaskMgr.TaskType.PRECONTINUOUS_TASK);
         }
         else
         {
-            TrcTaskMgr.getInstance().unregisterTask(this::preContinuousTask, TrcTaskMgr.TaskType.PRECONTINUOUS_TASK);
+            preContinuousTaskObj.unregisterTask(TrcTaskMgr.TaskType.PRECONTINUOUS_TASK);
         }
-    }   //setEnabled
+
+        if (debugEnabled)
+        {
+            dbgTrace.traceExit(funcName, TrcDbgTrace.TraceLevel.FUNC);
+        }
+    }   //setTaskEnabled
 
     /**
      * This method returns the lowest voltage it has ever seen during the monitoring session.

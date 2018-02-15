@@ -86,8 +86,8 @@ public class CmdPortalAlign implements TrcRobot.RobotCommand
 	public void start()
 	{
 		done = false;
-		leftTrigger.setEnabled(true);
-		rightTrigger.setEnabled(true);
+		leftTrigger.setTaskEnabled(true);
+		rightTrigger.setTaskEnabled(true);
 		double relativeDirection = RobotInfo.PORTAL_ALIGN_STRAFE_DIST * (isRight ? 1.0 : -1.0);
 		robot.pidDrive.setTarget(relativeDirection, 0.0, robot.targetHeading, false, pidEvent);		
 	}
@@ -98,8 +98,8 @@ public class CmdPortalAlign implements TrcRobot.RobotCommand
 	public void stop()
 	{
 		done = true;
-		leftTrigger.setEnabled(false);
-		rightTrigger.setEnabled(false);
+		leftTrigger.setTaskEnabled(false);
+		rightTrigger.setTaskEnabled(false);
 		robot.pidDrive.cancel();
 	}
 	
@@ -123,12 +123,12 @@ public class CmdPortalAlign implements TrcRobot.RobotCommand
 	private void leftTriggerEvent(boolean enabled)
 	{
 		leftEvent.set(true);
-		leftTrigger.setEnabled(false);
+		leftTrigger.setTaskEnabled(false);
 	}
 	
 	private void rightTriggerEvent(boolean enabled)
 	{
 		rightEvent.set(true);
-		rightTrigger.setEnabled(false);
+		rightTrigger.setTaskEnabled(false);
 	}
 }

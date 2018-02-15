@@ -48,13 +48,14 @@ public class TrcCardinalConverter<D>
     private TrcDbgTrace dbgTrace = null;
 
     private final String instanceName;
-    private TrcSensor<D> sensor;
-    private D dataType;
-    private int numAxes;
-    private double[] cardinalRangeLows;
-    private double[] cardinalRangeHighs;
-    private TrcSensor.SensorData<Double>[] prevData;
-    private int[] numCrossovers;
+    private final TrcSensor<D> sensor;
+    private final D dataType;
+    private final int numAxes;
+    private final TrcTaskMgr.TaskObject preContinuousTaskObj;
+    private final double[] cardinalRangeLows;
+    private final double[] cardinalRangeHighs;
+    private final TrcSensor.SensorData<Double>[] prevData;
+    private final int[] numCrossovers;
     private boolean enabled = false;
 
     /**
@@ -64,7 +65,8 @@ public class TrcCardinalConverter<D>
      * @param sensor specifies the sensor object that needs data unwrapping.
      * @param dataType specifies the data type to be unwrapped.
      */
-    public TrcCardinalConverter(final String instanceName, TrcSensor<D> sensor, D dataType)
+    @SuppressWarnings("unchecked")
+    public TrcCardinalConverter(final String instanceName, final TrcSensor<D> sensor, final D dataType)
     {
         if (debugEnabled)
         {
@@ -80,6 +82,8 @@ public class TrcCardinalConverter<D>
         this.sensor = sensor;
         this.dataType = dataType;
         numAxes = sensor.getNumAxes();
+        preContinuousTaskObj = TrcTaskMgr.getInstance().createTask(
+            instanceName + ".preContinuous", this::preContinuousTask);
 
         cardinalRangeLows = new double[numAxes];
         cardinalRangeHighs = new double[numAxes];
@@ -129,29 +133,32 @@ public class TrcCardinalConverter<D>
      *
      * @param enabled specifies true for enabling the converter, disabling it otherwise.
      */
-    public void setEnabled(boolean enabled)
+    public void setTaskEnabled(boolean enabled)
     {
-        final String funcName = "setEnabled";
+        final String funcName = "setTaskEnabled";
 
         if (debugEnabled)
         {
-            dbgTrace.traceEnter(funcName, TrcDbgTrace.TraceLevel.API, "enabled=%s", Boolean.toString(enabled));
-            dbgTrace.traceExit(funcName, TrcDbgTrace.TraceLevel.API);
+            dbgTrace.traceEnter(funcName, TrcDbgTrace.TraceLevel.API, "enabled=%b", enabled);
         }
 
         if (!this.enabled && enabled)
         {
             reset();
-            TrcTaskMgr.getInstance().registerTask(
-                instanceName, this::preContinuousTask, TrcTaskMgr.TaskType.PRECONTINUOUS_TASK);
+            preContinuousTaskObj.registerTask(TrcTaskMgr.TaskType.PRECONTINUOUS_TASK);
         }
         else if (this.enabled && !enabled)
         {
             reset();
-            TrcTaskMgr.getInstance().unregisterTask(this::preContinuousTask, TrcTaskMgr.TaskType.PRECONTINUOUS_TASK);
+            preContinuousTaskObj.unregisterTask(TrcTaskMgr.TaskType.PRECONTINUOUS_TASK);
         }
         this.enabled = enabled;
-    }   //setEnabled
+
+        if (debugEnabled)
+        {
+            dbgTrace.traceExit(funcName, TrcDbgTrace.TraceLevel.API);
+        }
+    }   //setTaskEnabled
 
     /**
      * This method resets the indexed converter.

@@ -66,11 +66,12 @@ public class TrcPidMotor
     private static final double DEF_BEEP_DURATION = 0.2;            //in seconds
 
     private final String instanceName;
-    private TrcMotor motor1;
-    private TrcMotor motor2;
-    private TrcPidController pidCtrl;
-    private PowerCompensation powerCompensation = null;
-
+    private final TrcMotor motor1;
+    private final TrcMotor motor2;
+    private final TrcPidController pidCtrl;
+    private final PowerCompensation powerCompensation;
+    private final TrcTaskMgr.TaskObject stopTaskObj;
+    private final TrcTaskMgr.TaskObject postContinuousTaskObj;
     private boolean active = false;
     private double syncGain = 0.0;
     private double positionScale = 1.0;
@@ -112,8 +113,8 @@ public class TrcPidMotor
      *                          provided.
      */
     public TrcPidMotor(
-            final String instanceName, TrcMotor motor1, TrcMotor motor2, double syncGain, TrcPidController pidCtrl,
-            PowerCompensation powerCompensation)
+        final String instanceName, final TrcMotor motor1, final TrcMotor motor2,
+        final double syncGain, final TrcPidController pidCtrl, final PowerCompensation powerCompensation)
     {
         if (debugEnabled)
         {
@@ -136,6 +137,9 @@ public class TrcPidMotor
         this.syncGain = syncGain;
         this.pidCtrl = pidCtrl;
         this.powerCompensation = powerCompensation;
+        TrcTaskMgr taskMgr = TrcTaskMgr.getInstance();
+        stopTaskObj = taskMgr.createTask(instanceName + ".stop", this::stopTask);
+        postContinuousTaskObj = taskMgr.createTask(instanceName + ".postContinuous", this::postContinuousTask);
     }   //TrcPidMotor
 
     /**
@@ -149,8 +153,8 @@ public class TrcPidMotor
      *                          provided.
      */
     public TrcPidMotor(
-            final String instanceName, TrcMotor motor1, TrcMotor motor2, TrcPidController pidCtrl,
-            PowerCompensation powerCompensation)
+        final String instanceName, final TrcMotor motor1, final TrcMotor motor2, final TrcPidController pidCtrl,
+        final PowerCompensation powerCompensation)
     {
         this(instanceName, motor1, motor2, 0.0, pidCtrl, powerCompensation);
     }   //TrcPidMotor
@@ -165,7 +169,8 @@ public class TrcPidMotor
      *                          provided.
      */
     public TrcPidMotor(
-            final String instanceName, TrcMotor motor, TrcPidController pidCtrl, PowerCompensation powerCompensation)
+        final String instanceName, final TrcMotor motor, final TrcPidController pidCtrl,
+        final PowerCompensation powerCompensation)
     {
         this(instanceName, motor, null, 0.0, pidCtrl, powerCompensation);
     }   //TrcPidMotor
@@ -180,7 +185,8 @@ public class TrcPidMotor
      * @param pidCtrl specifies the PID controller object.
      */
     public TrcPidMotor(
-            final String instanceName, TrcMotor motor1, TrcMotor motor2, double syncGain, TrcPidController pidCtrl)
+        final String instanceName, final TrcMotor motor1, final TrcMotor motor2,
+        final double syncGain, final TrcPidController pidCtrl)
     {
         this(instanceName, motor1, motor2, syncGain, pidCtrl, null);
     }   //TrcPidMotor
@@ -193,7 +199,8 @@ public class TrcPidMotor
      * @param motor2 specifies motor2 object. If there is only one motor, this can be set to null.
      * @param pidCtrl specifies the PID controller object.
      */
-    public TrcPidMotor(final String instanceName, TrcMotor motor1, TrcMotor motor2, TrcPidController pidCtrl)
+    public TrcPidMotor(final String instanceName, final TrcMotor motor1, final TrcMotor motor2,
+        final TrcPidController pidCtrl)
     {
         this(instanceName, motor1, motor2, 0.0, pidCtrl, null);
     }   //TrcPidMotor
@@ -205,7 +212,7 @@ public class TrcPidMotor
      * @param motor specifies motor object.
      * @param pidCtrl specifies the PID controller object.
      */
-    public TrcPidMotor(final String instanceName, TrcMotor motor, TrcPidController pidCtrl)
+    public TrcPidMotor(final String instanceName, final TrcMotor motor, final TrcPidController pidCtrl)
     {
         this(instanceName, motor, null, 0.0, pidCtrl, null);
     }   //TrcPidMotor
@@ -849,19 +856,18 @@ public class TrcPidMotor
 
         if (debugEnabled)
         {
-            dbgTrace.traceEnter(funcName, TrcDbgTrace.TraceLevel.FUNC, "enabled=%s", Boolean.toString(enabled));
+            dbgTrace.traceEnter(funcName, TrcDbgTrace.TraceLevel.FUNC, "enabled=%b", enabled);
         }
 
-        TrcTaskMgr taskMgr = TrcTaskMgr.getInstance();
         if (enabled)
         {
-            taskMgr.registerTask(instanceName, this::stopTask, TrcTaskMgr.TaskType.STOP_TASK);
-            taskMgr.registerTask(instanceName, this::postContinuousTask, TrcTaskMgr.TaskType.POSTCONTINUOUS_TASK);
+            stopTaskObj.registerTask(TrcTaskMgr.TaskType.STOP_TASK);
+            postContinuousTaskObj.registerTask(TrcTaskMgr.TaskType.POSTCONTINUOUS_TASK);
         }
         else
         {
-            taskMgr.unregisterTask(this::stopTask, TrcTaskMgr.TaskType.STOP_TASK);
-            taskMgr.unregisterTask(this::postContinuousTask, TrcTaskMgr.TaskType.POSTCONTINUOUS_TASK);
+            stopTaskObj.unregisterTask(TrcTaskMgr.TaskType.STOP_TASK);
+            postContinuousTaskObj.unregisterTask(TrcTaskMgr.TaskType.POSTCONTINUOUS_TASK);
         }
         this.active = enabled;
 

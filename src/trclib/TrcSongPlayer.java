@@ -36,7 +36,9 @@ public class TrcSongPlayer
     private TrcDbgTrace dbgTrace = null;
 
     private final String instanceName;
-    private TrcTone tone;
+    private final TrcTone tone;
+    private final TrcTaskMgr.TaskObject stopTaskObj;
+    private final TrcTaskMgr.TaskObject postContinuousTaskObj;
     private TrcSong song = null;
     private double barDuration = 0.0;
     private boolean repeat = false;
@@ -48,7 +50,7 @@ public class TrcSongPlayer
      * @param instanceName specifies the instance name.
      * @param tone specifies the Tone player.
      */
-    public TrcSongPlayer(final String instanceName, TrcTone tone)
+    public TrcSongPlayer(final String instanceName, final TrcTone tone)
     {
         if (debugEnabled)
         {
@@ -57,6 +59,9 @@ public class TrcSongPlayer
 
         this.instanceName = instanceName;
         this.tone = tone;
+        TrcTaskMgr taskMgr = TrcTaskMgr.getInstance();
+        stopTaskObj = taskMgr.createTask(instanceName + ".stop", this::stopTask);
+        postContinuousTaskObj = taskMgr.createTask(instanceName + ".postContinuous", this::postContinuousTask);
     }   //TrcSongPlayer
 
     /**
@@ -80,19 +85,18 @@ public class TrcSongPlayer
 
         if (debugEnabled)
         {
-            dbgTrace.traceEnter(funcName, TrcDbgTrace.TraceLevel.FUNC, "enabled=%s", Boolean.toString(enabled));
+            dbgTrace.traceEnter(funcName, TrcDbgTrace.TraceLevel.FUNC, "enabled=%b", enabled);
         }
 
-        TrcTaskMgr taskMgr = TrcTaskMgr.getInstance();
         if (enabled)
         {
-            taskMgr.registerTask(instanceName, this::stopTask, TrcTaskMgr.TaskType.STOP_TASK);
-            taskMgr.registerTask(instanceName, this::postContinuousTask, TrcTaskMgr.TaskType.POSTCONTINUOUS_TASK);
+            stopTaskObj.registerTask(TrcTaskMgr.TaskType.STOP_TASK);
+            postContinuousTaskObj.registerTask(TrcTaskMgr.TaskType.POSTCONTINUOUS_TASK);
         }
         else
         {
-            taskMgr.unregisterTask(this::stopTask, TrcTaskMgr.TaskType.STOP_TASK);
-            taskMgr.unregisterTask(this::postContinuousTask, TrcTaskMgr.TaskType.POSTCONTINUOUS_TASK);
+            stopTaskObj.unregisterTask(TrcTaskMgr.TaskType.STOP_TASK);
+            postContinuousTaskObj.unregisterTask(TrcTaskMgr.TaskType.POSTCONTINUOUS_TASK);
         }
 
         if (debugEnabled)

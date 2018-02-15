@@ -48,12 +48,13 @@ public class TrcMaxbotixSonarArray
     }   //State
 
     private final String instanceName;
-    private TrcAnalogInput[] sensors;
-    private TrcDigitalOutput rx;
-    private boolean loopConfig;
-    private TrcStateMachine<State> sm;
-    private TrcTimer timer;
-    private TrcEvent event;
+    private final TrcAnalogInput[] sensors;
+    private final TrcDigitalOutput rx;
+    private final boolean loopConfig;
+    private final TrcTaskMgr.TaskObject preContinuousTaskObj;
+    private final TrcStateMachine<State> sm;
+    private final TrcTimer timer;
+    private final TrcEvent event;
     private boolean autoRepeat = false;
 
     /**
@@ -65,7 +66,8 @@ public class TrcMaxbotixSonarArray
      * @param loopConfig specifies true if the sensor array is wired in loop configuration, false otherwise.
      */
     public TrcMaxbotixSonarArray(
-            final String instanceName, TrcAnalogInput[] sensors, TrcDigitalOutput rx, boolean loopConfig)
+        final String instanceName, final TrcAnalogInput[] sensors, final TrcDigitalOutput rx,
+        final boolean loopConfig)
     {
         if (debugEnabled)
         {
@@ -77,6 +79,8 @@ public class TrcMaxbotixSonarArray
         this.sensors = sensors;
         this.rx = rx;
         this.loopConfig = loopConfig;
+        preContinuousTaskObj = TrcTaskMgr.getInstance().createTask(
+            instanceName + ".preContinuous", this::preContinuousTask);
         sm = new TrcStateMachine<>(instanceName);
         timer = new TrcTimer(instanceName);
         event = new TrcEvent(instanceName);
@@ -89,7 +93,7 @@ public class TrcMaxbotixSonarArray
      * @param sensors specifies an array of Maxbotix ultrasonic sensors.
      * @param rx specifies the digital output channel the RX pin is connected to.
      */
-    public TrcMaxbotixSonarArray(final String instanceName, TrcAnalogInput[] sensors, TrcDigitalOutput rx)
+    public TrcMaxbotixSonarArray(final String instanceName, final TrcAnalogInput[] sensors, final TrcDigitalOutput rx)
     {
         this(instanceName, sensors, rx, false);
     }   //TrcMaxbotixSonarArray
@@ -124,7 +128,7 @@ public class TrcMaxbotixSonarArray
         {
             this.autoRepeat = autoRepeat;
         }
-        setEnabled(true);
+        setTaskEnabled(true);
 
         if (debugEnabled)
         {
@@ -158,7 +162,7 @@ public class TrcMaxbotixSonarArray
         if (!loopConfig && autoRepeat)
         {
             autoRepeat = false;
-            setEnabled(false);
+            setTaskEnabled(false);
         }
     }   //stopRanging
 
@@ -178,32 +182,31 @@ public class TrcMaxbotixSonarArray
      *
      * @param enabled specifies true to start the task, false otherwise.
      */
-    private void setEnabled(boolean enabled)
+    private void setTaskEnabled(boolean enabled)
     {
-        final String funcName = "setEnabled";
+        final String funcName = "setTaskEnabled";
 
         if (debugEnabled)
         {
-            dbgTrace.traceEnter(funcName, TrcDbgTrace.TraceLevel.FUNC, "enabled=%s", Boolean.toString(enabled));
+            dbgTrace.traceEnter(funcName, TrcDbgTrace.TraceLevel.FUNC, "enabled=%b", enabled);
         }
 
-        TrcTaskMgr taskMgr = TrcTaskMgr.getInstance();
         if (enabled)
         {
-            taskMgr.registerTask(instanceName, this::preContinuousTask, TrcTaskMgr.TaskType.PRECONTINUOUS_TASK);
+            preContinuousTaskObj.registerTask(TrcTaskMgr.TaskType.PRECONTINUOUS_TASK);
             sm.start(State.PULL_RX_HIGH);
         }
         else
         {
             sm.stop();
-            taskMgr.unregisterTask(this::preContinuousTask, TrcTaskMgr.TaskType.PRECONTINUOUS_TASK);
+            preContinuousTaskObj.unregisterTask(TrcTaskMgr.TaskType.PRECONTINUOUS_TASK);
         }
 
         if (debugEnabled)
         {
             dbgTrace.traceExit(funcName, TrcDbgTrace.TraceLevel.FUNC);
         }
-    }   //setEnabled
+    }   //setTaskEnabled
 
     //
     // Implements TrcTaskMgr.Task interface.
@@ -251,7 +254,7 @@ public class TrcMaxbotixSonarArray
                     break;
 
                 case DONE:
-                    setEnabled(false);
+                    setTaskEnabled(false);
                     break;
             }
         }

@@ -15,13 +15,16 @@ public class SpeakStandClearWhenEnabledTask
     private final FrcEmic2TextToSpeech tts;
     private double nextTimeToSpeakSeconds = 0; // 0 means disabled, no need to speak
 
-    public SpeakStandClearWhenEnabledTask(FrcEmic2TextToSpeech tts)
+    public SpeakStandClearWhenEnabledTask(final FrcEmic2TextToSpeech tts)
     {
         this.tts = tts;
 
         TrcTaskMgr taskMgr = TrcTaskMgr.getInstance();
-        taskMgr.registerTask(TASK_NAME, this::startTask, TaskType.START_TASK);
-        taskMgr.registerTask(TASK_NAME, this::postPeriodicTask, TaskType.POSTPERIODIC_TASK);
+        TrcTaskMgr.TaskObject startTaskObj = taskMgr.createTask(TASK_NAME + ".start", this::startTask);
+        TrcTaskMgr.TaskObject postPeriodicTaskObj = taskMgr.createTask(
+            TASK_NAME + ".postPeriodic", this::postPeriodicTask);
+        startTaskObj.registerTask(TaskType.START_TASK);
+        postPeriodicTaskObj.registerTask(TaskType.POSTPERIODIC_TASK);
     }
 
     public void startTask(TrcTaskMgr.TaskType taskType, RunMode runMode)
@@ -29,11 +32,13 @@ public class SpeakStandClearWhenEnabledTask
         if (runMode != RunMode.DISABLED_MODE)
         {
             // Robot is unsafe
-            nextTimeToSpeakSeconds = TrcUtil.getCurrentTime();
+            tts.speak("Robot enabled, stand clear");
+            nextTimeToSpeakSeconds = TrcUtil.getCurrentTime() + SPEAK_PERIOD_SECONDS;
         }
         else
         {
-            // Robot is safe
+            // Robot is safe. Note: "disaibled" is not a typo. It forces the speech board to pronounce it correctly.
+            tts.speak("Robot disaibled");
             nextTimeToSpeakSeconds = 0;
         }
     }
@@ -43,7 +48,7 @@ public class SpeakStandClearWhenEnabledTask
         double currentTime = TrcUtil.getCurrentTime();
         if (nextTimeToSpeakSeconds > 0 && currentTime >= nextTimeToSpeakSeconds)
         {
-            tts.speak("please stand clear");
+            tts.speak("Stand clear");
             nextTimeToSpeakSeconds = currentTime + SPEAK_PERIOD_SECONDS;
         }
     }

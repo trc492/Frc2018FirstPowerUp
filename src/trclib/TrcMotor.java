@@ -41,6 +41,8 @@ public abstract class TrcMotor implements TrcMotorController
     private TrcDbgTrace dbgTrace = null;
 
     private final String instanceName;
+    private final TrcTaskMgr.TaskObject stopTaskObj;
+    private final TrcTaskMgr.TaskObject preContinuousTaskObj;
     private TrcDigitalTrigger digitalTrigger = null;
     private boolean speedTaskEnabled = false;
     private double speed = 0.0;
@@ -54,13 +56,16 @@ public abstract class TrcMotor implements TrcMotorController
      */
     public TrcMotor(final String instanceName)
     {
-        this.instanceName = instanceName;
-
         if (debugEnabled)
         {
             dbgTrace = new TrcDbgTrace(
                     moduleName + "." + instanceName, tracingEnabled, traceLevel, msgLevel);
         }
+
+        this.instanceName = instanceName;
+        TrcTaskMgr taskMgr = TrcTaskMgr.getInstance();
+        stopTaskObj = taskMgr.createTask(instanceName + ".stop", this::stopTask);
+        preContinuousTaskObj = taskMgr.createTask(instanceName + ".preContinuousTask", this::preContinuousTask);
     }   //TrcMotor
 
     /**
@@ -90,7 +95,7 @@ public abstract class TrcMotor implements TrcMotorController
         }
 
         digitalTrigger = new TrcDigitalTrigger(instanceName, digitalInput, this::triggerEvent);
-        digitalTrigger.setEnabled(true);
+        digitalTrigger.setTaskEnabled(true);
     }   //resetPositionOnDigitalInput
 
     /**
@@ -110,18 +115,17 @@ public abstract class TrcMotor implements TrcMotorController
         }
 
         speedTaskEnabled = enabled;
-        TrcTaskMgr taskMgr = TrcTaskMgr.getInstance();
         if (enabled)
         {
             prevTime = TrcUtil.getCurrentTime();
             prevPos = getPosition();
-            taskMgr.registerTask(instanceName, this::stopTask, TrcTaskMgr.TaskType.STOP_TASK);
-            taskMgr.registerTask(instanceName, this::preContinuousTask, TrcTaskMgr.TaskType.PRECONTINUOUS_TASK);
+            stopTaskObj.registerTask(TrcTaskMgr.TaskType.STOP_TASK);
+            preContinuousTaskObj.registerTask(TrcTaskMgr.TaskType.PRECONTINUOUS_TASK);
         }
         else
         {
-            taskMgr.unregisterTask(this::stopTask, TrcTaskMgr.TaskType.STOP_TASK);
-            taskMgr.unregisterTask(this::preContinuousTask, TrcTaskMgr.TaskType.PRECONTINUOUS_TASK);
+            stopTaskObj.unregisterTask(TrcTaskMgr.TaskType.STOP_TASK);
+            preContinuousTaskObj.unregisterTask(TrcTaskMgr.TaskType.PRECONTINUOUS_TASK);
         }
 
         if (debugEnabled)

@@ -54,12 +54,13 @@ public class TrcAnalogTrigger<D>
 
     }   //interface TriggerHandler
 
-    private String instanceName;
-    private TrcSensor<D> sensor;
-    private int index;
-    private D dataType;
+    private final String instanceName;
+    private final TrcSensor<D> sensor;
+    private final int index;
+    private final D dataType;
+    private final TriggerHandler triggerHandler;
+    private final TrcTaskMgr.TaskObject preContinuousTaskObj;
     private double[] thresholds;
-    private TriggerHandler triggerHandler;
     private boolean enabled = false;
     private int zone = -1;
     private double value = 0.0;
@@ -75,8 +76,8 @@ public class TrcAnalogTrigger<D>
      * @param triggerHandler specifies the object to handle the trigger event.
      */
     public TrcAnalogTrigger(
-            final String instanceName, TrcSensor<D> sensor, int index, D dataType, final double[] triggerPoints,
-            TriggerHandler triggerHandler)
+        final String instanceName, final TrcSensor<D> sensor, final int index, final D dataType,
+        final double[] triggerPoints, final TriggerHandler triggerHandler)
     {
         if (debugEnabled)
         {
@@ -94,6 +95,8 @@ public class TrcAnalogTrigger<D>
         this.index = index;
         this.dataType = dataType;
         this.triggerHandler = triggerHandler;
+        preContinuousTaskObj = TrcTaskMgr.getInstance().createTask(
+            instanceName + ".preContinuous", this::preContinuousTask);
     }   //TrcAnalogTrigger
 
     /**
@@ -148,27 +151,30 @@ public class TrcAnalogTrigger<D>
      *
      * @param enabled specifies true to enable, false to disable.
      */
-    public void setEnabled(boolean enabled)
+    public void setTaskEnabled(boolean enabled)
     {
-        final String funcName = "setEnabled";
+        final String funcName = "setTaskEnabled";
 
         if (debugEnabled)
         {
-            dbgTrace.traceEnter(funcName, TrcDbgTrace.TraceLevel.FUNC, "enabled=%s", Boolean.toString(enabled));
-            dbgTrace.traceExit(funcName, TrcDbgTrace.TraceLevel.FUNC);
+            dbgTrace.traceEnter(funcName, TrcDbgTrace.TraceLevel.FUNC, "enabled=%b", enabled);
         }
 
         this.enabled = enabled;
         if (enabled)
         {
-            TrcTaskMgr.getInstance().registerTask(
-                instanceName, this::preContinuousTask, TrcTaskMgr.TaskType.PRECONTINUOUS_TASK);
+            preContinuousTaskObj.registerTask(TrcTaskMgr.TaskType.PRECONTINUOUS_TASK);
         }
         else
         {
-            TrcTaskMgr.getInstance().unregisterTask(this::preContinuousTask, TrcTaskMgr.TaskType.PRECONTINUOUS_TASK);
+            preContinuousTaskObj.unregisterTask(TrcTaskMgr.TaskType.PRECONTINUOUS_TASK);
         }
-    }   //setEnabled
+
+        if (debugEnabled)
+        {
+            dbgTrace.traceExit(funcName, TrcDbgTrace.TraceLevel.FUNC);
+        }
+    }   //setTaskEnabled
 
     /**
      * This method checks if the task is enabled.

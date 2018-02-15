@@ -205,7 +205,7 @@ public abstract class TrcAccelerometer extends TrcSensor<TrcAccelerometer.DataTy
         //
         if (dataIntegrator != null)
         {
-            dataIntegrator.setEnabled(enabled);
+            dataIntegrator.setTaskEnabled(enabled);
         }
     }   //setEnabled
 

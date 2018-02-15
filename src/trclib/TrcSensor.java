@@ -303,6 +303,7 @@ public abstract class TrcSensor<D>
     public SensorData<Double> getProcessedData(int index, D dataType)
     {
         final String funcName = "getProcessedData";
+        @SuppressWarnings("unchecked")
         SensorData<Double> data = (SensorData<Double>)getRawData(index, dataType);
         double value = (double)data.value;
 

@@ -28,9 +28,7 @@ import org.opencv.core.Rect;
 
 import edu.wpi.first.wpilibj.I2C;
 import edu.wpi.first.wpilibj.SPI;
-import edu.wpi.first.wpilibj.SerialPort;
 import frclib.FrcPixyCam;
-import frclib.FrcPneumatic;
 import trclib.TrcPixyCam.ObjectBlock;
 
 public class PixyVision
@@ -83,8 +81,8 @@ public class PixyVision
     private Robot robot;
     private int signature;
     private Orientation orientation;
-    private FrcPneumatic targetFoundLED = null;
-    private FrcPneumatic targetAlignedLED = null;
+//    private FrcPneumatic targetFoundLED = null;
+//    private FrcPneumatic targetAlignedLED = null;
 
     private void commonInit(Robot robot, int signature, int brightness, Orientation orientation)
     {
@@ -92,8 +90,8 @@ public class PixyVision
         this.signature = signature;
         this.orientation = orientation;
         pixyCamera.setBrightness((byte)brightness);
-        targetFoundLED = new FrcPneumatic("TargetFoundLED", RobotInfo.CANID_PCM1, RobotInfo.SOL_TARGET_FOUND_LED);
-        targetAlignedLED = new FrcPneumatic("TargetAlignedLED", RobotInfo.CANID_PCM1, RobotInfo.SOL_TARGET_ALIGNED_LED);
+//        targetFoundLED = new FrcPneumatic("TargetFoundLED", RobotInfo.CANID_PCM1, RobotInfo.SOL_TARGET_FOUND_LED);
+//        targetAlignedLED = new FrcPneumatic("TargetAlignedLED", RobotInfo.CANID_PCM1, RobotInfo.SOL_TARGET_ALIGNED_LED);
     }   //commonInit
 
     public PixyVision(
@@ -109,15 +107,6 @@ public class PixyVision
         I2C.Port port, int i2cAddress)
     {
         pixyCamera = new FrcPixyCam(instanceName, port, i2cAddress);
-        commonInit(robot, signature, brightness, orientation);
-    }   //PixyVision
-
-    public PixyVision(
-        final String instanceName, Robot robot, int signature, int brightness, Orientation orientation,
-        SerialPort.Port port)
-    {
-        pixyCamera = new FrcPixyCam(instanceName, port,
-            RobotInfo.PIXY_BAUD_RATE, RobotInfo.PIXY_DATA_BITS, RobotInfo.PIXY_PARITY, RobotInfo.PIXY_STOP_BITS);
         commonInit(robot, signature, brightness, orientation);
     }   //PixyVision
 
@@ -312,15 +301,15 @@ public class PixyVision
             }
         }
 
-        if (targetFoundLED != null)
-        {
-            targetFoundLED.setState(targetInfo != null);
-        }
-
-        if (targetAlignedLED != null)
-        {
-            targetAlignedLED.setState(targetInfo != null && Math.abs(targetInfo.angle) <= 2.0);
-        }
+//        if (targetFoundLED != null)
+//        {
+//            targetFoundLED.setState(targetInfo != null);
+//        }
+//
+//        if (targetAlignedLED != null)
+//        {
+//            targetAlignedLED.setState(targetInfo != null && Math.abs(targetInfo.angle) <= 2.0);
+//        }
 
         return targetInfo;
     }   //getTargetInfo

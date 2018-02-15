@@ -36,7 +36,7 @@ public class CmdAutoCubePickup implements TrcRobot.RobotCommand
     }
 
     private Robot robot;
-    private TrcEvent event, onFinishedEvent;
+    private TrcEvent event;
     private TrcStateMachine<State> sm;
     private double startX, startY;
 
@@ -64,20 +64,11 @@ public class CmdAutoCubePickup implements TrcRobot.RobotCommand
         return new double[] { changeX, changeY };
     }
 
-    public void start()
-    {
-        start(null);
-    }
-
     /**
      * Start this task, and signal onFinishedEvent when done
-     * 
-     * @param onFinishedEvent
-     *            TrcEvent to signal when finished
      */
-    public void start(TrcEvent onFinishedEvent)
+    public void start()
     {
-        this.onFinishedEvent = onFinishedEvent;
         startX = robot.driveBase.getXPosition();
         startY = robot.driveBase.getYPosition();
         sm.start(State.START);
@@ -123,7 +114,8 @@ public class CmdAutoCubePickup implements TrcRobot.RobotCommand
 
                 case DRIVE:
                     // Go forward at 60% power facing the cube
-                    robot.visionPidDrive.driveMaintainHeading(0.0, RobotInfo.AUTO_PICKUP_MOVE_POWER, 0.0);
+                    robot.visionPidDrive.driveMaintainHeading(
+                        0.0, RobotInfo.AUTO_PICKUP_MOVE_POWER, robot.driveBase.getHeading());
                     robot.cubePickup.grabCube(0.5, event);
 
                     sm.waitForSingleEvent(event, State.PICKUP);
@@ -138,10 +130,6 @@ public class CmdAutoCubePickup implements TrcRobot.RobotCommand
                 case DONE:
                 default:
                     done = true;
-                    if (onFinishedEvent != null)
-                    {
-                        onFinishedEvent.set(true);
-                    }
                     break;
             }
             robot.traceStateInfo(elapsedTime, state.toString());

@@ -1,13 +1,10 @@
 package team492;
 
 import team492.PixyVision.TargetInfo;
-import trclib.TrcEvent;
-import trclib.TrcRobot.RunMode;
+import trclib.TrcRobot;
 import trclib.TrcStateMachine;
-import trclib.TrcTaskMgr;
-import trclib.TrcTaskMgr.TaskType;
 
-public class CmdStrafeUntilCube
+public class CmdStrafeUntilCube implements TrcRobot.RobotCommand
 {
     private static final String moduleName = "CmdStrafeUntilCube";
 
@@ -18,7 +15,6 @@ public class CmdStrafeUntilCube
 
     private Robot robot;
     private TrcStateMachine<State> sm;
-    private TrcEvent onFinishedEvent;
     private StopTrigger stopTrigger;
     private boolean strafeRight;
     private double startTime;
@@ -31,17 +27,6 @@ public class CmdStrafeUntilCube
     }
 
     /**
-     * Start the task strafing in the specified direction.
-     * 
-     * @param strafeRight
-     *            If true, strafe right. If false, strafe left.
-     */
-    public void start(boolean strafeRight)
-    {
-        start(strafeRight, null);
-    }
-
-    /**
      * Start the task strafing in the specified direction. Signal event when
      * done.
      * 
@@ -50,24 +35,21 @@ public class CmdStrafeUntilCube
      * @param onFinishedEvent
      *            When cube is in sight near the center, signal this event
      */
-    public void start(boolean strafeRight, TrcEvent onFinishedEvent)
+    public void start(boolean strafeRight)
     {
-        start(strafeRight, onFinishedEvent, this::shouldStop);
+        start(strafeRight, this::shouldStop);
     }
 
     /**
      * 
      * @param strafeRight
-     * @param onFinishedEvent
      * @param stopTrigger
      *            Should return true when this should stop
      */
-    public void start(boolean strafeRight, TrcEvent onFinishedEvent, StopTrigger stopTrigger)
+    public void start(boolean strafeRight, StopTrigger stopTrigger)
     {
         this.strafeRight = strafeRight;
-        this.onFinishedEvent = onFinishedEvent;
         sm.start(State.START_STRAFE);
-        setEnabled(true);
 
         startTime = Robot.getModeElapsedTime();
         startX = robot.driveBase.getXPosition();
@@ -89,7 +71,6 @@ public class CmdStrafeUntilCube
     {
         robot.pidDrive.cancel();
         sm.stop();
-        setEnabled(false);
     }
 
     /**
@@ -132,20 +113,13 @@ public class CmdStrafeUntilCube
         return robot.driveBase.getYPosition() - startY;
     }
 
-    private void setEnabled(boolean enabled)
+    @Override
+    public boolean cmdPeriodic(double elapsedTime)
     {
-        if (enabled)
-        {
-            TrcTaskMgr.getInstance().registerTask(moduleName, this::postContinuousTask, TaskType.POSTCONTINUOUS_TASK);
-        }
-        else
-        {
-            TrcTaskMgr.getInstance().unregisterTask(this::postContinuousTask, TaskType.POSTCONTINUOUS_TASK);
-        }
-    }
+        boolean done = !sm.isEnabled();
 
-    public void postContinuousTask(TrcTaskMgr.TaskType taskType, RunMode runMode)
-    {
+        if (done) return true;
+
         State state = sm.getState();
         robot.dashboard.displayPrintf(1, "State: %s", state != null ? state.toString() : "Disabled");
 
@@ -160,7 +134,7 @@ public class CmdStrafeUntilCube
             {
                 case START_STRAFE:
                     double xPower = RobotInfo.FIND_CUBE_STRAFE_POWER * (strafeRight ? 1 : -1);
-                    robot.pidDrive.driveMaintainHeading(xPower, 0.0, robot.targetHeading);
+                    robot.pidDrive.driveMaintainHeading(xPower, 0.0, robot.driveBase.getHeading());
                     sm.setState(State.CHECK_FOR_CUBE);
                     break;
                 case CHECK_FOR_CUBE:
@@ -172,14 +146,12 @@ public class CmdStrafeUntilCube
                     break;
                 case DONE:
                     robot.pidDrive.cancel();
-                    if (onFinishedEvent != null)
-                    {
-                        onFinishedEvent.set(true);
-                    }
+                    done = true;
                     break;
             }
             robot.traceStateInfo(Robot.getModeElapsedTime(), state.toString());
         }
+        return done;
     }
 
     public interface StopTrigger

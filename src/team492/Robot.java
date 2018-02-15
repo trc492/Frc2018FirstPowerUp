@@ -220,14 +220,14 @@ public class Robot extends FrcRobotBase
         if (USE_USB_CAM)
         {
             UsbCamera cam0 = CameraServer.getInstance().startAutomaticCapture("cam0", 0);
-            cam0.setResolution(RobotInfo.CAM_WIDTH, RobotInfo.CAM_HEIGHT);
-            cam0.setFPS(RobotInfo.CAM_FRAME_RATE);
-            cam0.setBrightness(RobotInfo.CAM_BRIGHTNESS);
+            cam0.setResolution(RobotInfo.USBCAM_WIDTH, RobotInfo.USBCAM_HEIGHT);
+            cam0.setFPS(RobotInfo.USBCAM_FRAME_RATE);
+            cam0.setBrightness(RobotInfo.USBCAM_BRIGHTNESS);
             if (USE_GRIP_VISION)
             {
                 CvSink videoIn = CameraServer.getInstance().getVideo(cam0);
                 CvSource videoOut = CameraServer.getInstance().putVideo(
-                    "VisionTarget", RobotInfo.CAM_WIDTH, RobotInfo.CAM_HEIGHT);
+                    "VisionTarget", RobotInfo.USBCAM_WIDTH, RobotInfo.USBCAM_HEIGHT);
 
                 gripVision = new GripVision("GripVision", videoIn, videoOut);
             }
@@ -243,7 +243,7 @@ public class Robot extends FrcRobotBase
         {
         	pixy = new PixyVision(
                     "PixyCam", this, RobotInfo.PIXY_POWER_CUBE_SIGNATURE, RobotInfo.PIXY_BRIGHTNESS,
-                    RobotInfo.PIXY_ORIENTATION, I2C.Port.kMXP, RobotInfo.PIXYCAM_FRONT_I2C_ADDRESS);
+                    RobotInfo.PIXY_ORIENTATION, I2C.Port.kMXP, RobotInfo.PIXYCAM_I2C_ADDRESS);
         }
 
         //
@@ -355,11 +355,11 @@ public class Robot extends FrcRobotBase
         //
         // Initialize pneumatic flippers.
         //
-        leftFlipper = new FrcPneumatic("leftFlipper", RobotInfo.LEFT_FLIPPER_CANID, 
-            RobotInfo.LEFT_FLIPPER_EXTEND, RobotInfo.LEFT_FLIPPER_RETRACT);
-        rightFlipper =  new FrcPneumatic("rightFlipper", RobotInfo.RIGHT_FLIPPER_CANID, 
-            RobotInfo.RIGHT_FLIPPER_EXTEND, RobotInfo.RIGHT_FLIPPER_RETRACT);
-        
+        leftFlipper = new FrcPneumatic("leftFlipper", RobotInfo.CANID_PCM1, 
+            RobotInfo.SOL_LEFT_FLIPPER_EXTEND, RobotInfo.SOL_LEFT_FLIPPER_RETRACT);
+        rightFlipper =  new FrcPneumatic("rightFlipper", RobotInfo.CANID_PCM1, 
+            RobotInfo.SOL_RIGHT_FLIPPER_EXTEND, RobotInfo.SOL_RIGHT_FLIPPER_RETRACT);
+
         //
         // Create other hardware subsystems.
         //
@@ -389,7 +389,7 @@ public class Robot extends FrcRobotBase
         location = ds.getLocation();
         gameSpecificMessage = ds.getGameSpecificMessage();
 
-        battery.setEnabled(true);
+        battery.setTaskEnabled(true);
         driveTime = HalDashboard.getNumber("DriveTime", 5.0);
         drivePower = HalDashboard.getNumber("DrivePower", 0.2);
         driveDistance = HalDashboard.getNumber("DriveDistance", 6.0);
@@ -406,7 +406,7 @@ public class Robot extends FrcRobotBase
     public void robotStopMode()
     {
         driveBase.stop();
-        battery.setEnabled(false);
+        battery.setTaskEnabled(false);
     }   //robotStopMode
 
     public void setVisionEnabled(boolean enabled)

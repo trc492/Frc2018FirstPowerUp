@@ -63,9 +63,9 @@ public abstract class TrcGameController
 
     private static final double DEF_DEADBAND_THRESHOLD = 0.15;
 
-    private String instanceName;
-    private double deadbandThreshold = DEF_DEADBAND_THRESHOLD;
-    private ButtonHandler buttonHandler;
+    private final String instanceName;
+    private final double deadbandThreshold;
+    private final ButtonHandler buttonHandler;
     private int prevButtons;
     private int exponent = 2;
 
@@ -77,7 +77,8 @@ public abstract class TrcGameController
      * @param buttonHandler specifies the object that will handle the button events. If none provided, it is set to
      *                      null.
      */
-    public TrcGameController(final String instanceName, double deadbandThreshold, ButtonHandler buttonHandler)
+    public TrcGameController(
+        final String instanceName, final double deadbandThreshold, final ButtonHandler buttonHandler)
     {
         if (debugEnabled)
         {
@@ -91,9 +92,22 @@ public abstract class TrcGameController
 
         if (buttonHandler != null)
         {
-            TrcTaskMgr.getInstance().registerTask(
-                instanceName, this::prePeriodicTask, TrcTaskMgr.TaskType.PREPERIODIC_TASK);
+            TrcTaskMgr.TaskObject prePeriodicTaskObj = TrcTaskMgr.getInstance().createTask(
+                instanceName + ".prePeriodic", this::prePeriodicTask);
+            prePeriodicTaskObj.registerTask(TrcTaskMgr.TaskType.PREPERIODIC_TASK);
         }
+    }   //TrcGameController
+
+    /**
+     * Constructor: Create an instance of the object.
+     *
+     * @param instanceName specifies the instance name.
+     * @param buttonHandler specifies the object that will handle the button events. If none provided, it is set to
+     *                      null.
+     */
+    public TrcGameController(final String instanceName, final ButtonHandler buttonHandler)
+    {
+        this(instanceName, DEF_DEADBAND_THRESHOLD, buttonHandler);
     }   //TrcGameController
 
     /**

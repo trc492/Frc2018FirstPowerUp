@@ -22,6 +22,8 @@
 
 package trclib;
 
+import trclib.TrcTaskMgr.TaskType;
+
 /**
  * This class implements a PID controlled robot drive. A PID controlled robot drive consist of a robot drive base
  * and three PID controllers, one for the X direction, one for the Y direction and one for turn. If the robot drive
@@ -73,10 +75,12 @@ public class TrcPidDrive
     private static final double DEF_BEEP_DURATION       = 0.2;          //in seconds
 
     private final String instanceName;
-    private TrcDriveBase driveBase;
-    private TrcPidController xPidCtrl;
-    private TrcPidController yPidCtrl;
-    private TrcPidController turnPidCtrl;
+    private final TrcDriveBase driveBase;
+    private final TrcPidController xPidCtrl;
+    private final TrcPidController yPidCtrl;
+    private final TrcPidController turnPidCtrl;
+    private final TrcTaskMgr.TaskObject stopTaskObj;
+    private final TrcTaskMgr.TaskObject postContinuousTaskObj;
     private StuckWheelHandler stuckWheelHandler = null;
     private double stuckTimeout = 0.0;
     private TurnMode turnMode = TurnMode.IN_PLACE;
@@ -104,8 +108,8 @@ public class TrcPidDrive
      * @param turnPidCtrl specifies the PID controller for turn.
      */
     public TrcPidDrive(
-            final String instanceName, TrcDriveBase driveBase,
-            TrcPidController xPidCtrl, TrcPidController yPidCtrl, TrcPidController turnPidCtrl)
+        final String instanceName, final TrcDriveBase driveBase,
+        final TrcPidController xPidCtrl, final TrcPidController yPidCtrl, final TrcPidController turnPidCtrl)
     {
         if (debugEnabled)
         {
@@ -117,6 +121,9 @@ public class TrcPidDrive
         this.xPidCtrl = xPidCtrl;
         this.yPidCtrl = yPidCtrl;
         this.turnPidCtrl = turnPidCtrl;
+        TrcTaskMgr taskMgr = TrcTaskMgr.getInstance();
+        stopTaskObj = taskMgr.createTask(instanceName + ".stop", this::stopTask);
+        postContinuousTaskObj = taskMgr.createTask(instanceName + ".postContinuous", this::postContinuousTask);
     }   //TrcPidDrive
 
     /**
@@ -592,19 +599,18 @@ public class TrcPidDrive
 
         if (debugEnabled)
         {
-            dbgTrace.traceEnter(funcName, TrcDbgTrace.TraceLevel.FUNC, "enabled=%s", Boolean.toString(enabled));
+            dbgTrace.traceEnter(funcName, TrcDbgTrace.TraceLevel.FUNC, "enabled=%b", enabled);
         }
 
-        TrcTaskMgr taskMgr = TrcTaskMgr.getInstance();
         if (enabled)
         {
-            taskMgr.registerTask(instanceName, this::stopTask, TrcTaskMgr.TaskType.STOP_TASK);
-            taskMgr.registerTask(instanceName, this::postContinuousTask, TrcTaskMgr.TaskType.POSTCONTINUOUS_TASK);
+            stopTaskObj.registerTask(TaskType.STOP_TASK);
+            postContinuousTaskObj.registerTask(TaskType.POSTCONTINUOUS_TASK);
         }
         else
         {
-            taskMgr.unregisterTask(this::stopTask, TrcTaskMgr.TaskType.STOP_TASK);
-            taskMgr.unregisterTask(this::postContinuousTask, TrcTaskMgr.TaskType.POSTCONTINUOUS_TASK);
+            stopTaskObj.unregisterTask(TaskType.STOP_TASK);
+            postContinuousTaskObj.unregisterTask(TaskType.POSTCONTINUOUS_TASK);
         }
         active = enabled;
 

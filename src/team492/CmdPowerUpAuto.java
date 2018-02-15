@@ -76,7 +76,6 @@ class CmdPowerUpAuto implements TrcRobot.RobotCommand
     private int startLocation;
     private double forwardDistance;
     private int targetType;
-    private CmdAutoCubePickup cmdAutoCubePickup;
     private double elevatorTargetHeight;
     private boolean sideApproach;
     private int afterAction;
@@ -180,15 +179,16 @@ class CmdPowerUpAuto implements TrcRobot.RobotCommand
                     //
                     // pick up cube from floor
                     //
-                	
-                	cmdAutoCubePickup.start(event);
-                    sm.waitForSingleEvent(event, State.DO_DELAY);
+                    if (robot.cmdAutoCubePickup.cmdPeriodic(elapsedTime))
+                    {
+                        sm.setState(State.START_RAISING_ELEVATOR);
+                    }
                     break;
                     
                 case START_RAISING_ELEVATOR:
-                	robot.elevator.setPosition(RobotInfo.FIRST_ELEVATOR_HEIGHT, event, 0.0);
-                	sm.waitForSingleEvent(event, State.DO_DELAY);
-                	break;
+                    robot.elevator.setPosition(RobotInfo.FIRST_ELEVATOR_HEIGHT, event, 0.0);
+                    sm.waitForSingleEvent(event, State.DO_DELAY);
+                    break;
 
                 case DO_DELAY:
                     //
@@ -390,22 +390,24 @@ class CmdPowerUpAuto implements TrcRobot.RobotCommand
                     break;
                     
                 case STRAFE_TO_SECOND_CUBE:
-                	yDistance = 0;
-                	if(rightScale)
-                	{
-                		xDistance = RobotInfo.STRAFE_TO_SECOND_CUBE_DISTANCE;
-                	}
-                	else
-                	{
-                  		xDistance = -RobotInfo.STRAFE_TO_SECOND_CUBE_DISTANCE;
-                	}
-                	robot.pidDrive.setTarget(xDistance, yDistance, robot.targetHeading, false, event);
-                	sm.waitForSingleEvent(event, State.PICKUP_SECOND_CUBE);
-                	break;
-                	
+                    yDistance = 0;
+                    if(rightScale)
+                    {
+                        xDistance = RobotInfo.STRAFE_TO_SECOND_CUBE_DISTANCE;
+                    }
+                    else
+                    {
+                        xDistance = -RobotInfo.STRAFE_TO_SECOND_CUBE_DISTANCE;
+                    }
+                    robot.pidDrive.setTarget(xDistance, yDistance, robot.targetHeading, false, event);
+                    sm.waitForSingleEvent(event, State.PICKUP_SECOND_CUBE);
+                    break;
+
                 case PICKUP_SECOND_CUBE:
-                	cmdAutoCubePickup.start(event);
-                    sm.waitForSingleEvent(event, State.BACKUP_WITH_SECOND_CUBE);
+                    if (robot.cmdAutoCubePickup.cmdPeriodic(elapsedTime))
+                    {
+                        sm.setState(State.BACKUP_WITH_SECOND_CUBE);
+                    }
                 	break;
                 	
                 case BACKUP_WITH_SECOND_CUBE:

@@ -36,6 +36,7 @@ public class TrcTimer
     private TrcDbgTrace dbgTrace = null;
 
     private final String instanceName;
+    private final TrcTaskMgr.TaskObject preContinuousTaskObj;
     private double expiredTime;
     private boolean enabled;
     private boolean expired;
@@ -55,11 +56,13 @@ public class TrcTimer
         }
 
         this.instanceName = instanceName;
-        this.expiredTime = 0.0;
-        this.enabled = false;
-        this.expired = false;
-        this.canceled = false;
-        this.notifyEvent = null;
+        preContinuousTaskObj = TrcTaskMgr.getInstance().createTask(
+            instanceName + ".preContinuous", this::preContinuousTask);
+        expiredTime = 0.0;
+        enabled = false;
+        expired = false;
+        canceled = false;
+        notifyEvent = null;
     }   //TrcTimer
 
     /**
@@ -179,17 +182,16 @@ public class TrcTimer
 
         if (debugEnabled)
         {
-            dbgTrace.traceEnter(funcName, TrcDbgTrace.TraceLevel.FUNC, "enabled=%s", Boolean.toString(enabled));
+            dbgTrace.traceEnter(funcName, TrcDbgTrace.TraceLevel.FUNC, "enabled=%b", enabled);
         }
 
         if (enabled)
         {
-            TrcTaskMgr.getInstance().registerTask(
-                instanceName, this::preContinuousTask, TrcTaskMgr.TaskType.PRECONTINUOUS_TASK);
+            preContinuousTaskObj.registerTask(TrcTaskMgr.TaskType.PRECONTINUOUS_TASK);
         }
         else
         {
-            TrcTaskMgr.getInstance().unregisterTask(this::preContinuousTask, TrcTaskMgr.TaskType.PRECONTINUOUS_TASK);
+            preContinuousTaskObj.unregisterTask(TrcTaskMgr.TaskType.PRECONTINUOUS_TASK);
         }
         this.enabled = enabled;
 

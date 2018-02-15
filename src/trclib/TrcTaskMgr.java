@@ -129,7 +129,7 @@ public class TrcTaskMgr
      * multi-tasking task. The created task objects will be entered into an array list of task objects to be
      * scheduled by the scheduler.
      */
-    private static class TaskObject
+    public static class TaskObject
     {
         private HashSet<TaskType> taskTypes;
         private final String taskName;
@@ -150,7 +150,7 @@ public class TrcTaskMgr
          * @param taskName specifies the instance name of the task.
          * @param task specifies the object that implements the TrcTaskMgr.Task interface.
          */
-        public TaskObject(final String taskName, Task task)
+        private TaskObject(final String taskName, Task task)
         {
             taskTypes = new HashSet<>();
             this.taskName = taskName;
@@ -166,15 +166,25 @@ public class TrcTaskMgr
         }   //TaskObject
 
         /**
+         * This method returns the instance name of the task.
+         *
+         * @return instance name of the class.
+         */
+        public String toString()
+        {
+            return taskName;
+        }   //toString
+
+        /**
          * This method adds the given task type to the task object.
          *
          * @param type specifies the task type.
          * @return true if successful, false if the task with that task type is already registered in the task list.
          */
-        public boolean addTaskType(TaskType type)
+        public boolean registerTask(TaskType type)
         {
             return taskTypes.add(type);
-        }   //addTaskType
+        }   //registerTask
 
         /**
          * This method removes the given task type from the task object.
@@ -182,10 +192,10 @@ public class TrcTaskMgr
          * @param type specifies the task type.
          * @return true if successful, false if the task with that type is not found the task list.
          */
-        public boolean removeTaskType(TaskType type)
+        public boolean unregisterTask(TaskType type)
         {
             return taskTypes.remove(type);
-        }   //removeTaskType
+        }   //unregisterTask
 
         /**
          * This method checks if the given task is associated with this task object.
@@ -193,9 +203,9 @@ public class TrcTaskMgr
          * @param task specifies the task to be checked against.
          * @return true if it is the same task, false otherwise.
          */
-        public boolean isSame(Task task)
+        public boolean isSame(TaskObject taskObj)
         {
-            return task == this.task;
+            return taskObj == this;
         }   //isSame
 
         /**
@@ -218,16 +228,6 @@ public class TrcTaskMgr
         {
             return taskTypes.isEmpty();
         }   //hasNoType
-
-        /**
-         * This method returns the instance name of the task.
-         *
-         * @return instance name of the class.
-         */
-        public String toString()
-        {
-            return taskName;
-        }   //toString
 
         /**
          * This method returns the class object that was associated with this task object.
@@ -268,75 +268,101 @@ public class TrcTaskMgr
         return instance;
     }   //getInstance
 
-    /**
-     * This method registers a class object as a cooperative multi-tasking task with the given task type.
-     *
-     * @param taskName specifies the instance name of the task.
-     * @param task specifies the class object associated with the task.
-     * @param type specifies the task type.
-     */
-    public void registerTask(final String taskName, Task task, TaskType type)
+    public TaskObject createTask(final String taskName, Task task)
     {
-        final String funcName = "registerTask";
+        final String funcName = "createTask";
+        TaskObject taskObj = null;
 
         if (debugEnabled)
         {
-            dbgTrace.traceEnter(funcName, TrcDbgTrace.TraceLevel.API, "task=%s,type=%s", taskName, type.toString());
-            dbgTrace.traceExit(funcName, TrcDbgTrace.TraceLevel.API);
+            dbgTrace.traceEnter(funcName, TrcDbgTrace.TraceLevel.API, "taskName=%s", taskName);
         }
 
-        //
-        // Check if the task object already exist. If not, create a new task object and add it to the task object list.
-        //
-        TaskObject taskObj = findTask(task);
-        if (taskObj == null)
+        taskObj = new TaskObject(taskName, task);
+        taskList.add(taskObj);
+
+        if (debugEnabled)
         {
-            taskObj = new TaskObject(taskName, task);
-            taskList.add(taskObj);
+            dbgTrace.traceExit(funcName, TrcDbgTrace.TraceLevel.API, "=%s", taskObj);
         }
 
-        //
-        // Register the task type with the task object.
-        //
-        taskObj.addTaskType(type);
-    }   //registerTask
+        return taskObj;
+    }   //createTask
 
-    /**
-     * This method unregisters a task type from a task object associated with the given task class.
-     *
-     * @param task specifies the class objhect associated with the task.
-     * @param type specifies the task type.
-     */
-    public void unregisterTask(Task task, TaskType type)
+    public boolean removeTask(TaskObject taskObj)
     {
-        final String funcName = "unregisterTask";
-        TaskObject taskObj = findTask(task);
+        return taskList.remove(taskObj);
+    }   //removeTask
 
-        if (debugEnabled)
-        {
-            dbgTrace.traceEnter(funcName, TrcDbgTrace.TraceLevel.API,
-                                "task=%s,type=%s", taskObj != null ? taskObj.toString() : "unknown", type.toString());
-        }
-
-        //
-        // If we found the task object associated with the given task, unregister the task type from it and if the
-        // task object has no more task type, remove it from the task list.
-        //
-        if (taskObj != null)
-        {
-            taskObj.removeTaskType(type);
-            if (taskObj.hasNoType())
-            {
-                taskList.remove(taskObj);
-            }
-        }
-
-        if (debugEnabled)
-        {
-            dbgTrace.traceExit(funcName, TrcDbgTrace.TraceLevel.API);
-        }
-    }   //unregisterTask
-
+//    /**
+//     * This method registers a class object as a cooperative multi-tasking task with the given task type.
+//     *
+//     * @param taskName specifies the instance name of the task.
+//     * @param task specifies the class object associated with the task.
+//     * @param type specifies the task type.
+//     */
+//    public void registerTask(final String taskName, Task task, TaskType type)
+//    {
+//        final String funcName = "registerTask";
+//
+//        if (debugEnabled)
+//        {
+//            dbgTrace.traceEnter(funcName, TrcDbgTrace.TraceLevel.API, "task=%s,type=%s", taskName, type.toString());
+//            dbgTrace.traceExit(funcName, TrcDbgTrace.TraceLevel.API);
+//        }
+//
+//        //
+//        // Check if the task object already exist. If not, create a new task object and add it to the task object list.
+//        //
+//        TaskObject taskObj = findTask(task);
+//        if (taskObj == null)
+//        {
+//            taskObj = new TaskObject(taskName, task);
+//            taskList.add(taskObj);
+//        }
+//
+//        //
+//        // Register the task type with the task object.
+//        //
+//        taskObj.addTaskType(type);
+//    }   //registerTask
+//
+//    /**
+//     * This method unregisters a task type from a task object associated with the given task class.
+//     *
+//     * @param task specifies the class objhect associated with the task.
+//     * @param type specifies the task type.
+//     */
+//    public void unregisterTask(Task task, TaskType type)
+//    {
+//        final String funcName = "unregisterTask";
+//        TaskObject taskObj = findTask(task);
+//
+//        if (debugEnabled)
+//        {
+//            dbgTrace.traceEnter(funcName, TrcDbgTrace.TraceLevel.API,
+//                                "task=%s,type=%s", taskObj != null ? taskObj.toString() : "unknown", type.toString());
+//        }
+//
+//        //
+//        // If we found the task object associated with the given task, unregister the task type from it and if the
+//        // task object has no more task type, remove it from the task list.
+//        //
+//        if (taskObj != null)
+//        {
+//            taskObj.removeTaskType(type);
+//            if (taskObj.hasNoType())
+//            {
+//                taskList.remove(taskObj);
+//            }
+//        }
+//
+//        if (debugEnabled)
+//        {
+//            dbgTrace.traceExit(funcName, TrcDbgTrace.TraceLevel.API);
+//        }
+//    }   //unregisterTask
+//
     /**
      * This method enumerates the task list and calls all the tasks that matches the given task type.
      *
@@ -440,23 +466,23 @@ public class TrcTaskMgr
         }
     }   //printTaskPerformanceMetrics
 
-    /**
-     * This method finds the given task in the task list and return it.
-     *
-     * @param task specifies the task to look for.
-     * @return true if found, false otherwise.
-     */
-    private TaskObject findTask(Task task)
-    {
-        for (int i = 0; i < taskList.size(); i++)
-        {
-            TaskObject taskObj = taskList.get(i);
-            if (taskObj.isSame(task))
-            {
-                return taskObj;
-            }
-        }
-        return null;
-    }   //findTask
-
+//    /**
+//     * This method finds the given task in the task list and return it.
+//     *
+//     * @param task specifies the task to look for.
+//     * @return true if found, false otherwise.
+//     */
+//    private TaskObject findTask(Task task)
+//    {
+//        for (int i = 0; i < taskList.size(); i++)
+//        {
+//            TaskObject taskObj = taskList.get(i);
+//            if (taskObj.isSame(task))
+//            {
+//                return taskObj;
+//            }
+//        }
+//        return null;
+//    }   //findTask
+//
 }   //class TaskMgr

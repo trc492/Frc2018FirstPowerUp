@@ -49,9 +49,10 @@ public class TrcDigitalTrigger
 
     }   //interface TriggerHandler
 
-    private String instanceName;
-    private TrcDigitalInput digitalInput;
-    private TriggerHandler eventHandler;
+    private final String instanceName;
+    private final TrcDigitalInput digitalInput;
+    private final TriggerHandler eventHandler;
+    private final TrcTaskMgr.TaskObject preContinuousTaskObj;
     private boolean prevState = false;
 
     /**
@@ -61,7 +62,8 @@ public class TrcDigitalTrigger
      * @param digitalInput specifies the digital input device.
      * @param eventHandler specifies the object that will be called to handle the digital input device state change.
      */
-    public TrcDigitalTrigger(final String instanceName, TrcDigitalInput digitalInput, TriggerHandler eventHandler)
+    public TrcDigitalTrigger(
+        final String instanceName, final TrcDigitalInput digitalInput, final TriggerHandler eventHandler)
     {
         if (debugEnabled)
         {
@@ -76,6 +78,8 @@ public class TrcDigitalTrigger
         this.instanceName = instanceName;
         this.digitalInput = digitalInput;
         this.eventHandler = eventHandler;
+        preContinuousTaskObj = TrcTaskMgr.getInstance().createTask(
+            instanceName + ".preContinuous", this::preContinuousTask);
     }   //TrcDigitalTrigger
 
     /**
@@ -83,26 +87,29 @@ public class TrcDigitalTrigger
      *
      * @param enabled specifies true to enable the task, false to disable.
      */
-    public void setEnabled(boolean enabled)
+    public void setTaskEnabled(boolean enabled)
     {
-        final String funcName = "setEnabled";
+        final String funcName = "setTaskEnabled";
 
         if (debugEnabled)
         {
-            dbgTrace.traceEnter(funcName, TrcDbgTrace.TraceLevel.FUNC, "enabled=%s", Boolean.toString(enabled));
-            dbgTrace.traceExit(funcName, TrcDbgTrace.TraceLevel.FUNC);
+            dbgTrace.traceEnter(funcName, TrcDbgTrace.TraceLevel.FUNC, "enabled=%b", enabled);
         }
 
-        TrcTaskMgr taskMgr = TrcTaskMgr.getInstance();
         if (enabled)
         {
-            taskMgr.registerTask(instanceName, this::preContinuousTask, TrcTaskMgr.TaskType.PRECONTINUOUS_TASK);
+            preContinuousTaskObj.registerTask(TrcTaskMgr.TaskType.PRECONTINUOUS_TASK);
         }
         else
         {
-            taskMgr.unregisterTask(this::preContinuousTask, TrcTaskMgr.TaskType.PRECONTINUOUS_TASK);
+            preContinuousTaskObj.unregisterTask(TrcTaskMgr.TaskType.PRECONTINUOUS_TASK);
         }
-    }   //setEnabled
+
+        if (debugEnabled)
+        {
+            dbgTrace.traceExit(funcName, TrcDbgTrace.TraceLevel.FUNC);
+        }
+    }   //setTaskEnabled
 
     //
     // Implements TrcTaskMgr.Task

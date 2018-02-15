@@ -83,6 +83,7 @@ public class TrcSensorCalibrator<D>
      * @param numCalSamples specifies the number of calibration sample to take.
      * @param calInterval specifies the interval between each calibration sample in msec.
      */
+    @SuppressWarnings("unchecked")
     public void calibrate(int numCalSamples, long calInterval)
     {
         final String funcName = "calibrate";

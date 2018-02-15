@@ -1,5 +1,5 @@
 {
-  "dividerPosition": 0.13204747774480713,
+  "dividerPosition": 0.13196635120925343,
   "tabPane": [
     {
       "title": "Match Info",
@@ -147,7 +147,7 @@
           },
           "0,12": {
             "size": [
-              16,
+              12,
               2
             ],
             "content": {
@@ -158,7 +158,7 @@
           },
           "0,14": {
             "size": [
-              16,
+              12,
               2
             ],
             "content": {
@@ -244,9 +244,9 @@
               "_title": "SmartDashboard/13"
             }
           },
-          "16,12": {
+          "12,12": {
             "size": [
-              13,
+              12,
               2
             ],
             "content": {
@@ -255,9 +255,9 @@
               "_title": "SmartDashboard/14"
             }
           },
-          "16,14": {
+          "12,14": {
             "size": [
-              13,
+              12,
               2
             ],
             "content": {

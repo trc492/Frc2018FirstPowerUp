@@ -155,9 +155,10 @@ public abstract class TrcRGBLight
     }   //enum State
 
     private final String instanceName;
-    private TrcStateMachine<State> sm;
-    private TrcTimer timer;
-    private TrcEvent timerEvent;
+    private final TrcTaskMgr.TaskObject postContinuousTaskObj;
+    private final TrcStateMachine<State> sm;
+    private final TrcTimer timer;
+    private final TrcEvent timerEvent;
 
     private RGBColor color = RGBColor.RGB_BLACK;
     private double onPeriod = 0.0;
@@ -169,7 +170,7 @@ public abstract class TrcRGBLight
      *
      * @param instanceName specifies the instance name.
      */
-    public TrcRGBLight(String instanceName)
+    public TrcRGBLight(final String instanceName)
     {
         if (debugEnabled)
         {
@@ -177,6 +178,8 @@ public abstract class TrcRGBLight
         }
 
         this.instanceName = instanceName;
+        postContinuousTaskObj = TrcTaskMgr.getInstance().createTask(
+            instanceName + ".postContinuous", this::postContinuousTask);
         sm = new TrcStateMachine<>(moduleName);
         timer = new TrcTimer(moduleName);
         timerEvent = new TrcEvent(moduleName + ".timer");
@@ -203,17 +206,21 @@ public abstract class TrcRGBLight
 
         if (debugEnabled)
         {
-            dbgTrace.traceEnter(funcName, TrcDbgTrace.TraceLevel.FUNC, "enabled=%s", Boolean.toString(enabled));
-            dbgTrace.traceExit(funcName, TrcDbgTrace.TraceLevel.FUNC);
+            dbgTrace.traceEnter(funcName, TrcDbgTrace.TraceLevel.FUNC, "enabled=%b", enabled);
         }
 
         if (enabled)
         {
-            TrcTaskMgr.getInstance().registerTask(moduleName, this::postContinuousTask, TaskType.POSTCONTINUOUS_TASK);
+            postContinuousTaskObj.registerTask(TaskType.POSTCONTINUOUS_TASK);
         }
         else
         {
-            TrcTaskMgr.getInstance().unregisterTask(this::postContinuousTask, TaskType.POSTCONTINUOUS_TASK);
+            postContinuousTaskObj.unregisterTask(TaskType.POSTCONTINUOUS_TASK);
+        }
+
+        if (debugEnabled)
+        {
+            dbgTrace.traceExit(funcName, TrcDbgTrace.TraceLevel.FUNC);
         }
     }   //setTaskEnabled
 

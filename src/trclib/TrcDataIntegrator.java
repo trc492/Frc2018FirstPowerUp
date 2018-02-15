@@ -38,13 +38,14 @@ public class TrcDataIntegrator<D>
     private TrcDbgTrace dbgTrace = null;
 
     private final String instanceName;
-    private TrcSensor<D> sensor;
-    private D dataType;
-    private int numAxes;
-    private TrcSensor.SensorData<Double>[] inputData;
-    private TrcSensor.SensorData<Double>[] integratedData;
-    private TrcSensor.SensorData<Double>[] doubleIntegratedData;
-    private double[] prevTimes;
+    private final TrcSensor<D> sensor;
+    private final D dataType;
+    private final int numAxes;
+    private final TrcTaskMgr.TaskObject preContinuousTaskObj;
+    private final TrcSensor.SensorData<Double>[] inputData;
+    private final TrcSensor.SensorData<Double>[] integratedData;
+    private final TrcSensor.SensorData<Double>[] doubleIntegratedData;
+    private final double[] prevTimes;
 
     /**
      * Constructor: Creates an instance of the object.
@@ -54,7 +55,9 @@ public class TrcDataIntegrator<D>
      * @param dataType specifies the data type to be integrated.
      * @param doubleIntegration specifies true to do double integration, false otherwise.
      */
-    public TrcDataIntegrator(final String instanceName, TrcSensor<D> sensor, D dataType, boolean doubleIntegration)
+    @SuppressWarnings("unchecked")
+    public TrcDataIntegrator(
+        final String instanceName, final TrcSensor<D> sensor, final D dataType, final boolean doubleIntegration)
     {
         if (debugEnabled)
         {
@@ -70,6 +73,8 @@ public class TrcDataIntegrator<D>
         this.sensor = sensor;
         this.dataType = dataType;
         numAxes = sensor.getNumAxes();
+        preContinuousTaskObj = TrcTaskMgr.getInstance().createTask(
+            instanceName + ".preContinuous", this::preContinuousTask);
 
         inputData = new TrcSensor.SensorData[numAxes];
         integratedData = new TrcSensor.SensorData[numAxes];
@@ -115,27 +120,30 @@ public class TrcDataIntegrator<D>
      *
      * @param enabled specifies true for enabling the data processor, disabling it otherwise.
      */
-    public void setEnabled(boolean enabled)
+    public void setTaskEnabled(boolean enabled)
     {
-        final String funcName = "setEnabled";
+        final String funcName = "setTaskEnabled";
 
         if (debugEnabled)
         {
-            dbgTrace.traceEnter(funcName, TrcDbgTrace.TraceLevel.API, "enabled=%s", Boolean.toString(enabled));
-            dbgTrace.traceExit(funcName, TrcDbgTrace.TraceLevel.API);
+            dbgTrace.traceEnter(funcName, TrcDbgTrace.TraceLevel.API, "enabled=%b", enabled);
         }
 
         if (enabled)
         {
             reset();
-            TrcTaskMgr.getInstance().registerTask(
-                instanceName, this::preContinuousTask, TrcTaskMgr.TaskType.PRECONTINUOUS_TASK);
+            preContinuousTaskObj.registerTask(TrcTaskMgr.TaskType.PRECONTINUOUS_TASK);
         }
         else
         {
-            TrcTaskMgr.getInstance().unregisterTask(this::preContinuousTask, TrcTaskMgr.TaskType.PRECONTINUOUS_TASK);
+            preContinuousTaskObj.unregisterTask(TrcTaskMgr.TaskType.PRECONTINUOUS_TASK);
         }
-    }   //setEnabled
+
+        if (debugEnabled)
+        {
+            dbgTrace.traceExit(funcName, TrcDbgTrace.TraceLevel.API);
+        }
+    }   //setTaskEnabled
 
     /**
      * This method resets the indexed integratedData and doubleIntegratedData.

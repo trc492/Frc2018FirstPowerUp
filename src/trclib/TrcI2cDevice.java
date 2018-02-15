@@ -169,9 +169,10 @@ public abstract class TrcI2cDevice
 
     }   //class Request
 
-    private String instanceName;
-    private TrcStateMachine<PortCommandState> portCommandSM;
-    private Queue<Request> requestQueue = new LinkedList<>();
+    private final String instanceName;
+    private final TrcTaskMgr.TaskObject preContinuousTaskObj;
+    private final TrcStateMachine<PortCommandState> portCommandSM;
+    private final Queue<Request> requestQueue = new LinkedList<>();
     private Request currRequest = null;
     private double expiredTime = 0.0;
     private byte[] dataRead = null;
@@ -181,7 +182,7 @@ public abstract class TrcI2cDevice
      *
      * @param instanceName specifies the instance name.
      */
-    public TrcI2cDevice(String instanceName)
+    public TrcI2cDevice(final String instanceName)
     {
         if (debugEnabled)
         {
@@ -189,6 +190,8 @@ public abstract class TrcI2cDevice
         }
 
         this.instanceName = instanceName;
+        preContinuousTaskObj = TrcTaskMgr.getInstance().createTask(
+            instanceName + ".preContinuous", this::preContinuousTask);
         portCommandSM = new TrcStateMachine<>(instanceName);
     }   //TrcI2cDevice
 
@@ -213,20 +216,23 @@ public abstract class TrcI2cDevice
 
         if (debugEnabled)
         {
-            dbgTrace.traceEnter(funcName, TrcDbgTrace.TraceLevel.API, "enabled=%s", Boolean.toString(enabled));
-            dbgTrace.traceExit(funcName, TrcDbgTrace.TraceLevel.API);
+            dbgTrace.traceEnter(funcName, TrcDbgTrace.TraceLevel.API, "enabled=%b", enabled);
         }
 
         if (enabled)
         {
-            TrcTaskMgr.getInstance().registerTask(
-                instanceName, this::preContinuousTask, TrcTaskMgr.TaskType.PRECONTINUOUS_TASK);
+            preContinuousTaskObj.registerTask(TrcTaskMgr.TaskType.PRECONTINUOUS_TASK);
             portCommandSM.start(PortCommandState.START);
         }
         else
         {
             portCommandSM.stop();
-            TrcTaskMgr.getInstance().unregisterTask(this::preContinuousTask, TrcTaskMgr.TaskType.PRECONTINUOUS_TASK);
+            preContinuousTaskObj.unregisterTask(TrcTaskMgr.TaskType.PRECONTINUOUS_TASK);
+        }
+
+        if (debugEnabled)
+        {
+            dbgTrace.traceExit(funcName, TrcDbgTrace.TraceLevel.API);
         }
     }   //setTaskEnabled
 

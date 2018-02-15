@@ -46,6 +46,8 @@ public class TrcEnhancedServo
     private String instanceName;
     private TrcServo servo1 = null;
     private TrcServo servo2 = null;
+    private TrcTaskMgr.TaskObject stopTaskObj;
+    private TrcTaskMgr.TaskObject postContinuousTaskObj;
     private boolean continuousServo = false;
     private boolean servoStepping = false;
     private double targetPosition = 0.0;
@@ -72,9 +74,9 @@ public class TrcEnhancedServo
      * @param upperLimitSwitch specifies the high limit switch object.
      */
     private void commonInit(
-            String instanceName,
-            TrcServo servo1, TrcServo servo2,
-            TrcDigitalInput lowerLimitSwitch, TrcDigitalInput upperLimitSwitch)
+        final String instanceName,
+        final TrcServo servo1, final TrcServo servo2,
+        final TrcDigitalInput lowerLimitSwitch, final TrcDigitalInput upperLimitSwitch)
     {
         if (debugEnabled)
         {
@@ -86,6 +88,9 @@ public class TrcEnhancedServo
         this.servo2 = servo2;
         this.lowerLimitSwitch = lowerLimitSwitch;
         this.upperLimitSwitch = upperLimitSwitch;
+        TrcTaskMgr taskMgr = TrcTaskMgr.getInstance();
+        stopTaskObj = taskMgr.createTask(instanceName + ".stop", this::stopTask);
+        postContinuousTaskObj = taskMgr.createTask(instanceName + ".postContinuous", this::postContinuousTask);
     }   //commonInit
 
     /**
@@ -94,7 +99,7 @@ public class TrcEnhancedServo
      * @param instanceName specifies the instance name.
      * @param servo specifies the physical servo object.
      */
-    public TrcEnhancedServo(String instanceName, TrcServo servo)
+    public TrcEnhancedServo(final String instanceName, final TrcServo servo)
     {
         if (servo == null)
         {
@@ -111,7 +116,7 @@ public class TrcEnhancedServo
      * @param servo1 specifies the first physical servo object.
      * @param servo2 specifies the second physical servo object.
      */
-    public TrcEnhancedServo(String instanceName, TrcServo servo1, TrcServo servo2)
+    public TrcEnhancedServo(final String instanceName, final TrcServo servo1, final TrcServo servo2)
     {
         if (servo1 == null || servo2 == null)
         {
@@ -130,7 +135,8 @@ public class TrcEnhancedServo
      * @param upperLimitSwitch specifies the high limit switch object.
      */
     public TrcEnhancedServo(
-            String instanceName, TrcServo servo, TrcDigitalInput lowerLimitSwitch, TrcDigitalInput upperLimitSwitch)
+        final String instanceName, final TrcServo servo,
+        final TrcDigitalInput lowerLimitSwitch, final TrcDigitalInput upperLimitSwitch)
     {
         if (servo == null)
         {
@@ -168,14 +174,13 @@ public class TrcEnhancedServo
 
         if (enabled && !servoStepping)
         {
-            TrcTaskMgr.getInstance().registerTask(
-                "ServoSteppingTask", this::postContinuousTask, TrcTaskMgr.TaskType.POSTCONTINUOUS_TASK);
-            TrcTaskMgr.getInstance().registerTask("ServoSteppingTask", this::stopTask, TrcTaskMgr.TaskType.STOP_TASK);
+            stopTaskObj.registerTask(TrcTaskMgr.TaskType.STOP_TASK);
+            postContinuousTaskObj.registerTask(TrcTaskMgr.TaskType.POSTCONTINUOUS_TASK);
         }
         else if (!enabled && servoStepping)
         {
-            TrcTaskMgr.getInstance().unregisterTask(this::stopTask, TrcTaskMgr.TaskType.STOP_TASK);
-            TrcTaskMgr.getInstance().unregisterTask(this::postContinuousTask, TrcTaskMgr.TaskType.POSTCONTINUOUS_TASK);
+            stopTaskObj.unregisterTask(TrcTaskMgr.TaskType.STOP_TASK);
+            postContinuousTaskObj.unregisterTask(TrcTaskMgr.TaskType.POSTCONTINUOUS_TASK);
         }
         servoStepping = enabled;
 

@@ -123,9 +123,9 @@ public class FrcJoystick extends Joystick
     private double deadbandThreshold = DEF_DEADBAND_THRESHOLD;
 
     private final String instanceName;
-    private int port;
-    private ButtonHandler buttonHandler;
-    private DriverStation ds;
+    private final int port;
+    private final ButtonHandler buttonHandler;
+    private final DriverStation ds;
     private int prevButtons;
     private int ySign;
 
@@ -137,7 +137,7 @@ public class FrcJoystick extends Joystick
      * @param buttonHandler specifies the object that will handle the button events. If none provided, it is set to
      *        null.
      */
-    public FrcJoystick(final String instanceName, final int port, ButtonHandler buttonHandler)
+    public FrcJoystick(final String instanceName, final int port, final ButtonHandler buttonHandler)
     {
         super(port);
 
@@ -152,8 +152,10 @@ public class FrcJoystick extends Joystick
         ds = DriverStation.getInstance();
         prevButtons = ds.getStickButtons(port);
         ySign = 1;
-        TrcTaskMgr.getInstance().registerTask(
-            instanceName, this::prePeriodicTask, TrcTaskMgr.TaskType.PREPERIODIC_TASK);
+
+        TrcTaskMgr.TaskObject prePeriodicTaskObj = TrcTaskMgr.getInstance().createTask(
+            instanceName + ".prePeriodic", this::prePeriodicTask);
+        prePeriodicTaskObj.registerTask(TrcTaskMgr.TaskType.PREPERIODIC_TASK);
     }   //FrcJoystick
 
     /**
@@ -166,7 +168,7 @@ public class FrcJoystick extends Joystick
      * @param deadbandThreshold specifies the deadband of the analog sticks.
      */
     public FrcJoystick(
-        final String instanceName, final int port, ButtonHandler buttonHandler, final double deadbandThreshold)
+        final String instanceName, final int port, final ButtonHandler buttonHandler, final double deadbandThreshold)
     {
         this(instanceName, port, buttonHandler);
         this.deadbandThreshold = deadbandThreshold;
