@@ -168,6 +168,11 @@ class CmdPowerUpAuto implements TrcRobot.RobotCommand
         robot.dashboard.displayPrintf(1, "State: %s", state != null ? state.toString() : "Disabled");
         
         
+        if(robot.cmdAutoCubePickup.isEnabled())
+        {
+        	robot.cmdAutoCubePickup.cmdPeriodic(elapsedTime);
+        }
+        
         if (sm.isReady())
         {
             state = sm.getState();
@@ -179,10 +184,8 @@ class CmdPowerUpAuto implements TrcRobot.RobotCommand
                     //
                     // pick up cube from floor
                     //
-                    if (robot.cmdAutoCubePickup.cmdPeriodic(elapsedTime))
-                    {
-                        sm.setState(State.START_RAISING_ELEVATOR);
-                    }
+                	robot.cmdAutoCubePickup.start(event);
+                	sm.waitForSingleEvent(event, State.START_RAISING_ELEVATOR);
                     break;
                     
                 case START_RAISING_ELEVATOR:
@@ -404,10 +407,8 @@ class CmdPowerUpAuto implements TrcRobot.RobotCommand
                     break;
 
                 case PICKUP_SECOND_CUBE:
-                    if (robot.cmdAutoCubePickup.cmdPeriodic(elapsedTime))
-                    {
-                        sm.setState(State.BACKUP_WITH_SECOND_CUBE);
-                    }
+                	robot.cmdAutoCubePickup.start(event);
+                	sm.waitForSingleEvent(event, State.BACKUP_WITH_SECOND_CUBE);
                 	break;
                 	
                 case BACKUP_WITH_SECOND_CUBE:
