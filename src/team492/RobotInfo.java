@@ -99,8 +99,8 @@ public class RobotInfo
     //
     public static final int SOL_CUBEPICKUP_ARM_RETRACT          = 0;
     public static final int SOL_CUBEPICKUP_ARM_EXTEND           = 1;
-    public static final int SOL_CUBEPICKUP_CLAW_RETRACT         = 2;
-    public static final int SOL_CUBEPICKUP_CLAW_EXTEND          = 3;
+    public static final int SOL_CUBEPICKUP_CLAW_EXTEND          = 2;
+    public static final int SOL_CUBEPICKUP_CLAW_RETRACT         = 3;
     public static final int SOL_LEFT_FLIPPER_RETRACT            = 4;
     public static final int SOL_LEFT_FLIPPER_EXTEND             = 5;
     public static final int SOL_RIGHT_FLIPPER_RETRACT           = 6;

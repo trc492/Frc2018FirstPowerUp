@@ -313,6 +313,8 @@ public class FrcAuto implements TrcRobot.RobotMode
     @Override
     public void runPeriodic(double elapsedTime)
     {
+        robot.updateDashboard();
+        robot.announceSafety();
     } // runPeriodic
 
     @Override
@@ -333,8 +335,6 @@ public class FrcAuto implements TrcRobot.RobotMode
                 robot.sonarDrivePidCtrl.printPidInfo(robot.tracer, elapsedTime, robot.battery);
                 robot.visionTurnPidCtrl.printPidInfo(robot.tracer, elapsedTime, robot.battery);
             }
-
-            robot.updateDashboard();
         }
     } // runContinuous
 

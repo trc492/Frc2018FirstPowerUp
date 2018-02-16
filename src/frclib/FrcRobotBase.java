@@ -64,12 +64,12 @@ public abstract class FrcRobotBase extends RobotBase
     /**
      * This method is called to prepare the robot before a robot mode is about to start.
      */
-    public abstract void robotStartMode();
+    public abstract void robotStartMode(RunMode runMode);
 
     /**
      * This method is called to prepare the robot right after a robot mode has been stopped.
      */
-    public abstract void robotStopMode();
+    public abstract void robotStopMode(RunMode runMode);
 
     private TrcTaskMgr taskMgr = new TrcTaskMgr();
     private HalDashboard dashboard = new HalDashboard();
@@ -258,12 +258,12 @@ public abstract class FrcRobotBase extends RobotBase
                 {
                     teleOpMode.stopMode();
                 }
-                robotStopMode();
+                robotStopMode(prevMode);
                 //
                 // Start current mode.
                 //
                 modeStartTime = TrcUtil.getCurrentTime();
-                robotStartMode();
+                robotStartMode(currMode);
                 if (currMode == RunMode.DISABLED_MODE)
                 {
                     LiveWindow.setEnabled(false);

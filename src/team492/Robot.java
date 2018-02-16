@@ -56,6 +56,7 @@ import trclib.TrcGyro;
 import trclib.TrcPidController;
 import trclib.TrcPidController.PidCoefficients;
 import trclib.TrcPidDrive;
+import trclib.TrcRobot.RunMode;
 import trclib.TrcRobotBattery;
 import trclib.TrcUtil;
 
@@ -88,6 +89,7 @@ public class Robot extends FrcRobotBase
     private static final boolean DEBUG_CUBE_PICKUP = true;
     private static final boolean DEBUG_PIXY = true;
     private static final double DASHBOARD_UPDATE_INTERVAL = 0.1;
+    private static final double SPEAK_PERIOD_SECONDS = 20.0; // Speaks once every this # of second.
 
     public DriverStation ds = DriverStation.getInstance();
     public HalDashboard dashboard = HalDashboard.getInstance();
@@ -120,9 +122,9 @@ public class Robot extends FrcRobotBase
     //
     // Miscellaneous subsystem.
     //
-    public FrcEmic2TextToSpeech tts = null;
     public FrcI2cLEDPanel messageBoard = null;
-    public SpeakStandClearWhenEnabledTask speakWhenRobotEnabled = null;
+    public FrcEmic2TextToSpeech tts = null;
+    private double nextTimeToSpeakInSeconds = 0.0;  //0 means disabled, no need to speak;
 
     //
     // DriveBase subsystem.
@@ -255,8 +257,6 @@ public class Robot extends FrcRobotBase
             tts.setEnabled(true);
             tts.selectVoice(Voice.FrailFrank);
             tts.setVolume(0.72);
-            
-            speakWhenRobotEnabled = new SpeakStandClearWhenEnabledTask(tts);
         }
 
         if (USE_MESSAGE_BOARD)
@@ -377,8 +377,24 @@ public class Robot extends FrcRobotBase
         setupRobotModes(new FrcTeleOp(this), new FrcAuto(this), new FrcTest(this), null);
     }   //robotInit
 
-    public void robotStartMode()
+    public void robotStartMode(RunMode runMode)
     {
+        if (tts != null)
+        {
+            if (runMode == RunMode.DISABLED_MODE)
+            {
+                // Robot is safe. Note: "disaibled" is not a typo. It forces the speech board to pronounce it correctly.
+                tts.speak("Robot disaibled");
+                nextTimeToSpeakInSeconds = 0.0;
+            }
+            else
+            {
+                // Robot is unsafe
+                tts.speak("Robot enabled, stand clear");
+                nextTimeToSpeakInSeconds = TrcUtil.getCurrentTime() + SPEAK_PERIOD_SECONDS;
+            }
+        }
+
         if (ds.isFMSAttached())
         {
             eventName = ds.getEventName();
@@ -403,7 +419,7 @@ public class Robot extends FrcRobotBase
         tuneKf = HalDashboard.getNumber("TuneKf", 0.05);
     }   //robotStartMode
 
-    public void robotStopMode()
+    public void robotStopMode(RunMode runMode)
     {
         driveBase.stop();
         battery.setTaskEnabled(false);
@@ -515,6 +531,17 @@ public class Robot extends FrcRobotBase
             }
         }
     }   //updateDashboard
+
+    public void announceSafety()
+    {
+        double currTime = TrcUtil.getCurrentTime();
+
+        if (tts != null && nextTimeToSpeakInSeconds > 0.0 && currTime >= nextTimeToSpeakInSeconds)
+        {
+            tts.speak("Stand clear");
+            nextTimeToSpeakInSeconds = currTime + SPEAK_PERIOD_SECONDS;
+        }
+    }   //announceSafety
 
     public void startTraceLog(String prefix)
     {
