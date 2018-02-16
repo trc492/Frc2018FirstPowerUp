@@ -227,12 +227,12 @@ public class FrcTeleOp implements TrcRobot.RobotMode
     {
         switch (button)
         {
-            case FrcJoystick.SIDEWINDER_TRIGGER:
-                if (pressed)
-                {
-                    driveInverted = !driveInverted;
-                }
-                break;
+//            case FrcJoystick.SIDEWINDER_TRIGGER:
+//                if (pressed)
+//                {
+//                    driveInverted = !driveInverted;
+//                }
+//                break;
 
             case FrcJoystick.SIDEWINDER_BUTTON2:
                 if (pressed)
