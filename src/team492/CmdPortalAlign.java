@@ -122,13 +122,19 @@ public class CmdPortalAlign implements TrcRobot.RobotCommand
 	// CodeReview: triggerEvent will be called on both enabled and disabled! You need to pick one.
 	private void leftTriggerEvent(boolean enabled)
 	{
-		leftEvent.set(true);
-		leftTrigger.setTaskEnabled(false);
+		if(enabled)
+		{
+			leftEvent.set(true);
+			leftTrigger.setTaskEnabled(false);			
+		}
 	}
 	
 	private void rightTriggerEvent(boolean enabled)
 	{
-		rightEvent.set(true);
-		rightTrigger.setTaskEnabled(false);
+		if(enabled)
+		{
+			rightEvent.set(true);
+			rightTrigger.setTaskEnabled(false);			
+		}
 	}
 }
