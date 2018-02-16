@@ -48,8 +48,6 @@ public class FrcTeleOp implements TrcRobot.RobotMode
 
     private boolean driveInverted = false;
     private boolean waltzTurnOn = false;
-    
-    private boolean enableDriveInvert = false; // enable or disable drive invertation.
 
     public FrcTeleOp(Robot robot)
     {
@@ -225,13 +223,14 @@ public class FrcTeleOp implements TrcRobot.RobotMode
         }
     } // leftDriveStickButtonEvent
 
-    public void rightDriveStickButtonEvent(int button, boolean pressed)
+    @SuppressWarnings("unused")
+	public void rightDriveStickButtonEvent(int button, boolean pressed)
     {
         switch (button)
         {
             case FrcJoystick.SIDEWINDER_TRIGGER:
                 // only enable drive invert if enabled.
-                if (pressed && enableDriveInvert)
+                if (pressed && RobotInfo.TELEOP_ENABLE_DRIVE_INVERSION)
                 {
                     driveInverted = !driveInverted;
                 }

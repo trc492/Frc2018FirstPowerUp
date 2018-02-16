@@ -55,6 +55,7 @@ public class RobotInfo
     //
     public static final double TELEOP_WINCH_POWER               = 0.6; // TODO: This needs to be calibrated
     public static final double TELEOP_GRABBER_POWER             = 0.6; // TODO: This needs to be calibrated
+    public static final boolean TELEOP_ENABLE_DRIVE_INVERSION   = false;
     
     //
     // Analog Input ports.
