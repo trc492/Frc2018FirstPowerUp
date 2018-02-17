@@ -36,6 +36,8 @@ public class Winch
     {
         mainMotor = new FrcCANTalon("WinchMaster", RobotInfo.CANID_WINCH_MASTER);
         slaveMotor = new FrcCANTalon("WinchSlave", RobotInfo.CANID_WINCH_SLAVE);
+        mainMotor.setInverted(true);
+        slaveMotor.setInverted(true);
         slaveMotor.motor.set(ControlMode.Follower, RobotInfo.CANID_WINCH_MASTER);
         mainMotor.setPositionSensorInverted(false);
     }
@@ -58,6 +60,11 @@ public class Winch
     public double getPower()
     {
         return motorPower;
+    }
+
+    public double getCurrent()
+    {
+        return mainMotor.motor.getOutputCurrent() + slaveMotor.motor.getOutputCurrent();
     }
 
     public void setPower(double power)

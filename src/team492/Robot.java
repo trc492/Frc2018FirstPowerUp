@@ -35,6 +35,7 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.DriverStation.MatchType;
 import edu.wpi.first.wpilibj.I2C;
+import edu.wpi.first.wpilibj.PowerDistributionPanel;
 import edu.wpi.first.wpilibj.Relay;
 import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.SerialPort;
@@ -81,6 +82,7 @@ public class Robot extends FrcRobotBase
     public static final boolean USE_TEXT_TO_SPEECH = true;
     public static final boolean USE_MESSAGE_BOARD = false;
 
+    private static final boolean DEBUG_POWER_CONSUMPTION = true;
     private static final boolean DEBUG_DRIVE_BASE = false;
     private static final boolean DEBUG_PID_DRIVE = false;
     private static final boolean DEBUG_GRIP_VISION = false;
@@ -90,6 +92,7 @@ public class Robot extends FrcRobotBase
     private static final boolean DEBUG_PIXY = true;
     private static final double DASHBOARD_UPDATE_INTERVAL = 0.1;
     private static final double SPEAK_PERIOD_SECONDS = 20.0; // Speaks once every this # of second.
+    private static final double IDLE_PERIOD_SECONDS = 300.0;
 
     public DriverStation ds = DriverStation.getInstance();
     public HalDashboard dashboard = HalDashboard.getInstance();
@@ -102,6 +105,7 @@ public class Robot extends FrcRobotBase
     //
     // Sensors.
     //
+    public PowerDistributionPanel pdp = null;
     public TrcRobotBattery battery = null;
     public TrcGyro gyro = null;
     public AnalogInput pressureSensor = null;
@@ -111,7 +115,6 @@ public class Robot extends FrcRobotBase
     private double lastFrontSonarDistance = 0.0;
     private double lastLeftSonarDistance = 0.0;
     private double lastRightSonarDistance = 0.0;
-    
 
     //
     // VisionTarget subsystem.
@@ -151,7 +154,7 @@ public class Robot extends FrcRobotBase
     //
     public FrcPneumatic leftFlipper;
     public FrcPneumatic rightFlipper;
-    
+
     //
     // Define our subsystems for Auto and TeleOp modes.
     //
@@ -206,6 +209,7 @@ public class Robot extends FrcRobotBase
         //
         // Sensors.
         //
+        pdp = new PowerDistributionPanel(RobotInfo.CANID_PDP);
         battery = new FrcRobotBattery(RobotInfo.CANID_PDP);
         if (USE_NAV_X)
         {
@@ -353,14 +357,6 @@ public class Robot extends FrcRobotBase
         visionPidTurn.setMsgTracer(tracer);
 
         //
-        // Initialize pneumatic flippers.
-        //
-        leftFlipper = new FrcPneumatic("leftFlipper", RobotInfo.CANID_PCM1, 
-            RobotInfo.SOL_LEFT_FLIPPER_EXTEND, RobotInfo.SOL_LEFT_FLIPPER_RETRACT);
-        rightFlipper =  new FrcPneumatic("rightFlipper", RobotInfo.CANID_PCM1, 
-            RobotInfo.SOL_RIGHT_FLIPPER_EXTEND, RobotInfo.SOL_RIGHT_FLIPPER_RETRACT);
-
-        //
         // Create other hardware subsystems.
         //
         ringLightsPower = new Relay(RobotInfo.RELAY_RINGLIGHT_POWER);
@@ -368,13 +364,17 @@ public class Robot extends FrcRobotBase
         cubePickup = new CubePickup();
         winch = new Winch();
         elevator = new Elevator();
+        leftFlipper = new FrcPneumatic("leftFlipper", RobotInfo.CANID_PCM1, 
+            RobotInfo.SOL_LEFT_FLIPPER_EXTEND, RobotInfo.SOL_LEFT_FLIPPER_RETRACT);
+        rightFlipper =  new FrcPneumatic("rightFlipper", RobotInfo.CANID_PCM1, 
+            RobotInfo.SOL_RIGHT_FLIPPER_EXTEND, RobotInfo.SOL_RIGHT_FLIPPER_RETRACT);
         cmdAutoCubePickup = new CmdAutoCubePickup(this);
         cmdStrafeUntilCube = new CmdStrafeUntilCube(this);
-        
+
         //
         // Robot Modes.
         //
-        setupRobotModes(new FrcTeleOp(this), new FrcAuto(this), new FrcTest(this), null);
+        setupRobotModes(new FrcTeleOp(this), new FrcAuto(this), new FrcTest(this), new FrcDisabled(this));
     }   //robotInit
 
     public void robotStartMode(RunMode runMode)
@@ -383,9 +383,10 @@ public class Robot extends FrcRobotBase
         {
             if (runMode == RunMode.DISABLED_MODE)
             {
-                // Robot is safe. Note: "disaibled" is not a typo. It forces the speech board to pronounce it correctly.
+                // Robot is safe.
+                // Note: "disaibled" is not a typo. It forces the speech board to pronounce it correctly.
                 tts.speak("Robot disaibled");
-                nextTimeToSpeakInSeconds = 0.0;
+                nextTimeToSpeakInSeconds = TrcUtil.getCurrentTime() + IDLE_PERIOD_SECONDS;
             }
             else
             {
@@ -448,7 +449,15 @@ public class Robot extends FrcRobotBase
 
         if (currTime >= nextUpdateTime)
         {
-        	nextUpdateTime = currTime + DASHBOARD_UPDATE_INTERVAL;
+            nextUpdateTime = currTime + DASHBOARD_UPDATE_INTERVAL;
+
+            if (DEBUG_POWER_CONSUMPTION)
+            {
+                HalDashboard.putNumber("pdpTotalCurrent", pdp.getTotalCurrent());
+                HalDashboard.putNumber("elevatorCurrent", elevator.elevatorMotor.motor.getOutputCurrent());
+                HalDashboard.putNumber("winchCurrent", winch.getCurrent());
+                HalDashboard.putNumber("grabberCurrent", cubePickup.getGrabberCurrent());
+            }
 
             if (DEBUG_DRIVE_BASE)
             {
@@ -542,6 +551,17 @@ public class Robot extends FrcRobotBase
             nextTimeToSpeakInSeconds = currTime + SPEAK_PERIOD_SECONDS;
         }
     }   //announceSafety
+
+    public void announceIdling()
+    {
+        double currTime = TrcUtil.getCurrentTime();
+
+        if (tts != null && nextTimeToSpeakInSeconds > 0.0 && currTime >= nextTimeToSpeakInSeconds)
+        {
+            tts.speak("Robot is idle, please turn off.");
+            nextTimeToSpeakInSeconds = currTime + SPEAK_PERIOD_SECONDS;
+        }
+    }   //announceIdling
 
     public void startTraceLog(String prefix)
     {

@@ -187,6 +187,11 @@ public class CubePickup
         controlMotor.setPower(-power);
     }
 
+    public double getGrabberCurrent()
+    {
+        return controlMotor.motor.getOutputCurrent() + slaveMotor.motor.getOutputCurrent();
+    }
+
     /**
      * stops the pickup motors, use after cube has been picked up or dropped
      */
