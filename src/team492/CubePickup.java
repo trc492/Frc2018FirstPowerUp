@@ -164,6 +164,22 @@ public class CubePickup
      */
     public void grabCube(double power, TrcEvent event)
     {
+        // Create an analog trigger.
+        // use a state machine.
+        // - start the state machine.
+        // State machine:
+        // Step 1:
+        // - start the motor with given power.
+        // - set timer for 0.5 second, when done goto step 2.
+        // Step 2:
+        // - enable analog trigger, wait for the event then goto step 3.
+        // Step 3:
+        // - disable analog trigger.
+        // - set timer for 0.5 second, when done goto step 4.
+        // Step 4:
+        // - stop motor.
+        // - set the given event to true.
+        // - stop the state machine.
         controlMotor.setPower(power);
         cubeTrigger.setTaskEnabled(true);
         cubeEvent = event;
