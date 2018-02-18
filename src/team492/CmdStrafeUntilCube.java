@@ -8,7 +8,7 @@ public class CmdStrafeUntilCube implements TrcRobot.RobotCommand
 {
     private static final String moduleName = "CmdStrafeUntilCube";
 
-    protected enum State
+    public enum State
     {
         START_STRAFE, CHECK_FOR_CUBE, DONE
     }
@@ -32,8 +32,6 @@ public class CmdStrafeUntilCube implements TrcRobot.RobotCommand
      * 
      * @param strafeRight
      *            If true, strafe right. If false, strafe left.
-     * @param onFinishedEvent
-     *            When cube is in sight near the center, signal this event
      */
     public void start(boolean strafeRight)
     {

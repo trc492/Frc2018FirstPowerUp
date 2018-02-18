@@ -30,7 +30,7 @@ public class CmdAutoCubePickup implements TrcRobot.RobotCommand
 {
     private static final String moduleName = "CmdAutoCubePickup";
 
-    private static enum State
+    public static enum State
     {
         START, DRIVE, PICKUP, DONE
     }
