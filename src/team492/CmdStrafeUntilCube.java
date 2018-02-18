@@ -133,12 +133,12 @@ public class CmdStrafeUntilCube implements TrcRobot.RobotCommand
             {
                 case START_STRAFE:
                     double xPower = RobotInfo.FIND_CUBE_STRAFE_POWER * (strafeRight ? 1 : -1);
-                    robot.pidDrive.driveMaintainHeading(xPower, 0.0, robot.driveBase.getHeading());
+                    robot.pidDrive.driveMaintainHeading(xPower, 0.0, robot.targetHeading);
                     sm.setState(State.CHECK_FOR_CUBE);
                     break;
                 case CHECK_FOR_CUBE:
                     TargetInfo target = robot.pixy.getTargetInfo();
-                    if (target != null && Math.abs(target.angle) <= RobotInfo.FIND_CUBE_MAX_ANGLE)
+                    if (target != null && Math.abs(target.angle) <= RobotInfo.FIND_CUBE_ANGLE_TOLERANCE)
                     {
                         sm.setState(State.DONE);
                     }
