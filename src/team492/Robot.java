@@ -414,9 +414,9 @@ public class Robot extends FrcRobotBase
         turnDegrees = HalDashboard.getNumber("TurnDegrees", 90.0);
         frontSonarTarget = HalDashboard.getNumber("FrontSonarTarget", 7.0);
         visionTurnTarget = HalDashboard.getNumber("VisionTurnTarget", 0.0);
-        tuneKp = HalDashboard.getNumber("TuneKp", RobotInfo.GYRO_TURN_KP);
-        tuneKi = HalDashboard.getNumber("TuneKi", RobotInfo.GYRO_TURN_KI);
-        tuneKd = HalDashboard.getNumber("TuneKd", RobotInfo.GYRO_TURN_KD);
+        tuneKp = HalDashboard.getNumber("TuneKp", RobotInfo.ENCODER_X_KP);
+        tuneKi = HalDashboard.getNumber("TuneKi", RobotInfo.ENCODER_X_KI);
+        tuneKd = HalDashboard.getNumber("TuneKd", RobotInfo.ENCODER_X_KD);
         tuneKf = HalDashboard.getNumber("TuneKf", 0.05);
     }   //robotStartMode
 
