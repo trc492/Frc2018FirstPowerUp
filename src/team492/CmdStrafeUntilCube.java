@@ -59,7 +59,7 @@ public class CmdStrafeUntilCube implements TrcRobot.RobotCommand
     /**
      * Default stopTrigger. Continue indefinitely.
      */
-    private boolean shouldStop(double elapsedTime, double changeX, double changeY)
+    private boolean shouldStop(State currentState, double elapsedTime, double changeX, double changeY)
     {
         return false;
     }
@@ -123,7 +123,7 @@ public class CmdStrafeUntilCube implements TrcRobot.RobotCommand
         State state = sm.getState();
         robot.dashboard.displayPrintf(1, "State: %s", state != null ? state.toString() : "Disabled");
 
-        if (isRunning() && stopTrigger.shouldStop(elapsedTime(), changeX(), changeY()))
+        if (isRunning() && stopTrigger.shouldStop(state, elapsedTime(), changeX(), changeY()))
         {
             stop();
         }
@@ -156,7 +156,7 @@ public class CmdStrafeUntilCube implements TrcRobot.RobotCommand
 
     public interface StopTrigger
     {
-        public boolean shouldStop(double elapsedTime, double changeX, double changeY);
+        public boolean shouldStop(State currentState, double elapsedTime, double changeX, double changeY);
     }
 
 }
