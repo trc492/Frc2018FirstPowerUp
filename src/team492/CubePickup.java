@@ -62,8 +62,6 @@ public class CubePickup
     {
         controlMotor = new FrcCANTalon("LeftPickupMotor", RobotInfo.CANID_LEFT_PICKUP);
         controlMotor.setInverted(true);
-//        controlMotor.configFwdLimitSwitchNormallyOpen(true);
-//        controlMotor.motor.overrideLimitSwitchesEnable(true);
 
         slaveMotor = new FrcCANTalon("RightPickupMotor", RobotInfo.CANID_RIGHT_PICKUP);
         slaveMotor.setInverted(true);
@@ -76,7 +74,7 @@ public class CubePickup
 
         cubeSensor = new FrcCANTalonLimitSwitch("CubeSensor", controlMotor, true);
 
-        currentSensor = new TrcAnalogSensor("grabberCurrent", 1, this::getGrabberCurrent);
+        currentSensor = new TrcAnalogSensor("grabberCurrent", this::getGrabberCurrent);
         currentTrigger = new TrcAnalogTrigger<TrcAnalogSensor.DataType>(
             "PickupCurrentTrigger", currentSensor, 0, TrcAnalogSensor.DataType.RAW_DATA,
             currentThreshold, this::triggerEvent);

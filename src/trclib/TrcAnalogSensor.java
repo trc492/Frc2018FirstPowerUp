@@ -23,73 +23,51 @@
 package trclib;
 
 /**
- * This class implements a platform independent AnalogInput. Typically, this class is extended by a platform dependent
- * sensor class that produces value data. The sensor doesn't have to be connected to the AnalogInput port. It could be
- * connected to an I2C port as long as it produces a value data. The platform dependent sensor class must implement
- * the abstract methods required by this class. The abstract methods allow this class to get raw data from the sensor.
- * Depending on the options specified in the constructor, this class may create an integrator. If it needs data
- * integration, it can set the INTEGRATE or the DOUBLE_INTEGRATE options.
+ * This class implements a platform independent generic analog sensor. Anything that produces analog data can use
+ * this class to make itself an analog sensor that conforms to the TrcSensor class which can be used as an analog
+ * trigger. To make itself an analog sensor, it inherits from the AnalogInput class and thus must provide the
+ * getRawData abstract method required by TrcAnalogInput. In getRawData, it will call the AnalogDataSource
+ * provided in its constructor to get the raw data.
  */
 public class TrcAnalogSensor extends TrcAnalogInput
 {
+    /**
+     * This interface is used by this class to get the analog data from the provider.
+     */
     public interface AnalogDataSource
     {
+        /**
+         * This method returns the raw data from the analog data source.
+         *
+         * @return raw analog data.
+         */
         double getData();
-    }
+    }   //interface AnalogDataSource
 
-    private AnalogDataSource dataSource;
+    private final AnalogDataSource dataSource;
 
     /**
      * Constructor: Creates an instance of the object.
      *
      * @param instanceName specifies the instance name.
-     * @param numAxes specifies the number of axes.
-     * @param options specifies the AnalogInput options. Multiple options can be OR'd together.
-     *                ANALOGINPUT_INTEGRATE - do integration on sensor data.
-     *                ANALOGINPUT_DOUBLE_INTEGRATE - do double integration on sensor data.
-     * @param filters specifies an array of filter objects, one for each axis, to filter sensor data. If no filter
-     *                is used, this can be set to null.
+     * @param dataSource specifies the analog data provider.
      */
-    public TrcAnalogSensor(final String instanceName, int numAxes, int options, TrcFilter[] filters, AnalogDataSource dataSource)
+    public TrcAnalogSensor(final String instanceName, final AnalogDataSource dataSource)
     {
-        super(instanceName, numAxes, options, filters);
+        super(instanceName, 1, 0, null);
         this.dataSource = dataSource;
-    }   //TrcAnalogSensor
-
-    /**
-     * Constructor: Creates an instance of the object.
-     *
-     * @param instanceName specifies the instance name.
-     * @param numAxes specifies the number of axes.
-     * @param options specifies the AnalogInput options. Multiple options can be OR'd together.
-     *                ANALOGINPUT_INTEGRATE - do integration on sensor data.
-     *                ANALOGINPUT_DOUBLE_INTEGRATE - do double integration on sensor data.
-     */
-    public TrcAnalogSensor(final String instanceName, int numAxes, int options, AnalogDataSource dataSource)
-    {
-        this(instanceName, numAxes, options, null, dataSource);
-    }   //TrcAnalogSensor
-
-    /**
-     * Constructor: Creates an instance of the object.
-     *
-     * @param instanceName specifies the instance name.
-     */
-    public TrcAnalogSensor(final String instanceName, int numAxes, AnalogDataSource dataSource)
-    {
-        this(instanceName, numAxes, 0, null, dataSource);
     }   //TrcAnalogSensor
 
     /**
      * This abstract method returns the raw data with the specified index and type.
      *
-     * @param index specifies the data index.
-     * @param dataType specifies the data type.
-     * @return raw data with the specified type.
+     * @param index specifies the data index (not used because AnalogSensor has only one axis).
+     * @param dataType specifies the data type (not used because AnalogSensor only returns raw data).
+     * @return raw data from the analog data source.
      */
     public SensorData<Double> getRawData(int index, DataType dataType)
     {
         return new SensorData<>(TrcUtil.getCurrentTime(), dataSource.getData());
-    }
+    }   //getRawData
 
 }   //class TrcAnalogSensor
