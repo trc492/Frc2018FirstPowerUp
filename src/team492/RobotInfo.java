@@ -230,24 +230,18 @@ public class RobotInfo
     // CmdPowerUpAuto variables.
     //
     public static final double AUTO_DISTANCE_TO_SWITCH = 158.0;
-    public static final double AUTO_DISTANCE_TO_SCALE = 208.0;
-    public static final double SCALE_SIDE_APPROACH_DISTANCE = 101.0;
-    public static final double SCALE_FRONT_APPROACH_DISTANCE = 46.0;
-    public static final double FINAL_FRONT_SCALE_APPROACH_DISTANCE = 62.0;
-    public static final double FINAL_SIDE_SCALE_APPROACH_DISTANCE = 21.0;
+    public static final double FINAL_FRONT_SCALE_APPROACH_DISTANCE = 64.0;
+    public static final double FINAL_SIDE_SCALE_APPROACH_DISTANCE = 24.0;
     public static final double RIGHT_SWITCH_LOCATION = 102.0;
     public static final double LEFT_SWITCH_LOCATION = -102.0;
-    public static final double RIGHT_SCALE_LOCATION = 126.0;
-    public static final double LEFT_SCALE_LOCATION = -126.0;
     public static final double SCALE_TARGET_HEIGHT = 60.0;
-    public static final double SWITCH_TARGET_HEIGHT = 27.0;
-    public static final double ADVANCE_TO_SECOND_CUBE_DISTANCE = 30.0;
+    public static final double ADVANCE_TO_SECOND_CUBE_DISTANCE = 72.0;
     public static final double STRAFE_TO_SECOND_CUBE_DISTANCE = 31.0;
-    public static final double SECOND_CUBE_BACKUP_DISTANCE = 8.0;
-    public static final double SHORT_SWITCH_STRAFE_DISTANCE = 8.0;
-    public static final double LONG_SWITCH_STRAFE_DISTANCE = 126.0;
-    public static final double SECOND_SWITCH_APPROACH_DISTANCE = 12.0;
-    public static final double FIRST_ELEVATOR_HEIGHT = 20.0;
+    public static final double SECOND_CUBE_BACKUP_DISTANCE = 30.0;
+    public static final double SCALE_FRONT_POSITION = 75.0;
+    public static final double SCALE_SIDE_POSITION = 120.0;
+    public static final double FIRST_ELEVATOR_HEIGHT = 30.0;
+    public static final double ADVANCE_AROUND_SCALE_DISTANCE = 94.0;
     
     //
     // FrcAuto constants.
