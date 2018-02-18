@@ -81,6 +81,7 @@ public class Robot extends FrcRobotBase
     public static final boolean USE_PIXY_I2C = true;
     public static final boolean USE_TEXT_TO_SPEECH = true;
     public static final boolean USE_MESSAGE_BOARD = false;
+    public static final boolean USE_GYRO_ASSIST = false;
 
     private static final boolean DEBUG_POWER_CONSUMPTION = true;
     private static final boolean DEBUG_DRIVE_BASE = false;
@@ -305,6 +306,10 @@ public class Robot extends FrcRobotBase
         driveBase = new TrcDriveBase(leftFrontWheel, leftRearWheel, rightFrontWheel, rightRearWheel, gyro);
         driveBase.setXPositionScale(RobotInfo.ENCODER_X_INCHES_PER_COUNT);
         driveBase.setYPositionScale(RobotInfo.ENCODER_Y_INCHES_PER_COUNT);
+        if(USE_GYRO_ASSIST)
+        {
+        	driveBase.enableGyroAssist(RobotInfo.GYRO_ASSIST_SCALE, RobotInfo.GYRO_ASSIST_KP);        	
+        }
 
         //
         // Create PID controllers for DriveBase PID drive.

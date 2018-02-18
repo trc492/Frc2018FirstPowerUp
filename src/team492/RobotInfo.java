@@ -132,6 +132,9 @@ public class RobotInfo
     //
     // DriveBase subsystem.
     //
+    
+    public static final double GYRO_ASSIST_KP                   = 0.3;
+    public static final double GYRO_ASSIST_SCALE                = 0.5;
 
     public static final double DRIVE_STALL_TIMEOUT              = 0.5;
     public static final double DRIVE_SLOW_XSCALE                = 3.0;
