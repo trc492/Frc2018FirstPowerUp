@@ -39,6 +39,8 @@ public class CmdAutoCubePickup implements TrcRobot.RobotCommand
     private TrcEvent event, onFinishedEvent;
     private TrcStateMachine<State> sm;
     private double startX, startY;
+    private double startTime;
+    private StopTrigger stopTrigger;
 
     public CmdAutoCubePickup(Robot robot)
     {
@@ -56,12 +58,25 @@ public class CmdAutoCubePickup implements TrcRobot.RobotCommand
     {
         return sm.isEnabled();
     }
+    
+    public double elapsedTime()
+    {
+    	return Robot.getModeElapsedTime() - startTime;
+    }
 
     public double[] distanceMoved()
     {
-        double changeX = robot.driveBase.getXPosition() - startX;
-        double changeY = robot.driveBase.getYPosition() - startY;
-        return new double[] { changeX, changeY };
+        return new double[] { changeX(), changeY() };
+    }
+    
+    private double changeX()
+    {
+    	return robot.driveBase.getXPosition() - startX;
+    }
+    
+    private double changeY()
+    {
+    	return robot.driveBase.getYPosition() - startY;
     }
     
     /**
@@ -69,19 +84,36 @@ public class CmdAutoCubePickup implements TrcRobot.RobotCommand
      */
     public void start()
     {
-    	start(null);
+    	start(null, this::shouldStop);
+    }
+    
+    public void start(StopTrigger stopTrigger)
+    {
+    	start(null, stopTrigger);
+    }
+    
+    public void start(TrcEvent onFinishedEvent)
+    {
+    	start(onFinishedEvent, this::shouldStop);
     }
 
     /**
      * Start this task, and signal onFinishedEvent when done
      */
-    public void start(TrcEvent onFinishedEvent)
+    public void start(TrcEvent onFinishedEvent, StopTrigger stopTrigger)
     {
     	stop();
     	this.onFinishedEvent = onFinishedEvent;
+    	this.stopTrigger = stopTrigger;
         startX = robot.driveBase.getXPosition();
         startY = robot.driveBase.getYPosition();
+        startTime = Robot.getModeElapsedTime();
         sm.start(State.START);
+    }
+    
+    private boolean shouldStop(State currentState, double elapsedTime, double distanceX, double distanceY)
+    {
+    	return false;
     }
 
     public void stop()
@@ -105,6 +137,12 @@ public class CmdAutoCubePickup implements TrcRobot.RobotCommand
 
         State state = sm.getState();
         robot.dashboard.displayPrintf(1, "State: %s", state != null ? state.toString() : "Disabled");
+        
+        if(isEnabled() && this.stopTrigger.shouldStop(state, elapsedTime(), changeX(), changeY()))
+        {
+        	stop();
+        	done = true;
+        }
 
         if (sm.isReady())
         {
@@ -151,5 +189,9 @@ public class CmdAutoCubePickup implements TrcRobot.RobotCommand
         }
 
         return done;
+    }
+    
+    public interface StopTrigger {
+    	public boolean shouldStop(State currentState, double elapsedTime, double distanceX, double distanceY);
     }
 }

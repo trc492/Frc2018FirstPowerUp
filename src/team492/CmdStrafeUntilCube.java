@@ -65,7 +65,7 @@ public class CmdStrafeUntilCube implements TrcRobot.RobotCommand
     }
 
     /**
-     * Cancel the task. Use distanceMoved() to see how much the robot has moved
+     * Cancel the task. Use {@code distanceMoved()} to see how much the robot has moved
      */
     public void stop()
     {
@@ -126,6 +126,7 @@ public class CmdStrafeUntilCube implements TrcRobot.RobotCommand
         if (isRunning() && stopTrigger.shouldStop(state, elapsedTime(), changeX(), changeY()))
         {
             stop();
+            done = true;
         }
 
         if (sm.isReady())
