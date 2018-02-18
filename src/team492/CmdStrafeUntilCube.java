@@ -8,7 +8,7 @@ public class CmdStrafeUntilCube implements TrcRobot.RobotCommand
 {
     private static final String moduleName = "CmdStrafeUntilCube";
 
-    private enum State
+    protected enum State
     {
         START_STRAFE, CHECK_FOR_CUBE, DONE
     }
