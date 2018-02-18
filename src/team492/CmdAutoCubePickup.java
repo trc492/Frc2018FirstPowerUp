@@ -135,15 +135,16 @@ public class CmdAutoCubePickup implements TrcRobot.RobotCommand
                     robot.visionPidDrive.cancel();
                     robot.cubePickup.closeClaw();
                     sm.setState(State.DONE);
-                    if(onFinishedEvent != null)
-                    {
-                    	onFinishedEvent.set(true);
-                    }
                     break;
 
                 case DONE:
                 default:
                     done = true;
+                    if(onFinishedEvent != null)
+                    {
+                    	onFinishedEvent.set(true);
+                    }
+                    sm.stop();
                     break;
             }
             robot.traceStateInfo(elapsedTime, state.toString());
