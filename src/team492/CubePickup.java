@@ -8,8 +8,8 @@
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
  *
- * The above copyright notice and this permission notice shall be included in all
- * copies or substantial portions of the Software.
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
  *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
@@ -27,16 +27,34 @@ import com.ctre.phoenix.motorcontrol.ControlMode;
 import frclib.FrcPneumatic;
 import frclib.FrcCANTalon;
 import frclib.FrcCANTalonLimitSwitch;
+import trclib.TrcAnalogSensor;
+import trclib.TrcAnalogTrigger;
 import trclib.TrcDigitalTrigger;
 import trclib.TrcEvent;
+import trclib.TrcRobot.RunMode;
+import trclib.TrcStateMachine;
+import trclib.TrcTaskMgr;
+import trclib.TrcTaskMgr.TaskType;
+import trclib.TrcTimer;
 
 public class CubePickup
 {
+    private enum State
+    {
+        START, ENABLE_TRIGGER, DISABLE_TRIGGER, DONE
+    }
+
     private FrcCANTalon controlMotor, slaveMotor;
     private FrcPneumatic claw, deployer;
     private FrcCANTalonLimitSwitch cubeSensor;
     private TrcDigitalTrigger cubeTrigger;
     private TrcEvent cubeEvent;
+    private TrcAnalogSensor currentSensor;
+    private TrcAnalogTrigger<TrcAnalogSensor.DataType> currentTrigger;
+    private TrcTaskMgr.TaskObject grabberTaskObj;
+    private TrcStateMachine<State> sm;
+    private TrcTimer timer;
+    private TrcEvent event;
 
     /**
      * Initialize the CubePickup class.
@@ -52,14 +70,36 @@ public class CubePickup
         slaveMotor.setInverted(true);
         slaveMotor.motor.set(ControlMode.Follower, RobotInfo.CANID_LEFT_PICKUP);
 
-        claw = new FrcPneumatic(
-            "CubePickupClaw", RobotInfo.CANID_PCM1,
-            RobotInfo.SOL_CUBEPICKUP_CLAW_EXTEND, RobotInfo.SOL_CUBEPICKUP_CLAW_RETRACT);
-        deployer = new FrcPneumatic(
-            "CubePickupDeploy", RobotInfo.CANID_PCM1,
-            RobotInfo.SOL_CUBEPICKUP_ARM_EXTEND, RobotInfo.SOL_CUBEPICKUP_ARM_RETRACT);
+        claw = new FrcPneumatic("CubePickupClaw", RobotInfo.CANID_PCM1, RobotInfo.SOL_CUBEPICKUP_CLAW_EXTEND,
+            RobotInfo.SOL_CUBEPICKUP_CLAW_RETRACT);
+        deployer = new FrcPneumatic("CubePickupDeploy", RobotInfo.CANID_PCM1, RobotInfo.SOL_CUBEPICKUP_ARM_EXTEND,
+            RobotInfo.SOL_CUBEPICKUP_ARM_RETRACT);
         cubeSensor = new FrcCANTalonLimitSwitch("CubeSensor", controlMotor, true);
         cubeTrigger = new TrcDigitalTrigger("CubeTrigger", cubeSensor, this::triggerEvent);
+        currentSensor = new TrcAnalogSensor("grabberCurrent", 1, this::getGrabberCurrent);
+//        currentTrigger = new TrcAnalogTrigger<TrcAnalogSensor.DataType>(
+//            "PickupCurrentTrigger", currentSensor, 0, TrcAnalogSensor.DataType.RAW_DATA,
+//            new double[] {RobotInfo.GRABBER_CURRENT_THRESHOLD}, this::eventTrigger);
+        grabberTaskObj = TrcTaskMgr.getInstance().createTask("grabberTask", this::grabberTask);
+        sm = new TrcStateMachine<>("grabberStateMachine");
+        timer = new TrcTimer("grabberTimer");
+        event = new TrcEvent("grabberEvent");
+
+    }
+
+    private void setTaskEnabled(boolean enabled)
+    {
+        if (enabled)
+        {
+            grabberTaskObj.registerTask(TaskType.POSTCONTINUOUS_TASK);
+            sm.start(State.START);
+        }
+
+        else
+        {
+            grabberTaskObj.unregisterTask(TaskType.POSTCONTINUOUS_TASK);
+            sm.stop();
+        }
     }
 
     /**
@@ -91,7 +131,8 @@ public class CubePickup
     /**
      * Set the state of the claw.
      * 
-     * @param open If true, open the claw. If false, close it.
+     * @param open
+     *            If true, open the claw. If false, close it.
      */
     public void setClawOpen(boolean open)
     {
@@ -120,7 +161,8 @@ public class CubePickup
     /**
      * Set the state of the pickup.
      *
-     * @param down If true, lower the pickup. Otherwise, lift.
+     * @param down
+     *            If true, lower the pickup. Otherwise, lift.
      */
     public void setPickupDeployed(boolean down)
     {
@@ -155,8 +197,10 @@ public class CubePickup
         return controlMotor.getPower();
     }
 
-    // CodeReview: grabCube should always enable the digital trigger so it will turn off the motor when cube is
-    // detected. So it should first turn on the pickup motor, then enable the digital trigger. When trigger event
+    // CodeReview: grabCube should always enable the digital trigger so it will
+    // turn off the motor when cube is
+    // detected. So it should first turn on the pickup motor, then enable the
+    // digital trigger. When trigger event
     // is called, it will turn off the motor and disable the digital trigger.
 
     /**
@@ -164,28 +208,14 @@ public class CubePickup
      */
     public void grabCube(double power, TrcEvent event)
     {
-        // Create an analog trigger.
-        // use a state machine.
-        // - start the state machine.
-        // State machine:
-        // Step 1:
-        // - start the motor with given power.
-        // - set timer for 0.5 second, when done goto step 2.
-        // Step 2:
-        // - enable analog trigger, wait for the event then goto step 3.
-        // Step 3:
-        // - disable analog trigger.
-        // - set timer for 0.5 second, when done goto step 4.
-        // Step 4:
-        // - stop motor.
-        // - set the given event to true.
-        // - stop the state machine.
+
         controlMotor.setPower(power);
-        cubeTrigger.setTaskEnabled(true);
         cubeEvent = event;
+        setTaskEnabled(true);
     }
 
-    // CodeReview: this method should call the grabCube with the event parameter but set the event parameter to null.
+    // CodeReview: this method should call the grabCube with the event parameter
+    // but set the event parameter to null.
 
     /**
      * spin the pickup motors to pull in a cube
@@ -225,5 +255,56 @@ public class CubePickup
         }
         cubeTrigger.setTaskEnabled(false);
     } // DigitalTriggerEvent
+
+    // Step 1:
+    // - set timer for 0.5 second, when done goto step 2.
+    // Step 2:
+    // - enable analog trigger, wait for the event then goto step 3.
+    // Step 3:
+    // - disable analog trigger.
+    // - set timer for 0.5 second, when done goto step 4.
+    // Step 4:
+    // - stop motor.
+    // - set the given event to true.
+    // - stop the state machine.
+
+    public void grabberTask(TaskType taskType, RunMode runMode)
+    {
+        State state = sm.getState();
+        switch (state)
+        {
+            case START:
+                timer.set(0.5, event);
+                sm.waitForSingleEvent(event, State.ENABLE_TRIGGER);
+                break;
+            case ENABLE_TRIGGER:
+                currentTrigger.setTaskEnabled(true);
+                sm.waitForSingleEvent(event, State.DISABLE_TRIGGER);
+                break;
+            case DISABLE_TRIGGER:
+                currentTrigger.setTaskEnabled(false);
+                timer.set(0.5, event);
+                sm.waitForSingleEvent(event, State.DONE);
+                break;
+            case DONE:
+            default:
+                controlMotor.setPower(0.0);
+                if (cubeEvent != null)
+                {
+                    cubeEvent.set(true);
+                }
+                setTaskEnabled(false);
+                break;
+        }
+
+    }
+
+    public void triggerEvent(int zoneIndex, double zoneValue)
+    {
+        if (zoneIndex == 1)
+        {
+            event.set(true);
+        }
+    }
 
 }
