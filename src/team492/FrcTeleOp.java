@@ -383,9 +383,7 @@ public class FrcTeleOp implements TrcRobot.RobotMode
             case FrcJoystick.LOGITECH_BUTTON10:
                 if (pressed)
                 {
-
-                    robot.winch.setPower(RobotInfo.TELEOP_WINCH_POWER); // Go
-                                                                         // down
+                    robot.winch.setPower(RobotInfo.TELEOP_WINCH_POWER);
                 }
                 else
                 {
@@ -394,6 +392,13 @@ public class FrcTeleOp implements TrcRobot.RobotMode
                 break;
 
             case FrcJoystick.LOGITECH_BUTTON11:
+            	if (pressed)
+            	{
+            	    robot.winch.setPower(-RobotInfo.TELEOP_WINCH_POWER);            		
+            	} else
+            	{
+            	    robot.winch.setPower(0.0);
+            	}
                 break;
 
             case FrcJoystick.LOGITECH_BUTTON12:
