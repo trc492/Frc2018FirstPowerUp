@@ -82,10 +82,9 @@ public class CubePickup
         sm = new TrcStateMachine<>("grabberStateMachine");
         timer = new TrcTimer("grabberTimer");
         event = new TrcEvent("grabberEvent");
-
     }
 
-    private void setTaskEnabled(boolean enabled)
+    private void setGrabberTaskEnabled(boolean enabled)
     {
         if (enabled)
         {
@@ -127,9 +126,8 @@ public class CubePickup
 
     /**
      * Set the state of the claw.
-     * 
-     * @param open
-     *            If true, open the claw. If false, close it.
+     *
+     * @param open If true, open the claw. If false, close it.
      */
     public void setClawOpen(boolean open)
     {
@@ -158,8 +156,7 @@ public class CubePickup
     /**
      * Set the state of the pickup.
      *
-     * @param down
-     *            If true, lower the pickup. Otherwise, lift.
+     * @param down If true, lower the pickup. Otherwise, lift.
      */
     public void setPickupDeployed(boolean down)
     {
@@ -171,7 +168,7 @@ public class CubePickup
 
     /**
      * Is the pickup up or down?
-     * 
+     *
      * @return Returns true if the pickup is up, (claw is off ground) and
      *         returns false if the pickup is down. (claw is on ground)
      */
@@ -181,7 +178,6 @@ public class CubePickup
     }
 
     /**
-     * 
      * @return Returns true of there is a cube in the pickup
      */
     public boolean cubeDetected()
@@ -194,12 +190,6 @@ public class CubePickup
         return controlMotor.getPower();
     }
 
-    // CodeReview: grabCube should always enable the digital trigger so it will
-    // turn off the motor when cube is
-    // detected. So it should first turn on the pickup motor, then enable the
-    // digital trigger. When trigger event
-    // is called, it will turn off the motor and disable the digital trigger.
-
     /**
      * spins the motors to pickup a cube and signals an event when done
      */
@@ -207,7 +197,7 @@ public class CubePickup
     {
         controlMotor.setPower(power);
         cubeEvent = event;
-        setTaskEnabled(true);
+        setGrabberTaskEnabled(true);
     }
 
     // CodeReview: this method should call the grabCube with the event parameter
@@ -242,23 +232,16 @@ public class CubePickup
         controlMotor.setPower(0.0);
     }
 
-//    public void triggerEvent(boolean active)
-//    {
-//        stopPickup();
-//        if (cubeEvent != null)
-//        {
-//            cubeEvent.set(true);
-//        }
-//        cubeTrigger.setTaskEnabled(false);
-//    } // DigitalTriggerEvent
-
     // Step 1:
     // - set timer for 0.5 second, when done goto step 2.
+    // - this allows us to ignore the current spike when the motor starts up.
     // Step 2:
     // - enable analog trigger, wait for the event then goto step 3.
+    // - the analog trigger will monitor for current spike which will happen when the cube is in possession.
     // Step 3:
     // - disable analog trigger.
-    // - set timer for 0.5 second, when done goto step 4.
+    // - we are done with cube detection, set timer for 0.5 second, when done goto step 4.
+    // - the delay allows the motor to firmly pull the cube in before we stop the motor.
     // Step 4:
     // - stop motor.
     // - set the given event to true.
@@ -267,22 +250,26 @@ public class CubePickup
     public void grabberTask(TaskType taskType, RunMode runMode)
     {
         State state = sm.getState();
+
         switch (state)
         {
             case START:
                 timer.set(0.5, event);
                 sm.waitForSingleEvent(event, State.ENABLE_TRIGGER);
                 break;
+
             case ENABLE_TRIGGER:
                 currentThreshold[0] = getGrabberCurrent() + RobotInfo.GRABBER_CURRENT_OFFSET;
                 currentTrigger.setTaskEnabled(true);
                 sm.waitForSingleEvent(event, State.DISABLE_TRIGGER);
                 break;
+
             case DISABLE_TRIGGER:
                 currentTrigger.setTaskEnabled(false);
                 timer.set(0.5, event);
                 sm.waitForSingleEvent(event, State.DONE);
                 break;
+
             case DONE:
             default:
                 controlMotor.setPower(0.0);
@@ -290,16 +277,16 @@ public class CubePickup
                 {
                     cubeEvent.set(true);
                 }
-                setTaskEnabled(false);
+                setGrabberTaskEnabled(false);
                 break;
         }
-
     }
 
     public void triggerEvent(int zoneIndex, double zoneValue)
     {
         if (zoneIndex == 1)
         {
+            // Detected current spike beyond current threshold, let's tell somebody.
             event.set(true);
         }
     }
