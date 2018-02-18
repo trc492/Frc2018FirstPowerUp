@@ -1,5 +1,5 @@
 {
-  "dividerPosition": 0.13196635120925343,
+  "dividerPosition": 0.13204747774480713,
   "tabPane": [
     {
       "title": "Match Info",
@@ -76,6 +76,17 @@
               "_type": "Text View",
               "_source0": "network_table:///FMSInfo/GameSpecificMessage",
               "_title": "FMSInfo/GameSpecificMessage"
+            }
+          },
+          "8,0": {
+            "size": [
+              8,
+              8
+            ],
+            "content": {
+              "_type": "Camera Stream",
+              "_source0": "camera_server://cam0",
+              "_title": "cam0"
             }
           }
         }
@@ -464,6 +475,40 @@
               "_type": "Text View",
               "_source0": "network_table:///SmartDashboard/TurnDegrees",
               "_title": "SmartDashboard/TurnDegrees"
+            }
+          }
+        }
+      }
+    },
+    {
+      "title": "Power",
+      "autoPopulate": false,
+      "autoPopulatePrefix": "",
+      "widgetPane": {
+        "gridSize": 32.0,
+        "hgap": 16.0,
+        "vgap": 16.0,
+        "tiles": {
+          "0,0": {
+            "size": [
+              12,
+              4
+            ],
+            "content": {
+              "_type": "Graph",
+              "_title": "Graph (no sources)",
+              "Visible time": 30.0
+            }
+          },
+          "12,0": {
+            "size": [
+              12,
+              4
+            ],
+            "content": {
+              "_type": "Graph",
+              "_title": "Graph (no sources)",
+              "Visible time": 30.0
             }
           }
         }
