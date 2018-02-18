@@ -49,6 +49,7 @@ class CmdPowerUpAuto implements TrcRobot.RobotCommand
         DRIVE_TO_SECOND_CUBE,
         TURN_AROUND,
         STRAFE_TO_SECOND_CUBE,
+        START_SECOND_PICKUP,
         PICKUP_SECOND_CUBE,
         BACKUP_WITH_SECOND_CUBE,
         REPOSITION_WITH_SECOND_CUBE,
@@ -130,11 +131,11 @@ class CmdPowerUpAuto implements TrcRobot.RobotCommand
         robot.dashboard.displayPrintf(1, "State: %s", state != null ? state.toString() : "Disabled");
         
         
-        if(robot.cmdAutoCubePickup.isEnabled())
-        {
-        	robot.cmdAutoCubePickup.cmdPeriodic(elapsedTime);
-        }
-        
+//        if(robot.cmdAutoCubePickup.isEnabled())
+//        {
+//        	robot.cmdAutoCubePickup.cmdPeriodic(elapsedTime);
+//        }
+//        
         if (sm.isReady())
         {
             state = sm.getState();
@@ -165,7 +166,9 @@ class CmdPowerUpAuto implements TrcRobot.RobotCommand
                     robot.pidDrive.setTarget(xDistance, yDistance, robot.targetHeading, false, event);
                     sm.waitForSingleEvent(event, State.MOVE_SIDEWAYS);
                     break;
-
+                    
+                //if statement -- do you need to go to the other side?
+                //Instead of moving sideways --- turn then forwards
                 case MOVE_SIDEWAYS:
                     xDistance = targetLocation - startPosition;
                     yDistance = 0;
@@ -191,13 +194,14 @@ class CmdPowerUpAuto implements TrcRobot.RobotCommand
                 	}
                 	sm.setState(State.DRIVE_TO_SECOND_CUBE);
                 	break;
-                	             	
+            	
+            	//300 ms delay before next state
+                //retract the flipper
                 case DRIVE_TO_SECOND_CUBE:
                 	xDistance = 0.0;
                     yDistance = RobotInfo.ADVANCE_TO_SECOND_CUBE_DISTANCE;
                     robot.encoderYPidCtrl.setOutputRange(-1.0, 1.0);
                     robot.pidDrive.setTarget(xDistance, yDistance, robot.targetHeading, false, event);
-                    rightTurn = !rightScale;
                     sm.waitForSingleEvent(event, State.TURN_AROUND);
                 	break;
                 	
@@ -209,6 +213,7 @@ class CmdPowerUpAuto implements TrcRobot.RobotCommand
                 	sm.waitForSingleEvent(event, State.STRAFE_TO_SECOND_CUBE);
                     break;
                     
+                //Abhay has a method!!!
                 case STRAFE_TO_SECOND_CUBE:
                     yDistance = 0;
                     if(rightSwitch)
@@ -220,12 +225,19 @@ class CmdPowerUpAuto implements TrcRobot.RobotCommand
                         xDistance = -RobotInfo.STRAFE_TO_SECOND_CUBE_DISTANCE;
                     }
                     robot.pidDrive.setTarget(xDistance, yDistance, robot.targetHeading, false, event);
-                    sm.waitForSingleEvent(event, State.PICKUP_SECOND_CUBE);
+                    sm.waitForSingleEvent(event, State.START_SECOND_PICKUP);
+                    break;
+                    
+                case START_SECOND_PICKUP:
+                    robot.cmdAutoCubePickup.start();
+                    sm.setState(State.PICKUP_SECOND_CUBE);
                     break;
 
                 case PICKUP_SECOND_CUBE:
-                	robot.cmdAutoCubePickup.start(event);
-                	sm.waitForSingleEvent(event, State.BACKUP_WITH_SECOND_CUBE);
+                    if(robot.cmdAutoCubePickup.cmdPeriodic(elapsedTime))
+                    {
+                        sm.setState(State.BACKUP_WITH_SECOND_CUBE);
+                    }
                 	break;
                 	
                 case BACKUP_WITH_SECOND_CUBE:
@@ -319,6 +331,7 @@ class CmdPowerUpAuto implements TrcRobot.RobotCommand
                 	break;
                 	
                 case RAISE_ELEVATOR:
+                    //TODO: start raising elevator earlier
                 	robot.elevator.setPosition(RobotInfo.SCALE_TARGET_HEIGHT, event, 0.0);
                 	sm.waitForSingleEvent(event, State.DEPOSIT_CUBE);
                     break;

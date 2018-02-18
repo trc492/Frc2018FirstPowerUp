@@ -192,6 +192,12 @@ public class RobotInfo
 //    public static final double WINCH_SPIKE_TIMEOUT              = 0.5;
 //    public static final double WINCH_TILT_THRESHOLD             = 35.0;
     //
+    // CubePickup subsystem.
+    //
+    public static final double GRABBER_CURRENT_THRESHOLD        = 40.0;     // Need to be tuned.
+    public static final double GRABBER_CURRENT_OFFSET           = 10.0;
+
+    //
     // Elevator subsystem.
     //
     public static final double ELEVATOR_INCHES_PER_COUNT        = 0.00577778;   // 39 inches in 6750 ticks

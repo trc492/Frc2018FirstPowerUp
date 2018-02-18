@@ -29,7 +29,6 @@ import frclib.FrcCANTalon;
 import frclib.FrcCANTalonLimitSwitch;
 import trclib.TrcAnalogSensor;
 import trclib.TrcAnalogTrigger;
-import trclib.TrcDigitalTrigger;
 import trclib.TrcEvent;
 import trclib.TrcRobot.RunMode;
 import trclib.TrcStateMachine;
@@ -47,7 +46,6 @@ public class CubePickup
     private FrcCANTalon controlMotor, slaveMotor;
     private FrcPneumatic claw, deployer;
     private FrcCANTalonLimitSwitch cubeSensor;
-    private TrcDigitalTrigger cubeTrigger;
     private TrcEvent cubeEvent;
     private TrcAnalogSensor currentSensor;
     private TrcAnalogTrigger<TrcAnalogSensor.DataType> currentTrigger;
@@ -55,6 +53,7 @@ public class CubePickup
     private TrcStateMachine<State> sm;
     private TrcTimer timer;
     private TrcEvent event;
+    private double[] currentThreshold = {RobotInfo.GRABBER_CURRENT_THRESHOLD};
 
     /**
      * Initialize the CubePickup class.
@@ -63,8 +62,8 @@ public class CubePickup
     {
         controlMotor = new FrcCANTalon("LeftPickupMotor", RobotInfo.CANID_LEFT_PICKUP);
         controlMotor.setInverted(true);
-        controlMotor.configFwdLimitSwitchNormallyOpen(true);
-        controlMotor.motor.overrideLimitSwitchesEnable(true);
+//        controlMotor.configFwdLimitSwitchNormallyOpen(true);
+//        controlMotor.motor.overrideLimitSwitchesEnable(true);
 
         slaveMotor = new FrcCANTalon("RightPickupMotor", RobotInfo.CANID_RIGHT_PICKUP);
         slaveMotor.setInverted(true);
@@ -74,12 +73,13 @@ public class CubePickup
             RobotInfo.SOL_CUBEPICKUP_CLAW_RETRACT);
         deployer = new FrcPneumatic("CubePickupDeploy", RobotInfo.CANID_PCM1, RobotInfo.SOL_CUBEPICKUP_ARM_EXTEND,
             RobotInfo.SOL_CUBEPICKUP_ARM_RETRACT);
+
         cubeSensor = new FrcCANTalonLimitSwitch("CubeSensor", controlMotor, true);
-        cubeTrigger = new TrcDigitalTrigger("CubeTrigger", cubeSensor, this::triggerEvent);
+
         currentSensor = new TrcAnalogSensor("grabberCurrent", 1, this::getGrabberCurrent);
-//        currentTrigger = new TrcAnalogTrigger<TrcAnalogSensor.DataType>(
-//            "PickupCurrentTrigger", currentSensor, 0, TrcAnalogSensor.DataType.RAW_DATA,
-//            new double[] {RobotInfo.GRABBER_CURRENT_THRESHOLD}, this::eventTrigger);
+        currentTrigger = new TrcAnalogTrigger<TrcAnalogSensor.DataType>(
+            "PickupCurrentTrigger", currentSensor, 0, TrcAnalogSensor.DataType.RAW_DATA,
+            currentThreshold, this::triggerEvent);
         grabberTaskObj = TrcTaskMgr.getInstance().createTask("grabberTask", this::grabberTask);
         sm = new TrcStateMachine<>("grabberStateMachine");
         timer = new TrcTimer("grabberTimer");
@@ -94,7 +94,6 @@ public class CubePickup
             grabberTaskObj.registerTask(TaskType.POSTCONTINUOUS_TASK);
             sm.start(State.START);
         }
-
         else
         {
             grabberTaskObj.unregisterTask(TaskType.POSTCONTINUOUS_TASK);
@@ -208,7 +207,6 @@ public class CubePickup
      */
     public void grabCube(double power, TrcEvent event)
     {
-
         controlMotor.setPower(power);
         cubeEvent = event;
         setTaskEnabled(true);
@@ -246,15 +244,15 @@ public class CubePickup
         controlMotor.setPower(0.0);
     }
 
-    public void triggerEvent(boolean active)
-    {
-        stopPickup();
-        if (cubeEvent != null)
-        {
-            cubeEvent.set(true);
-        }
-        cubeTrigger.setTaskEnabled(false);
-    } // DigitalTriggerEvent
+//    public void triggerEvent(boolean active)
+//    {
+//        stopPickup();
+//        if (cubeEvent != null)
+//        {
+//            cubeEvent.set(true);
+//        }
+//        cubeTrigger.setTaskEnabled(false);
+//    } // DigitalTriggerEvent
 
     // Step 1:
     // - set timer for 0.5 second, when done goto step 2.
@@ -278,6 +276,7 @@ public class CubePickup
                 sm.waitForSingleEvent(event, State.ENABLE_TRIGGER);
                 break;
             case ENABLE_TRIGGER:
+                currentThreshold[0] = getGrabberCurrent() + RobotInfo.GRABBER_CURRENT_OFFSET;
                 currentTrigger.setTaskEnabled(true);
                 sm.waitForSingleEvent(event, State.DISABLE_TRIGGER);
                 break;
