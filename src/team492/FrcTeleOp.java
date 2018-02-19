@@ -287,13 +287,13 @@ public class FrcTeleOp implements TrcRobot.RobotMode
         switch (button)
         {
             case FrcJoystick.LOGITECH_TRIGGER:
-                if (pressed && !robot.cubePickup.cubeDetected())
+                if (pressed)
                 {
-                    robot.cubePickup.grabCube(RobotInfo.TELEOP_GRABBER_POWER);
+                    robot.cubePickup.grabCube(RobotInfo.TELEOP_GRABBER_POWER, null);
                 }
                 else
                 {
-                    robot.cubePickup.stopPickup();
+                    robot.cubePickup.stopGrabberTask();
                 }
                 break;
 
@@ -311,21 +311,7 @@ public class FrcTeleOp implements TrcRobot.RobotMode
             case FrcJoystick.LOGITECH_BUTTON3:
                 if (pressed)
                 {
-                    if (operatorStick.getTrigger())
-                    {
-                        if (robot.cubePickup.cubeDetected())
-                        {
-                            robot.cubePickup.dropCube(RobotInfo.TELEOP_GRABBER_POWER);
-                        }
-                        else
-                        {
-                            robot.cubePickup.grabCube(RobotInfo.TELEOP_GRABBER_POWER);
-                        }
-                    }
-                    else
-                    {
-                        robot.cubePickup.dropCube(RobotInfo.TELEOP_GRABBER_POWER);
-                    }
+                    robot.cubePickup.dropCube(RobotInfo.TELEOP_GRABBER_POWER);
                 }
                 else
                 {

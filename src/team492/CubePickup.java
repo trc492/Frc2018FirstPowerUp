@@ -180,10 +180,10 @@ public class CubePickup
     /**
      * @return Returns true of there is a cube in the pickup
      */
-    public boolean cubeDetected()
-    {
-        return cubeSensor.isActive();
-    }
+//    public boolean cubeDetected()
+//    {
+//        return cubeSensor.isActive();
+//    }
 
     public double getPower()
     {
@@ -230,6 +230,12 @@ public class CubePickup
     public void stopPickup()
     {
         controlMotor.setPower(0.0);
+    }
+    
+    public void stopGrabberTask()
+    {
+        setGrabberTaskEnabled(false);
+        stopPickup();
     }
 
     // Step 1:

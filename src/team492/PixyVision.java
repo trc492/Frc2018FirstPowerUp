@@ -36,7 +36,7 @@ public class PixyVision
     private static final String moduleName = "PixyVision";
     private static final boolean debugEnabled = true;
 
-    private static final boolean FILTER_ENABLED = true;
+    private static final boolean FILTER_ENABLED = false;
     private static final double PERCENT_TOLERANCE = 0.3;    // 30% tolerance
     private static final double PERCENT_TOLERANCE_LOWER = 1.0 - PERCENT_TOLERANCE;
     private static final double PERCENT_TOLERANCE_UPPER = 1.0 + PERCENT_TOLERANCE;

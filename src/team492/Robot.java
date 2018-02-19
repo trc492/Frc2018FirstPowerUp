@@ -520,8 +520,8 @@ public class Robot extends FrcRobotBase
 
             if (DEBUG_CUBE_PICKUP)
             {
-                dashboard.displayPrintf(9, "CubePickup: power=%.1f, detected=%b",
-                    cubePickup.getPower(), cubePickup.cubeDetected());
+                dashboard.displayPrintf(9, "CubePickup: power=%.1f, current=%.1f",
+                    cubePickup.getPower(), cubePickup.getGrabberCurrent());
             }
 
             if (DEBUG_PIXY)
