@@ -235,14 +235,14 @@ public class RobotInfo
     public static final double RIGHT_SWITCH_LOCATION = 102.0;
     public static final double LEFT_SWITCH_LOCATION = -102.0;
     public static final double SCALE_TARGET_HEIGHT = 60.0;
-    public static final double ADVANCE_TO_SECOND_CUBE_DISTANCE = 72.0;
-    public static final double STRAFE_TO_SECOND_CUBE_DISTANCE = 102.0;
-//    public static final double SECOND_CUBE_BACKUP_DISTANCE = 30.0;
+    public static final double ADVANCE_TO_SECOND_CUBE_DISTANCE = 57.0;
+    public static final double STRAFE_TO_SECOND_CUBE_DISTANCE = 165.0;
     public static final double SCALE_FRONT_POSITION = 75.0;
     public static final double SCALE_SIDE_POSITION = 120.0;
     public static final double FIRST_ELEVATOR_HEIGHT = 30.0;
-    public static final double ADVANCE_AROUND_SCALE_DISTANCE = 94.0;
+    public static final double ADVANCE_AROUND_SCALE_DISTANCE = 109.0;
     public static final double SWITCH_STRAFE_DISTANCE = 26.0;
+    public static final double MAX_CUBE_DISTANCE = 20.0;
     
     //
     // FrcAuto constants.

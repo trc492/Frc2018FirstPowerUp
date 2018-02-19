@@ -477,7 +477,7 @@ class CmdPowerUpAuto implements TrcRobot.RobotCommand, CmdStrafeUntilCube.StopTr
     
     @Override
 	public boolean shouldStop(CmdAutoCubePickup.State currentState, double elapsedTime, double changeX, double changeY) {
-		if(elapsedTime > 3.0)
+		if(changeY > RobotInfo.MAX_CUBE_DISTANCE)
     	{
     		return true;
     	}
@@ -486,6 +486,5 @@ class CmdPowerUpAuto implements TrcRobot.RobotCommand, CmdStrafeUntilCube.StopTr
     		return false;
     	}
 	}
-    
 
 } // class CmdPowerUpAuto
