@@ -31,7 +31,7 @@ import trclib.TrcStateMachine;
 import trclib.TrcTimer;
 
 @SuppressWarnings("unused")
-class CmdPowerUpAuto implements TrcRobot.RobotCommand, CmdStrafeUntilCube.StopTrigger
+class CmdPowerUpAuto implements TrcRobot.RobotCommand, CmdStrafeUntilCube.StopTrigger, CmdAutoCubePickup.StopTrigger
 {
     private static enum State
     {
@@ -82,6 +82,7 @@ class CmdPowerUpAuto implements TrcRobot.RobotCommand, CmdStrafeUntilCube.StopTr
     private double startPosition;
     private double targetLocation;
     private double cubeStrafeDistance;
+    private double cubeAcquireDistance;
     
 
     CmdPowerUpAuto(Robot robot, double delay, double forwardDistance, boolean sideApproach, double startPosition)
@@ -308,20 +309,22 @@ class CmdPowerUpAuto implements TrcRobot.RobotCommand, CmdStrafeUntilCube.StopTr
                     break;
                     
                 case START_SECOND_PICKUP:
-                    robot.cmdAutoCubePickup.start();
+                    robot.cmdAutoCubePickup.start(this::shouldStop);
                     sm.setState(State.PICKUP_SECOND_CUBE);
                     break;
 
                 case PICKUP_SECOND_CUBE:
+                	
                     if(robot.cmdAutoCubePickup.cmdPeriodic(elapsedTime))
                     {
                         sm.setState(State.BACKUP_WITH_SECOND_CUBE);
                     }
+                    cubeAcquireDistance = robot.cmdAutoCubePickup.changeY();
                 	break;
                 	
                 case BACKUP_WITH_SECOND_CUBE:
                 	xDistance = 0;
-                    yDistance = -RobotInfo.SECOND_CUBE_BACKUP_DISTANCE;
+                    yDistance = -cubeAcquireDistance;
                 	robot.pidDrive.setTarget(xDistance, yDistance, robot.targetHeading, false, event);
                     sm.waitForSingleEvent(event, State.REPOSITION_TURN);
                 	break;
@@ -462,7 +465,7 @@ class CmdPowerUpAuto implements TrcRobot.RobotCommand, CmdStrafeUntilCube.StopTr
     
     @Override
 	public boolean shouldStop(CmdStrafeUntilCube.State currentState, double elapsedTime, double changeX, double changeY) {
-		if(changeX > RobotInfo.STRAFE_TO_SECOND_CUBE_DISTANCE)
+		if(Math.abs(changeX) > RobotInfo.STRAFE_TO_SECOND_CUBE_DISTANCE)
     	{
     		return true;
     	}
@@ -471,5 +474,18 @@ class CmdPowerUpAuto implements TrcRobot.RobotCommand, CmdStrafeUntilCube.StopTr
     		return false;
     	}
 	}
+    
+    @Override
+	public boolean shouldStop(CmdAutoCubePickup.State currentState, double elapsedTime, double changeX, double changeY) {
+		if(elapsedTime > 3.0)
+    	{
+    		return true;
+    	}
+    	else
+    	{
+    		return false;
+    	}
+	}
+    
 
 } // class CmdPowerUpAuto
