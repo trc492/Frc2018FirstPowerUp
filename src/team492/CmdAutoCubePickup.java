@@ -74,7 +74,7 @@ public class CmdAutoCubePickup implements TrcRobot.RobotCommand
     	return robot.driveBase.getXPosition() - startX;
     }
     
-    private double changeY()
+    public double changeY()
     {
     	return robot.driveBase.getYPosition() - startY;
     }

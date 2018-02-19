@@ -101,7 +101,7 @@ public class CmdStrafeUntilCube implements TrcRobot.RobotCommand
         return new double[] { changeX(), changeY() };
     }
 
-    protected double changeX()
+    public double changeX()
     {
         return robot.driveBase.getXPosition() - startX;
     }
