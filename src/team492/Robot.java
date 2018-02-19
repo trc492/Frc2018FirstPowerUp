@@ -230,12 +230,11 @@ public class Robot extends FrcRobotBase
             cam0.setResolution(RobotInfo.USBCAM_WIDTH, RobotInfo.USBCAM_HEIGHT);
             cam0.setFPS(RobotInfo.USBCAM_FRAME_RATE);
             cam0.setBrightness(RobotInfo.USBCAM_BRIGHTNESS);
+            CvSink videoIn = CameraServer.getInstance().getVideo(cam0);
+            CvSource videoOut = CameraServer.getInstance().putVideo(
+                "VisionTarget", RobotInfo.USBCAM_WIDTH, RobotInfo.USBCAM_HEIGHT);
             if (USE_GRIP_VISION)
             {
-                CvSink videoIn = CameraServer.getInstance().getVideo(cam0);
-                CvSource videoOut = CameraServer.getInstance().putVideo(
-                    "VisionTarget", RobotInfo.USBCAM_WIDTH, RobotInfo.USBCAM_HEIGHT);
-
                 gripVision = new GripVision("GripVision", videoIn, videoOut);
             }
         }

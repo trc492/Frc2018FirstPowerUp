@@ -53,7 +53,7 @@ public class CubePickup
     private TrcStateMachine<State> sm;
     private TrcTimer timer;
     private TrcEvent event;
-    private double[] currentThreshold = {RobotInfo.GRABBER_CURRENT_THRESHOLD};
+    private double[] currentThreshold = {RobotInfo.GRABBER_FREE_SPIN_CURRENT, RobotInfo.GRABBER_STALL_CURRENT};
 
     /**
      * Initialize the CubePickup class.
@@ -259,7 +259,7 @@ public class CubePickup
                 break;
 
             case ENABLE_TRIGGER:
-                currentThreshold[0] = getGrabberCurrent() + RobotInfo.GRABBER_CURRENT_OFFSET;
+                currentThreshold[0] = getGrabberCurrent();
                 currentTrigger.setTaskEnabled(true);
                 sm.waitForSingleEvent(event, State.DISABLE_TRIGGER);
                 break;

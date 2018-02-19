@@ -198,8 +198,8 @@ public class RobotInfo
     //
     // CubePickup subsystem.
     //
-    public static final double GRABBER_CURRENT_THRESHOLD        = 40.0;     // Need to be tuned.
-    public static final double GRABBER_CURRENT_OFFSET           = 10.0;
+    public static final double GRABBER_FREE_SPIN_CURRENT        = 20.0;     // Need to be tuned.
+    public static final double GRABBER_STALL_CURRENT            = 40.0;
 
     //
     // Elevator subsystem.
