@@ -81,7 +81,7 @@ public class Robot extends FrcRobotBase
     public static final boolean USE_PIXY_I2C = true;
     public static final boolean USE_TEXT_TO_SPEECH = true;
     public static final boolean USE_MESSAGE_BOARD = false;
-    public static final boolean USE_GYRO_ASSIST = false;
+    public static final boolean USE_GYRO_ASSIST = true;
 
     private static final boolean DEBUG_POWER_CONSUMPTION = true;
     private static final boolean DEBUG_DRIVE_BASE = false;
@@ -144,7 +144,7 @@ public class Robot extends FrcRobotBase
     public TrcPidController gyroTurnPidCtrl;
     public TrcPidDrive pidDrive;
 
-    public TrcPidController sonarDrivePidCtrl;
+    //public TrcPidController sonarDrivePidCtrl;
     public TrcPidController visionTurnPidCtrl;
     public TrcPidDrive visionPidDrive;
     public TrcPidDrive sonarPidDrive;
@@ -336,14 +336,14 @@ public class Robot extends FrcRobotBase
         pidDrive.setStallTimeout(RobotInfo.DRIVE_STALL_TIMEOUT);
         pidDrive.setMsgTracer(tracer);
 
-        sonarDrivePidCtrl = new TrcPidController(
-            "sonarDrivePidCtrl",
-            new PidCoefficients(
-                RobotInfo.SONAR_KP, RobotInfo.SONAR_KI, RobotInfo.SONAR_KD, RobotInfo.SONAR_KF),
-            RobotInfo.SONAR_TOLERANCE,
-            this::getFrontSonarDistance);
-        sonarDrivePidCtrl.setAbsoluteSetPoint(true);
-        sonarDrivePidCtrl.setInverted(true);
+//        sonarDrivePidCtrl = new TrcPidController(
+//            "sonarDrivePidCtrl",
+//            new PidCoefficients(
+//                RobotInfo.SONAR_KP, RobotInfo.SONAR_KI, RobotInfo.SONAR_KD, RobotInfo.SONAR_KF),
+//            RobotInfo.SONAR_TOLERANCE,
+//            this::getFrontSonarDistance);
+//        sonarDrivePidCtrl.setAbsoluteSetPoint(true);
+//        sonarDrivePidCtrl.setInverted(true);
         visionTurnPidCtrl = new TrcPidController(
             "visionTurnPidCtrl",
             new PidCoefficients(
@@ -352,11 +352,11 @@ public class Robot extends FrcRobotBase
             this::getPixyTargetAngle);
         visionTurnPidCtrl.setInverted(true);
         visionTurnPidCtrl.setAbsoluteSetPoint(true);
-        visionPidDrive = new TrcPidDrive("visionPidDrive", driveBase, null, sonarDrivePidCtrl, visionTurnPidCtrl);
+        visionPidDrive = new TrcPidDrive("visionPidDrive", driveBase, encoderXPidCtrl, encoderYPidCtrl, visionTurnPidCtrl);
         visionPidDrive.setStallTimeout(RobotInfo.DRIVE_STALL_TIMEOUT);
         visionPidDrive.setMsgTracer(tracer);
-        sonarPidDrive = new TrcPidDrive("sonarPidDrive", driveBase, null, sonarDrivePidCtrl, null);
-        sonarPidDrive.setMsgTracer(tracer);
+//        sonarPidDrive = new TrcPidDrive("sonarPidDrive", driveBase, null, sonarDrivePidCtrl, null);
+//        sonarPidDrive.setMsgTracer(tracer);
         visionPidTurn = new TrcPidDrive("visionPidTurn", driveBase, null, null, visionTurnPidCtrl);
         visionPidTurn.setMsgTracer(tracer);
 
@@ -454,6 +454,8 @@ public class Robot extends FrcRobotBase
         if (currTime >= nextUpdateTime)
         {
             nextUpdateTime = currTime + DASHBOARD_UPDATE_INTERVAL;
+            
+            dashboard.displayPrintf(10, "Elevator Power: %f.2", this.elevator.getPower());
 
             if (DEBUG_POWER_CONSUMPTION)
             {

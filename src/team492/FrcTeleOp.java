@@ -86,7 +86,7 @@ public class FrcTeleOp implements TrcRobot.RobotMode
         robot.encoderXPidCtrl.setOutputRange(-1.0, 1.0);
         robot.encoderYPidCtrl.setOutputRange(-1.0, 1.0);
         robot.gyroTurnPidCtrl.setOutputRange(-1.0, 1.0);
-        robot.sonarDrivePidCtrl.setOutputRange(-1.0, 1.0);
+        //robot.sonarDrivePidCtrl.setOutputRange(-1.0, 1.0);
         robot.visionTurnPidCtrl.setOutputRange(-1.0, 1.0);
     } // startMode
 
@@ -164,6 +164,7 @@ public class FrcTeleOp implements TrcRobot.RobotMode
         }
         else if (robot.cmdAutoCubePickup.isEnabled())
         {
+            robot.tracer.tracePrintf("Activated: %b", robot.cmdAutoCubePickup.isEnabled());
             robot.cmdAutoCubePickup.cmdPeriodic(elapsedTime);
         }
     } // runContinuous

@@ -150,8 +150,8 @@ public class FrcTest extends FrcTeleOp
 
             case SONAR_DRIVE:
                 useTraceLog = true;
-                pidDriveCommand = new CmdPidDrive(robot, robot.sonarPidDrive, null, robot.sonarDrivePidCtrl,
-                    robot.gyroTurnPidCtrl, 0.0, 0.0, robot.frontSonarTarget, 0.0, robot.drivePowerLimit, true);
+//                pidDriveCommand = new CmdPidDrive(robot, robot.sonarPidDrive, null, robot.sonarDrivePidCtrl,
+//                    robot.gyroTurnPidCtrl, 0.0, 0.0, robot.frontSonarTarget, 0.0, robot.drivePowerLimit, true);
                 break;
 
             case VISION_TURN:
@@ -241,7 +241,7 @@ public class FrcTest extends FrcTeleOp
                 robot.encoderXPidCtrl.displayPidInfo(3);
                 if (test == Test.SONAR_DRIVE)
                 {
-                    robot.sonarDrivePidCtrl.displayPidInfo(5);
+                    //robot.sonarDrivePidCtrl.displayPidInfo(5);
                 }
                 else
                 {
@@ -272,7 +272,7 @@ public class FrcTest extends FrcTeleOp
                     }
                     else if (test == Test.SONAR_DRIVE)
                     {
-                        robot.sonarDrivePidCtrl.printPidInfo(robot.tracer, elapsedTime, robot.battery);
+                        //robot.sonarDrivePidCtrl.printPidInfo(robot.tracer, elapsedTime, robot.battery);
                     }
                     else if (test == Test.VISION_TURN)
                     {
