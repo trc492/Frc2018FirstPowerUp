@@ -140,6 +140,9 @@ public class RobotInfo
     public static final double DRIVE_SLOW_XSCALE                = 3.0;
     public static final double DRIVE_SLOW_YSCALE                = 3.0;
     public static final double DRIVE_SLOW_TURNSCALE             = 3.0;
+    public static final double DRIVE_WHEEL_RADIUS_IN            = 4.0;
+    public static final double DRIVE_MOTOR_ROTATIONS_PER_WHEEL_ROTATION           = 12.0;
+    public static final double MAX_WHEEL_FORCE_OZ                 = (343.4 * DRIVE_MOTOR_ROTATIONS_PER_WHEEL_ROTATION) / DRIVE_WHEEL_RADIUS_IN;
 
     // 2017-03-21: 0.0152347136491642, 0.15, 0.0, 0.0
     public static final double ENCODER_X_INCHES_PER_COUNT       = 0.0152347136491642;
