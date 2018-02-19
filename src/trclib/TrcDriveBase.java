@@ -61,7 +61,15 @@ public class TrcDriveBase
      */
     public interface MotorPowerMapper
     {
-        double translateMotorPower(double power, double speedRpm);
+        /**
+         * This method is called to translate the desired motor power to the actual motor power taking into
+         * consideration of the motor torque curve with the current motor speed.
+         *
+         * @param power specifies the desired motor power.
+         * @param speed specifies the current motor speed in the unit of encoder counts per second.
+         * @return resulting motor power.
+         */
+        double translateMotorPower(double power, double speed);
     }   //interface MotorPowerMapper
 
     private static double DEF_SENSITIVITY = 0.5;
