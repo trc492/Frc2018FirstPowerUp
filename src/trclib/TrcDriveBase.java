@@ -53,6 +53,17 @@ public class TrcDriveBase
         }
     }   //enum MotorType
 
+    /**
+     * This interface is provided by the caller to translate the motor power to actual motor power according to
+     * the motor curve. This is useful to linearize the motor performance. This is very useful for many reasons.
+     * It could allow the drive base to drive straight by translating wheel power to actual torque. It could also
+     * allow us to implement our own ramp rate to limit acceleration and decleration.
+     */
+    public interface MotorPowerMapper
+    {
+        double translateMotorPower(double power, double speedRpm);
+    }   //interface MotorPowerMapper
+
     private static double DEF_SENSITIVITY = 0.5;
     private static double DEF_MAX_OUTPUT = 1.0;
 
@@ -63,6 +74,7 @@ public class TrcDriveBase
     private TrcMotorController rightMidMotor;
     private TrcMotorController rightRearMotor;
     private TrcGyro gyro;
+    private MotorPowerMapper motorPowerMapper = null;
     private int numMotors = 0;
     private double sensitivity = DEF_SENSITIVITY;
     private double maxOutput = DEF_MAX_OUTPUT;
@@ -245,6 +257,16 @@ public class TrcDriveBase
     {
         this(leftMotor, rightMotor, null);
     }   //TrcDriveBase
+
+    /**
+     * This method sets a motor power mapper. If null, it unsets the previously set mapper.
+     *
+     * @param motorPowerMapper specifies the motor power mapper. If null, clears the mapper.
+     */
+    public void setMotorPowerMapper(MotorPowerMapper motorPowerMapper)
+    {
+        this.motorPowerMapper = motorPowerMapper;
+    }   //setMotorPowerMapper
 
     /**
      * This method sets the sensitivity for the drive() method.
@@ -881,12 +903,67 @@ public class TrcDriveBase
         leftPower = TrcUtil.clipRange(leftPower, -maxOutput, maxOutput);
         rightPower = TrcUtil.clipRange(rightPower, -maxOutput, maxOutput);
 
-        if (leftFrontMotor != null) leftFrontMotor.setPower(leftPower);
-        if (rightFrontMotor != null) rightFrontMotor.setPower(rightPower);
-        if (leftRearMotor != null) leftRearMotor.setPower(leftPower);
-        if (rightRearMotor != null) rightRearMotor.setPower(rightPower);
-        if (leftMidMotor != null) leftMidMotor.setPower(leftPower);
-        if (rightMidMotor != null) rightMidMotor.setPower(rightPower);
+        double wheelPower;
+
+        if (leftFrontMotor != null)
+        {
+            wheelPower = leftPower;
+            if (motorPowerMapper != null)
+            {
+                wheelPower = motorPowerMapper.translateMotorPower(wheelPower, leftFrontMotor.getSpeed());
+            }
+            leftFrontMotor.setPower(wheelPower);
+        }
+
+        if (rightFrontMotor != null)
+        {
+            wheelPower = rightPower;
+            if (motorPowerMapper != null)
+            {
+                wheelPower = motorPowerMapper.translateMotorPower(wheelPower, rightFrontMotor.getSpeed());
+            }
+            rightFrontMotor.setPower(wheelPower);
+        }
+
+        if (leftRearMotor != null)
+        {
+            wheelPower = leftPower;
+            if (motorPowerMapper != null)
+            {
+                wheelPower = motorPowerMapper.translateMotorPower(wheelPower, leftRearMotor.getSpeed());
+            }
+            leftRearMotor.setPower(wheelPower);
+        }
+
+        if (rightRearMotor != null)
+        {
+            wheelPower = rightPower;
+            if (motorPowerMapper != null)
+            {
+                wheelPower = motorPowerMapper.translateMotorPower(wheelPower, rightRearMotor.getSpeed());
+            }
+            rightRearMotor.setPower(wheelPower);
+        }
+
+        if (leftMidMotor != null)
+        {
+            wheelPower = leftPower;
+            if (motorPowerMapper != null)
+            {
+                wheelPower = motorPowerMapper.translateMotorPower(wheelPower, leftMidMotor.getSpeed());
+            }
+            leftMidMotor.setPower(wheelPower);
+        }
+
+        if (rightMidMotor != null)
+        {
+            wheelPower = rightPower;
+            if (motorPowerMapper != null)
+            {
+                wheelPower = motorPowerMapper.translateMotorPower(wheelPower, rightMidMotor.getSpeed());
+            }
+            rightMidMotor.setPower(wheelPower);
+        }
 
         if (debugEnabled)
         {
@@ -1005,22 +1082,54 @@ public class TrcDriveBase
             rotation += TrcUtil.clipRange(gyroAssistKp*(rotation - gyroRateScale*gyro.getZRotationRate().value));
         }
 
-        double wheelSpeeds[] = new double[4];
-        wheelSpeeds[MotorType.LEFT_FRONT.value] = x1 + y1 + rotation;
-        wheelSpeeds[MotorType.RIGHT_FRONT.value] = -x1 + y1 - rotation;
-        wheelSpeeds[MotorType.LEFT_REAR.value] = -x1 + y1 + rotation;
-        wheelSpeeds[MotorType.RIGHT_REAR.value] = x1 + y1 - rotation;
-        normalize(wheelSpeeds);
+        double wheelPowers[] = new double[4];
+        wheelPowers[MotorType.LEFT_FRONT.value] = x1 + y1 + rotation;
+        wheelPowers[MotorType.RIGHT_FRONT.value] = -x1 + y1 - rotation;
+        wheelPowers[MotorType.LEFT_REAR.value] = -x1 + y1 + rotation;
+        wheelPowers[MotorType.RIGHT_REAR.value] = x1 + y1 - rotation;
+        normalize(wheelPowers);
 
-        for (int i = 0; i < wheelSpeeds.length; i++)
+        double wheelPower;
+
+        if (leftFrontMotor != null)
         {
-            wheelSpeeds[i] = TrcUtil.clipRange(wheelSpeeds[i], -maxOutput, maxOutput);
+            wheelPower = wheelPowers[MotorType.LEFT_FRONT.value];
+            if (motorPowerMapper != null)
+            {
+                wheelPower = motorPowerMapper.translateMotorPower(wheelPower, leftFrontMotor.getSpeed());
+            }
+            leftFrontMotor.setPower(wheelPower);
         }
 
-        if (leftFrontMotor != null) leftFrontMotor.setPower(wheelSpeeds[MotorType.LEFT_FRONT.value]);
-        if (rightFrontMotor != null) rightFrontMotor.setPower(wheelSpeeds[MotorType.RIGHT_FRONT.value]);
-        if (leftRearMotor != null) leftRearMotor.setPower(wheelSpeeds[MotorType.LEFT_REAR.value]);
-        if (rightRearMotor != null) rightRearMotor.setPower(wheelSpeeds[MotorType.RIGHT_REAR.value]);
+        if (rightFrontMotor != null)
+        {
+            wheelPower = wheelPowers[MotorType.RIGHT_FRONT.value];
+            if (motorPowerMapper != null)
+            {
+                wheelPower = motorPowerMapper.translateMotorPower(wheelPower, rightFrontMotor.getSpeed());
+            }
+            rightFrontMotor.setPower(wheelPower);
+        }
+
+        if (leftRearMotor != null)
+        {
+            wheelPower = wheelPowers[MotorType.LEFT_REAR.value];
+            if (motorPowerMapper != null)
+            {
+                wheelPower = motorPowerMapper.translateMotorPower(wheelPower, leftRearMotor.getSpeed());
+            }
+            leftRearMotor.setPower(wheelPower);
+        }
+
+        if (rightRearMotor != null)
+        {
+            wheelPower = wheelPowers[MotorType.RIGHT_REAR.value];
+            if (motorPowerMapper != null)
+            {
+                wheelPower = motorPowerMapper.translateMotorPower(wheelPower, rightRearMotor.getSpeed());
+            }
+            rightRearMotor.setPower(wheelPower);
+        }
 
         if (debugEnabled)
         {
@@ -1096,22 +1205,54 @@ public class TrcDriveBase
             rotation += TrcUtil.clipRange(gyroAssistKp*(rotation - gyroRateScale*gyro.getZRotationRate().value));
         }
 
-        double wheelSpeeds[] = new double[4];
-        wheelSpeeds[MotorType.LEFT_FRONT.value] = (sinD*magnitude + rotation);
-        wheelSpeeds[MotorType.RIGHT_FRONT.value] = (cosD*magnitude - rotation);
-        wheelSpeeds[MotorType.LEFT_REAR.value] = (cosD*magnitude + rotation);
-        wheelSpeeds[MotorType.RIGHT_REAR.value] = (sinD*magnitude - rotation);
-        normalize(wheelSpeeds);
+        double wheelPowers[] = new double[4];
+        wheelPowers[MotorType.LEFT_FRONT.value] = (sinD*magnitude + rotation);
+        wheelPowers[MotorType.RIGHT_FRONT.value] = (cosD*magnitude - rotation);
+        wheelPowers[MotorType.LEFT_REAR.value] = (cosD*magnitude + rotation);
+        wheelPowers[MotorType.RIGHT_REAR.value] = (sinD*magnitude - rotation);
+        normalize(wheelPowers);
 
-        for (int i = 0; i < wheelSpeeds.length; i++)
+        double wheelPower;
+
+        if (leftFrontMotor != null)
         {
-            wheelSpeeds[i] = TrcUtil.clipRange(wheelSpeeds[i], -maxOutput, maxOutput);
+            wheelPower = wheelPowers[MotorType.LEFT_FRONT.value];
+            if (motorPowerMapper != null)
+            {
+                wheelPower = motorPowerMapper.translateMotorPower(wheelPower, leftFrontMotor.getSpeed());
+            }
+            leftFrontMotor.setPower(wheelPower);
         }
 
-        if (leftFrontMotor != null) leftFrontMotor.setPower(wheelSpeeds[MotorType.LEFT_FRONT.value]);
-        if (rightFrontMotor != null) rightFrontMotor.setPower(wheelSpeeds[MotorType.RIGHT_FRONT.value]);
-        if (leftRearMotor != null) leftRearMotor.setPower(wheelSpeeds[MotorType.LEFT_REAR.value]);
-        if (rightRearMotor != null) rightRearMotor.setPower(wheelSpeeds[MotorType.RIGHT_REAR.value]);
+        if (rightFrontMotor != null)
+        {
+            wheelPower = wheelPowers[MotorType.RIGHT_FRONT.value];
+            if (motorPowerMapper != null)
+            {
+                wheelPower = motorPowerMapper.translateMotorPower(wheelPower, rightFrontMotor.getSpeed());
+            }
+            rightFrontMotor.setPower(wheelPower);
+        }
+
+        if (leftRearMotor != null)
+        {
+            wheelPower = wheelPowers[MotorType.LEFT_REAR.value];
+            if (motorPowerMapper != null)
+            {
+                wheelPower = motorPowerMapper.translateMotorPower(wheelPower, leftRearMotor.getSpeed());
+            }
+            leftRearMotor.setPower(wheelPower);
+        }
+
+        if (rightRearMotor != null)
+        {
+            wheelPower = wheelPowers[MotorType.RIGHT_REAR.value];
+            if (motorPowerMapper != null)
+            {
+                wheelPower = motorPowerMapper.translateMotorPower(wheelPower, rightRearMotor.getSpeed());
+            }
+            rightRearMotor.setPower(wheelPower);
+        }
 
         if (debugEnabled)
         {
@@ -1135,14 +1276,14 @@ public class TrcDriveBase
     /**
      * This method normalizes the power to the four wheels for mecanum drive.
      *
-     * @param wheelSpeeds specifies the wheel speed of all four wheels.
+     * @param wheelPowers specifies the wheel power of all four wheels.
      */
-    private void normalize(double[] wheelSpeeds)
+    private void normalize(double[] wheelPowers)
     {
-        double maxMagnitude = Math.abs(wheelSpeeds[0]);
-        for (int i = 1; i < wheelSpeeds.length; i++)
+        double maxMagnitude = Math.abs(wheelPowers[0]);
+        for (int i = 1; i < wheelPowers.length; i++)
         {
-            double magnitude = Math.abs(wheelSpeeds[i]);
+            double magnitude = Math.abs(wheelPowers[i]);
             if (magnitude > maxMagnitude)
             {
                 maxMagnitude = magnitude;
@@ -1151,9 +1292,9 @@ public class TrcDriveBase
 
         if (maxMagnitude > 1.0)
         {
-            for (int i = 0; i < wheelSpeeds.length; i++)
+            for (int i = 0; i < wheelPowers.length; i++)
             {
-                wheelSpeeds[i] /= maxMagnitude;
+                wheelPowers[i] /= maxMagnitude;
             }
         }
     }   //normalize

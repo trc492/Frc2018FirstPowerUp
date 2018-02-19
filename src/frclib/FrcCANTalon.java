@@ -229,6 +229,30 @@ public class FrcCANTalon extends TrcMotor
     }   //getPower
 
     /**
+     * This method gets current motor speed in raw sensor unit per second.
+     *
+     * @return current motor speed by calling the Talon.
+     */
+    @Override
+    public double getSpeed()
+    {
+        final String funcName = "getSpeed";
+//        double speed = motor.getSelectedSensorVelocity(0)/
+//            (motor.getStatusFramePeriod(feedbackDeviceIsPot? StatusFrameEnhanced.Status_2_Feedback0:
+//                StatusFrameEnhanced.Status_3_Quadrature, 0)/1000.0);
+        // The sensor velocity is in the raw sensor unit per 100 msec.
+        double speed = motor.getSelectedSensorVelocity(0)/0.1;
+
+        if (debugEnabled)
+        {
+            dbgTrace.traceEnter(funcName, TrcDbgTrace.TraceLevel.API);
+            dbgTrace.traceExit(funcName, TrcDbgTrace.TraceLevel.API, "=%f", speed);
+        }
+
+        return speed;
+    }   //getSpeed
+
+    /**
      * This method returns the state of the lower limit switch.
      *
      * @return true if lower limit switch is active, false otherwise.

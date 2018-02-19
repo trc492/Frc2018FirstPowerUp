@@ -305,9 +305,10 @@ public class Robot extends FrcRobotBase
         driveBase = new TrcDriveBase(leftFrontWheel, leftRearWheel, rightFrontWheel, rightRearWheel, gyro);
         driveBase.setXPositionScale(RobotInfo.ENCODER_X_INCHES_PER_COUNT);
         driveBase.setYPositionScale(RobotInfo.ENCODER_Y_INCHES_PER_COUNT);
+        driveBase.setMotorPowerMapper(this::translateMotorPower);
         if(USE_GYRO_ASSIST)
         {
-        	driveBase.enableGyroAssist(RobotInfo.GYRO_ASSIST_SCALE, RobotInfo.GYRO_ASSIST_KP);        	
+            driveBase.enableGyroAssist(RobotInfo.GYRO_ASSIST_SCALE, RobotInfo.GYRO_ASSIST_KP);
         }
 
         //
@@ -651,7 +652,7 @@ public class Robot extends FrcRobotBase
         return targetInfo != null? targetInfo.angle: 0.0;
     }
 
-    public double translateMotorPower(double rpm, double desiredForcePercentage)
+    public double translateMotorPower(double desiredForcePercentage, double rpm)
     {
         double desiredForceOz = desiredForcePercentage * RobotInfo.MAX_WHEEL_FORCE_OZ;
         double constrainedForceOz = constrainTorqueByElevatorHeight(desiredForceOz);
