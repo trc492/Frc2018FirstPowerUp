@@ -42,7 +42,9 @@ class CmdPowerUpAuto implements TrcRobot.RobotCommand, CmdStrafeUntilCube.StopTr
         MOVE_SIDEWAYS,
         SWITCH_TURN,
         DRIVE_TO_TARGET,
+        STRAFE_TO_SWITCH,
         FLIP_CUBE,
+        STRAFE_FROM_SWITCH,
         DRIVE_TO_SECOND_CUBE,
         TURN_AROUND,
         START_STRAFE,
@@ -227,11 +229,25 @@ class CmdPowerUpAuto implements TrcRobot.RobotCommand, CmdStrafeUntilCube.StopTr
                     xDistance = 0.0;
                     yDistance = RobotInfo.AUTO_DISTANCE_TO_SWITCH - forwardDistance;
                     robot.pidDrive.setTarget(xDistance, yDistance, robot.targetHeading, false, event);
+                	sm.waitForSingleEvent(event, State.STRAFE_TO_SWITCH);
+                    break;
+                    
+                case STRAFE_TO_SWITCH:
+                	if(rightSwitch)
+                	{
+
+                    	xDistance = -(RobotInfo.SWITCH_STRAFE_DISTANCE + 5.0);
+                	}
+                	else
+                	{
+                		xDistance = RobotInfo.SWITCH_STRAFE_DISTANCE + 5.0;
+                	}
+                    yDistance = 0.0;
+                    robot.pidDrive.setTarget(xDistance, yDistance, robot.targetHeading, false, event);
                 	sm.waitForSingleEvent(event, State.FLIP_CUBE);
                     break;
                     
                 case FLIP_CUBE:
-                	//TODO: current launch location is a G09 violation
                 	if(rightSwitch)
                 	{
                 		robot.leftFlipper.extend();
@@ -241,8 +257,23 @@ class CmdPowerUpAuto implements TrcRobot.RobotCommand, CmdStrafeUntilCube.StopTr
                 		robot.rightFlipper.extend();
                 	}
                 	timer.set(0.3, event);
-                	sm.waitForSingleEvent(event, State.DRIVE_TO_SECOND_CUBE);
+                	sm.waitForSingleEvent(event, State.STRAFE_FROM_SWITCH);
                 	break;
+                	
+                case STRAFE_FROM_SWITCH:
+                	if(rightSwitch)
+                	{
+
+                    	xDistance = RobotInfo.SWITCH_STRAFE_DISTANCE;
+                	}
+                	else
+                	{
+                		xDistance = -RobotInfo.SWITCH_STRAFE_DISTANCE;
+                	}
+                    yDistance = 0.0;
+                    robot.pidDrive.setTarget(xDistance, yDistance, robot.targetHeading, false, event);
+                	sm.waitForSingleEvent(event, State.DRIVE_TO_SECOND_CUBE);
+                    break;
             	
                 case DRIVE_TO_SECOND_CUBE:
                 	robot.leftFlipper.retract();
