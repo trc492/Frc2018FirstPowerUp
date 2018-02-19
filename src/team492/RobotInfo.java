@@ -242,6 +242,7 @@ public class RobotInfo
     public static final double SCALE_SIDE_POSITION = 120.0;
     public static final double FIRST_ELEVATOR_HEIGHT = 30.0;
     public static final double ADVANCE_AROUND_SCALE_DISTANCE = 94.0;
+    public static final double SWITCH_STRAFE_DISTANCE = 26.0;
     
     //
     // FrcAuto constants.
