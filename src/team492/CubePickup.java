@@ -61,7 +61,7 @@ public class CubePickup
     public CubePickup()
     {
         controlMotor = new FrcCANTalon("LeftPickupMotor", RobotInfo.CANID_LEFT_PICKUP);
-        controlMotor.setInverted(true);
+        controlMotor.setInverted(false);
 
         slaveMotor = new FrcCANTalon("RightPickupMotor", RobotInfo.CANID_RIGHT_PICKUP);
         slaveMotor.setInverted(true);
