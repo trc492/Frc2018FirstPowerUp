@@ -510,6 +510,19 @@
               "_title": "Graph (no sources)",
               "Visible time": 30.0
             }
+          },
+          "0,5": {
+            "size": [
+              12,
+              4
+            ],
+            "content": {
+              "_type": "Graph",
+              "_source0": "network_table:///SmartDashboard/grabberCurrent",
+              "_title": "SmartDashboard/grabberCurrent",
+              "Visible time": 30.0,
+              "SmartDashboard/grabberCurrent visible": true
+            }
           }
         }
       }

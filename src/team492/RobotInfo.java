@@ -155,7 +155,7 @@ public class RobotInfo
 
     // 2017-04-06: 0.01778656, 0.04, 0.0, 0.004
   //OLD ENCODER Y INCHES PER COUNT: 0.02155312564705882352941176470588;//0.01778656;
-    public static final double ENCODER_Y_INCHES_PER_COUNT       = 0.016789667896679;
+    public static final double ENCODER_Y_INCHES_PER_COUNT       = 0.0167265689798175;
     public static final double ENCODER_Y_KP                     = 0.04;
     public static final double ENCODER_Y_KI                     = 0.0;
     public static final double ENCODER_Y_KD                     = 0.0077;

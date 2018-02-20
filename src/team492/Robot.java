@@ -456,7 +456,6 @@ public class Robot extends FrcRobotBase
         {
             nextUpdateTime = currTime + DASHBOARD_UPDATE_INTERVAL;
             
-            dashboard.displayPrintf(10, "Elevator Power: %f.2", this.elevator.getPower());
 
             if (DEBUG_POWER_CONSUMPTION)
             {
@@ -471,9 +470,12 @@ public class Robot extends FrcRobotBase
                 //
                 // DriveBase debug info.
                 //
-                dashboard.displayPrintf(8, "DriveBase: lf=%.0f, rf=%.0f, lr=%.0f, rr=%.0f",
+                double driveBaseAverage = (leftFrontWheel.getPosition() + rightFrontWheel.getPosition() 
+                + leftRearWheel.getPosition() + rightRearWheel.getPosition())/4;
+                
+                dashboard.displayPrintf(8, "DriveBase: lf=%.0f, rf=%.0f, lr=%.0f, rr=%.0f, avg=%.0f",
                     leftFrontWheel.getPosition(), rightFrontWheel.getPosition(),
-                    leftRearWheel.getPosition(), rightRearWheel.getPosition());
+                    leftRearWheel.getPosition(), rightRearWheel.getPosition(), driveBaseAverage);
                 dashboard.displayPrintf(9, "DriveBase: X=%.1f, Y=%.1f, Heading=%.1f",
                     driveBase.getXPosition(), driveBase.getYPosition(), driveBase.getHeading());
 
