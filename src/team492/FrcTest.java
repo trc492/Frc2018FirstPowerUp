@@ -118,6 +118,10 @@ public class FrcTest extends FrcTeleOp
         boolean liveWindowEnabled = false;
         switch (test)
         {
+            case SENSORS_TEST:
+            	useTraceLog = true;
+            	break;
+            	
             case DRIVE_MOTORS_TEST:
                 motorIndex = 0;
                 break;

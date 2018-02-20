@@ -652,17 +652,22 @@ public class Robot extends FrcRobotBase
         return targetInfo != null? targetInfo.angle: 0.0;
     }
 
-    public double translateMotorPower(double desiredForcePercentage, double rpm)
+    public double translateMotorPower(double desiredForcePercentage, double ticksPerSecond)
     {
+    	double rpmAtWheel = (ticksPerSecond / RobotInfo.DRIVE_ENCODER_COUNTS_PER_ROTATION) * 60.0;
+    	double rpmAtMotor = rpmAtWheel * RobotInfo.DRIVE_MOTOR_ROTATIONS_PER_WHEEL_ROTATION;
         double desiredForceOz = desiredForcePercentage * RobotInfo.MAX_WHEEL_FORCE_OZ;
         double constrainedForceOz = constrainTorqueByElevatorHeight(desiredForceOz);
-        double max_torque_at_rpm_in_ounce_inch = (-0.06467043 * rpm) + 343.4;
+        double max_torque_at_rpm_in_ounce_inch = (-0.06467043 * rpmAtMotor) + 343.4;
         double desiredTorqueAtWheelOzIn = constrainedForceOz * RobotInfo.DRIVE_WHEEL_RADIUS_IN;
         double desiredTorqueAtMotorOzIn = desiredTorqueAtWheelOzIn/RobotInfo.DRIVE_MOTOR_ROTATIONS_PER_WHEEL_ROTATION;
         double returnValue = desiredTorqueAtMotorOzIn/max_torque_at_rpm_in_ounce_inch;
-        tracer.traceInfo("TranslateMotorPower", "desiredForcePercentage=%.2f, desiredForceOz=%.2f, constrainedForceOz=%.2f, "
-            + "maxTorqueAtRPMOzIn=%.2f, desireTorqueAtWheelOzIn=%.2f, desiredTorqueAtMotorOzIn=%.2f, returnValue=%.2f", desiredForcePercentage, desiredForceOz,
-            constrainedForceOz, max_torque_at_rpm_in_ounce_inch, desiredTorqueAtWheelOzIn, desiredTorqueAtMotorOzIn, returnValue);
+        tracer.traceInfo("TranslateMotorPower", "desiredForcePercentage=%.2f, ticksPerSecond=%.2f,"
+        		+ " rpmAtWheel=%.2f, rpmAtMotor=%.2f, desiredForceOz=%.2f, constrainedForceOz=%.2f, "
+            + "maxTorqueAtRPMOzIn=%.2f, desireTorqueAtWheelOzIn=%.2f, desiredTorqueAtMotorOzIn=%.2f,"
+            + " returnValue=%.2f", desiredForcePercentage, ticksPerSecond, rpmAtWheel, rpmAtMotor, 
+            desiredForceOz,constrainedForceOz, max_torque_at_rpm_in_ounce_inch, desiredTorqueAtWheelOzIn, 
+            desiredTorqueAtMotorOzIn, returnValue);
         return returnValue;
     }
     
