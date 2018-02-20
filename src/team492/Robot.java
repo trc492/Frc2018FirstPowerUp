@@ -305,7 +305,7 @@ public class Robot extends FrcRobotBase
         driveBase = new TrcDriveBase(leftFrontWheel, leftRearWheel, rightFrontWheel, rightRearWheel, gyro);
         driveBase.setXPositionScale(RobotInfo.ENCODER_X_INCHES_PER_COUNT);
         driveBase.setYPositionScale(RobotInfo.ENCODER_Y_INCHES_PER_COUNT);
-        driveBase.setMotorPowerMapper(this::translateMotorPower);
+        //driveBase.setMotorPowerMapper(this::translateMotorPower);
         if(USE_GYRO_ASSIST)
         {
             driveBase.enableGyroAssist(RobotInfo.GYRO_ASSIST_SCALE, RobotInfo.GYRO_ASSIST_KP);
@@ -654,14 +654,14 @@ public class Robot extends FrcRobotBase
 
     public double translateMotorPower(double desiredForcePercentage, double ticksPerSecond)
     {
-    	double rpmAtWheel = (ticksPerSecond / RobotInfo.DRIVE_ENCODER_COUNTS_PER_ROTATION) * 60.0;
+    	double rpmAtWheel = (Math.abs(ticksPerSecond) / RobotInfo.DRIVE_ENCODER_COUNTS_PER_ROTATION) * 60.0;
     	double rpmAtMotor = rpmAtWheel * RobotInfo.DRIVE_MOTOR_ROTATIONS_PER_WHEEL_ROTATION;
         double desiredForceOz = desiredForcePercentage * RobotInfo.MAX_WHEEL_FORCE_OZ;
         double constrainedForceOz = constrainTorqueByElevatorHeight(desiredForceOz);
-        double max_torque_at_rpm_in_ounce_inch = (-0.06467043 * rpmAtMotor) + 343.4;
+        double max_torque_at_rpm_in_ounce_inch = Math.max((-0.06467043 * rpmAtMotor) + 343.4, 0.000001);
         double desiredTorqueAtWheelOzIn = constrainedForceOz * RobotInfo.DRIVE_WHEEL_RADIUS_IN;
         double desiredTorqueAtMotorOzIn = desiredTorqueAtWheelOzIn/RobotInfo.DRIVE_MOTOR_ROTATIONS_PER_WHEEL_ROTATION;
-        double returnValue = desiredTorqueAtMotorOzIn/max_torque_at_rpm_in_ounce_inch;
+        double returnValue = clamp(desiredTorqueAtMotorOzIn/max_torque_at_rpm_in_ounce_inch, -1.0, 1.0);
         tracer.traceInfo("TranslateMotorPower", "desiredForcePercentage=%.2f, ticksPerSecond=%.2f,"
         		+ " rpmAtWheel=%.2f, rpmAtMotor=%.2f, desiredForceOz=%.2f, constrainedForceOz=%.2f, "
             + "maxTorqueAtRPMOzIn=%.2f, desireTorqueAtWheelOzIn=%.2f, desiredTorqueAtMotorOzIn=%.2f,"
@@ -674,6 +674,11 @@ public class Robot extends FrcRobotBase
     public double constrainTorqueByElevatorHeight(double desiredForceOz)
     {
         //TODO: make this useful
-        return desiredForceOz;
+        return clamp(desiredForceOz, -150, 150);
     }
+    
+    private double clamp(double d, double min, double max) {
+        return Math.min(Math.max(d, min), max);
+    }
+
 }   //class Robot
