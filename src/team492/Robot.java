@@ -658,29 +658,27 @@ public class Robot extends FrcRobotBase
     {
     	double rpmAtWheel = (Math.abs(ticksPerSecond) / RobotInfo.DRIVE_ENCODER_COUNTS_PER_ROTATION) * 60.0;
     	double rpmAtMotor = rpmAtWheel * RobotInfo.DRIVE_MOTOR_ROTATIONS_PER_WHEEL_ROTATION;
-        double desiredForceOz = desiredForcePercentage * RobotInfo.MAX_WHEEL_FORCE_OZ;
-        double constrainedForceOz = constrainTorqueByElevatorHeight(desiredForceOz);
+        double constrainedForcePercentage = constrainForcePercentageByElevatorHeight(desiredForcePercentage);
+        double constrainedForceOz = constrainedForcePercentage * RobotInfo.MAX_WHEEL_FORCE_OZ;
         double max_torque_at_rpm_in_ounce_inch = Math.max((-0.06467043 * rpmAtMotor) + 343.4, 0.000001);
         double desiredTorqueAtWheelOzIn = constrainedForceOz * RobotInfo.DRIVE_WHEEL_RADIUS_IN;
         double desiredTorqueAtMotorOzIn = desiredTorqueAtWheelOzIn/RobotInfo.DRIVE_MOTOR_ROTATIONS_PER_WHEEL_ROTATION;
-        double returnValue = clamp(desiredTorqueAtMotorOzIn/max_torque_at_rpm_in_ounce_inch, -1.0, 1.0);
+        double returnValue = TrcUtil.clipRange(desiredTorqueAtMotorOzIn/max_torque_at_rpm_in_ounce_inch, -1.0, 1.0);
         tracer.traceInfo("TranslateMotorPower", "desiredForcePercentage=%.2f, ticksPerSecond=%.2f,"
-        		+ " rpmAtWheel=%.2f, rpmAtMotor=%.2f, desiredForceOz=%.2f, constrainedForceOz=%.2f, "
+        		+ " rpmAtWheel=%.2f, rpmAtMotor=%.2f, constrainedForcePercentage=%.2f, constrainedForceOz=%.2f, "
             + "maxTorqueAtRPMOzIn=%.2f, desireTorqueAtWheelOzIn=%.2f, desiredTorqueAtMotorOzIn=%.2f,"
             + " returnValue=%.2f", desiredForcePercentage, ticksPerSecond, rpmAtWheel, rpmAtMotor, 
-            desiredForceOz,constrainedForceOz, max_torque_at_rpm_in_ounce_inch, desiredTorqueAtWheelOzIn, 
-            desiredTorqueAtMotorOzIn, returnValue);
+            constrainedForcePercentage, constrainedForceOz, max_torque_at_rpm_in_ounce_inch,
+            desiredTorqueAtWheelOzIn, desiredTorqueAtMotorOzIn, returnValue);
         return returnValue;
     }
     
-    public double constrainTorqueByElevatorHeight(double desiredForceOz)
+    public double constrainForcePercentageByElevatorHeight(double desiredForcePercentage)
     {
-        //TODO: make this useful
-        return clamp(desiredForceOz, -150, 150);
-    }
-    
-    private double clamp(double d, double min, double max) {
-        return Math.min(Math.max(d, min), max);
+    	double heightPercentage = (elevator.getPosition()-RobotInfo.ELEVATOR_POSITION_OFFSET)
+    			/(RobotInfo.ELEVATOR_MAX_HEIGHT-RobotInfo.ELEVATOR_POSITION_OFFSET);
+    	double powerPercentage = 1.0 - (heightPercentage*0.85);
+        return TrcUtil.clipRange(desiredForcePercentage, -powerPercentage, powerPercentage);
     }
 
 }   //class Robot
