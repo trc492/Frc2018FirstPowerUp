@@ -25,6 +25,8 @@ package team492;
 import frclib.FrcJoystick;
 import hallib.HalDashboard;
 import trclib.TrcRobot;
+import trclib.TrcTaskMgr;
+import trclib.TrcUtil;
 
 public class FrcTeleOp implements TrcRobot.RobotMode
 {
@@ -295,22 +297,26 @@ public class FrcTeleOp implements TrcRobot.RobotMode
                 if (pressed)
                 {
                     robot.cubePickup.grabCube(RobotInfo.TELEOP_GRABBER_POWER, null);
+                    robot.tracer.traceInfo("operatorTrigger", "pressed %.2f", TrcUtil.getCurrentTime()-robot.cubePickup.startTime);
                 }
                 else
                 {
                     robot.cubePickup.stopGrabberTask();
+                    robot.tracer.traceInfo("operatorTrigger", "released %.2f", TrcUtil.getCurrentTime()-robot.cubePickup.startTime);
+                    TrcTaskMgr.getInstance().printTaskPerformanceMetrics(robot.tracer);
                 }
                 break;
 
             case FrcJoystick.LOGITECH_BUTTON2:
-                if (pressed)
-                {
-                    robot.cubePickup.grabCube(0.5);
-                }
-                else
-                {
-                    robot.cubePickup.grabCube(0.0);
-                }
+                robot.elevator.setManualOverride(pressed);
+//                if (pressed)
+//                {
+//                    robot.cubePickup.grabCube(0.5);
+//                }
+//                else
+//                {
+//                    robot.cubePickup.grabCube(0.0);
+//                }
                 break;
 
             case FrcJoystick.LOGITECH_BUTTON3:
@@ -350,7 +356,7 @@ public class FrcTeleOp implements TrcRobot.RobotMode
                 //
                 if (pressed)
                 {
-                    robot.cubePickup.deployPickup();
+                    robot.cubePickup.raisePickup();
                 }
                 break;
 
@@ -360,12 +366,19 @@ public class FrcTeleOp implements TrcRobot.RobotMode
                 //
                 if (pressed)
                 {
-                    robot.cubePickup.raisePickup();
+                    robot.cubePickup.deployPickup();
                 }
                 break;
 
             case FrcJoystick.LOGITECH_BUTTON8:
-                robot.elevator.setManualOverride(pressed);
+                if (pressed)
+                {
+                    robot.leftFlipper.extend();
+                }
+                else 
+                {
+                    robot.leftFlipper.retract();
+                }
                 break;
 
             case FrcJoystick.LOGITECH_BUTTON9:

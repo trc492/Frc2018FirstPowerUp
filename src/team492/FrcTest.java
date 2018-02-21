@@ -27,6 +27,7 @@ import common.CmdTimedDrive;
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 import frclib.FrcChoiceMenu;
 import frclib.FrcJoystick;
+import hallib.HalDashboard;
 import trclib.TrcEvent;
 import trclib.TrcStateMachine;
 import trclib.TrcTimer;
@@ -347,6 +348,7 @@ public class FrcTest extends FrcTeleOp
 //                if(pressed)
 //                {
 //                    robot.elevator.setPosition(48.0);
+//                    processedInput = true;
 //                }
                 break;
 
@@ -378,7 +380,57 @@ public class FrcTest extends FrcTeleOp
         {
             super.operatorStickButtonEvent(button, pressed);
         }
-        processedInput = false;
+    }
+    
+    @Override
+    public void leftDriveStickButtonEvent(int button, boolean pressed)
+    {
+        boolean processedInput = false;
+        
+        switch (button)
+        {
+            case FrcJoystick.LOGITECH_TRIGGER:
+                break;
+
+            case FrcJoystick.LOGITECH_BUTTON2:
+                break;
+
+            case FrcJoystick.LOGITECH_BUTTON3:
+                break;
+
+            case FrcJoystick.LOGITECH_BUTTON4:
+                break;
+
+            case FrcJoystick.LOGITECH_BUTTON5:
+                break;
+
+            case FrcJoystick.LOGITECH_BUTTON6:
+                break;
+
+            case FrcJoystick.LOGITECH_BUTTON7:
+                break;
+
+            case FrcJoystick.LOGITECH_BUTTON8:
+                break;
+
+            case FrcJoystick.LOGITECH_BUTTON9:
+                break;
+
+            case FrcJoystick.LOGITECH_BUTTON10:
+                robot.elevator.setPosition(36.0);
+                processedInput = true;
+                break;
+
+            case FrcJoystick.LOGITECH_BUTTON11:
+                break;
+
+            case FrcJoystick.LOGITECH_BUTTON12:
+                break;
+        }
+        if (!processedInput)
+        {
+            super.operatorStickButtonEvent(button, pressed);
+        }
     }
 
     /**

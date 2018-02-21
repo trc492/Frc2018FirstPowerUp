@@ -31,7 +31,7 @@ import trclib.TrcStateMachine;
 import trclib.TrcTimer;
 
 @SuppressWarnings("unused")
-class CmdPowerUpAuto implements TrcRobot.RobotCommand, CmdStrafeUntilCube.StopTrigger, CmdAutoCubePickup.StopTrigger
+class CmdPowerUpAuto implements TrcRobot.RobotCommand
 {
     private static enum State
     {
@@ -121,7 +121,7 @@ class CmdPowerUpAuto implements TrcRobot.RobotCommand, CmdStrafeUntilCube.StopTr
 
         robot.tracer.traceInfo(moduleName,
             "delay=%.3f, alliance=%s, targetSide=%s, startLocation=%d, forwardDist=%.1f, startPosition=%.1f",
-            "lsDist=%.1f, diagDist=%.1f", delay, robot.alliance, targetSide, startLocation, forwardDistance, startPosition);
+             delay, robot.alliance, targetSide, startLocation, forwardDistance, startPosition);
     } // CmdPidDrive
 
     //
@@ -148,6 +148,7 @@ class CmdPowerUpAuto implements TrcRobot.RobotCommand, CmdStrafeUntilCube.StopTr
         {
             state = sm.getState();
             double xDistance, yDistance;
+            State nextState;
 
             switch (state)
             {
@@ -168,20 +169,23 @@ class CmdPowerUpAuto implements TrcRobot.RobotCommand, CmdStrafeUntilCube.StopTr
 
                 case DRIVE_FORWARD_DISTANCE:
                     xDistance = 0.0;
-                    yDistance = forwardDistance;
-
-                    robot.encoderYPidCtrl.setOutputRange(-1.0, 1.0);
+                    if(targetLocation == startPosition)
+                    {
+                        yDistance = RobotInfo.AUTO_DISTANCE_TO_SWITCH;
+                        nextState = State.STRAFE_TO_SWITCH;
+                    }
+                    else
+                    {
+                        yDistance = forwardDistance;
+                        nextState = State.TURN_TO_SWITCH;
+                    }
+                    robot.encoderYPidCtrl.setOutputRange(-0.5, 0.5);
                     robot.pidDrive.setTarget(xDistance, yDistance, robot.targetHeading, false, event);
                     rightTurn = rightSwitch;
-                    sm.waitForSingleEvent(event, State.TURN_ROBOT);
+                    sm.waitForSingleEvent(event, nextState);
                     break;
                     
                 case TURN_TO_SWITCH:
-                	if(targetLocation == startPosition)
-                	{
-                		sm.setState(State.DRIVE_TO_TARGET);
-                		break;
-                	}
                 	xDistance = 0;
                     yDistance = 0;
                     if(rightTurn)
@@ -237,13 +241,14 @@ class CmdPowerUpAuto implements TrcRobot.RobotCommand, CmdStrafeUntilCube.StopTr
                 	if(rightSwitch)
                 	{
 
-                    	xDistance = -(RobotInfo.SWITCH_STRAFE_DISTANCE + 5.0);
+                    	xDistance = -(RobotInfo.SWITCH_STRAFE_DISTANCE + 2.0);
                 	}
                 	else
                 	{
-                		xDistance = RobotInfo.SWITCH_STRAFE_DISTANCE + 5.0;
+                		xDistance = RobotInfo.SWITCH_STRAFE_DISTANCE + 2.0;
                 	}
                     yDistance = 0.0;
+                    robot.encoderXPidCtrl.setOutputRange(-0.5, 0.5);
                     robot.pidDrive.setTarget(xDistance, yDistance, robot.targetHeading, false, event);
                 	sm.waitForSingleEvent(event, State.FLIP_CUBE);
                     break;
@@ -262,6 +267,8 @@ class CmdPowerUpAuto implements TrcRobot.RobotCommand, CmdStrafeUntilCube.StopTr
                 	break;
                 	
                 case STRAFE_FROM_SWITCH:
+                    robot.leftFlipper.retract();
+                    robot.rightFlipper.retract();
                 	if(rightSwitch)
                 	{
 
@@ -277,8 +284,6 @@ class CmdPowerUpAuto implements TrcRobot.RobotCommand, CmdStrafeUntilCube.StopTr
                     break;
             	
                 case DRIVE_TO_SECOND_CUBE:
-                	robot.leftFlipper.retract();
-                	robot.rightFlipper.retract();
                 	xDistance = 0.0;
                     yDistance = RobotInfo.ADVANCE_TO_SECOND_CUBE_DISTANCE;
                     robot.pidDrive.setTarget(xDistance, yDistance, robot.targetHeading, false, event);
@@ -290,12 +295,12 @@ class CmdPowerUpAuto implements TrcRobot.RobotCommand, CmdStrafeUntilCube.StopTr
                     yDistance = 0;
                     robot.targetHeading += 180;
                 	robot.pidDrive.setTarget(xDistance, yDistance, robot.targetHeading, false, event);
-                	sm.waitForSingleEvent(event, State.START_STRAFE);
+                	sm.waitForSingleEvent(event, State.DONE);
                     break;
                     
                 case START_STRAFE:
                 	boolean strafeRight = rightSwitch;
-                	robot.cmdStrafeUntilCube.start(strafeRight, this::shouldStop);
+                	robot.cmdStrafeUntilCube.start(strafeRight, this::shouldXStop);
                 	sm.setState(State.STRAFE_TO_SECOND_CUBE);
                 	break;
                 	
@@ -303,13 +308,14 @@ class CmdPowerUpAuto implements TrcRobot.RobotCommand, CmdStrafeUntilCube.StopTr
                 	
                 	if(robot.cmdStrafeUntilCube.cmdPeriodic(elapsedTime))
                 	{
-                		sm.setState(State.START_SECOND_PICKUP);
+                	    sm.setState(State.DONE);
+                		//sm.setState(State.START_SECOND_PICKUP);
                 	}
                 	cubeStrafeDistance = robot.cmdStrafeUntilCube.changeX();
                     break;
                     
                 case START_SECOND_PICKUP:
-                    robot.cmdAutoCubePickup.start(this::shouldStop);
+                    robot.cmdAutoCubePickup.start(this::shouldYStop);
                     sm.setState(State.PICKUP_SECOND_CUBE);
                     break;
 
@@ -444,7 +450,8 @@ class CmdPowerUpAuto implements TrcRobot.RobotCommand, CmdStrafeUntilCube.StopTr
                     break;
 
                 case DEPOSIT_CUBE:
-                	robot.cubePickup.grabCube(-0.5, event); 
+                	robot.cubePickup.dropCube(0.5);
+                	timer.set(0.3, event);
                     sm.waitForSingleEvent(event, State.DONE);
                     break;
                   
@@ -463,8 +470,8 @@ class CmdPowerUpAuto implements TrcRobot.RobotCommand, CmdStrafeUntilCube.StopTr
         return done;
     } // cmdPeriodic
     
-    @Override
-	public boolean shouldStop(CmdStrafeUntilCube.State currentState, double elapsedTime, double changeX, double changeY) {
+
+	public boolean shouldXStop(double elapsedTime, double changeX, double changeY) {
 		if(Math.abs(changeX) > RobotInfo.STRAFE_TO_SECOND_CUBE_DISTANCE)
     	{
     		return true;
@@ -475,8 +482,8 @@ class CmdPowerUpAuto implements TrcRobot.RobotCommand, CmdStrafeUntilCube.StopTr
     	}
 	}
     
-    @Override
-	public boolean shouldStop(CmdAutoCubePickup.State currentState, double elapsedTime, double changeX, double changeY) {
+
+	public boolean shouldYStop(double elapsedTime, double changeX, double changeY) {
 		if(changeY > RobotInfo.MAX_CUBE_DISTANCE)
     	{
     		return true;

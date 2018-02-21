@@ -23,6 +23,7 @@
 package team492;
 
 import frclib.FrcPixyCam;
+import hallib.HalDashboard;
 
 public class RobotInfo
 {
@@ -146,16 +147,17 @@ public class RobotInfo
     public static final double DRIVE_ENCODER_COUNTS_PER_ROTATION        = 1440.0;
     
     // 2017-03-21: 0.0152347136491642, 0.15, 0.0, 0.0
-    public static final double ENCODER_X_INCHES_PER_COUNT       = 0.0152347136491642;
+    // 0.7 power is pretty gud fam
+    // 2-20-2018: 0.0148258400720388, 0.15, 0.0, 0.0
+    public static final double ENCODER_X_INCHES_PER_COUNT       = 0.0148258400720388;//0.0144546649145861;//0.0152347136491642;//0.0264367338026265;
     public static final double ENCODER_X_KP                     = 0.15;
     public static final double ENCODER_X_KI                     = 0.0;
     public static final double ENCODER_X_KD                     = 0.0;
     public static final double ENCODER_X_KF                     = 0.0;
     public static final double ENCODER_X_TOLERANCE              = 1.0;
 
-    // 2017-04-06: 0.01778656, 0.04, 0.0, 0.004
-  //OLD ENCODER Y INCHES PER COUNT: 0.02155312564705882352941176470588;//0.01778656;
-    public static final double ENCODER_Y_INCHES_PER_COUNT       = 0.0167265689798175;
+    // 2-20-2018: 0.0171099037270041, 0.04, 0.0, 0.0077
+    public static final double ENCODER_Y_INCHES_PER_COUNT       = 0.0171099037270041;
     public static final double ENCODER_Y_KP                     = 0.04;
     public static final double ENCODER_Y_KI                     = 0.0;
     public static final double ENCODER_Y_KD                     = 0.0077;
@@ -163,9 +165,11 @@ public class RobotInfo
     public static final double ENCODER_Y_TOLERANCE              = 1.0;
 
     // 2017-04-05: 0.03, 0.0, 0.003
-    public static final double GYRO_TURN_KP                     = 0.03;
+    // 2-20-2018: 0.02, 0.0, 0.0025
+    // 2-20-2018: 0.015, 0.0, 0.0012
+    public static final double GYRO_TURN_KP                     = 0.015;
     public static final double GYRO_TURN_KI                     = 0.0;
-    public static final double GYRO_TURN_KD                     = 0.003;
+    public static final double GYRO_TURN_KD                     = 0.0012;
     public static final double GYRO_TURN_KF                     = 0.0;
     public static final double GYRO_TURN_TOLERANCE              = 2.0;
     public static final double GYRO_TURN_SMALL_THRESHOLD        = 10.0;
@@ -202,14 +206,15 @@ public class RobotInfo
     //
     // CubePickup subsystem.
     //
-    public static final double GRABBER_FREE_SPIN_CURRENT        = 20.0;     // Need to be tuned.
-    public static final double GRABBER_STALL_CURRENT            = 40.0;
+    public static final double GRABBER_FREE_SPIN_CURRENT        = 10.0;     // Need to be tuned.
+    public static final double GRABBER_STALL_CURRENT            = 50.0;
 
     //
     // Elevator subsystem.
     //
-    public static final double ELEVATOR_INCHES_PER_COUNT        = 0.00577778;   // 39 inches in 6750 ticks
-    public static final double ELEVATOR_KP                      = 0.3;                // this too
+    //2-20-2018: 0.0071644803229062, 0.08, 0.0, 0.001
+    public static final double ELEVATOR_INCHES_PER_COUNT        = 0.0071644803229062;//0.00577778;   // 39 inches in 6750 ticks
+    public static final double ELEVATOR_KP                      = 0.1;                // this too
     public static final double ELEVATOR_KI                      = 0.0;                // hopefully not this
     public static final double ELEVATOR_KD                      = 0.0;                // this too
     public static final double ELEVATOR_TOLERANCE               = 0.5;                // this too
@@ -239,20 +244,20 @@ public class RobotInfo
     public static final double RIGHT_SWITCH_LOCATION = 102.0;
     public static final double LEFT_SWITCH_LOCATION = -102.0;
     public static final double SCALE_TARGET_HEIGHT = 60.0;
-    public static final double ADVANCE_TO_SECOND_CUBE_DISTANCE = 57.0;
+    public static final double ADVANCE_TO_SECOND_CUBE_DISTANCE = 60.0;
     public static final double STRAFE_TO_SECOND_CUBE_DISTANCE = 165.0;
     public static final double SCALE_FRONT_POSITION = 75.0;
     public static final double SCALE_SIDE_POSITION = 120.0;
     public static final double FIRST_ELEVATOR_HEIGHT = 30.0;
-    public static final double ADVANCE_AROUND_SCALE_DISTANCE = 109.0;
+    public static final double ADVANCE_AROUND_SCALE_DISTANCE = 106.0;
     public static final double SWITCH_STRAFE_DISTANCE = 26.0;
     public static final double MAX_CUBE_DISTANCE = 20.0;
     
     //
     // FrcAuto constants.
     //
-    public static final double FWD_DISTANCE_1 = 4.0;
-    public static final double FWD_DISTANCE_2 = 50.0;
+    public static final double FWD_DISTANCE_1 = 10.0;
+    public static final double FWD_DISTANCE_2 = 60.0;
     public static final double FWD_DISTANCE_3 = 208.0;
     public static final double START_POS_1 = -102.0;
     public static final double START_POS_2 = 0.0;

@@ -183,7 +183,14 @@ public class TrcTaskMgr
          */
         public boolean registerTask(TaskType type)
         {
-            return taskTypes.add(type);
+            boolean added = false;
+
+            if (!taskTypes.contains(type))
+            {
+                added = taskTypes.add(type);
+            }
+
+            return added;
         }   //registerTask
 
         /**
@@ -437,6 +444,7 @@ public class TrcTaskMgr
                             dbgTrace.traceInfo(funcName, "Executing PostContinuousTask %s", taskObj.toString());
                         }
                         startNanoTime = TrcUtil.getCurrentTimeNanos();
+                        TrcDbgTrace.getGlobalTracer().traceInfo("***TaskMgr***", "calling task %s at %.3f", taskObj.toString(), startNanoTime/1000000000.0);
                         task.runTask(TaskType.POSTCONTINUOUS_TASK, mode);
                         taskObj.postContinuousTaskTotalNanoTime += TrcUtil.getCurrentTimeNanos() - startNanoTime;
                         taskObj.postContinuousTaskTimeSlotCount++;

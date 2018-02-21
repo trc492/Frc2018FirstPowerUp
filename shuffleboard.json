@@ -302,8 +302,8 @@
           },
           "4,0": {
             "size": [
-              4,
-              2
+              5,
+              3
             ],
             "content": {
               "_type": "ComboBox Chooser",
@@ -311,7 +311,7 @@
               "_title": "SmartDashboard/Start Positions"
             }
           },
-          "8,0": {
+          "9,0": {
             "size": [
               4,
               2
@@ -320,17 +320,6 @@
               "_type": "ComboBox Chooser",
               "_source0": "network_table:///SmartDashboard/Forward Distances",
               "_title": "SmartDashboard/Forward Distances"
-            }
-          },
-          "12,0": {
-            "size": [
-              4,
-              2
-            ],
-            "content": {
-              "_type": "ComboBox Chooser",
-              "_source0": "network_table:///SmartDashboard/Target Types",
-              "_title": "SmartDashboard/Target Types"
             }
           },
           "0,2": {
@@ -344,15 +333,15 @@
               "_title": "SmartDashboard/Approaches"
             }
           },
-          "4,2": {
+          "10,3": {
             "size": [
               4,
               2
             ],
             "content": {
               "_type": "ComboBox Chooser",
-              "_source0": "network_table:///SmartDashboard/After Actions",
-              "_title": "SmartDashboard/After Actions"
+              "_source0": "network_table:///SmartDashboard/Start Positions",
+              "_title": "SmartDashboard/Start Positions"
             }
           }
         }
@@ -509,19 +498,6 @@
               "_type": "Graph",
               "_title": "Graph (no sources)",
               "Visible time": 30.0
-            }
-          },
-          "0,5": {
-            "size": [
-              12,
-              4
-            ],
-            "content": {
-              "_type": "Graph",
-              "_source0": "network_table:///SmartDashboard/grabberCurrent",
-              "_title": "SmartDashboard/grabberCurrent",
-              "Visible time": 30.0,
-              "SmartDashboard/grabberCurrent visible": true
             }
           }
         }

@@ -81,8 +81,8 @@ public class Robot extends FrcRobotBase
     public static final boolean USE_PIXY_I2C = true;
     public static final boolean USE_TEXT_TO_SPEECH = true;
     public static final boolean USE_MESSAGE_BOARD = false;
-    public static final boolean USE_GYRO_ASSIST = true;
-    public static final boolean USE_TORQUE_BASED_DRIVING = true;
+    public static final boolean USE_GYRO_ASSIST = false;
+    public static final boolean USE_TORQUE_BASED_DRIVING = false;
 
     private static final boolean DEBUG_POWER_CONSUMPTION = true;
     private static final boolean DEBUG_DRIVE_BASE = false;
@@ -372,7 +372,7 @@ public class Robot extends FrcRobotBase
         //
         ringLightsPower = new Relay(RobotInfo.RELAY_RINGLIGHT_POWER);
         ringLightsPower.setDirection(Direction.kForward);
-        cubePickup = new CubePickup();
+        cubePickup = new CubePickup(this);
         winch = new Winch();
         elevator = new Elevator();
         leftFlipper = new FrcPneumatic("leftFlipper", RobotInfo.CANID_PCM1, 
@@ -425,10 +425,10 @@ public class Robot extends FrcRobotBase
         turnDegrees = HalDashboard.getNumber("TurnDegrees", 90.0);
         frontSonarTarget = HalDashboard.getNumber("FrontSonarTarget", 7.0);
         visionTurnTarget = HalDashboard.getNumber("VisionTurnTarget", 0.0);
-        tuneKp = HalDashboard.getNumber("TuneKp", RobotInfo.ENCODER_X_KP);
-        tuneKi = HalDashboard.getNumber("TuneKi", RobotInfo.ENCODER_X_KI);
-        tuneKd = HalDashboard.getNumber("TuneKd", RobotInfo.ENCODER_X_KD);
-        tuneKf = HalDashboard.getNumber("TuneKf", 0.05);
+        tuneKp = HalDashboard.getNumber("TuneKp", RobotInfo.GYRO_TURN_KP);
+        tuneKi = HalDashboard.getNumber("TuneKi", RobotInfo.GYRO_TURN_KI);
+        tuneKd = HalDashboard.getNumber("TuneKd", RobotInfo.GYRO_TURN_KD);
+        tuneKf = HalDashboard.getNumber("TuneKf", 0.0);
     }   //robotStartMode
 
     public void robotStopMode(RunMode runMode)
@@ -543,13 +543,13 @@ public class Robot extends FrcRobotBase
                     PixyVision.TargetInfo targetInfo = pixy.getTargetInfo();
                     if (targetInfo == null)
                     {
-                        dashboard.displayPrintf(14, "Pixy: Target not found!");
+                        dashboard.displayPrintf(10, "Pixy: Target not found!");
                     }
                     else
                     {
-                        dashboard.displayPrintf(14, "Pixy: x=%d, y=%d, width=%d, height=%d",
+                        dashboard.displayPrintf(10, "Pixy: x=%d, y=%d, width=%d, height=%d",
                             targetInfo.rect.x, targetInfo.rect.y, targetInfo.rect.width, targetInfo.rect.height);
-                        dashboard.displayPrintf(15, "xDistance=%.1f, yDistance=%.1f, angle=%.1f, ultrasonic=%.1f",
+                        dashboard.displayPrintf(11, "xDistance=%.1f, yDistance=%.1f, angle=%.1f, ultrasonic=%.1f",
                             targetInfo.xDistance, targetInfo.yDistance, targetInfo.angle, getFrontSonarDistance());
                     }
                 }

@@ -35,6 +35,7 @@ import trclib.TrcStateMachine;
 import trclib.TrcTaskMgr;
 import trclib.TrcTaskMgr.TaskType;
 import trclib.TrcTimer;
+import trclib.TrcUtil;
 
 public class CubePickup
 {
@@ -53,12 +54,14 @@ public class CubePickup
     private TrcStateMachine<State> sm;
     private TrcTimer timer;
     private TrcEvent event;
-    private double[] currentThreshold = {RobotInfo.GRABBER_FREE_SPIN_CURRENT, RobotInfo.GRABBER_STALL_CURRENT};
+    private double[] currentThreshold = { RobotInfo.GRABBER_FREE_SPIN_CURRENT, RobotInfo.GRABBER_STALL_CURRENT };
+    private Robot robot;
+    public double startTime;
 
     /**
      * Initialize the CubePickup class.
      */
-    public CubePickup()
+    public CubePickup(Robot robot)
     {
         controlMotor = new FrcCANTalon("LeftPickupMotor", RobotInfo.CANID_LEFT_PICKUP);
         controlMotor.setInverted(false);
@@ -75,13 +78,13 @@ public class CubePickup
         cubeSensor = new FrcCANTalonLimitSwitch("CubeSensor", controlMotor, true);
 
         currentSensor = new TrcAnalogSensor("grabberCurrent", this::getGrabberCurrent);
-        currentTrigger = new TrcAnalogTrigger<TrcAnalogSensor.DataType>(
-            "PickupCurrentTrigger", currentSensor, 0, TrcAnalogSensor.DataType.RAW_DATA,
-            currentThreshold, this::triggerEvent);
+        currentTrigger = new TrcAnalogTrigger<TrcAnalogSensor.DataType>("PickupCurrentTrigger", currentSensor, 0,
+            TrcAnalogSensor.DataType.RAW_DATA, currentThreshold, this::triggerEvent);
         grabberTaskObj = TrcTaskMgr.getInstance().createTask("grabberTask", this::grabberTask);
         sm = new TrcStateMachine<>("grabberStateMachine");
         timer = new TrcTimer("grabberTimer");
         event = new TrcEvent("grabberEvent");
+        this.robot = robot;
     }
 
     private void setGrabberTaskEnabled(boolean enabled)
@@ -89,9 +92,9 @@ public class CubePickup
         if (enabled)
         {
             grabberTaskObj.registerTask(TaskType.POSTCONTINUOUS_TASK);
+            startTime = TrcUtil.getCurrentTime();
             sm.start(State.START);
-        }
-        else
+        } else
         {
             grabberTaskObj.unregisterTask(TaskType.POSTCONTINUOUS_TASK);
             sm.stop();
@@ -127,7 +130,8 @@ public class CubePickup
     /**
      * Set the state of the claw.
      *
-     * @param open If true, open the claw. If false, close it.
+     * @param open
+     *            If true, open the claw. If false, close it.
      */
     public void setClawOpen(boolean open)
     {
@@ -156,7 +160,8 @@ public class CubePickup
     /**
      * Set the state of the pickup.
      *
-     * @param down If true, lower the pickup. Otherwise, lift.
+     * @param down
+     *            If true, lower the pickup. Otherwise, lift.
      */
     public void setPickupDeployed(boolean down)
     {
@@ -180,10 +185,10 @@ public class CubePickup
     /**
      * @return Returns true of there is a cube in the pickup
      */
-//    public boolean cubeDetected()
-//    {
-//        return cubeSensor.isActive();
-//    }
+    // public boolean cubeDetected()
+    // {
+    // return cubeSensor.isActive();
+    // }
 
     public double getPower()
     {
@@ -231,7 +236,7 @@ public class CubePickup
     {
         controlMotor.setPower(0.0);
     }
-    
+
     public void stopGrabberTask()
     {
         setGrabberTaskEnabled(false);
@@ -243,11 +248,14 @@ public class CubePickup
     // - this allows us to ignore the current spike when the motor starts up.
     // Step 2:
     // - enable analog trigger, wait for the event then goto step 3.
-    // - the analog trigger will monitor for current spike which will happen when the cube is in possession.
+    // - the analog trigger will monitor for current spike which will happen
+    // when the cube is in possession.
     // Step 3:
     // - disable analog trigger.
-    // - we are done with cube detection, set timer for 0.5 second, when done goto step 4.
-    // - the delay allows the motor to firmly pull the cube in before we stop the motor.
+    // - we are done with cube detection, set timer for 0.5 second, when done
+    // goto step 4.
+    // - the delay allows the motor to firmly pull the cube in before we stop
+    // the motor.
     // Step 4:
     // - stop motor.
     // - set the given event to true.
@@ -257,34 +265,42 @@ public class CubePickup
     {
         State state = sm.getState();
 
-        switch (state)
+        double grabberCurrent;
+        if (sm.isReady())
         {
-            case START:
-                timer.set(0.5, event);
-                sm.waitForSingleEvent(event, State.ENABLE_TRIGGER);
-                break;
+            switch (state)
+            {
+                case START:
+                    timer.set(0.5, event);
+                    sm.waitForSingleEvent(event, State.ENABLE_TRIGGER);
+                    break;
 
-            case ENABLE_TRIGGER:
-                currentThreshold[0] = getGrabberCurrent();
-                currentTrigger.setTaskEnabled(true);
-                sm.waitForSingleEvent(event, State.DISABLE_TRIGGER);
-                break;
+                case ENABLE_TRIGGER:
+                    grabberCurrent = getGrabberCurrent();
+                    //currentThreshold[0] = grabberCurrent;
+                    robot.tracer.traceInfo("GrabberCurrent", "grabberCurrent=%.2f", grabberCurrent);
+                    event.set(false);
+                    currentTrigger.setTaskEnabled(true);
+                    sm.waitForSingleEvent(event, State.DISABLE_TRIGGER);
+                    break;
 
-            case DISABLE_TRIGGER:
-                currentTrigger.setTaskEnabled(false);
-                timer.set(0.5, event);
-                sm.waitForSingleEvent(event, State.DONE);
-                break;
+                case DISABLE_TRIGGER:
+                    currentTrigger.setTaskEnabled(false);
+                    timer.set(0.5, event);
+                    sm.waitForSingleEvent(event, State.DONE);
+                    break;
 
-            case DONE:
-            default:
-                controlMotor.setPower(0.0);
-                if (cubeEvent != null)
-                {
-                    cubeEvent.set(true);
-                }
-                setGrabberTaskEnabled(false);
-                break;
+                case DONE:
+                default:
+                    controlMotor.setPower(0.0);
+                    if (cubeEvent != null)
+                    {
+                        cubeEvent.set(true);
+                    }
+                    setGrabberTaskEnabled(false);
+                    break;
+            }
+            robot.traceStateInfo(TrcUtil.getCurrentTime()-startTime, state.toString());
         }
     }
 
@@ -292,7 +308,8 @@ public class CubePickup
     {
         if (zoneIndex == 1)
         {
-            // Detected current spike beyond current threshold, let's tell somebody.
+            // Detected current spike beyond current threshold, let's tell
+            // somebody.
             event.set(true);
         }
     }
