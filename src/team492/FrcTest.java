@@ -428,7 +428,7 @@ public class FrcTest extends FrcTeleOp
         }
         if (!processedInput)
         {
-            super.operatorStickButtonEvent(button, pressed);
+            super.leftDriveStickButtonEvent(button, pressed);
         }
     }
 
