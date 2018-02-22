@@ -23,7 +23,6 @@
 package team492;
 
 import frclib.FrcPixyCam;
-import hallib.HalDashboard;
 
 public class RobotInfo
 {
@@ -40,9 +39,9 @@ public class RobotInfo
     //
     // Robot dimensions.
     //
-    public static final double ROBOT_LENGTH                     = 38.0;
-    public static final double ROBOT_WIDTH                      = 35.0;
-    public static final double ROBOT_HEIGHT                     = 24.0;
+    public static final double ROBOT_LENGTH                     = 35.0;
+    public static final double ROBOT_WIDTH                      = 39.0;
+    public static final double ROBOT_HEIGHT                     = 55.0;
 
     //
     // Joystick ports.
@@ -141,10 +140,11 @@ public class RobotInfo
     public static final double DRIVE_SLOW_XSCALE                = 3.0;
     public static final double DRIVE_SLOW_YSCALE                = 3.0;
     public static final double DRIVE_SLOW_TURNSCALE             = 3.0;
+
     public static final double DRIVE_WHEEL_RADIUS_IN            = 4.0;
-    public static final double DRIVE_MOTOR_ROTATIONS_PER_WHEEL_ROTATION           = 12.0;
-    public static final double MAX_WHEEL_FORCE_OZ                 = (343.4 * DRIVE_MOTOR_ROTATIONS_PER_WHEEL_ROTATION) / DRIVE_WHEEL_RADIUS_IN;
-    public static final double DRIVE_ENCODER_COUNTS_PER_ROTATION        = 1440.0;
+    public static final double DRIVE_MOTOR_ROTATIONS_PER_WHEEL_ROTATION= 12.0;
+    public static final double MAX_WHEEL_FORCE_OZ               = (343.4 * DRIVE_MOTOR_ROTATIONS_PER_WHEEL_ROTATION) / DRIVE_WHEEL_RADIUS_IN;
+    public static final double DRIVE_ENCODER_COUNTS_PER_ROTATION= 1440.0;
     
     // 2017-03-21: 0.0152347136491642, 0.15, 0.0, 0.0
     // 0.7 power is pretty gud fam
@@ -198,15 +198,11 @@ public class RobotInfo
     // Winch subsystem.
     //
     public static final double WINCH_MOTOR_POWER_SCALE          = 1.0;      //Disable slow down, used to be 0.6
-//    public static final double WINCH_POSITION_SCALE             = 0.0026767420949418;
-//    public static final double WINCH_MOTOR_CURRENT_THRESHOLD    = 20.0;
-//    public static final double WINCH_HEIGHT_THRESHOLD           = 28.0;
-//    public static final double WINCH_SPIKE_TIMEOUT              = 0.5;
-//    public static final double WINCH_TILT_THRESHOLD             = 35.0;
+
     //
     // CubePickup subsystem.
     //
-    public static final double GRABBER_FREE_SPIN_CURRENT        = 10.0;     // Need to be tuned.
+    public static final double GRABBER_FREE_SPIN_CURRENT        = 10.0;
     public static final double GRABBER_STALL_CURRENT            = 50.0;
 
     //
@@ -223,10 +219,9 @@ public class RobotInfo
     public static final double ELEVATOR_MID_HEIGHT              = 4.0;
     public static final double ELEVATOR_CAL_POWER               = 0.3;                // this too
     public static final double ELEVATOR_FLOOR_PICKUP_HEIGHT     = 0.0;                // Lowest point on elevator
-    // this used to be 0.04735821
     public static final double ELEVATOR_GRAVITY_COMPENSATION    = 0.08;               // Tuned during testing
     public static final double ELEVATOR_POSITION_OFFSET         = 8.0;
-    
+
     //
     // AutoAssist subsystem.
     //
@@ -238,29 +233,29 @@ public class RobotInfo
     //
     // CmdPowerUpAuto variables.
     //
-    public static final double AUTO_DISTANCE_TO_SWITCH = 158.0;
-    public static final double FINAL_FRONT_SCALE_APPROACH_DISTANCE = 64.0;
-    public static final double FINAL_SIDE_SCALE_APPROACH_DISTANCE = 24.0;
-    public static final double RIGHT_SWITCH_LOCATION = 102.0;
-    public static final double LEFT_SWITCH_LOCATION = -102.0;
-    public static final double SCALE_TARGET_HEIGHT = 60.0;
-    public static final double ADVANCE_TO_SECOND_CUBE_DISTANCE = 60.0;
-    public static final double STRAFE_TO_SECOND_CUBE_DISTANCE = 165.0;
-    public static final double SCALE_FRONT_POSITION = 75.0;
-    public static final double SCALE_SIDE_POSITION = 120.0;
-    public static final double FIRST_ELEVATOR_HEIGHT = 30.0;
-    public static final double ADVANCE_AROUND_SCALE_DISTANCE = 106.0;
-    public static final double SWITCH_STRAFE_DISTANCE = 26.0;
-    public static final double MAX_CUBE_DISTANCE = 20.0;
-    
+    public static final double AUTO_DISTANCE_TO_SWITCH          = 158.0;
+    public static final double FINAL_FRONT_SCALE_APPROACH_DISTANCE= 64.0;
+    public static final double FINAL_SIDE_SCALE_APPROACH_DISTANCE= 24.0;
+    public static final double RIGHT_SWITCH_LOCATION            = 102.0;
+    public static final double LEFT_SWITCH_LOCATION             = -102.0;
+    public static final double SCALE_TARGET_HEIGHT              = 60.0;
+    public static final double ADVANCE_TO_SECOND_CUBE_DISTANCE  = 60.0;
+    public static final double STRAFE_TO_SECOND_CUBE_DISTANCE   = 165.0;
+    public static final double SCALE_FRONT_POSITION             = 75.0;
+    public static final double SCALE_SIDE_POSITION              = 120.0;
+    public static final double FIRST_ELEVATOR_HEIGHT            = 30.0;
+    public static final double ADVANCE_AROUND_SCALE_DISTANCE    = 106.0;
+    public static final double SWITCH_STRAFE_DISTANCE           = 26.0;
+    public static final double MAX_CUBE_DISTANCE                = 20.0;
+
     //
     // FrcAuto constants.
     //
-    public static final double FWD_DISTANCE_1 = 10.0;
-    public static final double FWD_DISTANCE_2 = 60.0;
-    public static final double FWD_DISTANCE_3 = 208.0;
-    public static final double START_POS_1 = -102.0;
-    public static final double START_POS_2 = 0.0;
-    public static final double START_POS_3 = 102.0;
-    
+    public static final double FWD_DISTANCE_1                   = 10.0;
+    public static final double FWD_DISTANCE_2                   = 60.0;
+    public static final double FWD_DISTANCE_3                   = 208.0;
+    public static final double START_POS_1                      = -102.0;
+    public static final double START_POS_2                      = 0.0;
+    public static final double START_POS_3                      = 102.0;
+
 }   // class RobotInfo

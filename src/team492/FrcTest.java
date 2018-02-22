@@ -27,7 +27,6 @@ import common.CmdTimedDrive;
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 import frclib.FrcChoiceMenu;
 import frclib.FrcJoystick;
-import hallib.HalDashboard;
 import trclib.TrcEvent;
 import trclib.TrcStateMachine;
 import trclib.TrcTimer;

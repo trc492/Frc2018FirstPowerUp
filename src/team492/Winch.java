@@ -42,21 +42,6 @@ public class Winch
         mainMotor.setPositionSensorInverted(false);
     }
 
-//    public boolean isUpperLimitSwitchActive()
-//    {
-//        return mainMotor.isUpperLimitSwitchActive();
-//    }
-//
-//    public boolean isLowerLimitSwitchActive()
-//    {
-//        return mainMotor.isLowerLimitSwitchActive();
-//    }
-//
-//    public double getPosition()
-//    {
-//        return mainMotor.getPosition()*RobotInfo.WINCH_POSITION_SCALE;
-//    }
-//
     public double getPower()
     {
         return motorPower;

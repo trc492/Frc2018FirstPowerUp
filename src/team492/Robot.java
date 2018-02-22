@@ -92,6 +92,7 @@ public class Robot extends FrcRobotBase
     private static final boolean DEBUG_ELEVATOR = true;
     private static final boolean DEBUG_CUBE_PICKUP = true;
     private static final boolean DEBUG_PIXY = true;
+
     private static final double DASHBOARD_UPDATE_INTERVAL = 0.1;
     private static final double SPEAK_PERIOD_SECONDS = 20.0; // Speaks once every this # of second.
     private static final double IDLE_PERIOD_SECONDS = 300.0;
@@ -231,13 +232,8 @@ public class Robot extends FrcRobotBase
             cam0.setResolution(RobotInfo.USBCAM_WIDTH, RobotInfo.USBCAM_HEIGHT);
             cam0.setFPS(RobotInfo.USBCAM_FRAME_RATE);
             cam0.setBrightness(RobotInfo.USBCAM_BRIGHTNESS);
-            CvSink videoIn = CameraServer.getInstance().getVideo(cam0);
-            CvSource videoOut = CameraServer.getInstance().putVideo(
-                "VisionTarget", RobotInfo.USBCAM_WIDTH, RobotInfo.USBCAM_HEIGHT);
-            if (USE_GRIP_VISION)
-            {
-                gripVision = new GripVision("GripVision", videoIn, videoOut);
-            }
+            CameraServer.getInstance().getVideo(cam0);
+            CameraServer.getInstance().putVideo("VisionTarget", RobotInfo.USBCAM_WIDTH, RobotInfo.USBCAM_HEIGHT);
         }
 
         if (USE_PIXY_SPI)
@@ -248,9 +244,9 @@ public class Robot extends FrcRobotBase
         }
         else if(USE_PIXY_I2C)
         {
-        	pixy = new PixyVision(
-                    "PixyCam", this, RobotInfo.PIXY_POWER_CUBE_SIGNATURE, RobotInfo.PIXY_BRIGHTNESS,
-                    RobotInfo.PIXY_ORIENTATION, I2C.Port.kMXP, RobotInfo.PIXYCAM_I2C_ADDRESS);
+            pixy = new PixyVision(
+                "PixyCam", this, RobotInfo.PIXY_POWER_CUBE_SIGNATURE, RobotInfo.PIXY_BRIGHTNESS,
+                RobotInfo.PIXY_ORIENTATION, I2C.Port.kMXP, RobotInfo.PIXYCAM_I2C_ADDRESS);
         }
 
         //
