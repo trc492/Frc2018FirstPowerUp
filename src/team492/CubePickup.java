@@ -26,9 +26,10 @@ import com.ctre.phoenix.motorcontrol.ControlMode;
 
 import frclib.FrcPneumatic;
 import frclib.FrcCANTalon;
-import frclib.FrcCANTalonLimitSwitch;
+import frclib.FrcDigitalInput;
 import trclib.TrcAnalogSensor;
 import trclib.TrcAnalogTrigger;
+import trclib.TrcDigitalTrigger;
 import trclib.TrcEvent;
 import trclib.TrcRobot.RunMode;
 import trclib.TrcStateMachine;
@@ -41,21 +42,23 @@ public class CubePickup
 {
     private enum State
     {
-        START, ENABLE_TRIGGER, DISABLE_TRIGGER, DONE
+        START, DETECT_CUBE, CLOSE_CLAW, PULLIN_CUBE, DONE
     }
 
+    private static final double[] currentThresholds =
+        {RobotInfo.GRABBER_FREE_SPIN_CURRENT, RobotInfo.GRABBER_STALL_CURRENT};
+    private Robot robot;
     private FrcCANTalon controlMotor, slaveMotor;
     private FrcPneumatic claw, deployer;
-    private FrcCANTalonLimitSwitch cubeSensor;
-    private TrcEvent cubeEvent;
+    private FrcDigitalInput cubeProximitySensor;
+    private TrcDigitalTrigger cubeProximityTrigger;
     private TrcAnalogSensor currentSensor;
     private TrcAnalogTrigger<TrcAnalogSensor.DataType> currentTrigger;
     private TrcTaskMgr.TaskObject grabberTaskObj;
     private TrcStateMachine<State> sm;
     private TrcTimer timer;
     private TrcEvent event;
-    private double[] currentThreshold = { RobotInfo.GRABBER_FREE_SPIN_CURRENT, RobotInfo.GRABBER_STALL_CURRENT };
-    private Robot robot;
+    private TrcEvent cubeEvent;
     public double startTime;
 
     /**
@@ -63,6 +66,8 @@ public class CubePickup
      */
     public CubePickup(Robot robot)
     {
+        this.robot = robot;
+
         controlMotor = new FrcCANTalon("LeftPickupMotor", RobotInfo.CANID_LEFT_PICKUP);
         controlMotor.setInverted(false);
 
@@ -75,16 +80,19 @@ public class CubePickup
         deployer = new FrcPneumatic("CubePickupDeploy", RobotInfo.CANID_PCM1, RobotInfo.SOL_CUBEPICKUP_ARM_EXTEND,
             RobotInfo.SOL_CUBEPICKUP_ARM_RETRACT);
 
-        cubeSensor = new FrcCANTalonLimitSwitch("CubeSensor", controlMotor, true);
+        cubeProximitySensor = new FrcDigitalInput("CubeProximitySensor", RobotInfo.DIN_CUBE_PROXIMITY_SENSOR);
+        cubeProximityTrigger = new TrcDigitalTrigger(
+            "CubeProximityTrigger", cubeProximitySensor, this::cubeProximityEvent);
 
         currentSensor = new TrcAnalogSensor("grabberCurrent", this::getGrabberCurrent);
-        currentTrigger = new TrcAnalogTrigger<TrcAnalogSensor.DataType>("PickupCurrentTrigger", currentSensor, 0,
-            TrcAnalogSensor.DataType.RAW_DATA, currentThreshold, this::triggerEvent);
+        currentTrigger = new TrcAnalogTrigger<TrcAnalogSensor.DataType>(
+            "PickupCurrentTrigger", currentSensor, 0, TrcAnalogSensor.DataType.RAW_DATA, currentThresholds,
+            this::currentTriggerEvent);
+
         grabberTaskObj = TrcTaskMgr.getInstance().createTask("grabberTask", this::grabberTask);
         sm = new TrcStateMachine<>("grabberStateMachine");
         timer = new TrcTimer("grabberTimer");
         event = new TrcEvent("grabberEvent");
-        this.robot = robot;
     }
 
     private void setGrabberTaskEnabled(boolean enabled)
@@ -185,10 +193,10 @@ public class CubePickup
     /**
      * @return Returns true of there is a cube in the pickup
      */
-    // public boolean cubeDetected()
-    // {
-    // return cubeSensor.isActive();
-    // }
+     public boolean cubeDetected()
+     {
+     return cubeProximitySensor.isActive();
+     }
 
     public double getPower()
     {
@@ -204,9 +212,6 @@ public class CubePickup
         cubeEvent = event;
         setGrabberTaskEnabled(true);
     }
-
-    // CodeReview: this method should call the grabCube with the event parameter
-    // but set the event parameter to null.
 
     /**
      * spin the pickup motors to pull in a cube
@@ -245,19 +250,19 @@ public class CubePickup
     }
 
     // Step 1:
-    // - set timer for 0.5 second, when done goto step 2.
+    // - set timer for 0.3 second, when done goto step 2.
     // - this allows us to ignore the current spike when the motor starts up.
     // Step 2:
-    // - enable analog trigger, wait for the event then goto step 3.
-    // - the analog trigger will monitor for current spike which will happen
-    // when the cube is in possession.
+    // - enable cube proximity trigger, wait for the event then goto step 3.
+    // - the proximity trigger will monitor if a cube is close enough to be grabbed.
     // Step 3:
-    // - disable analog trigger.
-    // - we are done with cube detection, set timer for 0.5 second, when done
-    // goto step 4.
-    // - the delay allows the motor to firmly pull the cube in before we stop
-    // the motor.
+    // - a cube is detected close by, disable the proximity trigger, close the claw to attempt to grab it.
+    // - enable analog trigger, wait for the event then goto step 3.
+    // - the analog trigger will monitor for current spike which will happen when the cube is in possession.
     // Step 4:
+    // - the cube is in possession, disable analog trigger.
+    // - set timer for 0.3 second so that we will pull in the cube firmly before stopping the motor.
+    // Step 5:
     // - stop motor.
     // - set the given event to true.
     // - stop the state machine.
@@ -266,34 +271,45 @@ public class CubePickup
     {
         State state = sm.getState();
 
-        double grabberCurrent;
         if (sm.isReady())
         {
             switch (state)
             {
                 case START:
-                    timer.set(0.5, event);
-                    sm.waitForSingleEvent(event, State.ENABLE_TRIGGER);
+                    // wait a bit to let the start up current spike past.
+                    timer.set(0.3, event);
+                    sm.waitForSingleEvent(event, State.DETECT_CUBE);
                     robot.cubeIndicator.showNoCube();
                     break;
 
-                case ENABLE_TRIGGER:
-                    grabberCurrent = getGrabberCurrent();
-                    //currentThreshold[0] = grabberCurrent;
-                    robot.tracer.traceInfo("GrabberCurrent", "grabberCurrent=%.2f", grabberCurrent);
-                    event.set(false);
-                    currentTrigger.setTaskEnabled(true);
-                    sm.waitForSingleEvent(event, State.DISABLE_TRIGGER);
+                case DETECT_CUBE:
+                    // enable proximity trigger to detect the cube close by.
+                    robot.tracer.traceInfo("GrabberCurrent", "grabberCurrent=%.2f", getGrabberCurrent());
+                    cubeProximityTrigger.setTaskEnabled(true);
+                    sm.waitForSingleEvent(event, State.CLOSE_CLAW);
                     break;
 
-                case DISABLE_TRIGGER:
+                case CLOSE_CLAW:
+                    // disable proximity trigger.
+                    // close the claw to grab the cube.
+                    // enable current trigger to detect cube in possession.
+                    cubeProximityTrigger.setTaskEnabled(false);
+                    closeClaw();
+                    currentTrigger.setTaskEnabled(true);
+                    sm.waitForSingleEvent(event, State.PULLIN_CUBE);
+                    break;
+
+                case PULLIN_CUBE:
+                    // disable current trigger.
+                    // wait a bit to make sure we pull in the cube firmly.
                     currentTrigger.setTaskEnabled(false);
-                    timer.set(0.5, event);
+                    timer.set(0.3, event);
                     sm.waitForSingleEvent(event, State.DONE);
                     break;
 
                 case DONE:
                 default:
+                    // we have the cube, stop the motor and tell somebody if necessary.
                     controlMotor.setPower(0.0);
                     robot.cubeIndicator.showCubeFullyGrabbed();
                     if (cubeEvent != null)
@@ -307,7 +323,15 @@ public class CubePickup
         }
     }
 
-    public void triggerEvent(int zoneIndex, double zoneValue)
+    public void cubeProximityEvent(boolean active)
+    {
+        if (active)
+        {
+            event.set(true);
+        }
+    }
+
+    public void currentTriggerEvent(int zoneIndex, double zoneValue)
     {
         if (zoneIndex == 1)
         {

@@ -161,6 +161,7 @@ public class TrcAnalogTrigger<D>
         }
 
         this.enabled = enabled;
+
         if (enabled)
         {
             preContinuousTaskObj.registerTask(TrcTaskMgr.TaskType.PRECONTINUOUS_TASK);
@@ -262,6 +263,7 @@ public class TrcAnalogTrigger<D>
                 {
                     triggerHandler.triggerEvent(currZone, sample);
                 }
+
                 zone = currZone;
                 value = sample;
 

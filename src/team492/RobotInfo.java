@@ -70,8 +70,9 @@ public class RobotInfo
     public static final int DIN_FRONT_SONAR_PING                = 0;
     public static final int DIN_LEFT_SONAR_PING                 = 1;
     public static final int DIN_RIGHT_SONAR_PING                = 2;
-    public static final int DIN_LEFT_PROXIMITY_SENSOR           = 3;
-    public static final int DIN_RIGHT_PROXIMITY_SENSOR          = 4;
+    public static final int DIN_CUBE_PROXIMITY_SENSOR           = 3;
+    public static final int DIN_LEFT_PROXIMITY_SENSOR           = 4;
+    public static final int DIN_RIGHT_PROXIMITY_SENSOR          = 5;
 
     //
     // CAN IDs.
@@ -135,6 +136,11 @@ public class RobotInfo
     
     public static final double GYRO_ASSIST_KP                   = 0.1;
     public static final double GYRO_ASSIST_SCALE                = 0.5;
+
+    public static final double DRIVE_HEADING_NORTH              = 0.0;
+    public static final double DRIVE_HEADING_EAST               = 90.0;
+    public static final double DRIVE_HEADING_WEST               = -90.0;
+    public static final double DRIVE_HEADING_SOUTH              = 180.0;
 
     public static final double DRIVE_STALL_TIMEOUT              = 0.5;
     public static final double DRIVE_SLOW_XSCALE                = 3.0;
