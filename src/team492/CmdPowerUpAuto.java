@@ -35,7 +35,6 @@ class CmdPowerUpAuto implements TrcRobot.RobotCommand
 {
     private static enum State
     {
-        
         DO_DELAY,
         DRIVE_FORWARD_DISTANCE,
         TURN_TO_SWITCH,
@@ -69,42 +68,44 @@ class CmdPowerUpAuto implements TrcRobot.RobotCommand
 
     private Robot robot;
     private double delay;
+    private double forwardDistance;
+    private boolean sideApproach;
+    private double startPosition;
+
     private String targetSide;
+    private int startLocation;
+    private boolean rightSwitch;
+    private boolean rightScale;
+    private double targetLocation;
+
     private TrcEvent event;
     private TrcTimer timer;
     private TrcStateMachine<State> sm;
-    private int startLocation;
-    private double forwardDistance;
-    private boolean sideApproach;
+
     private boolean rightTurn;
-    private boolean rightSwitch;
-    private boolean rightScale;
-    private double startPosition;
-    private double targetLocation;
     private double cubeStrafeDistance;
     private double cubeAcquireDistance;
-    
 
     CmdPowerUpAuto(Robot robot, double delay, double forwardDistance, boolean sideApproach, double startPosition)
     {
-        DriverStation ds = DriverStation.getInstance();
         this.robot = robot;
         this.delay = delay;
-        this.targetSide = ds.getGameSpecificMessage();
-        this.rightSwitch = (targetSide.charAt(0) == 'R');
-        this.rightScale = (targetSide.charAt(1) == 'R');
-        this.startLocation = ds.getLocation();
-
         if(-1.0 == forwardDistance) 
         {
-            this.forwardDistance = HalDashboard.getNumber("Forward Distance", 4.0); 
+            this.forwardDistance = HalDashboard.getNumber("Forward Distance", 10.0); 
         }                                                                           
         else
         {
-        	this.forwardDistance = forwardDistance;
+            this.forwardDistance = forwardDistance;
         }
         this.sideApproach = sideApproach;
         this.startPosition = startPosition;
+
+        this.targetSide = robot.ds.getGameSpecificMessage();
+        this.startLocation = robot.ds.getLocation();
+        this.rightSwitch = (targetSide.charAt(0) == 'R');
+        this.rightScale = (targetSide.charAt(1) == 'R');
+
         if(rightSwitch)
         {
         	this.targetLocation = RobotInfo.RIGHT_SWITCH_LOCATION;
@@ -137,13 +138,7 @@ class CmdPowerUpAuto implements TrcRobot.RobotCommand
         //
         State state = sm.getState();
         robot.dashboard.displayPrintf(1, "State: %s", state != null ? state.toString() : "Disabled");
-        
-        
-//        if(robot.cmdAutoCubePickup.isEnabled())
-//        {
-//        	robot.cmdAutoCubePickup.cmdPeriodic(elapsedTime);
-//        }
-//        
+
         if (sm.isReady())
         {
             state = sm.getState();
@@ -171,11 +166,17 @@ class CmdPowerUpAuto implements TrcRobot.RobotCommand
                     xDistance = 0.0;
                     if(targetLocation == startPosition)
                     {
+                        //
+                        // Don't need to go across the other side.
+                        //
                         yDistance = RobotInfo.AUTO_DISTANCE_TO_SWITCH;
                         nextState = State.STRAFE_TO_SWITCH;
                     }
                     else
                     {
+                        //
+                        // Go forward, turn and cross to the other side.
+                        //
                         yDistance = forwardDistance;
                         nextState = State.TURN_TO_SWITCH;
                     }
@@ -184,226 +185,205 @@ class CmdPowerUpAuto implements TrcRobot.RobotCommand
                     rightTurn = rightSwitch;
                     sm.waitForSingleEvent(event, nextState);
                     break;
-                    
+
                 case TURN_TO_SWITCH:
-                	xDistance = 0;
-                    yDistance = 0;
+                    //
+                    // Crossing to the other side, determine which way to turn
+                    //
+                    xDistance = 0.0;
+                    yDistance = 0.0;
                     if(rightTurn)
                     {
-                        robot.targetHeading += 90;
+                        robot.targetHeading = 90;
                     }
                     else
                     {
-                    	robot.targetHeading -= 90;
+                        robot.targetHeading = -90;
                     }
-                	robot.pidDrive.setTarget(xDistance, yDistance, robot.targetHeading, false, event);
+                    robot.pidDrive.setTarget(xDistance, yDistance, robot.targetHeading, false, event);
                     sm.waitForSingleEvent(event, State.MOVE_SIDEWAYS);
                     break;
-                	
+
                 case MOVE_SIDEWAYS:
-                    xDistance = targetLocation - startPosition;
-                    if(0.0 == xDistance)
-                    {
-                    	sm.setState(State.DRIVE_TO_TARGET);
-                    }
-                    else
-                    {
-                        yDistance = 0;
-                        robot.pidDrive.setTarget(xDistance, yDistance, robot.targetHeading, false, event);
-                        sm.waitForSingleEvent(event, State.DRIVE_TO_TARGET);
-                    }
+                    xDistance = 0.0;
+                    yDistance = Math.abs(targetLocation - startPosition);
+                    robot.pidDrive.setTarget(xDistance, yDistance, robot.targetHeading, false, event);
+                    sm.waitForSingleEvent(event, State.SWITCH_TURN);
                     break;
-                    
+
                 case SWITCH_TURN:
-                	xDistance = 0;
+                    xDistance = 0;
                     yDistance = 0;
-                    rightTurn = !rightTurn;
-                    if(rightTurn)
-                    {
-                        robot.targetHeading += 90;
-                    }
-                    else
-                    {
-                    	robot.targetHeading -= 90;
-                    }
-                	robot.pidDrive.setTarget(xDistance, yDistance, robot.targetHeading, false, event);
+                    robot.targetHeading = 0.0;
+                    robot.pidDrive.setTarget(xDistance, yDistance, robot.targetHeading, false, event);
                     sm.waitForSingleEvent(event, State.DRIVE_TO_TARGET);
-                	break;
-                    
+                    break;
+
                 case DRIVE_TO_TARGET:
                     xDistance = 0.0;
                     yDistance = RobotInfo.AUTO_DISTANCE_TO_SWITCH - forwardDistance;
                     robot.pidDrive.setTarget(xDistance, yDistance, robot.targetHeading, false, event);
-                	sm.waitForSingleEvent(event, State.STRAFE_TO_SWITCH);
+                    sm.waitForSingleEvent(event, State.STRAFE_TO_SWITCH);
                     break;
-                    
-                case STRAFE_TO_SWITCH:
-                	if(rightSwitch)
-                	{
 
-                    	xDistance = -(RobotInfo.SWITCH_STRAFE_DISTANCE + 2.0);
-                	}
-                	else
-                	{
-                		xDistance = RobotInfo.SWITCH_STRAFE_DISTANCE + 2.0;
-                	}
+                case STRAFE_TO_SWITCH:
+                    if(rightSwitch)
+                    {
+                        xDistance = -(RobotInfo.SWITCH_STRAFE_DISTANCE + 2.0);
+                    }
+                    else
+                    {
+                        xDistance = RobotInfo.SWITCH_STRAFE_DISTANCE + 2.0;
+                    }
                     yDistance = 0.0;
                     robot.encoderXPidCtrl.setOutputRange(-0.5, 0.5);
                     robot.pidDrive.setTarget(xDistance, yDistance, robot.targetHeading, false, event);
-                	sm.waitForSingleEvent(event, State.FLIP_CUBE);
+                    sm.waitForSingleEvent(event, State.FLIP_CUBE);
                     break;
-                    
-                case FLIP_CUBE:
-                	if(rightSwitch)
-                	{
-                		robot.leftFlipper.extend();
-                	}
-                	else
-                	{
-                		robot.rightFlipper.extend();
-                	}
-                	timer.set(0.3, event);
-                	sm.waitForSingleEvent(event, State.STRAFE_FROM_SWITCH);
-                	break;
-                	
-                case STRAFE_FROM_SWITCH:
-                    robot.leftFlipper.retract();
-                    robot.rightFlipper.retract();
-                	if(rightSwitch)
-                	{
 
-                    	xDistance = RobotInfo.SWITCH_STRAFE_DISTANCE;
-                	}
-                	else
-                	{
-                		xDistance = -RobotInfo.SWITCH_STRAFE_DISTANCE;
-                	}
+                case FLIP_CUBE:
+                    if(rightSwitch)
+                    {
+                        robot.leftFlipper.extend();
+                    }
+                    else
+                    {
+                        robot.rightFlipper.extend();
+                    }
+                    timer.set(0.3, event);
+                    sm.waitForSingleEvent(event, State.STRAFE_FROM_SWITCH);
+                    break;
+
+                case STRAFE_FROM_SWITCH:
+                    if(rightSwitch)
+                    {
+                        robot.leftFlipper.retract();
+                        xDistance = RobotInfo.SWITCH_STRAFE_DISTANCE;
+                    }
+                    else
+                    {
+                        robot.rightFlipper.retract();
+                        xDistance = -RobotInfo.SWITCH_STRAFE_DISTANCE;
+                    }
                     yDistance = 0.0;
                     robot.pidDrive.setTarget(xDistance, yDistance, robot.targetHeading, false, event);
-                	sm.waitForSingleEvent(event, State.DRIVE_TO_SECOND_CUBE);
+                    sm.waitForSingleEvent(event, State.DRIVE_TO_SECOND_CUBE);
                     break;
-            	
+
                 case DRIVE_TO_SECOND_CUBE:
-                	xDistance = 0.0;
+                    xDistance = 0.0;
                     yDistance = RobotInfo.ADVANCE_TO_SECOND_CUBE_DISTANCE;
                     robot.pidDrive.setTarget(xDistance, yDistance, robot.targetHeading, false, event);
                     sm.waitForSingleEvent(event, State.TURN_AROUND);
-                	break;
-                	
+                    break;
+
                 case TURN_AROUND:
-                	xDistance = 0;
-                    yDistance = 0;
-                    robot.targetHeading += 180;
-                	robot.pidDrive.setTarget(xDistance, yDistance, robot.targetHeading, false, event);
-                	sm.waitForSingleEvent(event, State.DONE);
+                    xDistance = 0.0;
+                    yDistance = 0.0;
+                    robot.targetHeading = 180.0;
+                    robot.pidDrive.setTarget(xDistance, yDistance, robot.targetHeading, false, event);
+                    sm.waitForSingleEvent(event, State.START_STRAFE);
                     break;
-                    
+
                 case START_STRAFE:
-                	boolean strafeRight = rightSwitch;
-                	robot.cmdStrafeUntilCube.start(strafeRight, this::shouldXStop);
-                	sm.setState(State.STRAFE_TO_SECOND_CUBE);
-                	break;
-                	
-                case STRAFE_TO_SECOND_CUBE:
-                	
-                	if(robot.cmdStrafeUntilCube.cmdPeriodic(elapsedTime))
-                	{
-                	    sm.setState(State.DONE);
-                		//sm.setState(State.START_SECOND_PICKUP);
-                	}
-                	cubeStrafeDistance = robot.cmdStrafeUntilCube.changeX();
+                    boolean strafeRight = rightSwitch;
+                    robot.cmdStrafeUntilCube.start(strafeRight, this::shouldXStop);
+                    sm.setState(State.STRAFE_TO_SECOND_CUBE);
                     break;
-                    
+
+                case STRAFE_TO_SECOND_CUBE:
+                    if(robot.cmdStrafeUntilCube.cmdPeriodic(elapsedTime))
+                    {
+                        sm.setState(State.START_SECOND_PICKUP);
+                    }
+                    cubeStrafeDistance = robot.cmdStrafeUntilCube.changeX();
+                    break;
+
                 case START_SECOND_PICKUP:
                     robot.cmdAutoCubePickup.start(this::shouldYStop);
                     sm.setState(State.PICKUP_SECOND_CUBE);
                     break;
 
                 case PICKUP_SECOND_CUBE:
-                	
                     if(robot.cmdAutoCubePickup.cmdPeriodic(elapsedTime))
                     {
                         sm.setState(State.BACKUP_WITH_SECOND_CUBE);
                     }
                     cubeAcquireDistance = robot.cmdAutoCubePickup.changeY();
-                	break;
-                	
+                    break;
+
                 case BACKUP_WITH_SECOND_CUBE:
-                	xDistance = 0;
+                    xDistance = 0;
                     yDistance = -cubeAcquireDistance;
-                	robot.pidDrive.setTarget(xDistance, yDistance, robot.targetHeading, false, event);
+                    robot.pidDrive.setTarget(xDistance, yDistance, robot.targetHeading, false, event);
                     sm.waitForSingleEvent(event, State.REPOSITION_TURN);
-                	break;
-                	
+                    break;
+
                 case REPOSITION_TURN:
-                	xDistance = 0;
+                    xDistance = 0;
                     yDistance = 0;
                     if(rightScale)
                     {
-                    	robot.targetHeading -= 90;
+                        robot.targetHeading = 90;   //Head east
                     }
                     else
                     {
-                    	robot.targetHeading += 90;
+                        robot.targetHeading = -90;  //Head west
                     }
-                	robot.pidDrive.setTarget(xDistance, yDistance, robot.targetHeading, false, event);
-                	sm.waitForSingleEvent(event, State.DRIVE_TO_SECOND_TARGET);
-                	break;
-                	
+                    robot.pidDrive.setTarget(xDistance, yDistance, robot.targetHeading, false, event);
+                    sm.waitForSingleEvent(event, State.DRIVE_TO_SECOND_TARGET);
+                    break;
+
+                    //
+                    // use rightScale == rightSwitch to determine the distance to drive.
+                    // also check front approach versus side approach to add additional distance
+                    // Use one state to drive to that distance.
+                    //
                 case DRIVE_TO_SECOND_TARGET:
-                	if(rightScale==rightSwitch)
-                	{
-                		sm.setState(State.CLOSE_TARGET_DRIVE);
-                	}
-                	else
-                	{
-                		sm.setState(State.FAR_TARGET_DRIVE);
-                	}
-                	break;
-                	
-                case CLOSE_TARGET_DRIVE:
-                	xDistance = 0;
-                    yDistance = RobotInfo.SCALE_FRONT_POSITION - (RobotInfo.START_POS_3 - cubeStrafeDistance);
-                	if(sideApproach)
-                	{
-                		yDistance += RobotInfo.SCALE_SIDE_POSITION - RobotInfo.SCALE_FRONT_POSITION;
-                	}
-                	robot.pidDrive.setTarget(xDistance, yDistance, robot.targetHeading, false, event);
-                    sm.waitForSingleEvent(event, State.TURN_ROBOT);
-                	break;
-                	
-                case FAR_TARGET_DRIVE:
-                	xDistance = 0;
-                	yDistance = RobotInfo.SCALE_FRONT_POSITION + (RobotInfo.START_POS_3 - cubeStrafeDistance);
-                	if(sideApproach)
-                	{
-                		yDistance += RobotInfo.SCALE_SIDE_POSITION - RobotInfo.SCALE_FRONT_POSITION;
-                	}
-                	robot.pidDrive.setTarget(xDistance, yDistance, robot.targetHeading, false, event);
-                    sm.waitForSingleEvent(event, State.TURN_ROBOT);
-                	break;
-                	
-                case TURN_ROBOT:
-                	xDistance = 0;
-                    yDistance = 0;
-                    rightTurn = !rightScale;
-                    if(rightTurn)
+                    if(rightScale==rightSwitch)
                     {
-                        robot.targetHeading += 90;
+                        sm.setState(State.CLOSE_TARGET_DRIVE);
                     }
                     else
                     {
-                    	robot.targetHeading -= 90;
+                        sm.setState(State.FAR_TARGET_DRIVE);
                     }
-                	robot.pidDrive.setTarget(xDistance, yDistance, robot.targetHeading, false, event);
-                	if(sideApproach)
-                	{
-                		sm.waitForSingleEvent(event, State.ADVANCE_TO_SCALE);
-                	}
-                	else
-                	{
+                    break;
+
+//                case CLOSE_TARGET_DRIVE:
+//                	xDistance = 0;
+//                    yDistance = RobotInfo.SCALE_FRONT_POSITION - (RobotInfo.START_POS_3 - cubeStrafeDistance);
+//                	if(sideApproach)
+//                	{
+//                		yDistance += RobotInfo.SCALE_SIDE_POSITION - RobotInfo.SCALE_FRONT_POSITION;
+//                	}
+//                	robot.pidDrive.setTarget(xDistance, yDistance, robot.targetHeading, false, event);
+//                    sm.waitForSingleEvent(event, State.TURN_ROBOT);
+//                	break;
+//                	
+//                case FAR_TARGET_DRIVE:
+//                	xDistance = 0;
+//                	yDistance = RobotInfo.SCALE_FRONT_POSITION + (RobotInfo.START_POS_3 - cubeStrafeDistance);
+//                	if(sideApproach)
+//                	{
+//                		yDistance += RobotInfo.SCALE_SIDE_POSITION - RobotInfo.SCALE_FRONT_POSITION;
+//                	}
+//                	robot.pidDrive.setTarget(xDistance, yDistance, robot.targetHeading, false, event);
+//                    sm.waitForSingleEvent(event, State.TURN_ROBOT);
+//                	break;
+
+                case TURN_ROBOT:
+                    xDistance = yDistance = 0.0;
+                    robot.targetHeading = 0.0;  //turning back to north
+                    robot.pidDrive.setTarget(xDistance, yDistance, robot.targetHeading, false, event);
+                    if(sideApproach)
+                    {
+                        sm.waitForSingleEvent(event, State.ADVANCE_TO_SCALE);
+                    }
+                    else
+                    {
                         sm.waitForSingleEvent(event, State.APPROACH_FINAL_TARGET);
-                	}
+                    }
                     break;
                 	
                 case ADVANCE_TO_SCALE:
@@ -414,16 +394,8 @@ class CmdPowerUpAuto implements TrcRobot.RobotCommand
                 	break;
                 	
                 case TURN_AGAIN:
-                 	xDistance = 0;
-                    yDistance = 0;
-                    if(rightTurn)
-                    {
-                        robot.targetHeading += 90;
-                    }
-                    else
-                    {
-                        robot.targetHeading -= 90;
-                    }
+                    xDistance = yDistance = 0.0;
+                    robot.targetHeading = rightScale? 270.0: 90.0;
                 	robot.pidDrive.setTarget(xDistance, yDistance, robot.targetHeading, false, event);
                 	sm.waitForSingleEvent(event, State.APPROACH_FINAL_TARGET);
                 	break;
@@ -469,29 +441,17 @@ class CmdPowerUpAuto implements TrcRobot.RobotCommand
         }
         return done;
     } // cmdPeriodic
+
+
+    public boolean shouldXStop(double elapsedTime, double changeX, double changeY)
+    {
+        return Math.abs(changeX) > RobotInfo.STRAFE_TO_SECOND_CUBE_DISTANCE;
+    }
     
 
-	public boolean shouldXStop(double elapsedTime, double changeX, double changeY) {
-		if(Math.abs(changeX) > RobotInfo.STRAFE_TO_SECOND_CUBE_DISTANCE)
-    	{
-    		return true;
-    	}
-    	else
-    	{
-    		return false;
-    	}
-	}
-    
-
-	public boolean shouldYStop(double elapsedTime, double changeX, double changeY) {
-		if(changeY > RobotInfo.MAX_CUBE_DISTANCE)
-    	{
-    		return true;
-    	}
-    	else
-    	{
-    		return false;
-    	}
-	}
+    public boolean shouldYStop(double elapsedTime, double changeX, double changeY)
+    {
+        return changeY > RobotInfo.MAX_CUBE_DISTANCE;
+    }
 
 } // class CmdPowerUpAuto
