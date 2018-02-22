@@ -131,6 +131,7 @@ public class Robot extends FrcRobotBase
     public FrcI2cLEDPanel messageBoard = null;
     public FrcEmic2TextToSpeech tts = null;
     private double nextTimeToSpeakInSeconds = 0.0;  //0 means disabled, no need to speak;
+    public CubeIndicator cubeIndicator = null;
 
     //
     // DriveBase subsystem.
@@ -264,6 +265,8 @@ public class Robot extends FrcRobotBase
         {
             messageBoard = new FrcI2cLEDPanel("messageBoard", I2C.Port.kOnboard);
         }
+        cubeIndicator = new CubeIndicator();
+        cubeIndicator.showNoCube();
 
         //
         // DriveBase subsystem.

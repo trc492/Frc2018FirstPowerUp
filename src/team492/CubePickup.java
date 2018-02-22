@@ -222,6 +222,7 @@ public class CubePickup
     public void dropCube(double power)
     {
         controlMotor.setPower(-power);
+        robot.cubeIndicator.showNoCube();
     }
 
     public double getGrabberCurrent()
@@ -273,6 +274,7 @@ public class CubePickup
                 case START:
                     timer.set(0.5, event);
                     sm.waitForSingleEvent(event, State.ENABLE_TRIGGER);
+                    robot.cubeIndicator.showNoCube();
                     break;
 
                 case ENABLE_TRIGGER:
@@ -293,6 +295,7 @@ public class CubePickup
                 case DONE:
                 default:
                     controlMotor.setPower(0.0);
+                    robot.cubeIndicator.showCubeFullyGrabbed();
                     if (cubeEvent != null)
                     {
                         cubeEvent.set(true);
