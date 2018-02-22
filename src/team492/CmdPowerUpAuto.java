@@ -58,9 +58,10 @@ class CmdPowerUpAuto implements TrcRobot.RobotCommand
         TURN_ROBOT,
         ADVANCE_TO_SCALE,
         TURN_AGAIN,
-        APPROACH_FINAL_TARGET,
         RAISE_ELEVATOR,
+        APPROACH_FINAL_TARGET,
         DEPOSIT_CUBE,
+        LOWER_ELEVATOR,
         DONE
     } // enum State
 
@@ -85,6 +86,7 @@ class CmdPowerUpAuto implements TrcRobot.RobotCommand
     private boolean rightTurn;
     private double cubeStrafeDistance;
     private double cubeAcquireDistance;
+    private boolean pickupCancelled;
 
     CmdPowerUpAuto(Robot robot, double delay, double forwardDistance, boolean sideApproach, double startPosition)
     {
@@ -307,7 +309,15 @@ class CmdPowerUpAuto implements TrcRobot.RobotCommand
                 case PICKUP_SECOND_CUBE:
                     if(robot.cmdAutoCubePickup.cmdPeriodic(elapsedTime))
                     {
-                        sm.setState(State.BACKUP_WITH_SECOND_CUBE);
+                    	if(pickupCancelled)
+                    	{
+                    		// might want to make this do something else if a cube is not found
+                    		sm.setState(State.DONE);
+                    	}
+                    	else
+                    	{
+                            sm.setState(State.BACKUP_WITH_SECOND_CUBE);
+                    	}
                     }
                     cubeAcquireDistance = robot.cmdAutoCubePickup.changeY();
                     break;
@@ -334,43 +344,24 @@ class CmdPowerUpAuto implements TrcRobot.RobotCommand
                     sm.waitForSingleEvent(event, State.DRIVE_TO_SECOND_TARGET);
                     break;
 
-                    //
-                    // use rightScale == rightSwitch to determine the distance to drive.
-                    // also check front approach versus side approach to add additional distance
-                    // Use one state to drive to that distance.
-                    //
                 case DRIVE_TO_SECOND_TARGET:
-                    if(rightScale==rightSwitch)
-                    {
-                        sm.setState(State.CLOSE_TARGET_DRIVE);
+            		xDistance = 0;
+                	if(rightScale==rightSwitch)
+                	{
+                		yDistance = RobotInfo.SCALE_FRONT_POSITION - (RobotInfo.START_POS_3 - cubeStrafeDistance);
                     }
                     else
                     {
-                        sm.setState(State.FAR_TARGET_DRIVE);
+                    	yDistance = RobotInfo.SCALE_FRONT_POSITION + (RobotInfo.START_POS_3 - cubeStrafeDistance);
                     }
+                	
+                	if(sideApproach)
+                	{
+                		yDistance += RobotInfo.SCALE_SIDE_POSITION - RobotInfo.SCALE_FRONT_POSITION;
+                	}
+                	robot.pidDrive.setTarget(xDistance, yDistance, robot.targetHeading, false, event);
+                	sm.waitForSingleEvent(event, State.TURN_ROBOT);
                     break;
-
-//                case CLOSE_TARGET_DRIVE:
-//                	xDistance = 0;
-//                    yDistance = RobotInfo.SCALE_FRONT_POSITION - (RobotInfo.START_POS_3 - cubeStrafeDistance);
-//                	if(sideApproach)
-//                	{
-//                		yDistance += RobotInfo.SCALE_SIDE_POSITION - RobotInfo.SCALE_FRONT_POSITION;
-//                	}
-//                	robot.pidDrive.setTarget(xDistance, yDistance, robot.targetHeading, false, event);
-//                    sm.waitForSingleEvent(event, State.TURN_ROBOT);
-//                	break;
-//                	
-//                case FAR_TARGET_DRIVE:
-//                	xDistance = 0;
-//                	yDistance = RobotInfo.SCALE_FRONT_POSITION + (RobotInfo.START_POS_3 - cubeStrafeDistance);
-//                	if(sideApproach)
-//                	{
-//                		yDistance += RobotInfo.SCALE_SIDE_POSITION - RobotInfo.SCALE_FRONT_POSITION;
-//                	}
-//                	robot.pidDrive.setTarget(xDistance, yDistance, robot.targetHeading, false, event);
-//                    sm.waitForSingleEvent(event, State.TURN_ROBOT);
-//                	break;
 
                 case TURN_ROBOT:
                     xDistance = yDistance = 0.0;
@@ -382,7 +373,7 @@ class CmdPowerUpAuto implements TrcRobot.RobotCommand
                     }
                     else
                     {
-                        sm.waitForSingleEvent(event, State.APPROACH_FINAL_TARGET);
+                        sm.waitForSingleEvent(event, State.RAISE_ELEVATOR);
                     }
                     break;
                 	
@@ -397,11 +388,15 @@ class CmdPowerUpAuto implements TrcRobot.RobotCommand
                     xDistance = yDistance = 0.0;
                     robot.targetHeading = rightScale? 270.0: 90.0;
                 	robot.pidDrive.setTarget(xDistance, yDistance, robot.targetHeading, false, event);
-                	sm.waitForSingleEvent(event, State.APPROACH_FINAL_TARGET);
+                	sm.waitForSingleEvent(event, State.RAISE_ELEVATOR);
                 	break;
+                	
+                case RAISE_ELEVATOR:
+                	robot.elevator.setPosition(RobotInfo.ELEVATOR_MAX_HEIGHT, event, 0.0);
+                	sm.waitForSingleEvent(event, State.APPROACH_FINAL_TARGET);
+                    break;
                     
                 case APPROACH_FINAL_TARGET:
-                	robot.elevator.setPosition(RobotInfo.FIRST_ELEVATOR_HEIGHT);
                 	xDistance = 0.0;
                 	if(sideApproach)
                 	{
@@ -413,19 +408,19 @@ class CmdPowerUpAuto implements TrcRobot.RobotCommand
                 	}
                 	robot.encoderYPidCtrl.setOutputRange(-0.5, 0.5);
                     robot.pidDrive.setTarget(xDistance, yDistance, robot.targetHeading, false, event);
-                    sm.waitForSingleEvent(event, State.RAISE_ELEVATOR);
+                    sm.waitForSingleEvent(event, State.DEPOSIT_CUBE);
                 	break;
-                	
-                case RAISE_ELEVATOR:
-                	robot.elevator.setPosition(RobotInfo.SCALE_TARGET_HEIGHT, event, 0.0);
-                	sm.waitForSingleEvent(event, State.DEPOSIT_CUBE);
-                    break;
 
                 case DEPOSIT_CUBE:
                 	robot.cubePickup.dropCube(0.5);
                 	timer.set(0.3, event);
-                    sm.waitForSingleEvent(event, State.DONE);
+                    sm.waitForSingleEvent(event, State.LOWER_ELEVATOR);
                     break;
+                    
+                case LOWER_ELEVATOR:
+                	robot.elevator.setPosition(RobotInfo.ELEVATOR_MIN_HEIGHT, event, 0.0);
+                	sm.waitForSingleEvent(event, State.DONE);
+                	break;
                   
                 case DONE:
                 default:
@@ -451,7 +446,8 @@ class CmdPowerUpAuto implements TrcRobot.RobotCommand
 
     public boolean shouldYStop(double elapsedTime, double changeX, double changeY)
     {
-        return changeY > RobotInfo.MAX_CUBE_DISTANCE;
+    	pickupCancelled = changeY > RobotInfo.MAX_CUBE_DISTANCE;
+        return pickupCancelled;
     }
 
 } // class CmdPowerUpAuto

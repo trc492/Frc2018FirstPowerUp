@@ -238,9 +238,8 @@ public class RobotInfo
     public static final double FINAL_SIDE_SCALE_APPROACH_DISTANCE= 24.0;
     public static final double RIGHT_SWITCH_LOCATION            = 102.0;
     public static final double LEFT_SWITCH_LOCATION             = -102.0;
-    public static final double SCALE_TARGET_HEIGHT              = 60.0;
     public static final double ADVANCE_TO_SECOND_CUBE_DISTANCE  = 60.0;
-    public static final double STRAFE_TO_SECOND_CUBE_DISTANCE   = 165.0;
+    public static final double STRAFE_TO_SECOND_CUBE_DISTANCE   = 173.0;
     public static final double SCALE_FRONT_POSITION             = 75.0;
     public static final double SCALE_SIDE_POSITION              = 120.0;
     public static final double FIRST_ELEVATOR_HEIGHT            = 30.0;
