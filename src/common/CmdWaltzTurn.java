@@ -20,14 +20,15 @@
  * SOFTWARE.
  */
 
-package team492;
+package common;
 
+import team492.Robot;
 import trclib.TrcEvent;
 import trclib.TrcPidDrive.TurnMode;
 import trclib.TrcRobot;
 import trclib.TrcStateMachine;
 
-class CmdWaltzTurn implements TrcRobot.RobotCommand
+public class CmdWaltzTurn implements TrcRobot.RobotCommand
 {
     private static enum State
     {
@@ -45,7 +46,7 @@ class CmdWaltzTurn implements TrcRobot.RobotCommand
     private TrcStateMachine<State> sm;
     private TurnMode prevTurnMode;
 
-    CmdWaltzTurn(Robot robot)
+    public CmdWaltzTurn(Robot robot)
     {
         this.robot = robot;
 
@@ -122,4 +123,3 @@ class CmdWaltzTurn implements TrcRobot.RobotCommand
     }   //cmdPeriodic
 
 }   //class CmdWaltzTurn
-

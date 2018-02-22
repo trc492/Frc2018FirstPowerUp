@@ -22,8 +22,6 @@
 
 package team492;
 
-import org.opencv.core.Rect;
-
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 
 import edu.wpi.cscore.UsbCamera;
@@ -38,7 +36,6 @@ import edu.wpi.first.wpilibj.Relay;
 import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.SerialPort;
 import edu.wpi.first.wpilibj.Relay.Direction;
-import edu.wpi.first.wpilibj.Relay.Value;
 import frclib.FrcAHRSGyro;
 import frclib.FrcCANTalon;
 import frclib.FrcEmic2TextToSpeech;
@@ -74,7 +71,6 @@ public class Robot extends FrcRobotBase
     public static final boolean USE_TRACELOG = true;
     public static final boolean USE_NAV_X = true;
     public static final boolean USE_USB_CAM = true;
-    public static final boolean USE_GRIP_VISION = false;
     public static final boolean USE_PIXY_SPI = false;
     public static final boolean USE_PIXY_I2C = true;
     public static final boolean USE_TEXT_TO_SPEECH = true;
@@ -85,7 +81,6 @@ public class Robot extends FrcRobotBase
     private static final boolean DEBUG_POWER_CONSUMPTION = true;
     private static final boolean DEBUG_DRIVE_BASE = false;
     private static final boolean DEBUG_PID_DRIVE = false;
-    private static final boolean DEBUG_GRIP_VISION = false;
     private static final boolean DEBUG_WINCH = false;
     private static final boolean DEBUG_ELEVATOR = true;
     private static final boolean DEBUG_CUBE_PICKUP = true;
@@ -120,7 +115,6 @@ public class Robot extends FrcRobotBase
     //
     // VisionTarget subsystem.
     //
-    public GripVision gripVision = null;
     public PixyVision pixy = null;
 
     //
@@ -436,14 +430,6 @@ public class Robot extends FrcRobotBase
 
     public void setVisionEnabled(boolean enabled)
     {
-        if (gripVision != null)
-        {
-            ringLightsPower.set(enabled? Value.kOn: Value.kOff);
-            gripVision.setVideoOutEnabled(enabled);
-            gripVision.setEnabled(enabled);
-            tracer.traceInfo("Vision", "Grip Vision is %s!", enabled? "enabled": "disabled");
-        }
-
         if (pixy != null)
         {
             pixy.setEnabled(enabled);
@@ -492,26 +478,6 @@ public class Robot extends FrcRobotBase
                 HalDashboard.putNumber("DriveBase.X", driveBase.getXPosition());
                 HalDashboard.putNumber("DriveBase.Y", driveBase.getYPosition());
                 HalDashboard.putNumber("DriveBase.Heading", driveBase.getHeading());
-            }
-
-            if (DEBUG_GRIP_VISION)
-            {
-                if (gripVision != null && gripVision.isEnabled())
-                {
-                    Rect[] targetRects = gripVision.getObjectRects();
-                    tracer.traceInfo("GripVision", "Target is %s (%d)",
-                        targetRects == null? "not found": "found", targetRects == null? 0: targetRects.length);
-                    if (targetRects != null)
-                    {
-                        for (int i = 0; i < targetRects.length; i++)
-                        {
-                            dashboard.displayPrintf(8 + i, "x=%d, y=%d, width=%d, height=%d",
-                                targetRects[i].x, targetRects[i].y, targetRects[i].width, targetRects[i].height);
-                            tracer.traceInfo("TargetRect", "%02d: x=%d, y=%d, width=%d, height=%d",
-                                i, targetRects[i].x, targetRects[i].y, targetRects[i].width, targetRects[i].height);
-                        }
-                    }
-                }
             }
 
             if (DEBUG_WINCH)

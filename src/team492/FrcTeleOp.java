@@ -22,6 +22,7 @@
 
 package team492;
 
+import common.CmdWaltzTurn;
 import frclib.FrcJoystick;
 import hallib.HalDashboard;
 import trclib.TrcRobot;
