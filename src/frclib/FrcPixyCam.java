@@ -63,7 +63,7 @@ public class FrcPixyCam extends TrcPixyCam
      */
     public FrcPixyCam(final String instanceName, SPI.Port port)
     {
-        super(instanceName);
+        super(instanceName, true);
 
         if (debugEnabled)
         {
@@ -89,7 +89,7 @@ public class FrcPixyCam extends TrcPixyCam
      */
     public FrcPixyCam(final String instanceName, I2C.Port port, int devAddress)
     {
-        super(instanceName);
+        super(instanceName, false);
 
         if (debugEnabled)
         {
@@ -125,7 +125,7 @@ public class FrcPixyCam extends TrcPixyCam
         final String instanceName, SerialPort.Port port, int baudRate, int dataBits, SerialPort.Parity parity,
         SerialPort.StopBits stopBits)
     {
-        super(instanceName);
+        super(instanceName, false);
 
         if (debugEnabled)
         {
