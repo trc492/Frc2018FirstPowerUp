@@ -49,14 +49,14 @@ public class RobotInfo
     public static final int JSPORT_LEFT_DRIVESTICK              = 0;
     public static final int JSPORT_RIGHT_DRIVESTICK             = 1;
     public static final int JSPORT_OPERATORSTICK                = 2;
-    
+
     //
     // Teleop constants
     //
     public static final double TELEOP_WINCH_POWER               = 0.6; // TODO: This needs to be calibrated
     public static final double TELEOP_GRABBER_POWER             = 0.6; // TODO: This needs to be calibrated
     public static final boolean TELEOP_ENABLE_DRIVE_INVERSION   = false;
-    
+
     //
     // Analog Input ports.
     //
@@ -133,7 +133,7 @@ public class RobotInfo
     //
     // DriveBase subsystem.
     //
-    
+
     public static final double GYRO_ASSIST_KP                   = 0.1;
     public static final double GYRO_ASSIST_SCALE                = 0.5;
 
@@ -151,7 +151,7 @@ public class RobotInfo
     public static final double DRIVE_MOTOR_ROTATIONS_PER_WHEEL_ROTATION= 12.0;
     public static final double MAX_WHEEL_FORCE_OZ               = (343.4 * DRIVE_MOTOR_ROTATIONS_PER_WHEEL_ROTATION) / DRIVE_WHEEL_RADIUS_IN;
     public static final double DRIVE_ENCODER_COUNTS_PER_ROTATION= 1440.0;
-    
+
     // 2017-03-21: 0.0152347136491642, 0.15, 0.0, 0.0
     // 0.7 power is pretty gud fam
     // 2-20-2018: 0.0148258400720388, 0.15, 0.0, 0.0

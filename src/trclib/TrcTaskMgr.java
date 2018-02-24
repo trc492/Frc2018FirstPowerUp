@@ -34,6 +34,7 @@ public class TrcTaskMgr
     private static final String moduleName = "TrcTaskMgr";
     private static final boolean debugEnabled = false;
     private static final boolean tracingEnabled = false;
+    private static final boolean useGlobalTracer = false;
     private static final TrcDbgTrace.TraceLevel traceLevel = TrcDbgTrace.TraceLevel.API;
     private static final TrcDbgTrace.MsgLevel msgLevel = TrcDbgTrace.MsgLevel.INFO;
     private TrcDbgTrace dbgTrace = null;
@@ -259,7 +260,8 @@ public class TrcTaskMgr
     {
         if (debugEnabled)
         {
-            dbgTrace = new TrcDbgTrace(moduleName, tracingEnabled, traceLevel, msgLevel);
+            dbgTrace = useGlobalTracer?
+                TrcDbgTrace.getGlobalTracer(): new TrcDbgTrace(moduleName, tracingEnabled, traceLevel, msgLevel);
         }
 
         instance = this;
@@ -444,7 +446,6 @@ public class TrcTaskMgr
                             dbgTrace.traceInfo(funcName, "Executing PostContinuousTask %s", taskObj.toString());
                         }
                         startNanoTime = TrcUtil.getCurrentTimeNanos();
-                        TrcDbgTrace.getGlobalTracer().traceInfo("***TaskMgr***", "calling task %s at %.3f", taskObj.toString(), startNanoTime/1000000000.0);
                         task.runTask(TaskType.POSTCONTINUOUS_TASK, mode);
                         taskObj.postContinuousTaskTotalNanoTime += TrcUtil.getCurrentTimeNanos() - startNanoTime;
                         taskObj.postContinuousTaskTimeSlotCount++;
@@ -474,23 +475,4 @@ public class TrcTaskMgr
         }
     }   //printTaskPerformanceMetrics
 
-//    /**
-//     * This method finds the given task in the task list and return it.
-//     *
-//     * @param task specifies the task to look for.
-//     * @return true if found, false otherwise.
-//     */
-//    private TaskObject findTask(Task task)
-//    {
-//        for (int i = 0; i < taskList.size(); i++)
-//        {
-//            TaskObject taskObj = taskList.get(i);
-//            if (taskObj.isSame(task))
-//            {
-//                return taskObj;
-//            }
-//        }
-//        return null;
-//    }   //findTask
-//
 }   //class TaskMgr

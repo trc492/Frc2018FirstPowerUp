@@ -34,7 +34,7 @@ import trclib.TrcPixyCam.ObjectBlock;
 public class PixyVision
 {
     private static final String moduleName = "PixyVision";
-    private static final boolean debugEnabled = true;
+    private static final boolean debugEnabled = false;
 
     private static final boolean FILTER_ENABLED = false;
     private static final double PERCENT_TOLERANCE = 0.3;    // 30% tolerance
