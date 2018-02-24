@@ -444,7 +444,6 @@ public class Robot extends FrcRobotBase
         if (currTime >= nextUpdateTime)
         {
             nextUpdateTime = currTime + DASHBOARD_UPDATE_INTERVAL;
-            
 
             if (DEBUG_POWER_CONSUMPTION)
             {
@@ -495,8 +494,8 @@ public class Robot extends FrcRobotBase
 
             if (DEBUG_CUBE_PICKUP)
             {
-                dashboard.displayPrintf(9, "CubePickup: power=%.1f, current=%.1f",
-                    cubePickup.getPower(), cubePickup.getGrabberCurrent());
+                dashboard.displayPrintf(9, "CubePickup: power=%.1f, current=%.1f, cubeDetected=%b",
+                    cubePickup.getPower(), cubePickup.getGrabberCurrent(), cubePickup.cubeDetected());
             }
 
             if (DEBUG_PIXY)

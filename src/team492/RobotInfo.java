@@ -55,7 +55,6 @@ public class RobotInfo
     //
     public static final double TELEOP_WINCH_POWER               = 0.6; // TODO: This needs to be calibrated
     public static final double TELEOP_GRABBER_POWER             = 0.6; // TODO: This needs to be calibrated
-    public static final boolean TELEOP_ENABLE_DRIVE_INVERSION   = false;
 
     //
     // Analog Input ports.
@@ -70,9 +69,9 @@ public class RobotInfo
     public static final int DIN_FRONT_SONAR_PING                = 0;
     public static final int DIN_LEFT_SONAR_PING                 = 1;
     public static final int DIN_RIGHT_SONAR_PING                = 2;
-    public static final int DIN_CUBE_PROXIMITY_SENSOR           = 3;
-    public static final int DIN_LEFT_PROXIMITY_SENSOR           = 4;
-    public static final int DIN_RIGHT_PROXIMITY_SENSOR          = 5;
+    public static final int DIN_LEFT_PROXIMITY_SENSOR           = 3;
+    public static final int DIN_RIGHT_PROXIMITY_SENSOR          = 4;
+    public static final int DIN_CUBE_PROXIMITY_SENSOR           = 9;
 
     //
     // CAN IDs.

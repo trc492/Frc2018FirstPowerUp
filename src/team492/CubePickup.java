@@ -95,20 +95,6 @@ public class CubePickup
         event = new TrcEvent("grabberEvent");
     }
 
-    private void setGrabberTaskEnabled(boolean enabled)
-    {
-        if (enabled)
-        {
-            grabberTaskObj.registerTask(TaskType.POSTCONTINUOUS_TASK);
-            startTime = TrcUtil.getCurrentTime();
-            sm.start(State.START);
-        } else
-        {
-            grabberTaskObj.unregisterTask(TaskType.POSTCONTINUOUS_TASK);
-            sm.stop();
-        }
-    }
-
     /**
      * Open the claw.
      */
@@ -195,7 +181,7 @@ public class CubePickup
      */
      public boolean cubeDetected()
      {
-     return cubeProximitySensor.isActive();
+         return cubeProximitySensor.isActive();
      }
 
     public double getPower()
@@ -203,14 +189,35 @@ public class CubePickup
         return controlMotor.getPower();
     }
 
+    private void setGrabberTaskEnabled(boolean enabled)
+    {
+        if (enabled)
+        {
+            grabberTaskObj.registerTask(TaskType.POSTCONTINUOUS_TASK);
+            startTime = TrcUtil.getCurrentTime();
+            sm.start(State.START);
+        } else
+        {
+            grabberTaskObj.unregisterTask(TaskType.POSTCONTINUOUS_TASK);
+            sm.stop();
+        }
+    }
+
     /**
      * spins the motors to pickup a cube and signals an event when done
      */
     public void grabCube(double power, TrcEvent event)
     {
-        controlMotor.setPower(power);
-        cubeEvent = event;
-        setGrabberTaskEnabled(true);
+        if (!sm.isEnabled())
+        {
+            controlMotor.setPower(power);
+            cubeEvent = event;
+            setGrabberTaskEnabled(true);
+        }
+        else
+        {
+            robot.tracer.traceInfo("grabCube", "***** Caught double trigger");
+        }
     }
 
     /**
