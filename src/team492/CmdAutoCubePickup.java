@@ -146,7 +146,7 @@ public class CmdAutoCubePickup implements TrcRobot.RobotCommand
 
         if (sm.isReady())
         {
-            switch (state)
+            switch (sm.getState())
             {
                 case START:
                     // Deploy and open cube pickup

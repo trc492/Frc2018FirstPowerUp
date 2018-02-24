@@ -129,7 +129,7 @@ public class CmdStrafeUntilCube implements TrcRobot.RobotCommand
 
         if (sm.isReady())
         {
-            switch (state)
+            switch (sm.getState())
             {
                 case START_STRAFE:
                     double xPower = RobotInfo.FIND_CUBE_STRAFE_POWER * (strafeRight ? 1 : -1);
