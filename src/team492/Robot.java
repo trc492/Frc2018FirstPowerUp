@@ -43,6 +43,7 @@ import frclib.FrcI2cLEDPanel;
 import frclib.FrcPneumatic;
 import frclib.FrcRobotBase;
 import frclib.FrcRobotBattery;
+import frclib.FrcJoystick;
 import hallib.HalDashboard;
 import team492.PixyVision.TargetInfo;
 import trclib.TrcDbgTrace;
@@ -188,6 +189,10 @@ public class Robot extends FrcRobotBase
     public double tuneKd;
     public double tuneKf;
 
+    public FrcJoystick leftDriveStick;
+    public FrcJoystick rightDriveStick;
+    public FrcJoystick operatorStick;
+
     /**
      * Constructor.
      */
@@ -202,6 +207,13 @@ public class Robot extends FrcRobotBase
     @Override
     public void robotInit()
     {
+        //
+        // Joysticks
+        //
+        leftDriveStick = new FrcJoystick("leftDriveStick", RobotInfo.JSPORT_LEFT_DRIVESTICK);
+        rightDriveStick = new FrcJoystick("rightDriveStick", RobotInfo.JSPORT_RIGHT_DRIVESTICK);
+        operatorStick = new FrcJoystick("operatorStick", RobotInfo.JSPORT_OPERATORSTICK);
+
         //
         // Sensors.
         //

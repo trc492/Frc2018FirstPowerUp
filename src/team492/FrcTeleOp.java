@@ -37,13 +37,6 @@ public class FrcTeleOp implements TrcRobot.RobotMode
     } // enum DriveMode
 
     protected Robot robot;
-
-    //
-    // Input subsystem.
-    //
-    private FrcJoystick leftDriveStick;
-    private FrcJoystick rightDriveStick;
-    private FrcJoystick operatorStick;
     private CmdWaltzTurn cmdWaltzTurn;
 
     private boolean slowDriveOverride = false;
@@ -56,21 +49,18 @@ public class FrcTeleOp implements TrcRobot.RobotMode
     {
         this.robot = robot;
         //
-        // Input subsystem.
+        // Configure joysticks.
         //
-        leftDriveStick = new FrcJoystick("leftDriveStick", RobotInfo.JSPORT_LEFT_DRIVESTICK,
-            this::leftDriveStickButtonEvent);
-        leftDriveStick.setYInverted(true);
+        robot.leftDriveStick.setButtonHandler(this::leftDriveStickButtonEvent);
+        robot.leftDriveStick.setYInverted(true);
 
-        rightDriveStick = new FrcJoystick("rightDriveStick", RobotInfo.JSPORT_RIGHT_DRIVESTICK,
-            this::rightDriveStickButtonEvent);
-        rightDriveStick.setYInverted(true);
+        robot.rightDriveStick.setButtonHandler(this::rightDriveStickButtonEvent);
+        robot.rightDriveStick.setYInverted(true);
 
-        operatorStick = new FrcJoystick("operatorStick", RobotInfo.JSPORT_OPERATORSTICK,
-            this::operatorStickButtonEvent);
-        operatorStick.setYInverted(false);
+        robot.operatorStick.setButtonHandler(this::operatorStickButtonEvent);
+        robot.operatorStick.setYInverted(false);
 
-        cmdWaltzTurn = new CmdWaltzTurn(robot);
+        //cmdWaltzTurn = new CmdWaltzTurn(robot);
     } // FrcTeleOp
 
     //
@@ -110,8 +100,8 @@ public class FrcTeleOp implements TrcRobot.RobotMode
             switch (driveMode)
             {
                 case TANK_MODE:
-                    double leftPower = leftDriveStick.getYWithDeadband(true);
-                    double rightPower = rightDriveStick.getYWithDeadband(true);
+                    double leftPower = robot.leftDriveStick.getYWithDeadband(true);
+                    double rightPower = robot.rightDriveStick.getYWithDeadband(true);
                     if (slowDriveOverride)
                     {
                         leftPower /= RobotInfo.DRIVE_SLOW_YSCALE;
@@ -121,8 +111,8 @@ public class FrcTeleOp implements TrcRobot.RobotMode
                     break;
 
                 case ARCADE_MODE:
-                    double drivePower = rightDriveStick.getYWithDeadband(true);
-                    double turnPower = rightDriveStick.getTwistWithDeadband(true);
+                    double drivePower = robot.rightDriveStick.getYWithDeadband(true);
+                    double turnPower = robot.rightDriveStick.getTwistWithDeadband(true);
                     if (slowDriveOverride)
                     {
                         drivePower /= RobotInfo.DRIVE_SLOW_YSCALE;
@@ -133,9 +123,9 @@ public class FrcTeleOp implements TrcRobot.RobotMode
 
                 default:
                 case MECANUM_MODE:
-                    double x = leftDriveStick.getXWithDeadband(true);
-                    double y = rightDriveStick.getYWithDeadband(true);
-                    double rot = rightDriveStick.getTwistWithDeadband(true);
+                    double x = robot.leftDriveStick.getXWithDeadband(true);
+                    double y = robot.rightDriveStick.getYWithDeadband(true);
+                    double rot = robot.rightDriveStick.getTwistWithDeadband(true);
                     if (slowDriveOverride)
                     {
                         x /= RobotInfo.DRIVE_SLOW_XSCALE;
@@ -150,7 +140,7 @@ public class FrcTeleOp implements TrcRobot.RobotMode
                     break;
             }
 
-            double elevatorPower = operatorStick.getYWithDeadband(true);
+            double elevatorPower = robot.operatorStick.getYWithDeadband(true);
             robot.elevator.setPower(elevatorPower); // Pull joystick back -> move elevator up
         }
 
@@ -385,7 +375,7 @@ public class FrcTeleOp implements TrcRobot.RobotMode
                 {
                     robot.leftFlipper.extend();
                 }
-                else 
+                else
                 {
                     robot.leftFlipper.retract();
                 }
@@ -396,7 +386,7 @@ public class FrcTeleOp implements TrcRobot.RobotMode
                 {
                     robot.rightFlipper.extend();
                 }
-                else 
+                else
                 {
                     robot.rightFlipper.retract();
                 }
@@ -416,7 +406,7 @@ public class FrcTeleOp implements TrcRobot.RobotMode
             case FrcJoystick.LOGITECH_BUTTON11:
             	if (pressed)
             	{
-            	    robot.winch.setPower(-RobotInfo.TELEOP_WINCH_POWER);            		
+            	    robot.winch.setPower(-RobotInfo.TELEOP_WINCH_POWER);
             	} else
             	{
             	    robot.winch.setPower(0.0);

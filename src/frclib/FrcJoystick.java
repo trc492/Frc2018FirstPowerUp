@@ -125,8 +125,8 @@ public class FrcJoystick extends Joystick
 
     private final String instanceName;
     private final int port;
-    private final ButtonHandler buttonHandler;
     private final DriverStation ds;
+    private ButtonHandler buttonHandler;
     private int prevButtons;
     private int ySign;
 
@@ -138,7 +138,7 @@ public class FrcJoystick extends Joystick
      * @param buttonHandler specifies the object that will handle the button events. If none provided, it is set to
      *        null.
      */
-    public FrcJoystick(final String instanceName, final int port, final ButtonHandler buttonHandler)
+    public FrcJoystick(final String instanceName, final int port)
     {
         super(port);
 
@@ -151,7 +151,6 @@ public class FrcJoystick extends Joystick
 
         this.instanceName = instanceName;
         this.port = port;
-        this.buttonHandler = buttonHandler;
         ds = DriverStation.getInstance();
         prevButtons = ds.getStickButtons(port);
         ySign = 1;
@@ -171,9 +170,9 @@ public class FrcJoystick extends Joystick
      * @param deadbandThreshold specifies the deadband of the analog sticks.
      */
     public FrcJoystick(
-        final String instanceName, final int port, final ButtonHandler buttonHandler, final double deadbandThreshold)
+        final String instanceName, final int port, final double deadbandThreshold)
     {
-        this(instanceName, port, buttonHandler);
+        this(instanceName, port);
         this.deadbandThreshold = deadbandThreshold;
     }   //FrcJoystick
 
@@ -625,5 +624,15 @@ public class FrcJoystick extends Joystick
 
         return value;
     }   //adjustValueWithDeadband
+
+    /**
+     * Sets the object that will handle button events. Any previous handler set with this method will no longer
+     * receive events.
+     *
+     * @param buttonHandler the object that will handle the button events. May be null.
+     */
+    public void setButtonHandler(ButtonHandler buttonHandler) {
+        this.buttonHandler = buttonHandler;
+    } //setButtonHandler
 
 }   //class FrcJoystick
