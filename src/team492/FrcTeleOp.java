@@ -182,7 +182,10 @@ public class FrcTeleOp implements TrcRobot.RobotMode
 
     public void leftDriveStickButtonEvent(int button, boolean pressed)
     {
-        // CodeReview: remove last season's code.
+        robot.dashboard.displayPrintf(8, " LeftDriveStick: button=0x%04x %s", button, pressed? "pressed": "released");
+        robot.tracer.traceInfo(
+            "ButtonEvent", "LeftDriveStick: button=0x%04x %s", button, pressed? "pressed": "released");
+
         switch (button)
         {
             case FrcJoystick.LOGITECH_TRIGGER:
@@ -232,9 +235,12 @@ public class FrcTeleOp implements TrcRobot.RobotMode
         }
     } // leftDriveStickButtonEvent
 
-    @SuppressWarnings("unused")
-	public void rightDriveStickButtonEvent(int button, boolean pressed)
+    public void rightDriveStickButtonEvent(int button, boolean pressed)
     {
+        robot.dashboard.displayPrintf(8, "RightDriveStick: button=0x%04x %s", button, pressed? "pressed": "released");
+        robot.tracer.traceInfo(
+            "ButtonEvent", "RightDriveStick: button=0x%04x %s", button, pressed? "pressed": "released");
+
         switch (button)
         {
             case FrcJoystick.SIDEWINDER_TRIGGER:
@@ -292,6 +298,10 @@ public class FrcTeleOp implements TrcRobot.RobotMode
 
     public void operatorStickButtonEvent(int button, boolean pressed)
     {
+        robot.dashboard.displayPrintf(8, "  OperatorStick: button=0x%04x %s", button, pressed? "pressed": "released");
+        robot.tracer.traceInfo(
+            "ButtonEvent", "OperatorStick: button=0x%04x %s", button, pressed? "pressed": "released");
+
         switch (button)
         {
             case FrcJoystick.LOGITECH_TRIGGER:
