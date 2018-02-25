@@ -25,7 +25,6 @@ package team492;
 import frclib.FrcJoystick;
 import hallib.HalDashboard;
 import trclib.TrcRobot;
-import trclib.TrcTaskMgr;
 import trclib.TrcUtil;
 
 public class FrcTeleOp implements TrcRobot.RobotMode
@@ -264,14 +263,13 @@ public class FrcTeleOp implements TrcRobot.RobotMode
             case FrcJoystick.LOGITECH_TRIGGER:
                 if (pressed)
                 {
-                    robot.cubePickup.grabCube(RobotInfo.TELEOP_GRABBER_POWER, null);
+                    robot.cubePickup.grabCube(RobotInfo.PICKUP_TELEOP_POWER, null);
                     robot.tracer.traceInfo("operatorTrigger", "pressed %.2f", TrcUtil.getCurrentTime()-robot.cubePickup.startTime);
                 }
                 else
                 {
-                    robot.cubePickup.stopGrabberTask();
+                    robot.cubePickup.stopPickup();
                     robot.tracer.traceInfo("operatorTrigger", "released %.2f", TrcUtil.getCurrentTime()-robot.cubePickup.startTime);
-                    TrcTaskMgr.getInstance().printTaskPerformanceMetrics(robot.tracer);
                 }
                 break;
 
@@ -290,7 +288,7 @@ public class FrcTeleOp implements TrcRobot.RobotMode
             case FrcJoystick.LOGITECH_BUTTON3:
                 if (pressed)
                 {
-                    robot.cubePickup.dropCube(RobotInfo.TELEOP_GRABBER_POWER);
+                    robot.cubePickup.dropCube(RobotInfo.PICKUP_TELEOP_POWER);
                 }
                 else
                 {
@@ -361,11 +359,11 @@ public class FrcTeleOp implements TrcRobot.RobotMode
                 break;
 
             case FrcJoystick.LOGITECH_BUTTON10:
-                robot.winch.setPower(pressed? RobotInfo.TELEOP_WINCH_POWER: 0.0);
+                robot.winch.setPower(pressed? RobotInfo.WINCH_TELEOP_POWER: 0.0);
                 break;
 
             case FrcJoystick.LOGITECH_BUTTON11:
-                robot.winch.setPower(pressed? -RobotInfo.TELEOP_WINCH_POWER: 0.0);
+                robot.winch.setPower(pressed? -RobotInfo.WINCH_TELEOP_POWER: 0.0);
                 break;
 
             case FrcJoystick.LOGITECH_BUTTON12:

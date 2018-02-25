@@ -48,7 +48,6 @@ import frclib.FrcRobotBase;
 import frclib.FrcRobotBattery;
 import hallib.HalDashboard;
 import team492.PixyVision.TargetInfo;
-import trclib.TrcAnalogInput;
 import trclib.TrcDbgTrace;
 import trclib.TrcDriveBase;
 import trclib.TrcEmic2TextToSpeech.Voice;
@@ -495,7 +494,7 @@ public class Robot extends FrcRobotBase
                 HalDashboard.putNumber("pdpTotalCurrent", pdp.getTotalCurrent());
                 HalDashboard.putNumber("elevatorCurrent", elevator.elevatorMotor.motor.getOutputCurrent());
                 HalDashboard.putNumber("winchCurrent", winch.getCurrent());
-                HalDashboard.putNumber("grabberCurrent", cubePickup.getGrabberCurrent());
+                HalDashboard.putNumber("pickupCurrent", cubePickup.getPickupCurrent());
             }
 
             if (DEBUG_DRIVE_BASE)
@@ -540,7 +539,7 @@ public class Robot extends FrcRobotBase
             if (DEBUG_CUBE_PICKUP)
             {
                 dashboard.displayPrintf(9, "CubePickup: power=%.1f, current=%.1f, cubeDetected=%b",
-                    cubePickup.getPower(), cubePickup.getGrabberCurrent(), cubePickup.cubeDetected());
+                    cubePickup.getPickupPower(), cubePickup.getPickupCurrent(), cubePickup.cubeDetected());
             }
 
             if (DEBUG_PIXY)

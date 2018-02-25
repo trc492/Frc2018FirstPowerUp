@@ -51,12 +51,6 @@ public class RobotInfo
     public static final int JSPORT_OPERATORSTICK                = 2;
 
     //
-    // Teleop constants
-    //
-    public static final double TELEOP_WINCH_POWER               = 0.6; // TODO: This needs to be calibrated
-    public static final double TELEOP_GRABBER_POWER             = 0.6; // TODO: This needs to be calibrated
-
-    //
     // Analog Input ports.
     //
     public static final int AIN_LEFT_SONAR_SENSOR               = 0;
@@ -201,13 +195,14 @@ public class RobotInfo
     //
     // Winch subsystem.
     //
-    public static final double WINCH_MOTOR_POWER_SCALE          = 1.0;      //Disable slow down, used to be 0.6
+    public static final double WINCH_TELEOP_POWER               = 0.6; // TODO: This needs to be calibrated
 
     //
     // CubePickup subsystem.
     //
-    public static final double GRABBER_FREE_SPIN_CURRENT        = 10.0;
-    public static final double GRABBER_STALL_CURRENT            = 50.0;
+    public static final double PICKUP_FREE_SPIN_CURRENT         = 10.0;
+    public static final double PICKUP_STALL_CURRENT             = 50.0;
+    public static final double PICKUP_TELEOP_POWER              = 0.6; // TODO: This needs to be calibrated
 
     //
     // Elevator subsystem.

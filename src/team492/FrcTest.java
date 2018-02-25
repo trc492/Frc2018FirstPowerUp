@@ -70,7 +70,7 @@ public class FrcTest extends FrcTeleOp
     private CmdPidDrive pidDriveCommand = null;
 
     private int motorIndex = 0;
-    private boolean overrideGrabber = false;
+    private boolean pickupOverride = false;
 
     public FrcTest(Robot robot)
     {
@@ -298,15 +298,15 @@ public class FrcTest extends FrcTeleOp
         switch (button)
         {
             case FrcJoystick.LOGITECH_TRIGGER:
-                if (overrideGrabber)
+                if (pickupOverride)
                 {
                     if (pressed)
                     {
-                        robot.cubePickup.grabCube(RobotInfo.TELEOP_GRABBER_POWER);
+                        robot.cubePickup.setPickupPower(RobotInfo.PICKUP_TELEOP_POWER);
                     }
                     else
                     {
-                        robot.cubePickup.grabCube(0.0);
+                        robot.cubePickup.stopPickup();
                     }
                     processedInput = true;
                 }
@@ -316,15 +316,15 @@ public class FrcTest extends FrcTeleOp
                 break;
 
             case FrcJoystick.LOGITECH_BUTTON3:
-                if (overrideGrabber)
+                if (pickupOverride)
                 {
                     if (pressed)
                     {
-                        robot.cubePickup.dropCube(RobotInfo.TELEOP_GRABBER_POWER);
+                        robot.cubePickup.dropCube(RobotInfo.PICKUP_TELEOP_POWER);
                     }
                     else
                     {
-                        robot.cubePickup.grabCube(0.0);
+                        robot.cubePickup.stopPickup();
                     }
                     processedInput = true;
                 }
@@ -357,7 +357,7 @@ public class FrcTest extends FrcTeleOp
                 break;
 
             case FrcJoystick.LOGITECH_BUTTON9:
-                overrideGrabber = pressed;
+                pickupOverride = pressed;
                 processedInput = true;
                 break;
 
