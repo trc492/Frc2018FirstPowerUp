@@ -22,26 +22,24 @@
 
 package frclib;
 
-import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.DigitalOutput;
 import trclib.TrcDbgTrace;
-import trclib.TrcDigitalInput;
+import trclib.TrcDigitalOutput;
 
 /**
- * This class implements a platform dependent digital input sensor extending TrcDigitalInput. It provides
- * implementation of the abstract methods in TrcDigitalInput.
+ * This class implements a platform dependent digital output extending TrcDigitalOutput. It provides
+ * implementation of the abstract methods in TrcDigitalOutput.
  */
-public class FrcDigitalInput extends TrcDigitalInput
+public class FrcDigitalOutput extends TrcDigitalOutput
 {
-    private static final String moduleName = "FrcDigitalInput";
+    private static final String moduleName = "FrcDigitalOutput";
     private static final boolean debugEnabled = false;
     private static final boolean tracingEnabled = false;
     private static final TrcDbgTrace.TraceLevel traceLevel = TrcDbgTrace.TraceLevel.API;
     private static final TrcDbgTrace.MsgLevel msgLevel = TrcDbgTrace.MsgLevel.INFO;
     private TrcDbgTrace dbgTrace = null;
 
-    private DigitalInput digitalInput;
-    private boolean inverted = false;
-    private boolean state = false;
+    private DigitalOutput digitalOutput;
 
     /**
      * Constructor: Creates an instance of the object.
@@ -49,7 +47,7 @@ public class FrcDigitalInput extends TrcDigitalInput
      * @param instanceName specifies the instance name.
      * @param channel specifies the digital I/O channel.
      */
-    public FrcDigitalInput(String instanceName, int channel)
+    public FrcDigitalOutput(String instanceName, int channel)
     {
         super(instanceName);
 
@@ -58,43 +56,30 @@ public class FrcDigitalInput extends TrcDigitalInput
             dbgTrace = new TrcDbgTrace(moduleName + "." + instanceName, tracingEnabled, traceLevel, msgLevel);
         }
 
-        digitalInput = new DigitalInput(channel);
-    }   //FrcDigitalInput
-
-    /**
-     * This method inverts the digital input state. It is useful for changing a limit switch from Normal Open to
-     * Normal Close, for example.
-     *
-     * @param inverted specifies true to invert the digital input, false otherwise.
-     */
-    public void setInverted(boolean inverted)
-    {
-        this.inverted = inverted;
-    }   //setInverted
+        digitalOutput = new DigitalOutput(channel);
+    }   //FrcDigitalOutput
 
     //
-    // Implements TrcDigitalInput abstract methods.
+    // Implements TrcDigitalOutput abstract methods.
     //
 
     /**
-     * This method returns the state of the digital input sensor.
+     * This method sets the state of the output port.
      *
-     * @return true if the digital input sensor is active, false otherwise.
+     * @param state specifies state of the output port.
      */
     @Override
-    public boolean isActive()
+    public void setState(boolean state)
     {
-        final String funcName = "isActive";
-
-        state = digitalInput.get() ^ inverted;
+        final String funcName = "setState";
 
         if (debugEnabled)
         {
-            dbgTrace.traceEnter(funcName, TrcDbgTrace.TraceLevel.API);
-            dbgTrace.traceExit(funcName, TrcDbgTrace.TraceLevel.API, "=%s", Boolean.toString(state));
+            dbgTrace.traceEnter(funcName, TrcDbgTrace.TraceLevel.API, "state=%b", state);
+            dbgTrace.traceExit(funcName, TrcDbgTrace.TraceLevel.API);
         }
 
-        return state;
-    }   //isActive
+        digitalOutput.set(state);
+    }   //setState
 
-}   //class FrcDigitalInput
+}   //class FrcDigitalOutput

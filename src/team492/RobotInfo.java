@@ -59,19 +59,19 @@ public class RobotInfo
     //
     // Analog Input ports.
     //
-    public static final int AIN_FRONT_SONAR_SENSOR              = 0;
-    public static final int AIN_LEFT_SONAR_SENSOR               = 1;
-    public static final int AIN_RIGHT_SONAR_SENSOR              = 2;
+    public static final int AIN_LEFT_SONAR_SENSOR               = 0;
+    public static final int AIN_RIGHT_SONAR_SENSOR              = 1;
+    public static final int AIN_FRONT_SONAR_SENSOR              = 2;
     public static final int AIN_PRESSURE_SENSOR                 = 3;
     //
-    // Digital Input ports.
+    // Digital Input/Output ports.
     //
-    public static final int DIN_FRONT_SONAR_PING                = 0;
-    public static final int DIN_LEFT_SONAR_PING                 = 1;
-    public static final int DIN_RIGHT_SONAR_PING                = 2;
-    public static final int DIN_LEFT_PROXIMITY_SENSOR           = 3;
-    public static final int DIN_RIGHT_PROXIMITY_SENSOR          = 4;
-    public static final int DIN_CUBE_PROXIMITY_SENSOR           = 9;
+    public static final int DIO_LEFT_SONAR_PING                 = 0;
+    public static final int DIO_RIGHT_SONAR_PING                = 1;
+    public static final int DIO_FRONT_SONAR_PING                = 2;
+    public static final int DIO_LEFT_PROXIMITY_SENSOR           = 7;
+    public static final int DIO_RIGHT_PROXIMITY_SENSOR          = 8;
+    public static final int DIO_CUBE_PROXIMITY_SENSOR           = 9;
 
     //
     // CAN IDs.
@@ -188,6 +188,7 @@ public class RobotInfo
     // 2017-03-12: 0.01, 0.0, 0.0
     // 2017-03-14: 0.0165, 0.0, 0.002
     public static final double SONAR_MILLIVOLTS_PER_INCH        = 0.0098;
+    public static final double SONAR_ERROR_THRESHOLD            = 50.0; //value should not jump 50-in per time slice.
     public static final double SONAR_KP                         = 0.0165;
     public static final double SONAR_KI                         = 0.0;
     public static final double SONAR_KD                         = 0.002;
