@@ -126,17 +126,15 @@ public class FrcJoystick extends Joystick
     private final String instanceName;
     private final int port;
     private final DriverStation ds;
-    private ButtonHandler buttonHandler;
     private int prevButtons;
-    private int ySign;
+    private ButtonHandler buttonHandler = null;
+    private int ySign = 1;
 
     /**
      * Constructor: Create an instance of the object.
      *
      * @param instanceName specifies the instance name.
      * @param port specifies the joystick port ID.
-     * @param buttonHandler specifies the object that will handle the button events. If none provided, it is set to
-     *        null.
      */
     public FrcJoystick(final String instanceName, final int port)
     {
@@ -153,7 +151,6 @@ public class FrcJoystick extends Joystick
         this.port = port;
         ds = DriverStation.getInstance();
         prevButtons = ds.getStickButtons(port);
-        ySign = 1;
 
         TrcTaskMgr.TaskObject prePeriodicTaskObj = TrcTaskMgr.getInstance().createTask(
             instanceName + ".prePeriodic", this::prePeriodicTask);
@@ -165,8 +162,6 @@ public class FrcJoystick extends Joystick
      *
      * @param instanceName specifies the instance name.
      * @param port specifies the joystick port ID.
-     * @param buttonHandler specifies the object that will handle the button events. If none provided, it is set to
-     *        null.
      * @param deadbandThreshold specifies the deadband of the analog sticks.
      */
     public FrcJoystick(
@@ -186,6 +181,32 @@ public class FrcJoystick extends Joystick
         return instanceName;
     }   //toString
 
+    /**
+     * This method sets the object that will handle button events. Any previous handler set with this method will
+     * no longer receive events.
+     *
+     * @param buttonHandler specifies the object that will handle the button events. Set to null clear previously
+     *        set handler.
+     */
+    public void setButtonHandler(ButtonHandler buttonHandler)
+    {
+        final String funcName = "setButtonHandler";
+
+        if (debugEnabled)
+        {
+            dbgTrace.traceEnter(funcName, TrcDbgTrace.TraceLevel.API, "buttonHandler=%s", buttonHandler);
+            dbgTrace.traceExit(funcName, TrcDbgTrace.TraceLevel.API);
+        }
+
+        this.buttonHandler = buttonHandler;
+    } //setButtonHandler
+
+    /**
+     * This method sets the joystick button sampling period. By default, it is sampling at 50Hz. One could change
+     * the sampling period by calling this method.
+     *
+     * @param period specifies the new sampling period in seconds.
+     */
     public void setSamplingPeriod(double period)
     {
         final String funcName = "setSamplingPeriod";
@@ -219,7 +240,7 @@ public class FrcJoystick extends Joystick
         {
             dbgTrace.traceExit(funcName, TrcDbgTrace.TraceLevel.API);
         }
-    }   //set YInverted
+    }   //setYInverted
 
     /**
      * This method returns the value of the X analog stick.
@@ -624,15 +645,5 @@ public class FrcJoystick extends Joystick
 
         return value;
     }   //adjustValueWithDeadband
-
-    /**
-     * Sets the object that will handle button events. Any previous handler set with this method will no longer
-     * receive events.
-     *
-     * @param buttonHandler the object that will handle the button events. May be null.
-     */
-    public void setButtonHandler(ButtonHandler buttonHandler) {
-        this.buttonHandler = buttonHandler;
-    } //setButtonHandler
 
 }   //class FrcJoystick

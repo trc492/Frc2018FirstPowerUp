@@ -278,7 +278,9 @@ public class CubePickup
     {
         if (sm.isReady())
         {
-            switch (sm.getState())
+            State state = sm.getState();
+
+            switch (state)
             {
                 case START:
                     // wait a bit to let the start up current spike past.
@@ -324,7 +326,8 @@ public class CubePickup
                     setGrabberTaskEnabled(false);
                     break;
             }
-            robot.traceStateInfo(TrcUtil.getCurrentTime()-startTime, sm.getState().toString());
+
+            robot.traceStateInfo(TrcUtil.getCurrentTime() - startTime, state.toString());
         }
     }
 

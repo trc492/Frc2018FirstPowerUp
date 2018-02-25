@@ -22,7 +22,6 @@
 
 package team492;
 
-import common.CmdWaltzTurn;
 import frclib.FrcJoystick;
 import hallib.HalDashboard;
 import trclib.TrcRobot;
@@ -37,13 +36,11 @@ public class FrcTeleOp implements TrcRobot.RobotMode
     } // enum DriveMode
 
     protected Robot robot;
-    private CmdWaltzTurn cmdWaltzTurn;
 
     private boolean slowDriveOverride = false;
     private DriveMode driveMode = DriveMode.MECANUM_MODE;
 
     private boolean driveInverted = false;
-    private boolean waltzTurnOn = false;
 
     public FrcTeleOp(Robot robot)
     {
@@ -59,8 +56,6 @@ public class FrcTeleOp implements TrcRobot.RobotMode
 
         robot.operatorStick.setButtonHandler(this::operatorStickButtonEvent);
         robot.operatorStick.setYInverted(false);
-
-        //cmdWaltzTurn = new CmdWaltzTurn(robot);
     } // FrcTeleOp
 
     //
@@ -92,7 +87,7 @@ public class FrcTeleOp implements TrcRobot.RobotMode
     @Override
     public void runPeriodic(double elapsedTime)
     {
-        if (!waltzTurnOn && !robot.cmdAutoCubePickup.isEnabled())
+        if (!robot.cmdAutoCubePickup.isEnabled())
         {
             //
             // DriveBase operation.
@@ -151,15 +146,7 @@ public class FrcTeleOp implements TrcRobot.RobotMode
     @Override
     public void runContinuous(double elapsedTime)
     {
-        // CodeReview: visionAssist is our autoAssist this season.
-        if (waltzTurnOn)
-        {
-            if (cmdWaltzTurn.cmdPeriodic(elapsedTime))
-            {
-                waltzTurnOn = false;
-            }
-        }
-        else if (robot.cmdAutoCubePickup.isEnabled())
+        if (robot.cmdAutoCubePickup.isEnabled())
         {
             robot.tracer.tracePrintf("Activated: %b", robot.cmdAutoCubePickup.isEnabled());
             robot.cmdAutoCubePickup.cmdPeriodic(elapsedTime);
@@ -241,31 +228,12 @@ public class FrcTeleOp implements TrcRobot.RobotMode
                 break;
 
             case FrcJoystick.SIDEWINDER_BUTTON2:
-                if (pressed)
-                {
-                    cmdWaltzTurn.stop();
-                    waltzTurnOn = false;
-                }
                 break;
 
             case FrcJoystick.SIDEWINDER_BUTTON3:
-//                if (pressed)
-//                {
-//                    cmdWaltzTurn.setClockwiseTurn(true, driveInverted);
-//                    cmdWaltzTurn.start();
-//                    driveInverted = !driveInverted;
-//                    waltzTurnOn = true;
-//                }
                 break;
 
             case FrcJoystick.SIDEWINDER_BUTTON4:
-//                if (pressed)
-//                {
-//                    cmdWaltzTurn.setClockwiseTurn(false, driveInverted);
-//                    cmdWaltzTurn.start();
-//                    driveInverted = !driveInverted;
-//                    waltzTurnOn = true;
-//                }
                 break;
 
             case FrcJoystick.SIDEWINDER_BUTTON5:
@@ -332,7 +300,7 @@ public class FrcTeleOp implements TrcRobot.RobotMode
 
             case FrcJoystick.LOGITECH_BUTTON4:
                 //
-                // Claw open.
+                // Cube Claw open.
                 //
                 if (pressed)
                 {
@@ -342,7 +310,7 @@ public class FrcTeleOp implements TrcRobot.RobotMode
 
             case FrcJoystick.LOGITECH_BUTTON5:
                 //
-                // Claw close.
+                // Cube Claw close.
                 //
                 if (pressed)
                 {
@@ -352,7 +320,7 @@ public class FrcTeleOp implements TrcRobot.RobotMode
 
             case FrcJoystick.LOGITECH_BUTTON6:
                 //
-                // Arm down.
+                // Cube Deployer down.
                 //
                 if (pressed)
                 {
@@ -362,7 +330,7 @@ public class FrcTeleOp implements TrcRobot.RobotMode
 
             case FrcJoystick.LOGITECH_BUTTON7:
                 //
-                // Arm up.
+                // Cube Deployer up.
                 //
                 if (pressed)
                 {
@@ -393,24 +361,11 @@ public class FrcTeleOp implements TrcRobot.RobotMode
                 break;
 
             case FrcJoystick.LOGITECH_BUTTON10:
-                if (pressed)
-                {
-                    robot.winch.setPower(RobotInfo.TELEOP_WINCH_POWER);
-                }
-                else
-                {
-                    robot.winch.setPower(0.0);
-                }
+                robot.winch.setPower(pressed? RobotInfo.TELEOP_WINCH_POWER: 0.0);
                 break;
 
             case FrcJoystick.LOGITECH_BUTTON11:
-            	if (pressed)
-            	{
-            	    robot.winch.setPower(-RobotInfo.TELEOP_WINCH_POWER);
-            	} else
-            	{
-            	    robot.winch.setPower(0.0);
-            	}
+                robot.winch.setPower(pressed? -RobotInfo.TELEOP_WINCH_POWER: 0.0);
                 break;
 
             case FrcJoystick.LOGITECH_BUTTON12:

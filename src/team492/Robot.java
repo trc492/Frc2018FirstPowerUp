@@ -40,10 +40,10 @@ import frclib.FrcAHRSGyro;
 import frclib.FrcCANTalon;
 import frclib.FrcEmic2TextToSpeech;
 import frclib.FrcI2cLEDPanel;
+import frclib.FrcJoystick;
 import frclib.FrcPneumatic;
 import frclib.FrcRobotBase;
 import frclib.FrcRobotBattery;
-import frclib.FrcJoystick;
 import hallib.HalDashboard;
 import team492.PixyVision.TargetInfo;
 import trclib.TrcDbgTrace;
@@ -99,6 +99,13 @@ public class Robot extends FrcRobotBase
     public double targetHeading = 0.0;
 
     private double nextUpdateTime = TrcUtil.getCurrentTime();
+
+    //
+    // Inputs.
+    //
+    public FrcJoystick leftDriveStick = null;
+    public FrcJoystick rightDriveStick = null;
+    public FrcJoystick operatorStick = null;
 
     //
     // Sensors.
@@ -190,10 +197,6 @@ public class Robot extends FrcRobotBase
     public double tuneKd;
     public double tuneKf;
 
-    public FrcJoystick leftDriveStick;
-    public FrcJoystick rightDriveStick;
-    public FrcJoystick operatorStick;
-
     /**
      * Constructor.
      */
@@ -209,7 +212,7 @@ public class Robot extends FrcRobotBase
     public void robotInit()
     {
         //
-        // Joysticks
+        // Inputs.
         //
         leftDriveStick = new FrcJoystick("leftDriveStick", RobotInfo.JSPORT_LEFT_DRIVESTICK);
         rightDriveStick = new FrcJoystick("rightDriveStick", RobotInfo.JSPORT_RIGHT_DRIVESTICK);

@@ -129,22 +129,18 @@ public class CmdAutoCubePickup implements TrcRobot.RobotCommand
     public boolean cmdPeriodic(double elapsedTime)
     {
         boolean done = !sm.isEnabled();
-
-        if (done)
-        {
-            return true;
-        }
-
+        //
+        // Print debug info.
+        //
         State state = sm.getState();
-        robot.dashboard.displayPrintf(1, "State: %s", state != null ? state.toString() : "Disabled");
-        
+        robot.dashboard.displayPrintf(1, "State: %s", state != null? state.toString(): "Disabled");
+
         if(this.stopTrigger.shouldStop(elapsedTime(), changeX(), changeY()))
         {
-        	stop();
-        	done = true;
+            stop();
+            done = true;
         }
-
-        if (sm.isReady())
+        else if (sm.isReady())
         {
             switch (sm.getState())
             {
@@ -180,7 +176,7 @@ public class CmdAutoCubePickup implements TrcRobot.RobotCommand
                     done = true;
                     if(onFinishedEvent != null)
                     {
-                    	onFinishedEvent.set(true);
+                        onFinishedEvent.set(true);
                     }
                     sm.stop();
                     break;
@@ -190,8 +186,10 @@ public class CmdAutoCubePickup implements TrcRobot.RobotCommand
 
         return done;
     }
-    
-    public interface StopTrigger {
-    	public boolean shouldStop(double elapsedTime, double distanceX, double distanceY);
+
+    public interface StopTrigger
+    {
+        public boolean shouldStop(double elapsedTime, double distanceX, double distanceY);
     }
+
 }
