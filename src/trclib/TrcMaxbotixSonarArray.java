@@ -99,6 +99,18 @@ public class TrcMaxbotixSonarArray
     }   //TrcMaxbotixSonarArray
 
     /**
+     * Constructor: Creates an instance of the object.
+     *
+     * @param instanceName specifies the instance name.
+     * @param sensor specifies a single Maxbotix ultrasonic sensor.
+     * @param rx specifies the digital output channel the RX pin is connected to.
+     */
+    public TrcMaxbotixSonarArray(final String instanceName, final TrcAnalogInput sensor, final TrcDigitalOutput rx)
+    {
+        this(instanceName, new TrcAnalogInput[] {sensor}, rx, false);
+    }   //TrcMaxbotixSonarArray
+
+    /**
      * This method returns the instance name.
      *
      * @return instance name.

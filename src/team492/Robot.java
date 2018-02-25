@@ -241,8 +241,7 @@ public class Robot extends FrcRobotBase
                 "LeftSonarSensor", RobotInfo.AIN_LEFT_SONAR_SENSOR, new TrcFilter[] {leftSonarFilter});
             leftSonarSensor.setScale(RobotInfo.SONAR_MILLIVOLTS_PER_INCH);
             FrcDigitalOutput leftSonarPing = new FrcDigitalOutput("LeftSonarPing", RobotInfo.DIO_LEFT_SONAR_PING);
-            leftSonar = new TrcMaxbotixSonarArray(
-                "LeftSonar", new TrcAnalogInput[] {leftSonarSensor}, leftSonarPing);
+            leftSonar = new TrcMaxbotixSonarArray("LeftSonar", leftSonarSensor, leftSonarPing);
 
             TrcSpuriousFilter rightSonarFilter =
                 new TrcSpuriousFilter("RightSonarFilter", RobotInfo.SONAR_ERROR_THRESHOLD, tracer);
@@ -250,8 +249,7 @@ public class Robot extends FrcRobotBase
                 "RightSonarSensor", RobotInfo.AIN_RIGHT_SONAR_SENSOR, new TrcFilter[] {rightSonarFilter});
             rightSonarSensor.setScale(RobotInfo.SONAR_MILLIVOLTS_PER_INCH);
             FrcDigitalOutput rightSonarPing = new FrcDigitalOutput("RightSonarPing", RobotInfo.DIO_RIGHT_SONAR_PING);
-            rightSonar = new TrcMaxbotixSonarArray(
-                "RightSonar", new TrcAnalogInput[] {rightSonarSensor}, rightSonarPing);
+            rightSonar = new TrcMaxbotixSonarArray("RightSonar", rightSonarSensor, rightSonarPing);
 
             TrcSpuriousFilter frontSonarFilter =
                 new TrcSpuriousFilter("FrontSonarFilter", RobotInfo.SONAR_ERROR_THRESHOLD, tracer);
@@ -259,8 +257,7 @@ public class Robot extends FrcRobotBase
                 "FrontSonarSensor", RobotInfo.AIN_FRONT_SONAR_SENSOR, new TrcFilter[] {frontSonarFilter});
             frontSonarSensor.setScale(RobotInfo.SONAR_MILLIVOLTS_PER_INCH);
             FrcDigitalOutput frontSonarPing = new FrcDigitalOutput("FrontSonarPing", RobotInfo.DIO_FRONT_SONAR_PING);
-            frontSonar = new TrcMaxbotixSonarArray(
-                "FrontSonar", new TrcAnalogInput[] {frontSonarSensor}, frontSonarPing);
+            frontSonar = new TrcMaxbotixSonarArray("FrontSonar", frontSonarSensor, frontSonarPing);
         }
 
         //
@@ -491,7 +488,6 @@ public class Robot extends FrcRobotBase
         if (currTime >= nextUpdateTime)
         {
             nextUpdateTime = currTime + DASHBOARD_UPDATE_INTERVAL;
-            
             HalDashboard.putNumber("gyroTurnRate", gyro.getRawZData(DataType.ROTATION_RATE).value);
 
             if (DEBUG_POWER_CONSUMPTION)
