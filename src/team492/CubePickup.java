@@ -353,6 +353,7 @@ public class CubePickup
 
     public void cubeProximityEvent(boolean active)
     {
+        robot.tracer.traceInfo("ProximityTrigger", "active=%b", active);
         if (active)
         {
             proximityEvent.set(true);
@@ -361,6 +362,7 @@ public class CubePickup
 
     public void currentTriggerEvent(int zoneIndex, double zoneValue)
     {
+        robot.tracer.traceInfo("CurrentTrigger", "zone=%d, grabberCurrent=%.2f", zoneIndex, zoneValue);
         if (zoneIndex == 1)
         {
             // Detected current spike beyond current threshold, let's tell
