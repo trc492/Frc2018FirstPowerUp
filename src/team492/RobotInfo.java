@@ -133,8 +133,8 @@ public class RobotInfo
     // DriveBase subsystem.
     //
 
-    public static final double GYRO_ASSIST_KP                   = 0.1;
-    public static final double GYRO_ASSIST_SCALE                = 0.5;
+    public static final double GYRO_ASSIST_KP                   = 1.5;
+    public static final double GYRO_MAX_ROTATION_RATE           = 6.5; //radians per second
 
     public static final double DRIVE_HEADING_NORTH              = 0.0;
     public static final double DRIVE_HEADING_EAST               = 90.0;
@@ -153,28 +153,31 @@ public class RobotInfo
 
     // 2017-03-21: 0.0152347136491642, 0.15, 0.0, 0.0
     // 0.7 power is pretty gud fam
-    // 2-20-2018: 0.0148258400720388, 0.15, 0.0, 0.0
-    public static final double ENCODER_X_INCHES_PER_COUNT       = 0.0148258400720388;//0.0144546649145861;//0.0152347136491642;//0.0264367338026265;
+    // 2-20-2018: 0.0148258400720388, 0.15, 0.0, 0.0 -- competition robot
+    public static final double ENCODER_X_INCHES_PER_COUNT       = 0.0147246274889016;//0.0148258400720388;//0.0144546649145861;//0.0152347136491642;//0.0264367338026265;
     public static final double ENCODER_X_KP                     = 0.15;
     public static final double ENCODER_X_KI                     = 0.0;
     public static final double ENCODER_X_KD                     = 0.0;
     public static final double ENCODER_X_KF                     = 0.0;
     public static final double ENCODER_X_TOLERANCE              = 1.0;
 
-    // 2-20-2018: 0.0171099037270041, 0.04, 0.0, 0.0077
-    public static final double ENCODER_Y_INCHES_PER_COUNT       = 0.0171099037270041;
-    public static final double ENCODER_Y_KP                     = 0.04;
+    // 2-20-2018: 0.0171099037270041, 0.04, 0.0, 0.0077 -- competition robot
+    // 2-24-2018: 0.0172358143438125, 0.02, 0.0, 0.004 --practice robot
+    
+    public static final double ENCODER_Y_INCHES_PER_COUNT       = 0.0172358143438125;
+    public static final double ENCODER_Y_KP                     = 0.028;
     public static final double ENCODER_Y_KI                     = 0.0;
-    public static final double ENCODER_Y_KD                     = 0.0077;
+    public static final double ENCODER_Y_KD                     = 0.004;
     public static final double ENCODER_Y_KF                     = 0.0;
     public static final double ENCODER_Y_TOLERANCE              = 1.0;
 
     // 2017-04-05: 0.03, 0.0, 0.003
     // 2-20-2018: 0.02, 0.0, 0.0025
-    // 2-20-2018: 0.015, 0.0, 0.0012
-    public static final double GYRO_TURN_KP                     = 0.015;
+    // 2-20-2018: 0.015, 0.0, 0.0012 -- competition robot
+    //2-24-2018: 0.017, 0.0, 0.0017  - practice robot constants
+    public static final double GYRO_TURN_KP                     = 0.017;
     public static final double GYRO_TURN_KI                     = 0.0;
-    public static final double GYRO_TURN_KD                     = 0.0012;
+    public static final double GYRO_TURN_KD                     = 0.0017;
     public static final double GYRO_TURN_KF                     = 0.0;
     public static final double GYRO_TURN_TOLERANCE              = 2.0;
     public static final double GYRO_TURN_SMALL_THRESHOLD        = 10.0;

@@ -50,6 +50,7 @@ import trclib.TrcDbgTrace;
 import trclib.TrcDriveBase;
 import trclib.TrcEmic2TextToSpeech.Voice;
 import trclib.TrcGyro;
+import trclib.TrcGyro.DataType;
 import trclib.TrcPidController;
 import trclib.TrcPidController.PidCoefficients;
 import trclib.TrcPidDrive;
@@ -76,7 +77,7 @@ public class Robot extends FrcRobotBase
     public static final boolean USE_PIXY_I2C = true;
     public static final boolean USE_TEXT_TO_SPEECH = true;
     public static final boolean USE_MESSAGE_BOARD = false;
-    public static final boolean USE_GYRO_ASSIST = false;
+    public static final boolean USE_GYRO_ASSIST = true;
     public static final boolean USE_TORQUE_BASED_DRIVING = false;
 
     private static final boolean DEBUG_POWER_CONSUMPTION = true;
@@ -317,7 +318,7 @@ public class Robot extends FrcRobotBase
 
         if(USE_GYRO_ASSIST)
         {
-            driveBase.enableGyroAssist(RobotInfo.GYRO_ASSIST_SCALE, RobotInfo.GYRO_ASSIST_KP);
+            driveBase.enableGyroAssist(RobotInfo.GYRO_MAX_ROTATION_RATE, RobotInfo.GYRO_ASSIST_KP);
         }
 
         //
@@ -456,6 +457,8 @@ public class Robot extends FrcRobotBase
         if (currTime >= nextUpdateTime)
         {
             nextUpdateTime = currTime + DASHBOARD_UPDATE_INTERVAL;
+            
+            HalDashboard.putNumber("gyroTurnRate", gyro.getRawZData(DataType.ROTATION_RATE).value);
 
             if (DEBUG_POWER_CONSUMPTION)
             {

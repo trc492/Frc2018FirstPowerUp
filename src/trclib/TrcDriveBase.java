@@ -86,7 +86,7 @@ public class TrcDriveBase
     private int numMotors = 0;
     private double sensitivity = DEF_SENSITIVITY;
     private double maxOutput = DEF_MAX_OUTPUT;
-    private double gyroRateScale = 0.0;
+    private double gyroMaxRotationRate = 0.0;
     private double gyroAssistKp = 1.0;
     private boolean gyroAssistEnabled = false;
 
@@ -315,21 +315,21 @@ public class TrcDriveBase
     /**
      * This method enables gyro assist drive.
      *
-     * @param gyroRateScale specifies the gyro rotation rate scaling factor.
+     * @param gyroMaxRotationRate specifies the maximum rotation rate of the robot base reported by the gyro.
      * @param gyroAssistKp specifies the gyro assist proportional constant.
      */
-    public void enableGyroAssist(double gyroRateScale, double gyroAssistKp)
+    public void enableGyroAssist(double gyroMaxRotationRate, double gyroAssistKp)
     {
         final String funcName = "enableGyroAssist";
 
         if (debugEnabled)
         {
-            dbgTrace.traceEnter(funcName, TrcDbgTrace.TraceLevel.API, "gyroRateScale=%f,gyroAssistKp=%f",
-                                gyroRateScale, gyroAssistKp);
+            dbgTrace.traceEnter(funcName, TrcDbgTrace.TraceLevel.API, "gyroMaxRate=%f,gyroAssistKp=%f",
+                                gyroMaxRotationRate, gyroAssistKp);
             dbgTrace.traceExit(funcName, TrcDbgTrace.TraceLevel.API);
         }
 
-        this.gyroRateScale = gyroRateScale;
+        this.gyroMaxRotationRate = gyroMaxRotationRate;
         this.gyroAssistKp = gyroAssistKp;
         this.gyroAssistEnabled = true;
     }   //enableGyroAssist
@@ -347,7 +347,7 @@ public class TrcDriveBase
             dbgTrace.traceExit(funcName, TrcDbgTrace.TraceLevel.API);
         }
 
-        this.gyroRateScale = 0.0;
+        this.gyroMaxRotationRate = 0.0;
         this.gyroAssistKp = 1.0;
         this.gyroAssistEnabled = false;
     }   //disableGyroAssist
@@ -897,7 +897,7 @@ public class TrcDriveBase
         {
             double diffPower = (leftPower - rightPower)/2.0;
             double assistPower =
-                    TrcUtil.clipRange(gyroAssistKp*(diffPower - gyroRateScale*gyro.getZRotationRate().value));
+                    TrcUtil.clipRange(gyroAssistKp*(diffPower - gyro.getZRotationRate().value/gyroMaxRotationRate));
             leftPower += assistPower;
             rightPower -= assistPower;
             double maxMag = Math.max(Math.abs(leftPower), Math.abs(rightPower));
@@ -1087,7 +1087,7 @@ public class TrcDriveBase
 
         if (gyroAssistEnabled)
         {
-            rotation += TrcUtil.clipRange(gyroAssistKp*(rotation - gyroRateScale*gyro.getZRotationRate().value));
+            rotation += TrcUtil.clipRange(gyroAssistKp*(rotation - gyro.getZRotationRate().value/gyroMaxRotationRate));
         }
 
         double wheelPowers[] = new double[4];
@@ -1210,7 +1210,7 @@ public class TrcDriveBase
 
         if (gyroAssistEnabled)
         {
-            rotation += TrcUtil.clipRange(gyroAssistKp*(rotation - gyroRateScale*gyro.getZRotationRate().value));
+            rotation += TrcUtil.clipRange(gyroAssistKp*(rotation - gyro.getZRotationRate().value/gyroMaxRotationRate));
         }
 
         double wheelPowers[] = new double[4];
