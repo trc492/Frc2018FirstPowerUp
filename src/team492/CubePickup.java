@@ -57,7 +57,9 @@ public class CubePickup
     private TrcTaskMgr.TaskObject grabberTaskObj;
     private TrcStateMachine<State> sm;
     private TrcTimer timer;
-    private TrcEvent event;
+    private TrcEvent timerEvent;
+    private TrcEvent proximityEvent;
+    private TrcEvent possessionEvent;
     private TrcEvent cubeEvent;
     public double startTime;
 
@@ -92,7 +94,9 @@ public class CubePickup
         grabberTaskObj = TrcTaskMgr.getInstance().createTask("grabberTask", this::grabberTask);
         sm = new TrcStateMachine<>("grabberStateMachine");
         timer = new TrcTimer("grabberTimer");
-        event = new TrcEvent("grabberEvent");
+        timerEvent = new TrcEvent("grabberTimerEvent");
+        proximityEvent = new TrcEvent("cubeProximityEvent");
+        possessionEvent = new TrcEvent("cubePossessionEvent");
     }
 
     /**
@@ -241,11 +245,16 @@ public class CubePickup
     }
 
     /**
-     * stops the pickup motors, use after cube has been picked up or dropped
+     * stops the pickup motors, use after cube has been picked up or dropped.
+     * caller can call this method to abort a cube pickup sequence in progress.
      */
     public void stopPickup()
     {
         controlMotor.setPower(0.0);
+        if (sm.isEnabled())
+        {
+            setGrabberTaskEnabled(false);
+        }
     }
 
     public void stopGrabberTask()
@@ -256,20 +265,21 @@ public class CubePickup
 
     // Step 1:
     // - set timer for 0.3 second, when done goto step 2.
-    // - this allows us to ignore the current spike when the motor starts up.
+    // - this allows us to ignore the current spike when the motors start up.
     // Step 2:
-    // - enable cube proximity trigger, wait for the event then goto step 3.
+    // - enable both cube proximity and current spike triggers, wait either events then goto step 3.
     // - the proximity trigger will monitor if a cube is close enough to be grabbed.
+    // - the current spike trigger will monitor if we have the cube in possession (i.e. sucked in).
     // Step 3:
-    // - a cube is detected close by, disable the proximity trigger, close the claw to attempt to grab it.
-    // - enable analog trigger, wait for the event then goto step 3.
-    // - the analog trigger will monitor for current spike which will happen when the cube is in possession.
+    // - a cube is detected close by or in possession, disable the proximity trigger, close the claw to secure it.
+    // - if only proximity event was triggered, wait again for the current spike trigger, otherwise go to the
+    //   next state directly.
     // Step 4:
-    // - the cube is in possession, disable analog trigger.
+    // - the cube is in possession, disable current spike trigger.
     // - set timer for 0.3 second so that we will pull in the cube firmly before stopping the motor.
     // Step 5:
     // - stop motor.
-    // - set the given event to true.
+    // - set the given event to true if any.
     // - stop the state machine.
 
     public void grabberTask(TaskType taskType, RunMode runMode)
@@ -282,34 +292,46 @@ public class CubePickup
             {
                 case START:
                     // wait a bit to let the start up current spike past.
-                    timer.set(0.3, event);
-                    sm.waitForSingleEvent(event, State.DETECT_CUBE);
+                    timer.set(0.3, timerEvent);
+                    sm.waitForSingleEvent(timerEvent, State.DETECT_CUBE);
                     robot.cubeIndicator.showNoCube();
                     break;
 
                 case DETECT_CUBE:
-                    // enable proximity trigger to detect the cube close by.
+                    // enable both proximity and current triggers to detect the cube close by or in possession.
+                    // either events will move us to the next state.
                     robot.tracer.traceInfo("GrabberCurrent", "grabberCurrent=%.2f", getGrabberCurrent());
                     cubeProximityTrigger.setTaskEnabled(true);
-                    sm.waitForSingleEvent(event, State.CLOSE_CLAW);
+                    currentTrigger.setTaskEnabled(true);
+                    sm.addEvent(proximityEvent);
+                    sm.addEvent(possessionEvent);
+                    sm.waitForEvents(State.CLOSE_CLAW);
                     break;
 
                 case CLOSE_CLAW:
                     // disable proximity trigger.
                     // close the claw to grab the cube.
                     // enable current trigger to detect cube in possession.
-                    cubeProximityTrigger.setTaskEnabled(false);
                     closeClaw();
-                    currentTrigger.setTaskEnabled(true);
-                    sm.waitForSingleEvent(event, State.PULLIN_CUBE);
+                    cubeProximityTrigger.setTaskEnabled(false);
+                    if (possessionEvent.isSignaled())
+                    {
+                        // current trigger has also happened, move onto the next state.
+                        sm.setState(State.PULLIN_CUBE);
+                    }
+                    else
+                    {
+                        // still don't have cube in possession, wait for the current spike.
+                        sm.waitForSingleEvent(possessionEvent, State.PULLIN_CUBE);
+                    }
                     break;
 
                 case PULLIN_CUBE:
                     // disable current trigger.
                     // wait a bit to make sure we pull in the cube firmly.
                     currentTrigger.setTaskEnabled(false);
-                    timer.set(0.3, event);
-                    sm.waitForSingleEvent(event, State.DONE);
+                    timer.set(0.3, timerEvent);
+                    sm.waitForSingleEvent(timerEvent, State.DONE);
                     break;
 
                 case DONE:
@@ -333,7 +355,7 @@ public class CubePickup
     {
         if (active)
         {
-            event.set(true);
+            proximityEvent.set(true);
         }
     }
 
@@ -343,7 +365,7 @@ public class CubePickup
         {
             // Detected current spike beyond current threshold, let's tell
             // somebody.
-            event.set(true);
+            possessionEvent.set(true);
         }
     }
 
