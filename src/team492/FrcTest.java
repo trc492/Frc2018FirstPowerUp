@@ -472,9 +472,9 @@ public class FrcTest extends FrcTeleOp
         robot.dashboard.displayPrintf(2, "Enc: lf=%.0f, rf=%.0f, lr=%.0f, rr=%.0f", robot.leftFrontWheel.getPosition(),
             robot.rightFrontWheel.getPosition(), robot.leftRearWheel.getPosition(), robot.rightRearWheel.getPosition());
 
-        if (sm.isReady())
+        State state = sm.checkReadyAndGetState();
+        if (state != null)
         {
-            State state = sm.getState();
             switch (state)
             {
                 case START:

@@ -31,6 +31,14 @@ import trclib.TrcRobot;
 import trclib.TrcStateMachine;
 import trclib.TrcTimer;
 
+/**
+ * This class implements a generic PID control drive command. It is agnostic to the PID controller sensors.
+ * The caller provides the PID drive object as well as all PID controllers which means the caller controls
+ * what sensors are controlling the X, Y and turn PID controllers. For example, the caller can provide a PID
+ * drive object that uses the encoders to control the X and Y PID controllers and a gyro for the turn PID
+ * controller. The caller can also use the encoders to control the X and Y PID controllers but a camera to
+ * control the turn PID controller.
+ */
 public class CmdPidDrive implements TrcRobot.RobotCommand
 {
     private static enum State
@@ -59,6 +67,22 @@ public class CmdPidDrive implements TrcRobot.RobotCommand
     private TrcTimer timer;
     private TrcStateMachine<State> sm;
 
+    /**
+     * Constructor: Create an instance of the object.
+     *
+     * @param robot specifies the robot object for providing access to various global objects.
+     * @param pidDrive specifies the PID drive object to be used for PID controlled drive.
+     * @param xPidCtrl specifies the PID controller for the X direction.
+     * @param yPidCtrl specifies the PID controller for the Y direction.
+     * @param turnPidCtrl specifies the PID controller for the turn.
+     * @param delay specifies delay in seconds before PID drive starts. 0 means no delay.
+     * @param xDistance specifies the target distance for the X direction.
+     * @param yDistance specifies the target distance for the Y direction.
+     * @param heading specifies the target heading.
+     * @param drivePowerLimit specifies the power limit to be applied for the PID controlled drive.
+     * @param testMode specifies true if in test mode which allows getting PID constants from the robot object
+     *        for PID tuning, false otherwise.
+     */
     public CmdPidDrive(
         Robot robot,
         TrcPidDrive pidDrive, TrcPidController xPidCtrl, TrcPidController yPidCtrl, TrcPidController turnPidCtrl,
@@ -93,20 +117,28 @@ public class CmdPidDrive implements TrcRobot.RobotCommand
     // Implements the TrcRobot.RobotCommand interface.
     //
 
+    /**
+     * This method must be called periodically by the caller to drive the command sequence forward.
+     *
+     * @param elapsedTime specifies the elapsed time in seconds since the start of the robot mode.
+     * @return true if the command sequence is completed, false otherwise.
+     */
     @Override
     public boolean cmdPeriodic(double elapsedTime)
     {
         boolean done = !sm.isEnabled();
+
+        if (done) return true;
+
+        State state = sm.checkReadyAndGetState();
+
         //
         // Print debug info.
         //
-        State state = sm.getState();
-        robot.dashboard.displayPrintf(1, "State: %s", state != null? state.toString(): "Disabled");
+        robot.dashboard.displayPrintf(1, "State: %s", state == null? "NotReady": state);
 
-        if (sm.isReady())
+        if (state != null)
         {
-            state = sm.getState();
-
             switch (state)
             {
                 case DO_DELAY:
@@ -130,6 +162,9 @@ public class CmdPidDrive implements TrcRobot.RobotCommand
                     //
                     if (testMode)
                     {
+                        //
+                        // We are in test mode, modify the PID constants from values stored in the Robot class.
+                        //
                         if (xPidCtrl != null && xDistance != 0.0)
                         {
                             xPidCtrl.setPidCoefficients(
@@ -146,7 +181,9 @@ public class CmdPidDrive implements TrcRobot.RobotCommand
                                 new PidCoefficients(robot.tuneKp, robot.tuneKi, robot.tuneKd, 0.0));
                         }
                     }
-
+                    //
+                    // Set power limits for each direction if applicable.
+                    //
                     if (xPidCtrl != null && xDistance != 0.0)
                         xPidCtrl.setOutputRange(-drivePowerLimit, drivePowerLimit);
                     if (yPidCtrl != null && yDistance != 0.0)

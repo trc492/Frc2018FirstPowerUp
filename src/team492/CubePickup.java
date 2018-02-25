@@ -124,8 +124,7 @@ public class CubePickup
     /**
      * Set the state of the claw.
      *
-     * @param open
-     *            If true, open the claw. If false, close it.
+     * @param open If true, open the claw. If false, close it.
      */
     public void setClawOpen(boolean open)
     {
@@ -154,8 +153,7 @@ public class CubePickup
     /**
      * Set the state of the pickup.
      *
-     * @param down
-     *            If true, lower the pickup. Otherwise, lift.
+     * @param down If true, lower the pickup. Otherwise, lift.
      */
     public void setPickupDeployed(boolean down)
     {
@@ -276,10 +274,10 @@ public class CubePickup
 
     public void grabberTask(TaskType taskType, RunMode runMode)
     {
-        if (sm.isReady())
-        {
-            State state = sm.getState();
+        State state = sm.checkReadyAndGetState();
 
+        if (state != null)
+        {
             switch (state)
             {
                 case START:

@@ -30,8 +30,7 @@ public class CmdStrafeUntilCube implements TrcRobot.RobotCommand
      * Start the task strafing in the specified direction. Signal event when
      * done.
      * 
-     * @param strafeRight
-     *            If true, strafe right. If false, strafe left.
+     * @param strafeRight If true, strafe right. If false, strafe left.
      */
     public void start(boolean strafeRight)
     {
@@ -39,10 +38,8 @@ public class CmdStrafeUntilCube implements TrcRobot.RobotCommand
     }
 
     /**
-     * 
      * @param strafeRight
-     * @param stopTrigger
-     *            Should return true when this should stop
+     * @param stopTrigger Should return true when this should stop
      */
     public void start(boolean strafeRight, StopTrigger stopTrigger)
     {
@@ -116,20 +113,23 @@ public class CmdStrafeUntilCube implements TrcRobot.RobotCommand
     {
         boolean done = !sm.isEnabled();
 
-        if (done) return true;
+        if (!done) return true;
 
-        State state = sm.getState();
-        robot.dashboard.displayPrintf(1, "State: %s", state != null ? state.toString() : "Disabled");
+        State state = sm.checkReadyAndGetState();
+
+        //
+        // Print debug info.
+        //
+        robot.dashboard.displayPrintf(1, "State: %s", state == null? "NotReady": state);
 
         if (stopTrigger.shouldStop(elapsedTime(), changeX(), changeY()))
         {
             stop();
             done = true;
         }
-
-        if (sm.isReady())
+        else if (state != null)
         {
-            switch (sm.getState())
+            switch (state)
             {
                 case START_STRAFE:
                     double xPower = RobotInfo.FIND_CUBE_STRAFE_POWER * (strafeRight ? 1 : -1);

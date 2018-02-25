@@ -58,7 +58,7 @@ public class CmdAutoCubePickup implements TrcRobot.RobotCommand
     {
         return sm.isEnabled();
     }
-    
+
     public double elapsedTime()
     {
     	return Robot.getModeElapsedTime() - startTime;
@@ -68,33 +68,33 @@ public class CmdAutoCubePickup implements TrcRobot.RobotCommand
     {
         return new double[] { changeX(), changeY() };
     }
-    
+
     private double changeX()
     {
     	return robot.driveBase.getXPosition() - startX;
     }
-    
+
     public double changeY()
     {
     	return robot.driveBase.getYPosition() - startY;
     }
-    
+
     /**
      * Start this task without signaling any event when done
      */
     public void start()
     {
-    	start(null, this::shouldStop);
+        start(null, this::shouldStop);
     }
     
     public void start(StopTrigger stopTrigger)
     {
-    	start(null, stopTrigger);
+        start(null, stopTrigger);
     }
-    
+
     public void start(TrcEvent onFinishedEvent)
     {
-    	start(onFinishedEvent, this::shouldStop);
+        start(onFinishedEvent, this::shouldStop);
     }
 
     /**
@@ -102,18 +102,18 @@ public class CmdAutoCubePickup implements TrcRobot.RobotCommand
      */
     public void start(TrcEvent onFinishedEvent, StopTrigger stopTrigger)
     {
-    	stop();
-    	this.onFinishedEvent = onFinishedEvent;
-    	this.stopTrigger = stopTrigger;
+        stop();
+        this.onFinishedEvent = onFinishedEvent;
+        this.stopTrigger = stopTrigger;
         startX = robot.driveBase.getXPosition();
         startY = robot.driveBase.getYPosition();
         startTime = Robot.getModeElapsedTime();
         sm.start(State.START);
     }
-    
+
     private boolean shouldStop(double elapsedTime, double distanceX, double distanceY)
     {
-    	return false;
+        return false;
     }
 
     public void stop()
@@ -129,18 +129,22 @@ public class CmdAutoCubePickup implements TrcRobot.RobotCommand
     public boolean cmdPeriodic(double elapsedTime)
     {
         boolean done = !sm.isEnabled();
+
+        if (!done) return true;
+
+        State state = sm.checkReadyAndGetState();
+
         //
         // Print debug info.
         //
-        State state = sm.getState();
-        robot.dashboard.displayPrintf(1, "State: %s", state != null? state.toString(): "Disabled");
+        robot.dashboard.displayPrintf(1, "State: %s", state == null? "NotReady": state);
 
-        if(this.stopTrigger.shouldStop(elapsedTime(), changeX(), changeY()))
+        if (this.stopTrigger.shouldStop(elapsedTime(), changeX(), changeY()))
         {
             stop();
             done = true;
         }
-        else if (sm.isReady())
+        else if (state != null)
         {
             switch (sm.getState())
             {

@@ -28,6 +28,11 @@ import trclib.TrcPidDrive.TurnMode;
 import trclib.TrcRobot;
 import trclib.TrcStateMachine;
 
+/**
+ * This class implements a waltz turn command sequence. It is useful for avoiding a pushing match with our
+ * opponent. If our opponent is trying to engage a pushing match with us, the driver can push a button and
+ * cause the robot to pivot left or right 180 degrees and continue on with the robot driving in reverse.
+ */
 public class CmdWaltzTurn implements TrcRobot.RobotCommand
 {
     private static enum State
@@ -46,6 +51,11 @@ public class CmdWaltzTurn implements TrcRobot.RobotCommand
     private TrcStateMachine<State> sm;
     private TurnMode prevTurnMode;
 
+    /**
+     * Constructor: Create an instance of the object.
+     *
+     * @param robot specifies the robot object for providing access to various global objects.
+     */
     public CmdWaltzTurn(Robot robot)
     {
         this.robot = robot;
@@ -55,18 +65,23 @@ public class CmdWaltzTurn implements TrcRobot.RobotCommand
         prevTurnMode = robot.pidDrive.getTurnMode();
     }   //CmdWaltzTurn
 
-    public void setClockwiseTurn(boolean clockwiseTurn, boolean driveInverted)
+    /**
+     * This method is called to start the command sequence doing a clockwise or counter-clockwise waltz turn.
+     *
+     * @param clockwiseTurn specifies true for a clockwise turn, false for counter-clockwise turn.
+     * @param driveInverted specifies the current inverted drive state of the robot.
+     */
+    public void start(boolean clockwiseTurn, boolean driveInverted)
     {
         this.clockwiseTurn = clockwiseTurn;
         this.driveInverted = driveInverted;
-    }   //setClockwiseTurn
-
-    public void start()
-    {
         stop();
         sm.start(State.WALTZ_TURN);
-    }
+    }   //start
 
+    /**
+     * This method is called to abort the waltz turn in progress.
+     */
     public void stop()
     {
         if (robot.pidDrive.isActive())
@@ -76,20 +91,28 @@ public class CmdWaltzTurn implements TrcRobot.RobotCommand
         }
     }   //cancel
 
+    /**
+     * This method must be called periodically by the caller to drive the command sequence forward.
+     *
+     * @param elapsedTime specifies the elapsed time in seconds since the start of the robot mode.
+     * @return true if the command sequence is completed, false otherwise.
+     */
     @Override
     public boolean cmdPeriodic(double elapsedTime)
     {
         boolean done = !sm.isEnabled();
+
+        if (done) return true;
+
+        State state = sm.checkReadyAndGetState();
+
         //
         // Print debug info.
         //
-        State state = sm.getState();
-        robot.dashboard.displayPrintf(1, "State: %s", state != null? state.toString(): "Disabled");
+        robot.dashboard.displayPrintf(1, "State: %s", state == null? "NotReady": state);
 
-        if (sm.isReady())
+        if (state != null)
         {
-            state = sm.getState();
-
             switch (state)
             {
                 case WALTZ_TURN:

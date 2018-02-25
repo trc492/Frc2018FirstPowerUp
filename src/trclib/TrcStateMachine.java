@@ -150,6 +150,35 @@ public class TrcStateMachine<T>
     }   //getState
 
     /**
+     * This method checks whether the state machine is ready. If so, it returns the current state. If the state
+     * machine is not ready, it returns null.
+     *
+     * @return current state of the state machine, null if state machine is not ready.
+     */
+    public T checkReadyAndGetState()
+    {
+        final String funcName = "checkReadyAndGetState";
+        T state = null;
+
+        if (debugEnabled)
+        {
+            dbgTrace.traceEnter(funcName, TrcDbgTrace.TraceLevel.API);
+        }
+
+        if (isReady())
+        {
+            state = getState();
+        }
+
+        if (debugEnabled)
+        {
+            dbgTrace.traceExit(funcName, TrcDbgTrace.TraceLevel.API, "=%s", state == null? "NotReady": state);
+        }
+
+        return state;
+    }   //checkReadyGetState
+
+    /**
      * This method sets the current state of the state machine.
      *
      * @param state specifies the state to set the state machine to.

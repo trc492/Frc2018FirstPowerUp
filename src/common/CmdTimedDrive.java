@@ -28,6 +28,10 @@ import trclib.TrcRobot;
 import trclib.TrcStateMachine;
 import trclib.TrcTimer;
 
+/**
+ * This class implements a generic timed drive command. The command drives the robot in the given direction
+ * for the given amount of time.
+ */
 public class CmdTimedDrive implements TrcRobot.RobotCommand
 {
     private static enum State
@@ -50,6 +54,16 @@ public class CmdTimedDrive implements TrcRobot.RobotCommand
     private TrcTimer timer;
     private TrcStateMachine<State> sm;
 
+    /**
+     * Constructor: Create an instance of the object.
+     *
+     * @param robot specifies the robot object for providing access to various global objects.
+     * @param delay specifies delay in seconds before timed drive starts. 0 means no delay.
+     * @param driveTime specifies the amount of drive time in seconds.
+     * @param xDrivePower specifies the motor power in the X direction.
+     * @param yDrivePower specifies the motor power in the Y direction.
+     * @param turnPower specifies the motor power for turning.
+     */
     public CmdTimedDrive(
         Robot robot, double delay, double driveTime, double xDrivePower, double yDrivePower, double turnPower)
     {
@@ -73,20 +87,28 @@ public class CmdTimedDrive implements TrcRobot.RobotCommand
     // Implements the TrcRobot.AutoStrategy interface.
     //
 
+    /**
+     * This method must be called periodically by the caller to drive the command sequence forward.
+     *
+     * @param elapsedTime specifies the elapsed time in seconds since the start of the robot mode.
+     * @return true if the command sequence is completed, false otherwise.
+     */
     @Override
     public boolean cmdPeriodic(double elapsedTime)
     {
         boolean done = !sm.isEnabled();
+
+        if (done) return true;
+
+        State state = sm.checkReadyAndGetState();
+
         //
         // Print debug info.
         //
-        State state = sm.getState();
-        robot.dashboard.displayPrintf(1, "State: %s", state != null? state.toString(): "Disabled");
+        robot.dashboard.displayPrintf(1, "State: %s", state == null? "NotReady": state);
 
-        if (sm.isReady())
+        if (state != null)
         {
-            state = sm.getState();
-
             switch (state)
             {
                 case DO_DELAY:

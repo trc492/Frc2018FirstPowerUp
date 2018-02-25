@@ -131,15 +131,18 @@ class CmdPowerUpAuto implements TrcRobot.RobotCommand
     public boolean cmdPeriodic(double elapsedTime)
     {
         boolean done = !sm.isEnabled();
+
+        if (!done) return true;
+
+        State state = sm.checkReadyAndGetState();
+
         //
         // Print debug info.
         //
-        State state = sm.getState();
-        robot.dashboard.displayPrintf(1, "State: %s", state != null ? state.toString() : "Disabled");
+        robot.dashboard.displayPrintf(1, "State: %s", state == null? "NotReady": state);
 
-        if (sm.isReady())
+        if (state != null)
         {
-            state = sm.getState();
             double xDistance, yDistance;
             State nextState;
 
