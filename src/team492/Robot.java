@@ -352,7 +352,7 @@ public class Robot extends FrcRobotBase
 
         if(USE_GYRO_ASSIST)
         {
-            driveBase.enableGyroAssist(RobotInfo.GYRO_MAX_ROTATION_RATE, RobotInfo.GYRO_ASSIST_KP);
+            driveBase.enableGyroAssist(RobotInfo.DRIVE_MAX_ROTATION_RATE, RobotInfo.DRIVE_GYRO_ASSIST_KP);
         }
 
         //

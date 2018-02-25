@@ -93,7 +93,7 @@ public class RobotInfo
     //
     // Relay channels.
     //
-    public static final int RELAY_RINGLIGHT_POWER               = 0;    // 20A: White
+    public static final int RELAY_RINGLIGHT_POWER               = 0;    // 20A: Purple
 
     //
     // Solenoid channels.
@@ -133,9 +133,6 @@ public class RobotInfo
     // DriveBase subsystem.
     //
 
-    public static final double GYRO_ASSIST_KP                   = 1.5;
-    public static final double GYRO_MAX_ROTATION_RATE           = 6.5; //radians per second
-
     public static final double DRIVE_HEADING_NORTH              = 0.0;
     public static final double DRIVE_HEADING_EAST               = 90.0;
     public static final double DRIVE_HEADING_WEST               = -90.0;
@@ -150,6 +147,8 @@ public class RobotInfo
     public static final double DRIVE_MOTOR_ROTATIONS_PER_WHEEL_ROTATION= 12.0;
     public static final double MAX_WHEEL_FORCE_OZ               = (343.4 * DRIVE_MOTOR_ROTATIONS_PER_WHEEL_ROTATION) / DRIVE_WHEEL_RADIUS_IN;
     public static final double DRIVE_ENCODER_COUNTS_PER_ROTATION= 1440.0;
+    public static final double DRIVE_GYRO_ASSIST_KP             = 1.5;
+    public static final double DRIVE_MAX_ROTATION_RATE          = 6.5;      //radians per second
 
     // 2017-03-21: 0.0152347136491642, 0.15, 0.0, 0.0
     // 0.7 power is pretty gud fam
@@ -180,20 +179,16 @@ public class RobotInfo
     public static final double GYRO_TURN_KD                     = 0.0017;
     public static final double GYRO_TURN_KF                     = 0.0;
     public static final double GYRO_TURN_TOLERANCE              = 2.0;
-    public static final double GYRO_TURN_SMALL_THRESHOLD        = 10.0;
-    public static final double GYRO_TURN_SMALL_KP               = 0.06;
-    public static final double GYRO_TURN_SMALL_KI               = 0.0;
-    public static final double GYRO_TURN_SMALL_KD               = 0.0018;
 
     // 2017-03-12: 0.01, 0.0, 0.0
     // 2017-03-14: 0.0165, 0.0, 0.002
-    public static final double SONAR_MILLIVOLTS_PER_INCH        = 0.0098;
-    public static final double SONAR_ERROR_THRESHOLD            = 50.0; //value should not jump 50-in per time slice.
     public static final double SONAR_KP                         = 0.0165;
     public static final double SONAR_KI                         = 0.0;
     public static final double SONAR_KD                         = 0.002;
     public static final double SONAR_KF                         = 0.0;
     public static final double SONAR_TOLERANCE                  = 1.0;
+    public static final double SONAR_MILLIVOLTS_PER_INCH        = 0.0098;
+    public static final double SONAR_ERROR_THRESHOLD            = 50.0; //value should not jump 50-in per time slice.
 
     // 2017-03-12: 0.025, 0.0, 0.0001
     // 2017-03-14: 0.025, 0.0, 0.00015
@@ -219,25 +214,25 @@ public class RobotInfo
     //
     //2-20-2018: 0.0071644803229062, 0.08, 0.0, 0.001
     public static final double ELEVATOR_INCHES_PER_COUNT        = 0.0071644803229062;//0.00577778;   // 39 inches in 6750 ticks
-    public static final double ELEVATOR_KP                      = 0.1;                // this too
-    public static final double ELEVATOR_KI                      = 0.0;                // hopefully not this
-    public static final double ELEVATOR_KD                      = 0.0;                // this too
-    public static final double ELEVATOR_TOLERANCE               = 0.5;                // this too
+    public static final double ELEVATOR_KP                      = 0.1;      // this too
+    public static final double ELEVATOR_KI                      = 0.0;      // hopefully not this
+    public static final double ELEVATOR_KD                      = 0.0;      // this too
+    public static final double ELEVATOR_TOLERANCE               = 0.5;      // this too
     public static final double ELEVATOR_MIN_HEIGHT              = 8.0;
-    public static final double ELEVATOR_MAX_HEIGHT              = 85.0;             //need calibration
+    public static final double ELEVATOR_MAX_HEIGHT              = 85.0;     //need calibration
     public static final double ELEVATOR_MID_HEIGHT              = 4.0;
-    public static final double ELEVATOR_CAL_POWER               = 0.3;                // this too
-    public static final double ELEVATOR_FLOOR_PICKUP_HEIGHT     = 0.0;                // Lowest point on elevator
-    public static final double ELEVATOR_GRAVITY_COMPENSATION    = 0.08;               // Tuned during testing
+    public static final double ELEVATOR_CAL_POWER               = 0.3;      // this too
+    public static final double ELEVATOR_FLOOR_PICKUP_HEIGHT     = 0.0;      // Lowest point on elevator
+    public static final double ELEVATOR_GRAVITY_COMPENSATION    = 0.08;     // Tuned during testing
     public static final double ELEVATOR_POSITION_OFFSET         = 8.0;
 
     //
     // AutoAssist subsystem.
     //
-    public static final double PORTAL_ALIGN_STRAFE_DIST         = 36.0; // 3 feet
-    public static final double AUTO_PICKUP_MOVE_POWER           = 0.6; // 60% power
-    public static final double FIND_CUBE_ANGLE_TOLERANCE        = 15.0; // 15 degrees
-    public static final double FIND_CUBE_STRAFE_POWER           = 0.6; // 60% power
+    public static final double PORTAL_ALIGN_STRAFE_DIST         = 36.0;     // 3 feet
+    public static final double AUTO_PICKUP_MOVE_POWER           = 0.6;      // 60% power
+    public static final double FIND_CUBE_ANGLE_TOLERANCE        = 15.0;     // 15 degrees
+    public static final double FIND_CUBE_STRAFE_POWER           = 0.6;      // 60% power
 
     //
     // CmdPowerUpAuto variables.
