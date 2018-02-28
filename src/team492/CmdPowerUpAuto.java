@@ -132,7 +132,7 @@ class CmdPowerUpAuto implements TrcRobot.RobotCommand
     {
         boolean done = !sm.isEnabled();
 
-        if (!done) return true;
+        if (done) return true;
 
         State state = sm.checkReadyAndGetState();
 
@@ -218,7 +218,7 @@ class CmdPowerUpAuto implements TrcRobot.RobotCommand
                     break;
 
                 case STRAFE_TO_SWITCH:
-                    xDistance = RobotInfo.SWITCH_STRAFE_DISTANCE + 2.0;
+                    xDistance = RobotInfo.SWITCH_STRAFE_DISTANCE + 6.0;
                     if(rightSwitch) xDistance = -xDistance;
                     yDistance = 0.0;
                     robot.encoderXPidCtrl.setOutputRange(-0.5, 0.5);
@@ -280,7 +280,8 @@ class CmdPowerUpAuto implements TrcRobot.RobotCommand
                     if(robot.cmdStrafeUntilCube.cmdPeriodic(elapsedTime))
                     {
                         // CodeReview: what about it strafe was cancelled? Assuming it is still right in front?
-                        sm.setState(State.START_SECOND_PICKUP);
+                        //sm.setState(State.START_SECOND_PICKUP);
+                        sm.setState(State.DONE);
                     }
                     cubeStrafeDistance = robot.cmdStrafeUntilCube.changeX();
                     break;

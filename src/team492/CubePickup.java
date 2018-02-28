@@ -255,7 +255,7 @@ public class CubePickup
             {
                 case START:
                     // wait a bit to let the start up current spike past.
-                    timer.set(0.3, event);
+                    timer.set(0.5, event);
                     sm.waitForSingleEvent(event, State.DETECT_CUBE);
                     robot.cubeIndicator.showNoCube();
                     break;

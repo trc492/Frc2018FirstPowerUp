@@ -147,7 +147,7 @@ public class RobotInfo
     // 2017-03-21: 0.0152347136491642, 0.15, 0.0, 0.0
     // 0.7 power is pretty gud fam
     // 2-20-2018: 0.0148258400720388, 0.15, 0.0, 0.0 -- competition robot
-    public static final double ENCODER_X_INCHES_PER_COUNT       = 0.0147246274889016;//0.0148258400720388;//0.0144546649145861;//0.0152347136491642;//0.0264367338026265;
+    public static final double ENCODER_X_INCHES_PER_COUNT       = 0.0129836759876149;//0.0148258400720388;//0.0144546649145861;//0.0152347136491642;//0.0264367338026265;
     public static final double ENCODER_X_KP                     = 0.15;
     public static final double ENCODER_X_KI                     = 0.0;
     public static final double ENCODER_X_KD                     = 0.0;
@@ -162,15 +162,16 @@ public class RobotInfo
     public static final double ENCODER_Y_KI                     = 0.0;
     public static final double ENCODER_Y_KD                     = 0.004;
     public static final double ENCODER_Y_KF                     = 0.0;
-    public static final double ENCODER_Y_TOLERANCE              = 1.0;
+    public static final double ENCODER_Y_TOLERANCE              = 2.0;
 
     // 2017-04-05: 0.03, 0.0, 0.003
     // 2-20-2018: 0.02, 0.0, 0.0025
     // 2-20-2018: 0.015, 0.0, 0.0012 -- competition robot
     //2-24-2018: 0.017, 0.0, 0.0017  - practice robot constants
-    public static final double GYRO_TURN_KP                     = 0.017;
+    //2-27-2018: 0.015, 0.0, 0.0    -- practice robot
+    public static final double GYRO_TURN_KP                     = 0.015;
     public static final double GYRO_TURN_KI                     = 0.0;
-    public static final double GYRO_TURN_KD                     = 0.0017;
+    public static final double GYRO_TURN_KD                     = 0.0;
     public static final double GYRO_TURN_KF                     = 0.0;
     public static final double GYRO_TURN_TOLERANCE              = 2.0;
 
@@ -238,7 +239,7 @@ public class RobotInfo
     public static final double RIGHT_SWITCH_LOCATION            = 102.0;
     public static final double LEFT_SWITCH_LOCATION             = -102.0;
     public static final double ADVANCE_TO_SECOND_CUBE_DISTANCE  = 60.0;
-    public static final double STRAFE_TO_SECOND_CUBE_DISTANCE   = 173.0;
+    public static final double STRAFE_TO_SECOND_CUBE_DISTANCE   = 70.0;
     public static final double SCALE_FRONT_POSITION             = 75.0;
     public static final double SCALE_SIDE_POSITION              = 120.0;
     public static final double FIRST_ELEVATOR_HEIGHT            = 30.0;

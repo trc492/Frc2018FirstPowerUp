@@ -130,7 +130,7 @@ public class CmdAutoCubePickup implements TrcRobot.RobotCommand
     {
         boolean done = !sm.isEnabled();
 
-        if (!done) return true;
+        if (done) return true;
 
         State state = sm.checkReadyAndGetState();
 
