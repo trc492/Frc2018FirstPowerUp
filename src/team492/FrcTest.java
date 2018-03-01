@@ -45,7 +45,6 @@ public class FrcTest extends FrcTeleOp
         Y_DISTANCE_DRIVE,
         TURN_DEGREES,
         SONAR_DRIVE,
-        VISION_TURN,
         LIVE_WINDOW
     } // enum Test
 
@@ -94,7 +93,6 @@ public class FrcTest extends FrcTeleOp
         testMenu.addChoice("Y Distance Drive", FrcTest.Test.Y_DISTANCE_DRIVE, false, false);
         testMenu.addChoice("Turn Degrees", FrcTest.Test.TURN_DEGREES, false, false);
         testMenu.addChoice("Sonar Drive", FrcTest.Test.SONAR_DRIVE, false, false);
-        testMenu.addChoice("VisionTurn", FrcTest.Test.VISION_TURN, false, false);
         testMenu.addChoice("Live Window", FrcTest.Test.LIVE_WINDOW, false, true);
     } // FrcTest
 
@@ -119,9 +117,9 @@ public class FrcTest extends FrcTeleOp
         switch (test)
         {
             case SENSORS_TEST:
-            	useTraceLog = true;
-            	break;
-            	
+                useTraceLog = true;
+                break;
+
             case DRIVE_MOTORS_TEST:
                 motorIndex = 0;
                 break;
@@ -156,12 +154,6 @@ public class FrcTest extends FrcTeleOp
                 useTraceLog = true;
 //                pidDriveCommand = new CmdPidDrive(robot, robot.sonarPidDrive, null, robot.sonarDrivePidCtrl,
 //                    robot.gyroTurnPidCtrl, 0.0, 0.0, robot.frontSonarTarget, 0.0, robot.drivePowerLimit, true);
-                break;
-
-            case VISION_TURN:
-                useTraceLog = true;
-                pidDriveCommand = new CmdPidDrive(robot, robot.visionPidTurn, null, null, robot.visionTurnPidCtrl,
-                    0.0, 0.0, robot.frontSonarTarget, 0.0, robot.drivePowerLimit, true);
                 break;
 
             default:
@@ -239,7 +231,6 @@ public class FrcTest extends FrcTeleOp
             case Y_DISTANCE_DRIVE:
             case TURN_DEGREES:
             case SONAR_DRIVE:
-            case VISION_TURN:
                 robot.dashboard.displayPrintf(2, "xPos=%.1f,yPos=%.1f,heading=%.1f", robot.driveBase.getXPosition(),
                     robot.driveBase.getYPosition(), robot.driveBase.getHeading());
                 robot.encoderXPidCtrl.displayPidInfo(3);
@@ -251,14 +242,7 @@ public class FrcTest extends FrcTeleOp
                 {
                     robot.encoderYPidCtrl.displayPidInfo(5);
                 }
-                if (test == Test.VISION_TURN)
-                {
-                    robot.visionTurnPidCtrl.displayPidInfo(7);
-                }
-                else
-                {
-                    robot.gyroTurnPidCtrl.displayPidInfo(7);
-                }
+                robot.gyroTurnPidCtrl.displayPidInfo(7);
 
                 if (!pidDriveCommand.cmdPeriodic(elapsedTime))
                 {
@@ -278,10 +262,6 @@ public class FrcTest extends FrcTeleOp
                     {
                         //robot.sonarDrivePidCtrl.printPidInfo(robot.tracer, elapsedTime, robot.battery);
                     }
-                    else if (test == Test.VISION_TURN)
-                    {
-                        robot.visionTurnPidCtrl.printPidInfo(robot.tracer, elapsedTime, robot.battery);
-                    }
                 }
                 break;
 
@@ -289,6 +269,58 @@ public class FrcTest extends FrcTeleOp
                 break;
         }
     } // runContinuous
+
+    @Override
+    public void leftDriveStickButtonEvent(int button, boolean pressed)
+    {
+        boolean processedInput = false;
+        
+        switch (button)
+        {
+            case FrcJoystick.LOGITECH_TRIGGER:
+                break;
+
+            case FrcJoystick.LOGITECH_BUTTON2:
+                break;
+
+            case FrcJoystick.LOGITECH_BUTTON3:
+                break;
+
+            case FrcJoystick.LOGITECH_BUTTON4:
+                break;
+
+            case FrcJoystick.LOGITECH_BUTTON5:
+                break;
+
+            case FrcJoystick.LOGITECH_BUTTON6:
+                break;
+
+            case FrcJoystick.LOGITECH_BUTTON7:
+                break;
+
+            case FrcJoystick.LOGITECH_BUTTON8:
+                break;
+
+            case FrcJoystick.LOGITECH_BUTTON9:
+                break;
+
+            case FrcJoystick.LOGITECH_BUTTON10:
+                robot.elevator.setPosition(36.0);
+                processedInput = true;
+                break;
+
+            case FrcJoystick.LOGITECH_BUTTON11:
+                break;
+
+            case FrcJoystick.LOGITECH_BUTTON12:
+                break;
+        }
+
+        if (!processedInput)
+        {
+            super.leftDriveStickButtonEvent(button, pressed);
+        }
+    }   //leftDriveStickButtonEvent
 
     @Override
     public void operatorStickButtonEvent(int button, boolean pressed)
@@ -379,58 +411,7 @@ public class FrcTest extends FrcTeleOp
         {
             super.operatorStickButtonEvent(button, pressed);
         }
-    }
-    
-    @Override
-    public void leftDriveStickButtonEvent(int button, boolean pressed)
-    {
-        boolean processedInput = false;
-        
-        switch (button)
-        {
-            case FrcJoystick.LOGITECH_TRIGGER:
-                break;
-
-            case FrcJoystick.LOGITECH_BUTTON2:
-                break;
-
-            case FrcJoystick.LOGITECH_BUTTON3:
-                break;
-
-            case FrcJoystick.LOGITECH_BUTTON4:
-                break;
-
-            case FrcJoystick.LOGITECH_BUTTON5:
-                break;
-
-            case FrcJoystick.LOGITECH_BUTTON6:
-                break;
-
-            case FrcJoystick.LOGITECH_BUTTON7:
-                break;
-
-            case FrcJoystick.LOGITECH_BUTTON8:
-                break;
-
-            case FrcJoystick.LOGITECH_BUTTON9:
-                break;
-
-            case FrcJoystick.LOGITECH_BUTTON10:
-                robot.elevator.setPosition(36.0);
-                processedInput = true;
-                break;
-
-            case FrcJoystick.LOGITECH_BUTTON11:
-                break;
-
-            case FrcJoystick.LOGITECH_BUTTON12:
-                break;
-        }
-        if (!processedInput)
-        {
-            super.leftDriveStickButtonEvent(button, pressed);
-        }
-    }
+    }   //operatorStickButtonEvent
 
     /**
      * This method reads all sensors and prints out their values. This is a very

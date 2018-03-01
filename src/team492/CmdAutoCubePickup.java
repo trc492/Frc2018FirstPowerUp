@@ -32,20 +32,21 @@ public class CmdAutoCubePickup implements TrcRobot.RobotCommand
 
     public static enum State
     {
-        START, DRIVE, PICKUP, DONE
+        START, DRIVE, DONE
     }
 
     private Robot robot;
-    private TrcEvent event, onFinishedEvent;
+    private TrcEvent event, proximityEvent;
     private TrcStateMachine<State> sm;
-    private double startX, startY;
-    private double startTime;
-    private StopTrigger stopTrigger;
+//    private TrcEvent onFinishedEvent = null;
+//    private double startX = 0.0, startY = 0.0;
+//    private double startTime = 0.0;
 
     public CmdAutoCubePickup(Robot robot)
     {
         this.robot = robot;
         event = new TrcEvent(moduleName);
+        proximityEvent = new TrcEvent(moduleName + ".proximity");
         sm = new TrcStateMachine<>(moduleName);
     }
 
@@ -59,70 +60,80 @@ public class CmdAutoCubePickup implements TrcRobot.RobotCommand
         return sm.isEnabled();
     }
 
-    public double elapsedTime()
-    {
-    	return Robot.getModeElapsedTime() - startTime;
-    }
+//    public double elapsedTime()
+//    {
+//    	return Robot.getModeElapsedTime() - startTime;
+//    }
+//
+//    public double[] distanceMoved()
+//    {
+//        return new double[] { changeX(), changeY() };
+//    }
+//
+//    private double changeX()
+//    {
+//    	return robot.driveBase.getXPosition() - startX;
+//    }
+//
+//    public double changeY()
+//    {
+//    	return robot.driveBase.getYPosition() - startY;
+//    }
+//
+//    /**
+//     * Start this task, and signal onFinishedEvent when done
+//     */
+//    public void start(TrcEvent onFinishedEvent, AutoAssistStopTrigger stopTrigger)
+//    {
+//        stop();
+//        this.onFinishedEvent = onFinishedEvent;
+//        this.stopTrigger = stopTrigger;
+//        startX = robot.driveBase.getXPosition();
+//        startY = robot.driveBase.getYPosition();
+//        startTime = Robot.getModeElapsedTime();
+//        sm.start(State.START);
+//    }
+//
+//    public void start(AutoAssistStopTrigger stopTrigger)
+//    {
+//        start(null, stopTrigger);
+//    }
+//
+//    /**
+//     * Start this task without signaling any event when done
+//     */
+//    public void start()
+//    {
+//        start(null, this);
+//    }
 
-    public double[] distanceMoved()
-    {
-        return new double[] { changeX(), changeY() };
-    }
-
-    private double changeX()
-    {
-    	return robot.driveBase.getXPosition() - startX;
-    }
-
-    public double changeY()
-    {
-    	return robot.driveBase.getYPosition() - startY;
-    }
-
-    /**
-     * Start this task without signaling any event when done
-     */
+//    public void start(TrcEvent onFinishedEvent)
+//    {
+//        start(onFinishedEvent, this);
+//    }
+//
+//    public boolean shouldStop(double elapsedTime, double distanceX, double distanceY, boolean xStop)
+//    {
+//        return false;
+//    }
+//
     public void start()
     {
-        start(null, this::shouldStop);
-    }
-    
-    public void start(StopTrigger stopTrigger)
-    {
-        start(null, stopTrigger);
-    }
-
-    public void start(TrcEvent onFinishedEvent)
-    {
-        start(onFinishedEvent, this::shouldStop);
-    }
-
-    /**
-     * Start this task, and signal onFinishedEvent when done
-     */
-    public void start(TrcEvent onFinishedEvent, StopTrigger stopTrigger)
-    {
-        stop();
-        this.onFinishedEvent = onFinishedEvent;
-        this.stopTrigger = stopTrigger;
-        startX = robot.driveBase.getXPosition();
-        startY = robot.driveBase.getYPosition();
-        startTime = Robot.getModeElapsedTime();
-        sm.start(State.START);
-    }
-
-    private boolean shouldStop(double elapsedTime, double distanceX, double distanceY)
-    {
-        return false;
+        if (!sm.isEnabled())
+        {
+//            onFinishedEvent = event;
+            sm.start(State.START);
+        }
     }
 
     public void stop()
     {
-        if (robot.visionPidDrive.isActive())
+        if (sm.isEnabled())
         {
-            robot.visionPidDrive.cancel();
+            robot.cubePickup.setProximityTriggerEnabled(false, null);
+            robot.pidDrive.cancel();
+            sm.stop();
         }
-        sm.stop();
     }
 
     @Override
@@ -130,70 +141,74 @@ public class CmdAutoCubePickup implements TrcRobot.RobotCommand
     {
         boolean done = !sm.isEnabled();
 
-        if (done) return true;
-
-        State state = sm.checkReadyAndGetState();
-
-        //
-        // Print debug info.
-        //
-        robot.dashboard.displayPrintf(1, "State: %s", state == null? "NotReady": state);
-
-        if (this.stopTrigger.shouldStop(elapsedTime(), changeX(), changeY()))
+        if (!done)
         {
-            stop();
-            done = true;
-        }
-        else if (state != null)
-        {
-            switch (sm.getState())
+            State state = sm.checkReadyAndGetState();
+            //
+            // Print debug info.
+            //
+            robot.dashboard.displayPrintf(1, "State: %s", state == null? "NotReady": state);
+
+//            if (this.stopTrigger.shouldStop(elapsedTime(), changeX(), changeY(), false))
+//            {
+//                stop();
+//                done = true;
+//            }
+            if (state != null)
             {
-                case START:
-                    // Deploy and open cube pickup
-                    robot.cubePickup.deployPickup();
-                    robot.cubePickup.openClaw();
+                double xDistance, yDistance;
 
-                    // 6.0 inches above the ground. pos is in inches
-                    double pos = RobotInfo.ELEVATOR_FLOOR_PICKUP_HEIGHT;
-                    robot.elevator.setPosition(pos, event, 0.0);
+                switch (sm.getState())
+                {
+                    case START:
+                        // Deploy and open cube pickup
+                        robot.cubePickup.deployPickup();
+                        robot.cubePickup.openClaw();
+                        robot.elevator.setPosition(RobotInfo.ELEVATOR_FLOOR_PICKUP_HEIGHT, event, 0.0);
+                        sm.waitForSingleEvent(event, State.DRIVE);
+                        break;
 
-                    sm.waitForSingleEvent(event, State.DRIVE);
-                    break;
+                    case DRIVE:
+//                      // Go forward at 60% power facing the cube
+//                      robot.visionPidDrive.driveMaintainHeading(
+//                          0.0, RobotInfo.AUTO_PICKUP_MOVE_POWER, 0.0);
+//                      robot.cubePickup.grabCube(0.5, event);
+//
+//                      sm.waitForSingleEvent(event, State.PICKUP);
 
-                case DRIVE:
-                    // Go forward at 60% power facing the cube
-                    robot.visionPidDrive.driveMaintainHeading(
-                        0.0, RobotInfo.AUTO_PICKUP_MOVE_POWER, 0.0);
-                    robot.cubePickup.grabCube(0.5, event);
+                        //CodeReview: change to use sonar with default distance and proximity as stopTrigger.
+                        // Go forward the expected distance or until the cube is in possession.
+                        xDistance = 0.0;
+                        yDistance = robot.frontSonar != null?
+                            robot.getFrontSonarDistance(): RobotInfo.AUTO_PICKUP_CUBE_DISTANCE;
+                        robot.cubePickup.setProximityTriggerEnabled(true, proximityEvent);
+                        sm.addEvent(proximityEvent);
+                        robot.pidDrive.setTarget(xDistance, yDistance, robot.targetHeading, false, event);
+                        sm.addEvent(event);
+                        sm.waitForEvents(State.DONE);
+                        break;
 
-                    sm.waitForSingleEvent(event, State.PICKUP);
-                    break;
+//                    case PICKUP:
+//                        robot.visionPidDrive.cancel();
+//                        robot.cubePickup.closeClaw();
+//                        sm.setState(State.DONE);
+//                        break;
 
-                case PICKUP:
-                    robot.visionPidDrive.cancel();
-                    robot.cubePickup.closeClaw();
-                    sm.setState(State.DONE);
-                    break;
-
-                case DONE:
-                default:
-                    done = true;
-                    if(onFinishedEvent != null)
-                    {
-                        onFinishedEvent.set(true);
-                    }
-                    sm.stop();
-                    break;
+                    case DONE:
+                    default:
+                        stop();
+                        done = true;
+//                        if(onFinishedEvent != null)
+//                        {
+//                            onFinishedEvent.set(true);
+//                        }
+                        break;
+                }
+                robot.traceStateInfo(elapsedTime, state.toString());
             }
-            robot.traceStateInfo(elapsedTime, state.toString());
         }
 
         return done;
-    }
-
-    public interface StopTrigger
-    {
-        public boolean shouldStop(double elapsedTime, double distanceX, double distanceY);
     }
 
 }
