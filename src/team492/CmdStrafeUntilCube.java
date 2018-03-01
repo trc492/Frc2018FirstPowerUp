@@ -100,11 +100,13 @@ public class CmdStrafeUntilCube implements TrcRobot.RobotCommand
 
     public double changeX()
     {
+        robot.tracer.traceInfo("changeX", "changeX");
         return robot.driveBase.getXPosition() - startX;
     }
 
     private double changeY()
     {
+        robot.tracer.traceInfo("changeY", "changeY");
         return robot.driveBase.getYPosition() - startY;
     }
 
@@ -122,6 +124,10 @@ public class CmdStrafeUntilCube implements TrcRobot.RobotCommand
         //
         robot.dashboard.displayPrintf(1, "State: %s", state == null? "NotReady": state);
 
+        if(stopTrigger==null)
+        {
+            robot.tracer.traceInfo("nullTrigger", "nullTrigger");
+        }
         if (stopTrigger.shouldStop(elapsedTime(), changeX(), changeY()))
         {
             stop();
@@ -133,7 +139,9 @@ public class CmdStrafeUntilCube implements TrcRobot.RobotCommand
             {
                 case START_STRAFE:
                     double xPower = RobotInfo.FIND_CUBE_STRAFE_POWER * (strafeRight ? 1 : -1);
+                    robot.tracer.traceInfo("XPower", "xPower=%.2f", xPower);
                     robot.pidDrive.driveMaintainHeading(xPower, 0.0, robot.targetHeading);
+                    robot.tracer.traceInfo("strafing", "driveMaintaintHeading");
                     sm.setState(State.CHECK_FOR_CUBE);
                     break;
                 case CHECK_FOR_CUBE:

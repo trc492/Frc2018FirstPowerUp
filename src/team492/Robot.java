@@ -120,7 +120,8 @@ public class Robot extends FrcRobotBase
     public TrcRobotBattery battery = null;
     public TrcGyro gyro = null;
     public AnalogInput pressureSensor = null;
-    public TrcMaxbotixSonarArray leftSonar = null;
+    public AnalogInput leftSonar = null;
+//    public TrcMaxbotixSonarArray leftSonar = null;
     public TrcMaxbotixSonarArray rightSonar = null;
     public TrcMaxbotixSonarArray frontSonar = null;
 
@@ -234,29 +235,30 @@ public class Robot extends FrcRobotBase
 
         if (USE_MAXBOTIX_SONAR_SENSOR)
         {
-            TrcSpuriousFilter leftSonarFilter =
-                new TrcSpuriousFilter("LeftSonarFilter", RobotInfo.SONAR_ERROR_THRESHOLD, tracer);
-            FrcAnalogInput leftSonarSensor = new FrcAnalogInput(
-                "LeftSonarSensor", RobotInfo.AIN_LEFT_SONAR_SENSOR, new TrcFilter[] {leftSonarFilter});
-            leftSonarSensor.setScale(RobotInfo.SONAR_MILLIVOLTS_PER_INCH);
-            FrcDigitalOutput leftSonarPing = new FrcDigitalOutput("LeftSonarPing", RobotInfo.DIO_LEFT_SONAR_PING);
-            leftSonar = new TrcMaxbotixSonarArray("LeftSonar", leftSonarSensor, leftSonarPing);
-
-            TrcSpuriousFilter rightSonarFilter =
-                new TrcSpuriousFilter("RightSonarFilter", RobotInfo.SONAR_ERROR_THRESHOLD, tracer);
-            FrcAnalogInput rightSonarSensor = new FrcAnalogInput(
-                "RightSonarSensor", RobotInfo.AIN_RIGHT_SONAR_SENSOR, new TrcFilter[] {rightSonarFilter});
-            rightSonarSensor.setScale(RobotInfo.SONAR_MILLIVOLTS_PER_INCH);
-            FrcDigitalOutput rightSonarPing = new FrcDigitalOutput("RightSonarPing", RobotInfo.DIO_RIGHT_SONAR_PING);
-            rightSonar = new TrcMaxbotixSonarArray("RightSonar", rightSonarSensor, rightSonarPing);
-
-            TrcSpuriousFilter frontSonarFilter =
-                new TrcSpuriousFilter("FrontSonarFilter", RobotInfo.SONAR_ERROR_THRESHOLD, tracer);
-            FrcAnalogInput frontSonarSensor = new FrcAnalogInput(
-                "FrontSonarSensor", RobotInfo.AIN_FRONT_SONAR_SENSOR, new TrcFilter[] {frontSonarFilter});
-            frontSonarSensor.setScale(RobotInfo.SONAR_MILLIVOLTS_PER_INCH);
-            FrcDigitalOutput frontSonarPing = new FrcDigitalOutput("FrontSonarPing", RobotInfo.DIO_FRONT_SONAR_PING);
-            frontSonar = new TrcMaxbotixSonarArray("FrontSonar", frontSonarSensor, frontSonarPing);
+            leftSonar = new AnalogInput(RobotInfo.AIN_LEFT_SONAR_SENSOR);
+//            TrcSpuriousFilter leftSonarFilter =
+//                new TrcSpuriousFilter("LeftSonarFilter", RobotInfo.SONAR_ERROR_THRESHOLD, tracer);
+//            FrcAnalogInput leftSonarSensor = new FrcAnalogInput(
+//                "LeftSonarSensor", RobotInfo.AIN_LEFT_SONAR_SENSOR, new TrcFilter[] {leftSonarFilter});
+//            leftSonarSensor.setScale(RobotInfo.SONAR_MILLIVOLTS_PER_INCH);
+//            FrcDigitalOutput leftSonarPing = new FrcDigitalOutput("LeftSonarPing", RobotInfo.DIO_LEFT_SONAR_PING);
+//            leftSonar = new TrcMaxbotixSonarArray("LeftSonar", leftSonarSensor, leftSonarPing);
+//
+//            TrcSpuriousFilter rightSonarFilter =
+//                new TrcSpuriousFilter("RightSonarFilter", RobotInfo.SONAR_ERROR_THRESHOLD, tracer);
+//            FrcAnalogInput rightSonarSensor = new FrcAnalogInput(
+//                "RightSonarSensor", RobotInfo.AIN_RIGHT_SONAR_SENSOR, new TrcFilter[] {rightSonarFilter});
+//            rightSonarSensor.setScale(RobotInfo.SONAR_MILLIVOLTS_PER_INCH);
+//            FrcDigitalOutput rightSonarPing = new FrcDigitalOutput("RightSonarPing", RobotInfo.DIO_RIGHT_SONAR_PING);
+//            rightSonar = new TrcMaxbotixSonarArray("RightSonar", rightSonarSensor, rightSonarPing);
+//
+//            TrcSpuriousFilter frontSonarFilter =
+//                new TrcSpuriousFilter("FrontSonarFilter", RobotInfo.SONAR_ERROR_THRESHOLD, tracer);
+//            FrcAnalogInput frontSonarSensor = new FrcAnalogInput(
+//                "FrontSonarSensor", RobotInfo.AIN_FRONT_SONAR_SENSOR, new TrcFilter[] {frontSonarFilter});
+//            frontSonarSensor.setScale(RobotInfo.SONAR_MILLIVOLTS_PER_INCH);
+//            FrcDigitalOutput frontSonarPing = new FrcDigitalOutput("FrontSonarPing", RobotInfo.DIO_FRONT_SONAR_PING);
+//            frontSonar = new TrcMaxbotixSonarArray("FrontSonar", frontSonarSensor, frontSonarPing);
         }
 
         //
@@ -346,10 +348,10 @@ public class Robot extends FrcRobotBase
             driveBase.setMotorPowerMapper(this::translateMotorPower);
         }
 
-        if(USE_GYRO_ASSIST)
-        {
-            driveBase.enableGyroAssist(RobotInfo.DRIVE_MAX_ROTATION_RATE, RobotInfo.DRIVE_GYRO_ASSIST_KP);
-        }
+//        if(USE_GYRO_ASSIST)
+//        {
+//            driveBase.enableGyroAssist(RobotInfo.DRIVE_MAX_ROTATION_RATE, RobotInfo.DRIVE_GYRO_ASSIST_KP);
+//        }
 
         //
         // Create PID controllers for DriveBase PID drive.
@@ -619,7 +621,8 @@ public class Robot extends FrcRobotBase
 
         if (leftSonar != null)
         {
-            value = leftSonar.getDistance(0).value;
+//            value = leftSonar.getDistance(0).value;
+            value = leftSonar.getVoltage()/RobotInfo.SONAR_VOLTS_PER_INCH;
         }
 
         return value;

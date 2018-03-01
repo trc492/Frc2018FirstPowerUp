@@ -440,21 +440,21 @@ public class FrcTest extends FrcTeleOp
      */
     private void doSensorsTest()
     {
-        double driveBaseAverage = (robot.leftFrontWheel.getPosition() + robot.rightFrontWheel.getPosition() + robot.leftRearWheel.getPosition()
-            + robot.rightRearWheel.getPosition())/4;
+        double driveBaseAverage =
+            (robot.leftFrontWheel.getPosition() + robot.rightFrontWheel.getPosition() +
+             robot.leftRearWheel.getPosition() + robot.rightRearWheel.getPosition())/4.0;
         robot.dashboard.displayPrintf(1, "Sensors Test (Batt=%.1f/%.1f):", robot.battery.getVoltage(),
             robot.battery.getLowestVoltage());
-        robot.dashboard.displayPrintf(2, "DriveBase: lf=%.0f, rf=%.0f, lr=%.0f, rr=%.0f, avg=%.0f",
+        robot.dashboard.displayPrintf(2, "DriveBase: lf=%.0f,rf=%.0f,lr=%.0f,rr=%.0f,avg=%.0f",
             robot.leftFrontWheel.getPosition(), robot.rightFrontWheel.getPosition(), robot.leftRearWheel.getPosition(),
             robot.rightRearWheel.getPosition(), driveBaseAverage);
-        robot.dashboard.displayPrintf(3, "DriveBase: X=%.1f, Y=%.1f, Heading=%.1f", robot.driveBase.getXPosition(),
-            robot.driveBase.getYPosition(), robot.driveBase.getHeading());
-        robot.dashboard.displayPrintf(4, "Gyro: Rate=%.3f, Heading=%.1f", robot.gyro.getZRotationRate().value,
-            robot.gyro.getZHeading().value);
+        robot.dashboard.displayPrintf(3, "DriveBase: X=%.1f,Y=%.1f,Heading=%.1f,GyroRate=%.1f",
+            robot.driveBase.getXPosition(), robot.driveBase.getYPosition(), robot.driveBase.getHeading(),
+            robot.gyro.getZRotationRate().value);
+        robot.dashboard.displayPrintf(4, "Sensors: pressure=%.1f,leftSonar=%.1f,rightSonar=%.1f,frontSonar=%.1f",
+            robot.getPressure(), robot.getLeftSonarDistance(), robot.getRightSonarDistance(),
+            robot.getFrontSonarDistance());
         //robot.dashboard.displayPrintf(5, "CubePickup: cube=%s", robot.cubePickup.cubeDetected());
-        robot.dashboard.displayPrintf(5, "PressureSensor: pressure=%.1f", robot.getPressure());
-        robot.dashboard.displayPrintf(7, "Sonar: left=%.1f, right=%.1f, front=%.1f",
-            robot.getLeftSonarDistance(), robot.getRightSonarDistance(), robot.getFrontSonarDistance());
     } // doSensorsTest
 
     /**

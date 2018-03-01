@@ -418,6 +418,7 @@ class CmdPowerUpAuto implements TrcRobot.RobotCommand
 
     public boolean shouldXStop(double elapsedTime, double changeX, double changeY)
     {
+        robot.tracer.traceInfo("ChangeX", "changeX=%.1f", changeX);
         return Math.abs(changeX) > RobotInfo.STRAFE_TO_SECOND_CUBE_DISTANCE;
     }
 

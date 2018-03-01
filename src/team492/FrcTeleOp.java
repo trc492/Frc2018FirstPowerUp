@@ -40,6 +40,7 @@ public class FrcTeleOp implements TrcRobot.RobotMode
     private DriveMode driveMode = DriveMode.MECANUM_MODE;
 
     private boolean driveInverted = false;
+    private boolean gyroAssist = false;
 
     public FrcTeleOp(Robot robot)
     {
@@ -236,6 +237,19 @@ public class FrcTeleOp implements TrcRobot.RobotMode
                 break;
 
             case FrcJoystick.SIDEWINDER_BUTTON5:
+                if (pressed)
+                {
+                    gyroAssist = !gyroAssist;
+                }
+
+                if (gyroAssist)
+                {
+                    robot.driveBase.enableGyroAssist(RobotInfo.DRIVE_MAX_ROTATION_RATE, RobotInfo.DRIVE_GYRO_ASSIST_KP);
+                }
+                else
+                {
+                    robot.driveBase.disableGyroAssist();
+                }
                 break;
 
             case FrcJoystick.SIDEWINDER_BUTTON6:
