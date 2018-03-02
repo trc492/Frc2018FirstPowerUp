@@ -36,6 +36,7 @@ public abstract class TrcSensor<D>
     private static final String moduleName = "TrcSensor";
     private static final boolean debugEnabled = false;
     private static final boolean tracingEnabled = false;
+    private static final boolean useGlobalTracer = false;
     private static final TrcDbgTrace.TraceLevel traceLevel = TrcDbgTrace.TraceLevel.API;
     private static final TrcDbgTrace.MsgLevel msgLevel = TrcDbgTrace.MsgLevel.INFO;
     private TrcDbgTrace dbgTrace = null;
@@ -121,7 +122,9 @@ public abstract class TrcSensor<D>
     {
         if (debugEnabled)
         {
-            dbgTrace = new TrcDbgTrace(moduleName + "." + instanceName, tracingEnabled, traceLevel, msgLevel);
+            dbgTrace = useGlobalTracer?
+                TrcDbgTrace.getGlobalTracer():
+                new TrcDbgTrace(moduleName + "." + instanceName, tracingEnabled, traceLevel, msgLevel);
         }
         //
         // Make sure we have at least one axis.
@@ -307,17 +310,22 @@ public abstract class TrcSensor<D>
         SensorData<Double> data = (SensorData<Double>)getRawData(index, dataType);
         double value = (double)data.value;
 
+        if (debugEnabled) dbgTrace.traceInfo(funcName, "raw=%.3f", value);
         if (filters[index] != null)
         {
             value = filters[index].filterData(value);
+            if (debugEnabled) dbgTrace.traceInfo(funcName, "filtered=%.3f", value);
         }
 
         if (calibrator != null)
         {
             value = calibrator.getCalibratedData(index, value);
+            if (debugEnabled) dbgTrace.traceInfo(funcName, "calibrated=%.3f", value);
         }
 
         value *= signs[index]*scales[index] + offsets[index];
+        if (debugEnabled) dbgTrace.traceInfo(
+            funcName, "scaled=%.3f (scale=%f,offset=%f)", value, scales[index], offsets[index]);
         data.value = value;
 
         if (debugEnabled)

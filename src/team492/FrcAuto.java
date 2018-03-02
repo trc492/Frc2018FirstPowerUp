@@ -69,7 +69,6 @@ public class FrcAuto implements TrcRobot.RobotMode
     } // enum StartPosition
 
     private Robot robot;
-    private boolean useVision = false;
 
     //
     // Menus.
@@ -117,8 +116,8 @@ public class FrcAuto implements TrcRobot.RobotMode
         forwardDistanceMenu.addChoice("Distance 3", FrcAuto.ForwardDistance.FWD_DISTANCE_3, false, false);
         forwardDistanceMenu.addChoice("Custom Distance", FrcAuto.ForwardDistance.CUSTOM, false, true);
 
-        approachMenu.addChoice("Front Approach", FrcAuto.Approach.FRONT, true, false);
-        approachMenu.addChoice("Side Approach", FrcAuto.Approach.SIDE, false, true);
+        approachMenu.addChoice("Front Approach", FrcAuto.Approach.FRONT, false, false);
+        approachMenu.addChoice("Side Approach", FrcAuto.Approach.SIDE, true, true);
 
         startPositionMenu.addChoice("Left Side Start", FrcAuto.StartPosition.START_POS_1, true, false);
         startPositionMenu.addChoice("Middle Start", FrcAuto.StartPosition.START_POS_2, false, false);
@@ -145,7 +144,6 @@ public class FrcAuto implements TrcRobot.RobotMode
         //
         // Retrieve menu choice values.
         //
-
         forwardDistance = forwardDistanceMenu.getCurrentChoiceObject();
 
         switch (forwardDistance)
@@ -231,31 +229,20 @@ public class FrcAuto implements TrcRobot.RobotMode
                 break;
         }
 
-        //
-        // Start vision thread if necessary.
-        //
-        if (useVision)
-        {
-            robot.setVisionEnabled(true);
-        }
-
+        robot.setVisionEnabled(true);
         robot.driveBase.resetPosition();
         robot.targetHeading = 0.0;
 
-        robot.encoderXPidCtrl.setOutputRange(-0.5, 0.5);
-        robot.encoderYPidCtrl.setOutputRange(-0.5, 0.5);
-        robot.gyroTurnPidCtrl.setOutputRange(-0.5, 0.5);
-        //robot.sonarDrivePidCtrl.setOutputRange(-0.5, 0.5);
-        robot.visionTurnPidCtrl.setOutputRange(-0.5, 0.5);
+//        robot.encoderXPidCtrl.setOutputRange(-0.5, 0.5);
+//        robot.encoderYPidCtrl.setOutputRange(-0.5, 0.5);
+//        robot.gyroTurnPidCtrl.setOutputRange(-0.5, 0.5);
+//        robot.sonarDrivePidCtrl.setOutputRange(-0.5, 0.5);
     } // startMode
 
     @Override
     public void stopMode()
     {
-        if (useVision)
-        {
-            robot.setVisionEnabled(false);
-        }
+        robot.setVisionEnabled(false);
 
         if (Robot.USE_TRACELOG)
             robot.stopTraceLog();
@@ -281,11 +268,10 @@ public class FrcAuto implements TrcRobot.RobotMode
                 robot.encoderYPidCtrl.printPidInfo(robot.tracer, elapsedTime, robot.battery);
                 robot.gyroTurnPidCtrl.printPidInfo(robot.tracer, elapsedTime, robot.battery);
             }
-            else if (robot.visionPidDrive.isActive())
-            {
-                //robot.sonarDrivePidCtrl.printPidInfo(robot.tracer, elapsedTime, robot.battery);
-                robot.visionTurnPidCtrl.printPidInfo(robot.tracer, elapsedTime, robot.battery);
-            }
+//            else if (robot.sonarPidDrive.isActive())
+//            {
+//                robot.sonarDrivePidCtrl.printPidInfo(robot.tracer, elapsedTime, robot.battery);
+//            }
         }
     } // runContinuous
 

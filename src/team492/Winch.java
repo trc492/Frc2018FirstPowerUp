@@ -58,14 +58,4 @@ public class Winch
         mainMotor.setPower(motorPower);
     }
 
-    public void stop() 
-    {
-        setPower(0.0);
-    }
-
-    public void climb() 
-    {
-        setPower(0.7);
-    }
-
 }   //class Winch

@@ -36,10 +36,10 @@ public class PixyVision
     private static final String moduleName = "PixyVision";
     private static final boolean debugEnabled = false;
 
-    private static final boolean FILTER_ENABLED = false;
-    private static final double PERCENT_TOLERANCE = 0.3;    // 30% tolerance
-    private static final double PERCENT_TOLERANCE_LOWER = 1.0 - PERCENT_TOLERANCE;
-    private static final double PERCENT_TOLERANCE_UPPER = 1.0 + PERCENT_TOLERANCE;
+//    private static final boolean FILTER_ENABLED = false;
+//    private static final double PERCENT_TOLERANCE = 0.3;    // 30% tolerance
+//    private static final double PERCENT_TOLERANCE_LOWER = 1.0 - PERCENT_TOLERANCE;
+//    private static final double PERCENT_TOLERANCE_UPPER = 1.0 + PERCENT_TOLERANCE;
 
     public class TargetInfo
     {
@@ -72,10 +72,10 @@ public class PixyVision
     }   //enum Orientation
 
     private static final double PIXY_DISTANCE_SCALE = 2300.0;   //DistanceInInches*targetWidthdInPixels
-//    private static final double TAPE_WIDTH_INCHES = 2.0;
-    private static final double POWER_CUBE_HEIGHT_INCHES = 11.0; // 11 in tall
-    private static final double TARGET_WIDTH_INCHES = 13.0 * Math.sqrt(2); // 13x13 square, diagonal is 13*sqrt(2) inches
-    private static final double TARGET_HEIGHT_INCHES = POWER_CUBE_HEIGHT_INCHES;
+//    private static final double POWER_CUBE_HEIGHT_INCHES = 11.0; // 11-in tall
+    //CodeReview: why diagonal???
+    private static final double TARGET_WIDTH_INCHES = 13.0 * Math.sqrt(2.0);// 13x13 square, diagonal is 13*sqrt(2) inches
+//    private static final double TARGET_HEIGHT_INCHES = POWER_CUBE_HEIGHT_INCHES;
 
     private FrcPixyCam pixyCamera;
     private Robot robot;
@@ -128,7 +128,6 @@ public class PixyVision
      */
     private Rect getTargetRect()
     {
-        //CodeReview: this code is for last year. Needs updating...
         Rect targetRect = null;
         ObjectBlock[] detectedObjects = pixyCamera.getDetectedObjects();
 
@@ -143,7 +142,7 @@ public class PixyVision
         if (detectedObjects != null && detectedObjects.length >= 1)
         {
             ArrayList<Rect> objectList = new ArrayList<>();
-            double targetDistance = robot.getFrontSonarDistance() + RobotInfo.PIXY_CAM_OFFSET;
+//            double targetDistance = robot.getFrontSonarDistance() + RobotInfo.PIXY_CAM_OFFSET;
             //
             // Filter out objects that don't have the correct signature.
             //
@@ -197,50 +196,53 @@ public class PixyVision
                 }
             }
 
-            double expectedWidth = PIXY_DISTANCE_SCALE/targetDistance;
-            double expectedHeight = expectedWidth*TARGET_HEIGHT_INCHES/TARGET_WIDTH_INCHES;
-
-            if (debugEnabled)
-            {
-                robot.tracer.traceInfo(moduleName, "Expected Target: distance=%.1f, width=%.1f, height=%.1f",
-                    targetDistance, expectedWidth, expectedHeight);
-            }
-
-            if (FILTER_ENABLED)
-            {
-                //
-                // Filter objects out if they aren't close enough to the expected dimensions
-            	// If there's more than a PERCENT_TOLERANCE error, then remove it from the arraylist
-                //
-                if (objectList.size() > 1)
-                {
-                    for (int i = 0; i < objectList.size(); i++)
-                    {
-                        Rect rect = objectList.get(i);
-                        
-                        double widthRatio = rect.width/expectedWidth;
-                        double heightRatio = rect.height/expectedHeight;
-                        
-                        if (clamp(widthRatio, PERCENT_TOLERANCE_LOWER, PERCENT_TOLERANCE_UPPER) != widthRatio || 
-                        		clamp(heightRatio, PERCENT_TOLERANCE_LOWER, PERCENT_TOLERANCE_UPPER) != heightRatio)
-                        {
-                        	objectList.remove(i);
-                        }
-                    }
-                }
-            }
+//            double expectedWidth = PIXY_DISTANCE_SCALE/targetDistance;
+//            double expectedHeight = expectedWidth*TARGET_HEIGHT_INCHES/TARGET_WIDTH_INCHES;
+//
+//            if (debugEnabled)
+//            {
+//                robot.tracer.traceInfo(moduleName, "Expected Target: distance=%.1f, width=%.1f, height=%.1f",
+//                    targetDistance, expectedWidth, expectedHeight);
+//            }
+//
+//            if (FILTER_ENABLED)
+//            {
+//                //
+//                // Filter objects out if they aren't close enough to the expected dimensions
+//            	  // If there's more than a PERCENT_TOLERANCE error, then remove it from the arraylist
+//                //
+//                if (objectList.size() > 1)
+//                {
+//                    for (int i = 0; i < objectList.size(); i++)
+//                    {
+//                        Rect rect = objectList.get(i);
+//                        
+//                        double widthRatio = rect.width/expectedWidth;
+//                        double heightRatio = rect.height/expectedHeight;
+//                        
+//                        if (clamp(widthRatio, PERCENT_TOLERANCE_LOWER, PERCENT_TOLERANCE_UPPER) != widthRatio || 
+//                            clamp(heightRatio, PERCENT_TOLERANCE_LOWER, PERCENT_TOLERANCE_UPPER) != heightRatio)
+//                        {
+//                        	objectList.remove(i);
+//                        }
+//                    }
+//                }
+//            }
 
             if (targetRect == null && objectList.size() >= 1)
             {
-            	Rect maxRect = objectList.get(0);
-            	for(Rect rect:objectList)
-            	{
-            		double size = rect.width * rect.height;
-            		if(size > maxRect.width * maxRect.height)
-            		{
-            			maxRect = rect;
-            		}
-            	}
+                //
+                // Find the largest target rect in the list.
+                //
+                Rect maxRect = objectList.get(0);
+                for(Rect rect: objectList)
+                {
+                    double area = rect.width * rect.height;
+                    if (area > maxRect.width * maxRect.height)
+                    {
+                        maxRect = rect;
+                    }
+                }
 
                 targetRect = maxRect;
 
@@ -255,10 +257,6 @@ public class PixyVision
         return targetRect;
     }   //getTargetRect
     
-    private double clamp(double d, double min, double max) {
-    	return Math.min(Math.max(d, min), max);
-    }
-
     public TargetInfo getTargetInfo()
     {
         TargetInfo targetInfo = null;

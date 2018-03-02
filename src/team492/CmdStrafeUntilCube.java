@@ -1,6 +1,8 @@
 package team492;
 
-import team492.PixyVision.TargetInfo;
+import trclib.TrcAnalogSensor;
+import trclib.TrcAnalogTrigger;
+import trclib.TrcEvent;
 import trclib.TrcRobot;
 import trclib.TrcStateMachine;
 
@@ -10,160 +12,204 @@ public class CmdStrafeUntilCube implements TrcRobot.RobotCommand
 
     public enum State
     {
-        START_STRAFE, CHECK_FOR_CUBE, DONE
+        START_STRAFE, DONE
     }
 
+    private static final double[] visionThresholds =
+        {-RobotInfo.FIND_CUBE_X_TOLERANCE*2, 0.0, RobotInfo.FIND_CUBE_X_TOLERANCE*2};
+
     private Robot robot;
+    private TrcAnalogSensor visionSensor;
+    private TrcAnalogTrigger<TrcAnalogSensor.DataType> visionTrigger;
     private TrcStateMachine<State> sm;
-    private StopTrigger stopTrigger;
-    private boolean strafeRight;
-    private double startTime;
-    private double startX, startY;
+    private TrcEvent event, visionEvent;
+    private double xDistance;
+    private TrcEvent visionTriggerEvent, onFinishedEvent;
+//    private boolean strafeRight;
+//    private double startTime;
+//    private double startX, startY;
 
     public CmdStrafeUntilCube(Robot robot)
     {
         this.robot = robot;
+        visionSensor = new TrcAnalogSensor("pixyVision", robot::getPixyTargetX);
+        visionTrigger = new TrcAnalogTrigger<>(
+            "VisionTrigger", visionSensor, 0, TrcAnalogSensor.DataType.RAW_DATA, visionThresholds,
+            this::visionTriggerHandler);
         sm = new TrcStateMachine<>(moduleName);
+        event = new TrcEvent(moduleName);
+        visionEvent = new TrcEvent(moduleName + ".VisionEvent");
+    }
+
+    void setVisionTriggerEnabled(boolean enabled, TrcEvent event)
+    {
+        visionTriggerEvent = event;
+        visionTrigger.setTaskEnabled(enabled);
     }
 
     /**
-     * Start the task strafing in the specified direction. Signal event when
-     * done.
+     * Is the state machine enabled?
      * 
-     * @param strafeRight If true, strafe right. If false, strafe left.
+     * @return Is the state machine enabled?
      */
-    public void start(boolean strafeRight)
-    {
-        start(strafeRight, this::shouldStop);
-    }
-
-    /**
-     * @param strafeRight
-     * @param stopTrigger Should return true when this should stop
-     */
-    public void start(boolean strafeRight, StopTrigger stopTrigger)
-    {
-        this.strafeRight = strafeRight;
-        sm.start(State.START_STRAFE);
-
-        startTime = Robot.getModeElapsedTime();
-        startX = robot.driveBase.getXPosition();
-        startY = robot.driveBase.getYPosition();
-    }
-
-    /**
-     * Default stopTrigger. Continue indefinitely.
-     */
-    private boolean shouldStop(double elapsedTime, double changeX, double changeY)
-    {
-        return false;
-    }
-
-    /**
-     * Cancel the task. Use {@code distanceMoved()} to see how much the robot has moved
-     */
-    public void stop()
-    {
-        robot.pidDrive.cancel();
-        sm.stop();
-    }
-
-    /**
-     * Is this task current active?
-     * 
-     * @return True if active, false if not.
-     */
-    public boolean isRunning()
+    public boolean isEnabled()
     {
         return sm.isEnabled();
     }
 
-    /**
-     * How much time has passed since this task was started?
-     * 
-     * @return Time in seconds
-     */
-    public double elapsedTime()
+    public void start(double xDistance, TrcEvent event)
     {
-        return Robot.getModeElapsedTime() - startTime;
+        stop();
+        this.xDistance = xDistance;
+        onFinishedEvent = event;
+        sm.start(State.START_STRAFE);
     }
 
-    /**
-     * Return distance moved since this task was started
-     * 
-     * @return scaled distance
-     */
-    public double[] distanceMoved()
+    public void start(double xDistance)
     {
-        return new double[] { changeX(), changeY() };
+        start(xDistance, null);
     }
 
-    public double changeX()
+    public void stop()
     {
-        robot.tracer.traceInfo("changeX", "changeX");
-        return robot.driveBase.getXPosition() - startX;
+        if (sm.isEnabled())
+        {
+            robot.pidDrive.cancel();
+            setVisionTriggerEnabled(false, null);
+            sm.stop();
+        }
     }
 
-    private double changeY()
-    {
-        robot.tracer.traceInfo("changeY", "changeY");
-        return robot.driveBase.getYPosition() - startY;
-    }
-
+//    /**
+//     * @param strafeRight
+//     * @param stopTrigger Should return true when this should stop
+//     */
+//    public void start(boolean strafeRight, StopTrigger stopTrigger)
+//    {
+//        this.strafeRight = strafeRight;
+//        sm.start(State.START_STRAFE);
+//
+//        startTime = Robot.getModeElapsedTime();
+//        startX = robot.driveBase.getXPosition();
+//        startY = robot.driveBase.getYPosition();
+//        
+//        this.stopTrigger = stopTrigger;
+//    }
+//
+//    /**
+//     * Default stopTrigger. Continue indefinitely.
+//     */
+//    public boolean shouldStop(double elapsedTime, double changeX, double changeY, boolean xStop)
+//    {
+//        return false;
+//    }
+//
+//    /**
+//     * Is this task current active?
+//     * 
+//     * @return True if active, false if not.
+//     */
+//    public boolean isRunning()
+//    {
+//        return sm.isEnabled();
+//    }
+//
+//    /**
+//     * How much time has passed since this task was started?
+//     * 
+//     * @return Time in seconds
+//     */
+//    public double elapsedTime()
+//    {
+//        return Robot.getModeElapsedTime() - startTime;
+//    }
+//
+//    /**
+//     * Return distance moved since this task was started
+//     * 
+//     * @return scaled distance
+//     */
+//    public double[] distanceMoved()
+//    {
+//        return new double[] { changeX(), changeY() };
+//    }
+//
+//    public double changeX()
+//    {
+//        robot.tracer.traceInfo("ChangeX", "changeX");
+//        return robot.driveBase.getXPosition() - startX;
+//    }
+//
+//    private double changeY()
+//    {
+//        robot.tracer.traceInfo("ChangeY", "changeY");
+//        return robot.driveBase.getYPosition() - startY;
+//    }
+//
     @Override
     public boolean cmdPeriodic(double elapsedTime)
     {
         boolean done = !sm.isEnabled();
 
-        if (done) return true;
-
-        State state = sm.checkReadyAndGetState();
-
-        //
-        // Print debug info.
-        //
-        robot.dashboard.displayPrintf(1, "State: %s", state == null? "NotReady": state);
-
-        if(stopTrigger==null)
+        if (!done)
         {
-            robot.tracer.traceInfo("nullTrigger", "nullTrigger");
-        }
-        if (stopTrigger.shouldStop(elapsedTime(), changeX(), changeY()))
-        {
-            stop();
-            done = true;
-        }
-        else if (state != null)
-        {
-            switch (state)
+            State state = sm.checkReadyAndGetState();
+            //
+            // Print debug info.
+            //
+            robot.dashboard.displayPrintf(1, "State: %s", state == null? "NotReady": state);
+
+            if (state != null)
             {
-                case START_STRAFE:
-                    double xPower = RobotInfo.FIND_CUBE_STRAFE_POWER * (strafeRight ? 1 : -1);
-                    robot.tracer.traceInfo("XPower", "xPower=%.2f", xPower);
-                    robot.pidDrive.driveMaintainHeading(xPower, 0.0, robot.targetHeading);
-                    robot.tracer.traceInfo("strafing", "driveMaintaintHeading");
-                    sm.setState(State.CHECK_FOR_CUBE);
-                    break;
-                case CHECK_FOR_CUBE:
-                    TargetInfo target = robot.pixy.getTargetInfo();
-                    if (target != null && Math.abs(target.angle) <= RobotInfo.FIND_CUBE_ANGLE_TOLERANCE)
-                    {
-                        sm.setState(State.DONE);
-                    }
-                    break;
-                case DONE:
-                    robot.pidDrive.cancel();
-                    done = true;
-                    break;
+                switch (state)
+                {
+                    case START_STRAFE:
+                        setVisionTriggerEnabled(true, visionEvent);
+                        sm.addEvent(visionEvent);
+                        robot.pidDrive.setTarget(xDistance, 0.0, robot.targetHeading, false, event);
+                        sm.addEvent(event);
+                        sm.waitForEvents(State.DONE);
+//                        double xPower = RobotInfo.FIND_CUBE_STRAFE_POWER * (strafeRight ? 1 : -1);
+//                        robot.pidDrive.driveMaintainHeading(xPower, 0.0, robot.targetHeading);
+//                        sm.setState(State.CHECK_FOR_CUBE);
+                        break;
+
+//                    case CHECK_FOR_CUBE:
+//                        TargetInfo target = robot.pixy.getTargetInfo();
+//                        if (target != null && Math.abs(target.angle) <= RobotInfo.FIND_CUBE_ANGLE_TOLERANCE)
+//                        {
+//                            sm.setState(State.DONE);
+//                        }
+//                        break;
+                    case DONE:
+                        stop();
+                        if (onFinishedEvent != null)
+                        {
+                            onFinishedEvent.set(true);
+                        }
+                        done = true;
+                        break;
+                }
+                robot.traceStateInfo(Robot.getModeElapsedTime(), state.toString());
             }
-            robot.traceStateInfo(Robot.getModeElapsedTime(), state.toString());
         }
+
         return done;
     }
 
-    public interface StopTrigger
+    public void visionTriggerHandler(int zone, double value)
     {
-        public boolean shouldStop(double elapsedTime, double changeX, double changeY);
+        if (zone == 1 || zone == 2)
+        {
+            if (visionTriggerEvent != null)
+            {
+                visionTriggerEvent.set(true);
+            }
+        }
     }
+//    public interface StopTrigger
+//    {
+//        public boolean shouldStop(double elapsedTime, double changeX, double changeY, boolean xStop);
+//    }
 
 }

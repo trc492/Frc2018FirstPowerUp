@@ -78,6 +78,7 @@ public class RobotInfo
     public static final int CANID_WINCH_SLAVE                   = 8;    // 40A: Gray
     public static final int CANID_ELEVATOR                      = 9;    // 30A: White
     public static final int CANID_LEFT_PICKUP                   = 10;   // 30A: Orange
+    public static final int CANID_RESERVED                      = 11;   // 30A: Yellow
     public static final int CANID_RIGHT_PICKUP                  = 12;   // 30A: Green
 
     public static final int CANID_PDP                           = 16;
@@ -182,16 +183,8 @@ public class RobotInfo
     public static final double SONAR_KD                         = 0.002;
     public static final double SONAR_KF                         = 0.0;
     public static final double SONAR_TOLERANCE                  = 1.0;
-    public static final double SONAR_VOLTS_PER_INCH             = 0.0098;
+    public static final double SONAR_INCHES_PER_VOLT            = 1.0/0.0098; //9.8mV per inch
     public static final double SONAR_ERROR_THRESHOLD            = 50.0; //value should not jump 50-in per time slice.
-
-    // 2017-03-12: 0.025, 0.0, 0.0001
-    // 2017-03-14: 0.025, 0.0, 0.00015
-    public static final double VISION_TURN_KP                   = 0.025;
-    public static final double VISION_TURN_KI                   = 0.0;
-    public static final double VISION_TURN_KD                   = 0.00015;
-    public static final double VISION_TURN_KF                   = 0.0;
-    public static final double VISION_TURN_TOLERANCE            = 1.0;
 
     //
     // Winch subsystem.
@@ -227,8 +220,9 @@ public class RobotInfo
     //
     public static final double PORTAL_ALIGN_STRAFE_DIST         = 36.0;     // 3 feet
     public static final double AUTO_PICKUP_MOVE_POWER           = 0.6;      // 60% power
-    public static final double FIND_CUBE_ANGLE_TOLERANCE        = 15.0;     // 15 degrees
+    public static final double FIND_CUBE_X_TOLERANCE            = 6.0;      // 6-in
     public static final double FIND_CUBE_STRAFE_POWER           = 0.6;      // 60% power
+    public static final double AUTO_PICKUP_CUBE_DISTANCE        = 16.0;     // TODO: tune this.
 
     //
     // CmdPowerUpAuto variables.
@@ -239,7 +233,7 @@ public class RobotInfo
     public static final double RIGHT_SWITCH_LOCATION            = 102.0;
     public static final double LEFT_SWITCH_LOCATION             = -102.0;
     public static final double ADVANCE_TO_SECOND_CUBE_DISTANCE  = 60.0;
-    public static final double STRAFE_TO_SECOND_CUBE_DISTANCE   = 70.0;
+    public static final double STRAFE_TO_SECOND_CUBE_DISTANCE   = 50.0;
     public static final double SCALE_FRONT_POSITION             = 75.0;
     public static final double SCALE_SIDE_POSITION              = 120.0;
     public static final double FIRST_ELEVATOR_HEIGHT            = 30.0;

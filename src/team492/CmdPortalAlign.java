@@ -102,10 +102,10 @@ public class CmdPortalAlign implements TrcRobot.RobotCommand
      */
     public void stop()
     {
-        done = true;
+        robot.pidDrive.cancel();
         leftTrigger.setTaskEnabled(false);
         rightTrigger.setTaskEnabled(false);
-        robot.pidDrive.cancel();
+        done = true;
     }
 
     @Override
@@ -126,21 +126,19 @@ public class CmdPortalAlign implements TrcRobot.RobotCommand
 
     // CodeReview: triggerEvent will be called on both enabled and disabled! You
     // need to pick one.
-    private void leftTriggerEvent(boolean enabled)
+    private void leftTriggerEvent(boolean active)
     {
-        if (enabled)
+        if (active)
         {
             leftEvent.set(true);
-            leftTrigger.setTaskEnabled(false);
         }
     }
 
-    private void rightTriggerEvent(boolean enabled)
+    private void rightTriggerEvent(boolean active)
     {
-        if (enabled)
+        if (active)
         {
             rightEvent.set(true);
-            rightTrigger.setTaskEnabled(false);
         }
     }
 }

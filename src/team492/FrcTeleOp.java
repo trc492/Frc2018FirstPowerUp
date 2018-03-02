@@ -25,7 +25,6 @@ package team492;
 import frclib.FrcJoystick;
 import hallib.HalDashboard;
 import trclib.TrcRobot;
-import trclib.TrcUtil;
 
 public class FrcTeleOp implements TrcRobot.RobotMode
 {
@@ -38,7 +37,6 @@ public class FrcTeleOp implements TrcRobot.RobotMode
 
     private boolean slowDriveOverride = false;
     private DriveMode driveMode = DriveMode.MECANUM_MODE;
-
     private boolean driveInverted = false;
     private boolean gyroAssist = false;
 
@@ -75,7 +73,6 @@ public class FrcTeleOp implements TrcRobot.RobotMode
         robot.encoderYPidCtrl.setOutputRange(-1.0, 1.0);
         robot.gyroTurnPidCtrl.setOutputRange(-1.0, 1.0);
         //robot.sonarDrivePidCtrl.setOutputRange(-1.0, 1.0);
-        robot.visionTurnPidCtrl.setOutputRange(-1.0, 1.0);
     } // startMode
 
     @Override
@@ -160,8 +157,6 @@ public class FrcTeleOp implements TrcRobot.RobotMode
     public void leftDriveStickButtonEvent(int button, boolean pressed)
     {
         robot.dashboard.displayPrintf(8, " LeftDriveStick: button=0x%04x %s", button, pressed? "pressed": "released");
-        robot.tracer.traceInfo(
-            "ButtonEvent", "LeftDriveStick: button=0x%04x %s", button, pressed? "pressed": "released");
 
         switch (button)
         {
@@ -215,8 +210,6 @@ public class FrcTeleOp implements TrcRobot.RobotMode
     public void rightDriveStickButtonEvent(int button, boolean pressed)
     {
         robot.dashboard.displayPrintf(8, "RightDriveStick: button=0x%04x %s", button, pressed? "pressed": "released");
-        robot.tracer.traceInfo(
-            "ButtonEvent", "RightDriveStick: button=0x%04x %s", button, pressed? "pressed": "released");
 
         switch (button)
         {
@@ -244,7 +237,8 @@ public class FrcTeleOp implements TrcRobot.RobotMode
 
                 if (gyroAssist)
                 {
-                    robot.driveBase.enableGyroAssist(RobotInfo.DRIVE_MAX_ROTATION_RATE, RobotInfo.DRIVE_GYRO_ASSIST_KP);
+                    robot.driveBase.enableGyroAssist(
+                        RobotInfo.DRIVE_MAX_ROTATION_RATE, RobotInfo.DRIVE_GYRO_ASSIST_KP);
                 }
                 else
                 {
@@ -269,8 +263,6 @@ public class FrcTeleOp implements TrcRobot.RobotMode
     public void operatorStickButtonEvent(int button, boolean pressed)
     {
         robot.dashboard.displayPrintf(8, "  OperatorStick: button=0x%04x %s", button, pressed? "pressed": "released");
-        robot.tracer.traceInfo(
-            "ButtonEvent", "OperatorStick: button=0x%04x %s", button, pressed? "pressed": "released");
 
         switch (button)
         {
@@ -278,12 +270,10 @@ public class FrcTeleOp implements TrcRobot.RobotMode
                 if (pressed)
                 {
                     robot.cubePickup.grabCube(RobotInfo.PICKUP_TELEOP_POWER, null);
-                    robot.tracer.traceInfo("operatorTrigger", "pressed %.2f", TrcUtil.getCurrentTime()-robot.cubePickup.startTime);
                 }
                 else
                 {
                     robot.cubePickup.stopPickup();
-                    robot.tracer.traceInfo("operatorTrigger", "released %.2f", TrcUtil.getCurrentTime()-robot.cubePickup.startTime);
                 }
                 break;
 
