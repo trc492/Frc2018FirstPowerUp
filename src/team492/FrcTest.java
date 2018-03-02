@@ -117,6 +117,9 @@ public class FrcTest extends FrcTeleOp
         switch (test)
         {
             case SENSORS_TEST:
+                if (robot.leftSonarArray != null) robot.leftSonarArray.startRanging(true);
+                if (robot.rightSonarArray != null) robot.rightSonarArray.startRanging(true);
+                if (robot.frontSonarArray != null) robot.frontSonarArray.startRanging(true);
                 useTraceLog = true;
                 break;
 
@@ -174,6 +177,11 @@ public class FrcTest extends FrcTeleOp
         // Call TeleOp stopMode.
         //
         super.stopMode();
+
+        if (robot.leftSonarArray != null) robot.leftSonarArray.stopRanging();
+        if (robot.rightSonarArray != null) robot.rightSonarArray.stopRanging();
+        if (robot.frontSonarArray != null) robot.frontSonarArray.stopRanging();
+
         if (Robot.USE_TRACELOG && useTraceLog)
             robot.stopTraceLog();
     } // stopMode
@@ -432,10 +440,10 @@ public class FrcTest extends FrcTeleOp
             robot.driveBase.getYPosition(), robot.driveBase.getHeading());
         robot.dashboard.displayPrintf(4, "Gyro: Rate=%.3f, Heading=%.1f", robot.gyro.getZRotationRate().value,
             robot.gyro.getZHeading().value);
-        //robot.dashboard.displayPrintf(5, "CubePickup: cube=%s", robot.cubePickup.cubeDetected());
-        robot.dashboard.displayPrintf(5, "PressureSensor: pressure=%.1f", robot.getPressure());
-        robot.dashboard.displayPrintf(7, "Sonar: left=%.1f, right=%.1f, front=%.1f",
-            robot.getLeftSonarDistance(), robot.getRightSonarDistance(), robot.getFrontSonarDistance());
+        robot.dashboard.displayPrintf(5, "Sensors: pressure=%.1f,lSonar=%.1f,rSonar=%.1f,fSonar=%.1f",
+            robot.getPressure(), robot.getLeftSonarDistance(), robot.getRightSonarDistance(),
+            robot.getFrontSonarDistance());
+        robot.dashboard.displayPrintf(6, "CubePickup: cube=%s", robot.cubePickup.cubeDetected());
     } // doSensorsTest
 
     /**

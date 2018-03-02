@@ -179,7 +179,7 @@ public class CmdAutoCubePickup implements TrcRobot.RobotCommand
                         //CodeReview: change to use sonar with default distance and proximity as stopTrigger.
                         // Go forward the expected distance or until the cube is in possession.
                         xDistance = 0.0;
-                        yDistance = robot.frontSonar != null?
+                        yDistance = robot.frontSonarSensor != null?
                             robot.getFrontSonarDistance(): RobotInfo.AUTO_PICKUP_CUBE_DISTANCE;
                         robot.cubePickup.setProximityTriggerEnabled(true, proximityEvent);
                         sm.addEvent(proximityEvent);

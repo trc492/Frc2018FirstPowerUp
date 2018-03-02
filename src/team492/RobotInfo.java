@@ -183,7 +183,7 @@ public class RobotInfo
     public static final double SONAR_KD                         = 0.002;
     public static final double SONAR_KF                         = 0.0;
     public static final double SONAR_TOLERANCE                  = 1.0;
-    public static final double SONAR_MILLIVOLTS_PER_INCH        = 0.0098;
+    public static final double SONAR_INCHES_PER_VOLT            = 1.0/0.0098; //9.8mV per inch
     public static final double SONAR_ERROR_THRESHOLD            = 50.0; //value should not jump 50-in per time slice.
 
     //
