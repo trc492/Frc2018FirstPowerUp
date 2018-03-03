@@ -38,9 +38,6 @@ public class CmdAutoCubePickup implements TrcRobot.RobotCommand
     private Robot robot;
     private TrcEvent event, proximityEvent;
     private TrcStateMachine<State> sm;
-//    private TrcEvent onFinishedEvent = null;
-//    private double startX = 0.0, startY = 0.0;
-//    private double startTime = 0.0;
 
     public CmdAutoCubePickup(Robot robot)
     {
@@ -60,68 +57,10 @@ public class CmdAutoCubePickup implements TrcRobot.RobotCommand
         return sm.isEnabled();
     }
 
-//    public double elapsedTime()
-//    {
-//    	return Robot.getModeElapsedTime() - startTime;
-//    }
-//
-//    public double[] distanceMoved()
-//    {
-//        return new double[] { changeX(), changeY() };
-//    }
-//
-//    private double changeX()
-//    {
-//    	return robot.driveBase.getXPosition() - startX;
-//    }
-//
-//    public double changeY()
-//    {
-//    	return robot.driveBase.getYPosition() - startY;
-//    }
-//
-//    /**
-//     * Start this task, and signal onFinishedEvent when done
-//     */
-//    public void start(TrcEvent onFinishedEvent, AutoAssistStopTrigger stopTrigger)
-//    {
-//        stop();
-//        this.onFinishedEvent = onFinishedEvent;
-//        this.stopTrigger = stopTrigger;
-//        startX = robot.driveBase.getXPosition();
-//        startY = robot.driveBase.getYPosition();
-//        startTime = Robot.getModeElapsedTime();
-//        sm.start(State.START);
-//    }
-//
-//    public void start(AutoAssistStopTrigger stopTrigger)
-//    {
-//        start(null, stopTrigger);
-//    }
-//
-//    /**
-//     * Start this task without signaling any event when done
-//     */
-//    public void start()
-//    {
-//        start(null, this);
-//    }
-
-//    public void start(TrcEvent onFinishedEvent)
-//    {
-//        start(onFinishedEvent, this);
-//    }
-//
-//    public boolean shouldStop(double elapsedTime, double distanceX, double distanceY, boolean xStop)
-//    {
-//        return false;
-//    }
-//
     public void start()
     {
         if (!sm.isEnabled())
         {
-//            onFinishedEvent = event;
             sm.start(State.START);
         }
     }
@@ -149,11 +88,6 @@ public class CmdAutoCubePickup implements TrcRobot.RobotCommand
             //
             robot.dashboard.displayPrintf(1, "State: %s", state == null? "NotReady": state);
 
-//            if (this.stopTrigger.shouldStop(elapsedTime(), changeX(), changeY(), false))
-//            {
-//                stop();
-//                done = true;
-//            }
             if (state != null)
             {
                 double xDistance, yDistance;
@@ -169,14 +103,6 @@ public class CmdAutoCubePickup implements TrcRobot.RobotCommand
                         break;
 
                     case DRIVE:
-//                      // Go forward at 60% power facing the cube
-//                      robot.visionPidDrive.driveMaintainHeading(
-//                          0.0, RobotInfo.AUTO_PICKUP_MOVE_POWER, 0.0);
-//                      robot.cubePickup.grabCube(0.5, event);
-//
-//                      sm.waitForSingleEvent(event, State.PICKUP);
-
-                        //CodeReview: change to use sonar with default distance and proximity as stopTrigger.
                         // Go forward the expected distance or until the cube is in possession.
                         xDistance = 0.0;
                         yDistance = robot.frontSonarSensor != null?
@@ -188,20 +114,10 @@ public class CmdAutoCubePickup implements TrcRobot.RobotCommand
                         sm.waitForEvents(State.DONE);
                         break;
 
-//                    case PICKUP:
-//                        robot.visionPidDrive.cancel();
-//                        robot.cubePickup.closeClaw();
-//                        sm.setState(State.DONE);
-//                        break;
-
                     case DONE:
                     default:
                         stop();
                         done = true;
-//                        if(onFinishedEvent != null)
-//                        {
-//                            onFinishedEvent.set(true);
-//                        }
                         break;
                 }
                 robot.traceStateInfo(elapsedTime, state.toString());

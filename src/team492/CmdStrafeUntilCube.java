@@ -25,9 +25,6 @@ public class CmdStrafeUntilCube implements TrcRobot.RobotCommand
     private TrcEvent event, visionEvent;
     private double xDistance;
     private TrcEvent visionTriggerEvent, onFinishedEvent;
-//    private boolean strafeRight;
-//    private double startTime;
-//    private double startX, startY;
 
     public CmdStrafeUntilCube(Robot robot)
     {
@@ -80,72 +77,6 @@ public class CmdStrafeUntilCube implements TrcRobot.RobotCommand
         }
     }
 
-//    /**
-//     * @param strafeRight
-//     * @param stopTrigger Should return true when this should stop
-//     */
-//    public void start(boolean strafeRight, StopTrigger stopTrigger)
-//    {
-//        this.strafeRight = strafeRight;
-//        sm.start(State.START_STRAFE);
-//
-//        startTime = Robot.getModeElapsedTime();
-//        startX = robot.driveBase.getXPosition();
-//        startY = robot.driveBase.getYPosition();
-//        
-//        this.stopTrigger = stopTrigger;
-//    }
-//
-//    /**
-//     * Default stopTrigger. Continue indefinitely.
-//     */
-//    public boolean shouldStop(double elapsedTime, double changeX, double changeY, boolean xStop)
-//    {
-//        return false;
-//    }
-//
-//    /**
-//     * Is this task current active?
-//     * 
-//     * @return True if active, false if not.
-//     */
-//    public boolean isRunning()
-//    {
-//        return sm.isEnabled();
-//    }
-//
-//    /**
-//     * How much time has passed since this task was started?
-//     * 
-//     * @return Time in seconds
-//     */
-//    public double elapsedTime()
-//    {
-//        return Robot.getModeElapsedTime() - startTime;
-//    }
-//
-//    /**
-//     * Return distance moved since this task was started
-//     * 
-//     * @return scaled distance
-//     */
-//    public double[] distanceMoved()
-//    {
-//        return new double[] { changeX(), changeY() };
-//    }
-//
-//    public double changeX()
-//    {
-//        robot.tracer.traceInfo("ChangeX", "changeX");
-//        return robot.driveBase.getXPosition() - startX;
-//    }
-//
-//    private double changeY()
-//    {
-//        robot.tracer.traceInfo("ChangeY", "changeY");
-//        return robot.driveBase.getYPosition() - startY;
-//    }
-//
     @Override
     public boolean cmdPeriodic(double elapsedTime)
     {
@@ -169,18 +100,8 @@ public class CmdStrafeUntilCube implements TrcRobot.RobotCommand
                         robot.pidDrive.setTarget(xDistance, 0.0, robot.targetHeading, false, event);
                         sm.addEvent(event);
                         sm.waitForEvents(State.DONE);
-//                        double xPower = RobotInfo.FIND_CUBE_STRAFE_POWER * (strafeRight ? 1 : -1);
-//                        robot.pidDrive.driveMaintainHeading(xPower, 0.0, robot.targetHeading);
-//                        sm.setState(State.CHECK_FOR_CUBE);
                         break;
 
-//                    case CHECK_FOR_CUBE:
-//                        TargetInfo target = robot.pixy.getTargetInfo();
-//                        if (target != null && Math.abs(target.angle) <= RobotInfo.FIND_CUBE_ANGLE_TOLERANCE)
-//                        {
-//                            sm.setState(State.DONE);
-//                        }
-//                        break;
                     case DONE:
                         stop();
                         if (onFinishedEvent != null)
@@ -207,9 +128,5 @@ public class CmdStrafeUntilCube implements TrcRobot.RobotCommand
             }
         }
     }
-//    public interface StopTrigger
-//    {
-//        public boolean shouldStop(double elapsedTime, double changeX, double changeY, boolean xStop);
-//    }
 
 }
