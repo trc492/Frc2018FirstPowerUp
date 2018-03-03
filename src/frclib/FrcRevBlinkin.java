@@ -27,9 +27,8 @@ import trclib.TrcDbgTrace;
 import trclib.TrcRevBlinkin;
 
 /**
- * It provides access to the last detected objects reported by the pixy camera asynchronously.
- * This class implements a platform dependent REV Blinkin device. It provides a platform dependent method that sets
- * the color pattern value to the device.
+ * This class implements a platform dependent REV Blinkin device. It provides a platform dependent method that
+ * sets the color pattern value to the device.
  */
 public class FrcRevBlinkin extends TrcRevBlinkin
 {
@@ -61,7 +60,7 @@ public class FrcRevBlinkin extends TrcRevBlinkin
         }
 
         device = new Spark(channel);
-    }   //TrcRevBlinkin
+    }   //FrcRevBlinkin
 
     /**
      * This method sets the LED pattern value to the physical REV Blinkin device in a platform dependent way.
