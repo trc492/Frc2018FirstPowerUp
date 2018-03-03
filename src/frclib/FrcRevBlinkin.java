@@ -47,6 +47,7 @@ public class FrcRevBlinkin extends TrcRevBlinkin
      * Constructor: Create an instance of the object.
      *
      * @param instanceName specifies the instance name.
+     * @param channel specifies the PWM channel the device is on.
      */
     public FrcRevBlinkin(final String instanceName, int channel)
     {
