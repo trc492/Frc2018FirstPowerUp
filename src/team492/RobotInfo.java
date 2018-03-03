@@ -227,28 +227,29 @@ public class RobotInfo
     //
     // CmdPowerUpAuto variables.
     //
-    public static final double AUTO_DISTANCE_TO_SWITCH          = 158.0;
+    public static final double AUTO_DISTANCE_TO_SWITCH          = -158.0;
     public static final double FINAL_FRONT_SCALE_APPROACH_DISTANCE= 64.0;
     public static final double FINAL_SIDE_SCALE_APPROACH_DISTANCE= 24.0;
-    public static final double RIGHT_SWITCH_LOCATION            = 102.0;
-    public static final double LEFT_SWITCH_LOCATION             = -102.0;
-    public static final double ADVANCE_TO_SECOND_CUBE_DISTANCE  = 60.0;
-    public static final double STRAFE_TO_SECOND_CUBE_DISTANCE   = 50.0;
+    public static final double RIGHT_SWITCH_LOCATION            = 107.0;
+    public static final double LEFT_SWITCH_LOCATION             = -107.0;
+    public static final double ADVANCE_TO_SECOND_CUBE_DISTANCE  = -60.0;
+    public static final double STRAFE_TO_SECOND_CUBE_DISTANCE   = 57.0;
     public static final double SCALE_FRONT_POSITION             = 75.0;
     public static final double SCALE_SIDE_POSITION              = 120.0;
     public static final double FIRST_ELEVATOR_HEIGHT            = 30.0;
     public static final double ADVANCE_AROUND_SCALE_DISTANCE    = 106.0;
     public static final double SWITCH_STRAFE_DISTANCE           = 26.0;
     public static final double MAX_CUBE_DISTANCE                = 20.0;
+    public static final double SWITCH_SONAR_DISTANCE_THRESHOLD  = 16.0;
 
     //
     // FrcAuto constants.
     //
-    public static final double FWD_DISTANCE_1                   = 10.0;
-    public static final double FWD_DISTANCE_2                   = 60.0;
-    public static final double FWD_DISTANCE_3                   = 208.0;
-    public static final double START_POS_1                      = -102.0;
+    public static final double FWD_DISTANCE_1                   = -10.0;
+    public static final double FWD_DISTANCE_2                   = -60.0;
+    public static final double FWD_DISTANCE_3                   = -208.0;
+    public static final double START_POS_1                      = -107.0;
     public static final double START_POS_2                      = 0.0;
-    public static final double START_POS_3                      = 102.0;
+    public static final double START_POS_3                      = 107.0;
 
 }   // class RobotInfo
