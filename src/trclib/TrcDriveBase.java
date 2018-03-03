@@ -1088,7 +1088,14 @@ public class TrcDriveBase
 
         if (gyroAssistEnabled)
         {
-            rotation += TrcUtil.clipRange(gyroAssistKp*(rotation - gyro.getZRotationRate().value/gyroMaxRotationRate));
+            double zRotationRate = gyro.getZRotationRate().value;
+            double error = rotation - zRotationRate/gyroMaxRotationRate;
+            rotation += TrcUtil.clipRange(gyroAssistKp*error);
+            if(debugEnabled)
+            {
+                dbgTrace.traceInfo("mecanumDrive_Cartesian", 
+                    "Gyro assist: rotation=%.3f zrotationrate=%.3f", rotation, zRotationRate);
+            }
         }
 
         double wheelPowers[] = new double[4];
