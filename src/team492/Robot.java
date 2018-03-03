@@ -58,6 +58,7 @@ import trclib.TrcGyro.DataType;
 import trclib.TrcMaxbotixSonarArray;
 import trclib.TrcPidController;
 import trclib.TrcPidController.PidCoefficients;
+import trclib.TrcRevBlinkin.LEDPattern;
 import trclib.TrcPidDrive;
 import trclib.TrcRevBlinkin;
 import trclib.TrcRobot.RunMode;
@@ -309,7 +310,7 @@ public class Robot extends FrcRobotBase
             messageBoard = new FrcI2cLEDPanel("messageBoard", I2C.Port.kOnboard);
         }
         cubeIndicator = new FrcRevBlinkin("cubeIndicator", RobotInfo.PWM_REV_BLINKIN);
-        cubeIndicator.set(RobotInfo.CUBE_INDICATOR_SHOW_NO_CUBE);
+        cubeIndicator.setPattern(LEDPattern.SolidBlack);
 
         //
         // DriveBase subsystem.
