@@ -199,7 +199,7 @@ public class CmdStrafeUntilCube implements TrcRobot.RobotCommand
 
     public void visionTriggerHandler(int zone, double value)
     {
-        if (zone == 1 || zone == 2)
+        if (zone == 1)
         {
             if (visionTriggerEvent != null)
             {
