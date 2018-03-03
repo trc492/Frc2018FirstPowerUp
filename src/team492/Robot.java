@@ -306,7 +306,7 @@ public class Robot extends FrcRobotBase
         {
             messageBoard = new FrcI2cLEDPanel("messageBoard", I2C.Port.kOnboard);
         }
-        cubeIndicator = new CubeIndicator(RobotInfo.LED_CONTROLLER_PWM_CHANNEL);
+        cubeIndicator = new CubeIndicator(RobotInfo.PWM_REV_BLINKIN);
         cubeIndicator.showNoCube();
 
         //

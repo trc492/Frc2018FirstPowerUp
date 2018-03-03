@@ -86,7 +86,7 @@ public class RobotInfo
     public static final int CANID_PCM2                          = 18;
     
     // PWM Channels.
-    public static final int LED_CONTROLLER_PWM_CHANNEL        = 0;
+    public static final int PWM_REV_BLINKIN                     = 0;
 
     //
     // Relay channels.
