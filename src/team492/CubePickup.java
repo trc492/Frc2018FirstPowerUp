@@ -57,9 +57,10 @@ public class CubePickup
     private TrcTaskMgr.TaskObject pickupTaskObj;
     private TrcStateMachine<State> sm;
     private TrcTimer timer;
-    private TrcEvent timerEvent, proximityEvent, currentEvent;
+    private TrcEvent timerEvent, proximityEvent, currentEvent, currentDownEvent;
     private TrcEvent cubePossessionEvent, proximityTriggerEvent, currentTriggerEvent;
     public double startTime;
+    private int lastZone;
 
     /**
      * Initialize the CubePickup class.
@@ -95,6 +96,7 @@ public class CubePickup
         timerEvent = new TrcEvent("TimerEvent");
         proximityEvent = new TrcEvent("ProximityEvent");
         currentEvent = new TrcEvent("CurrentEvent");
+        currentDownEvent = new TrcEvent("CurrentDownEvent");
     }
 
     /**
@@ -269,9 +271,12 @@ public class CubePickup
             {
                 case START:
                     // wait a bit to let the start up current spike past.
-                    timer.set(0.5, timerEvent);
-                    sm.waitForSingleEvent(timerEvent, State.DETECT_CUBE);
+                    timer.set(1.0, timerEvent);
+                    currentDownEvent.set(false);
                     robot.cubeIndicator.showNoCube();
+                    sm.addEvent(timerEvent);
+                    sm.addEvent(currentDownEvent);
+                    sm.waitForEvents(State.DETECT_CUBE);
                     break;
 
                 case DETECT_CUBE:
@@ -333,6 +338,13 @@ public class CubePickup
             // somebody.
             currentTriggerEvent.set(true);
         }
+        
+        if(zoneIndex == 0 && currentDownEvent != null && zoneIndex < lastZone)
+        {
+            currentDownEvent.set(true);
+        }
+        
+        lastZone = zoneIndex;
     }
 
 }

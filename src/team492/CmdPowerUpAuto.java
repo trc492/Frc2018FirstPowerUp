@@ -42,7 +42,6 @@ class CmdPowerUpAuto implements TrcRobot.RobotCommand
         FLIP_CUBE,
         STRAFE_FROM_SWITCH,
         DRIVE_TO_SECOND_CUBE,
-        TURN_AROUND,
         START_STRAFE,
         STRAFE_TO_SECOND_CUBE,
         START_SECOND_PICKUP,
@@ -82,8 +81,8 @@ class CmdPowerUpAuto implements TrcRobot.RobotCommand
 
     private double xStart, yStart;
     private double cubeStrafeDistance;
-//    private double cubeAcquireDistance;
-//    private boolean pickupCancelled;
+    private boolean needSomeStrafe;
+    private double switchStrafeDistance;
 
     CmdPowerUpAuto(Robot robot, double delay, double forwardDistance, boolean sideApproach, double startPosition)
     {
@@ -148,7 +147,7 @@ class CmdPowerUpAuto implements TrcRobot.RobotCommand
                 State nextState;
                 boolean traceState = true;
 
-                // CodeReview: change the code to start backward.
+                //TODO: check if it actually works
                 switch (state)
                 {
                     case DO_DELAY:
@@ -173,6 +172,14 @@ class CmdPowerUpAuto implements TrcRobot.RobotCommand
                             //
                             // Don't need to go across the other side.
                             //
+                        	if(rightSwitch)
+                        	{
+                        		robot.rightSonarArray.startRanging(true);
+                        	}
+                        	else
+                        	{
+                        		robot.leftSonarArray.startRanging(true);
+                        	}
                             yDistance = RobotInfo.AUTO_DISTANCE_TO_SWITCH;
                             nextState = State.STRAFE_TO_SWITCH;
                         }
@@ -218,6 +225,14 @@ class CmdPowerUpAuto implements TrcRobot.RobotCommand
                         break;
 
                     case DRIVE_TO_TARGET:
+                    	if(rightSwitch)
+                    	{
+                    		robot.rightSonarArray.startRanging(true);
+                    	}
+                    	else
+                    	{
+                    		robot.leftSonarArray.startRanging(true);
+                    	}
                         xDistance = 0.0;
                         yDistance = RobotInfo.AUTO_DISTANCE_TO_SWITCH - forwardDistance;
                         robot.pidDrive.setTarget(xDistance, yDistance, robot.targetHeading, false, event);
@@ -227,72 +242,96 @@ class CmdPowerUpAuto implements TrcRobot.RobotCommand
                     // CodeReview: if we have the ziptie feeler, don't need to strafe to switch and strafe back.
                     case STRAFE_TO_SWITCH:
                         xDistance = RobotInfo.SWITCH_STRAFE_DISTANCE - 21.0;
-                        if(rightSwitch) xDistance = -xDistance;
-                        yDistance = 0.0;
-                        robot.encoderXPidCtrl.setOutputRange(-0.5, 0.5);
-                        robot.pidDrive.setTarget(xDistance, yDistance, robot.targetHeading, false, event);
-                        sm.waitForSingleEvent(event, State.FLIP_CUBE);
+                    	if(rightSwitch)
+                    	{
+                    		if(robot.getRightSonarDistance() < RobotInfo.SWITCH_SONAR_DISTANCE_THRESHOLD)
+                    		{
+                    			sm.setState(State.FLIP_CUBE);
+                    			needSomeStrafe = false;
+                    		}
+                    		else
+                    		{
+                    			needSomeStrafe = true;
+                                yDistance = 0.0;
+                                switchStrafeDistance = robot.getRightSonarDistance() + 5.0;
+                                xDistance = switchStrafeDistance;
+                                robot.encoderXPidCtrl.setOutputRange(-0.5, 0.5);
+                                robot.pidDrive.setTarget(xDistance, yDistance, robot.targetHeading, false, event);
+                                sm.waitForSingleEvent(event, State.FLIP_CUBE);
+                    		}
+                    	}
+                    	else
+                    	{
+                    		if(robot.getLeftSonarDistance() < RobotInfo.SWITCH_SONAR_DISTANCE_THRESHOLD)
+                    		{
+                    			sm.setState(State.FLIP_CUBE);
+                    			needSomeStrafe = false;
+                    		}
+                    		else
+                    		{
+                    			needSomeStrafe = true;
+                                yDistance = 0.0;
+                                switchStrafeDistance = robot.getRightSonarDistance() + 5.0;
+                                xDistance = -switchStrafeDistance;
+                                robot.encoderXPidCtrl.setOutputRange(-0.5, 0.5);
+                                robot.pidDrive.setTarget(xDistance, yDistance, robot.targetHeading, false, event);
+                                sm.waitForSingleEvent(event, State.FLIP_CUBE);
+                    		}
+                    	}
                         break;
 
                     case FLIP_CUBE:
                         if(rightSwitch)
                         {
-                            robot.leftFlipper.extend();
+                            robot.rightFlipper.extend();
+                            robot.rightSonarArray.stopRanging();
                         }
                         else
                         {
-                            robot.rightFlipper.extend();
+                            robot.leftFlipper.extend();
+                            robot.leftSonarArray.stopRanging();
                         }
                         timer.set(0.5, event);
-                        sm.waitForSingleEvent(event, State.STRAFE_FROM_SWITCH);
+//                        if(needSomeStrafe)
+//                        {
+//                            sm.waitForSingleEvent(event, State.STRAFE_FROM_SWITCH);
+//                        }
+//                        else
+//                        {
+                        	sm.waitForSingleEvent(event, State.DRIVE_TO_SECOND_CUBE);
+//                        }
                         break;
 
-                    // CodeReview: don't need this if we have feelers.
-                    case STRAFE_FROM_SWITCH:
-                        if(rightSwitch)
-                        {
-                            xDistance = RobotInfo.SWITCH_STRAFE_DISTANCE;
-                        }
-                        else
-                        {
-                            xDistance = -RobotInfo.SWITCH_STRAFE_DISTANCE;
-                        }
-                        yDistance = 0.0;
-                        robot.pidDrive.setTarget(xDistance, yDistance, robot.targetHeading, false, event);
-                        sm.waitForSingleEvent(event, State.DRIVE_TO_SECOND_CUBE);
-                        break;
+                        // left this state for if we want it later
+//                    case STRAFE_FROM_SWITCH:
+//                        if(rightSwitch)
+//                        {
+//                            xDistance = -switchStrafeDistance;
+//                        }
+//                        else
+//                        {
+//                            xDistance = switchStrafeDistance;
+//                        }
+//                        yDistance = 0.0;
+//                        robot.pidDrive.setTarget(xDistance, yDistance, robot.targetHeading, false, event);
+//                        sm.waitForSingleEvent(event, State.DRIVE_TO_SECOND_CUBE);
+//                        break;
 
                     case DRIVE_TO_SECOND_CUBE:
-                        robot.leftFlipper.retract();
-                        robot.rightFlipper.retract();
                         xDistance = 0.0;
                         yDistance = RobotInfo.ADVANCE_TO_SECOND_CUBE_DISTANCE;
-                        robot.pidDrive.setTarget(xDistance, yDistance, robot.targetHeading, false, event);
-                        sm.waitForSingleEvent(event, State.TURN_AROUND);
-                        break;
-
-                    // CodeReview: don't need this if we started backward.
-                    case TURN_AROUND:
-                        xDistance = yDistance = 0.0;
-                        robot.targetHeading = RobotInfo.DRIVE_HEADING_SOUTH;
                         robot.pidDrive.setTarget(xDistance, yDistance, robot.targetHeading, false, event);
                         sm.waitForSingleEvent(event, State.START_STRAFE);
                         break;
 
                     case START_STRAFE:
+                        robot.leftFlipper.retract();
+                        robot.rightFlipper.retract();
                         xStart = robot.driveBase.getXPosition();
                         xDistance = rightSwitch?
                             RobotInfo.STRAFE_TO_SECOND_CUBE_DISTANCE: -RobotInfo.STRAFE_TO_SECOND_CUBE_DISTANCE;
                         robot.cmdStrafeUntilCube.start(xDistance);
                         sm.setState(State.STRAFE_TO_SECOND_CUBE);
-//                        xDistance = RobotInfo.STRAFE_TO_SECOND_CUBE_DISTANCE;
-//                        yDistance= 0.0;
-//                        robot.pidDrive.setTarget(xDistance, yDistance, robot.targetHeading, false, event);
-//                        boolean strafeRight = rightSwitch;
-//                        // Strafe until it sees the cube or passes a certain distance.
-//                        robot.cmdStrafeUntilCube.start(strafeRight, this);
-//                        sm.waitForSingleEvent(event, State.STRAFE_TO_SECOND_CUBE);
-//                        //TODO: set cubeStrafeDistance or whatever its called :(
                         break;
 
                     case STRAFE_TO_SECOND_CUBE:
@@ -301,23 +340,6 @@ class CmdPowerUpAuto implements TrcRobot.RobotCommand
                             sm.setState(State.START_SECOND_PICKUP);
                         }
                         traceState = false;
-//                        if(robot.cmdStrafeUntilCube.cmdPeriodic(elapsedTime))
-//                        {
-//                            // CodeReview: what about it strafe was cancelled? Assuming it is still right in front?
-//                            //sm.setState(State.START_SECOND_PICKUP);
-//                            sm.setState(State.DONE);
-//                        }
-//                        cubeStrafeDistance = robot.cmdStrafeUntilCube.changeX();
-//                        xDistance = robot.getPixyTargetX();
-//                        if(xDistance != 0.0)
-//                        {
-//                            robot.tracer.traceInfo("CubeSpotted", "cubeSpotted");
-//                        }
-//                        yDistance = 0.0;
-//                        robot.pidDrive.setTarget(xDistance, yDistance, robot.targetHeading, false, event);
-//                        sm.waitForSingleEvent(event, State.START_SECOND_PICKUP);
-//                        sm.waitForSingleEvent(event, State.START_SECOND_PICKUP);
-                      //TODO: set cubeStrafeDistance or whatever its called :(
                         break;
 
                     case START_SECOND_PICKUP:
@@ -459,29 +481,4 @@ class CmdPowerUpAuto implements TrcRobot.RobotCommand
 
         return done;
     } // cmdPeriodic
-
-//    public boolean shouldStop(double elapsedTime, double changeX, double changeY, boolean xStop)
-//    {
-//        if(xStop)
-//        {
-//            robot.tracer.traceInfo("ChangeX", "changeX=%.1f", changeX);
-//            return Math.abs(changeX) > RobotInfo.STRAFE_TO_SECOND_CUBE_DISTANCE;
-//        }
-//        else
-//        {
-//            pickupCancelled = changeY > RobotInfo.MAX_CUBE_DISTANCE;
-//            return pickupCancelled;
-//        }
-//    }
-//
-//    public boolean shouldYStop(double elapsedTime, double changeX, double changeY)
-//    {
-//        pickupCancelled = changeY > RobotInfo.MAX_CUBE_DISTANCE;
-//        return pickupCancelled;
-//    }
-    
-//    public interface StopTrigger
-//    {
-//        boolean shouldStop(double elapsedTime, double distanceX, double distanceY, boolean xStop);
-//    }
 } // class CmdPowerUpAuto

@@ -57,7 +57,7 @@ public class TrcDriveBase
      * This interface is provided by the caller to translate the motor power to actual motor power according to
      * the motor curve. This is useful to linearize the motor performance. This is very useful for many reasons.
      * It could allow the drive base to drive straight by translating wheel power to actual torque. It could also
-     * allow us to implement our own ramp rate to limit acceleration and decleration.
+     * allow us to implement our own ramp rate to limit acceleration and deceleration.
      */
     public interface MotorPowerMapper
     {
@@ -1088,7 +1088,14 @@ public class TrcDriveBase
 
         if (gyroAssistEnabled)
         {
-            rotation += TrcUtil.clipRange(gyroAssistKp*(rotation - gyro.getZRotationRate().value/gyroMaxRotationRate));
+            double zRotationRate = gyro.getZRotationRate().value;
+            double error = rotation - zRotationRate/gyroMaxRotationRate;
+            rotation += TrcUtil.clipRange(gyroAssistKp*error);
+            if(debugEnabled)
+            {
+                dbgTrace.traceInfo("mecanumDrive_Cartesian", 
+                    "Gyro assist: rotation=%.3f zrotationrate=%.3f", rotation, zRotationRate);
+            }
         }
 
         double wheelPowers[] = new double[4];
