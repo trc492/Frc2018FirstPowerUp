@@ -28,6 +28,8 @@ package trclib;
  */
 public class TrcUtil
 {
+    public static final double INCHES_PER_CM = 0.393701;
+
     /**
      * This method returns the current time in seconds with nano-second precision.
      *

@@ -36,6 +36,7 @@ public abstract class TrcPixyCam implements TrcSerialBusDevice.CompletionHandler
     private static final String moduleName = "TrcPixyCam";
     private static final boolean debugEnabled = false;
     private static final boolean tracingEnabled = false;
+    private static final boolean useGlobalTracer = false;
     private static final TrcDbgTrace.TraceLevel traceLevel = TrcDbgTrace.TraceLevel.API;
     private static final TrcDbgTrace.MsgLevel msgLevel = TrcDbgTrace.MsgLevel.INFO;
     private TrcDbgTrace dbgTrace = null;
@@ -138,7 +139,9 @@ public abstract class TrcPixyCam implements TrcSerialBusDevice.CompletionHandler
     {
         if (debugEnabled)
         {
-            dbgTrace = new TrcDbgTrace(moduleName + "." + instanceName, tracingEnabled, traceLevel, msgLevel);
+            dbgTrace = useGlobalTracer?
+                TrcDbgTrace.getGlobalTracer():
+                new TrcDbgTrace(moduleName + "." + instanceName, tracingEnabled, traceLevel, msgLevel);
         }
 
         this.instanceName = instanceName;
