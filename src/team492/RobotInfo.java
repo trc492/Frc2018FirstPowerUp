@@ -254,5 +254,12 @@ public class RobotInfo
     public static final double START_POS_1                      = -107.0;
     public static final double START_POS_2                      = 0.0;
     public static final double START_POS_3                      = 107.0;
+    
+    //
+    // LED Controller constants.
+    //
+    public static final double CUBE_INDICATOR_SHOW_NO_CUBE      = 0.0;
+    public static final double CUBE_INDICATOR_SHOW_FULLY_GRABBED= 0.73;
+    public static final double CUBE_INDICATOR_SHOW_CUBE_IN_FRONT= 0.65;
 
 }   // class RobotInfo

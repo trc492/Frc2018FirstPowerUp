@@ -203,7 +203,7 @@ public class CubePickup
     public void dropCube(double power)
     {
         setPickupPower(-power);
-        robot.cubeIndicator.showNoCube();
+        robot.cubeIndicator.set(RobotInfo.CUBE_INDICATOR_SHOW_NO_CUBE);
     }
 
     /**
@@ -273,7 +273,7 @@ public class CubePickup
                     // wait a bit to let the start up current spike past.
                     timer.set(1.0, timerEvent);
                     currentDownEvent.set(false);
-                    robot.cubeIndicator.showNoCube();
+                    robot.cubeIndicator.set(RobotInfo.CUBE_INDICATOR_SHOW_NO_CUBE);
                     sm.addEvent(timerEvent);
                     sm.addEvent(currentDownEvent);
                     sm.waitForEvents(State.DETECT_CUBE);
@@ -302,7 +302,7 @@ public class CubePickup
                 default:
                     // we have the cube, stop the motor and tell somebody if necessary.
                     controlMotor.setPower(0.0);
-                    robot.cubeIndicator.showCubeFullyGrabbed();
+                    robot.cubeIndicator.set(RobotInfo.CUBE_INDICATOR_SHOW_FULLY_GRABBED);
                     if (cubePossessionEvent != null)
                     {
                         cubePossessionEvent.set(true);

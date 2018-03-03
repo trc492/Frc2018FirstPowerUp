@@ -44,6 +44,7 @@ import frclib.FrcEmic2TextToSpeech;
 import frclib.FrcI2cLEDPanel;
 import frclib.FrcJoystick;
 import frclib.FrcPneumatic;
+import frclib.FrcRevBlinkin;
 import frclib.FrcRobotBase;
 import frclib.FrcRobotBattery;
 import hallib.HalDashboard;
@@ -58,6 +59,7 @@ import trclib.TrcMaxbotixSonarArray;
 import trclib.TrcPidController;
 import trclib.TrcPidController.PidCoefficients;
 import trclib.TrcPidDrive;
+import trclib.TrcRevBlinkin;
 import trclib.TrcRobot.RunMode;
 import trclib.TrcRobotBattery;
 import trclib.TrcSpuriousFilter;
@@ -139,7 +141,7 @@ public class Robot extends FrcRobotBase
     public FrcI2cLEDPanel messageBoard = null;
     public FrcEmic2TextToSpeech tts = null;
     private double nextTimeToSpeakInSeconds = 0.0;  //0 means disabled, no need to speak;
-    public CubeIndicator cubeIndicator = null;
+    public TrcRevBlinkin cubeIndicator = null;
 
     //
     // DriveBase subsystem.
@@ -306,8 +308,8 @@ public class Robot extends FrcRobotBase
         {
             messageBoard = new FrcI2cLEDPanel("messageBoard", I2C.Port.kOnboard);
         }
-        cubeIndicator = new CubeIndicator(RobotInfo.PWM_REV_BLINKIN);
-        cubeIndicator.showNoCube();
+        cubeIndicator = new FrcRevBlinkin("cubeIndicator", RobotInfo.PWM_REV_BLINKIN);
+        cubeIndicator.set(RobotInfo.CUBE_INDICATOR_SHOW_NO_CUBE);
 
         //
         // DriveBase subsystem.
