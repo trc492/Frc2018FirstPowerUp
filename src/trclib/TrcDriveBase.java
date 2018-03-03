@@ -57,7 +57,7 @@ public class TrcDriveBase
      * This interface is provided by the caller to translate the motor power to actual motor power according to
      * the motor curve. This is useful to linearize the motor performance. This is very useful for many reasons.
      * It could allow the drive base to drive straight by translating wheel power to actual torque. It could also
-     * allow us to implement our own ramp rate to limit acceleration and decleration.
+     * allow us to implement our own ramp rate to limit acceleration and deceleration.
      */
     public interface MotorPowerMapper
     {
