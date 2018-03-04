@@ -196,6 +196,11 @@ public class RobotInfo
     public static final double WINCH_TELEOP_POWER               = 0.6; // TODO: This needs to be calibrated
 
     //
+    // Flipper subsystem
+    //
+    public static final double FLIPPER_DELAY                            = 2.0;
+    
+    //
     // CubePickup subsystem.
     //
     public static final double PICKUP_FREE_SPIN_CURRENT         = 10.0;
@@ -246,6 +251,7 @@ public class RobotInfo
     public static final double SWITCH_STRAFE_DISTANCE           = 26.0;
     public static final double MAX_CUBE_DISTANCE                = 20.0;
     public static final double SWITCH_SONAR_DISTANCE_THRESHOLD  = 16.0;
+    
 
     //
     // FrcAuto constants.

@@ -43,7 +43,6 @@ import frclib.FrcDigitalOutput;
 import frclib.FrcEmic2TextToSpeech;
 import frclib.FrcI2cLEDPanel;
 import frclib.FrcJoystick;
-import frclib.FrcPneumatic;
 import frclib.FrcRevBlinkin;
 import frclib.FrcRobotBase;
 import frclib.FrcRobotBattery;
@@ -164,8 +163,8 @@ public class Robot extends FrcRobotBase
     //
     // Flippers subsystem.
     //
-    public FrcPneumatic leftFlipper;
-    public FrcPneumatic rightFlipper;
+    public Flipper leftFlipper;
+    public Flipper rightFlipper;
 
     //
     // Define our subsystems for Auto and TeleOp modes.
@@ -399,9 +398,9 @@ public class Robot extends FrcRobotBase
         cubePickup = new CubePickup(this);
         winch = new Winch();
         elevator = new Elevator();
-        leftFlipper = new FrcPneumatic("leftFlipper", RobotInfo.CANID_PCM1, 
+        leftFlipper = new Flipper("leftFlipper", RobotInfo.CANID_PCM1, 
             RobotInfo.SOL_LEFT_FLIPPER_EXTEND, RobotInfo.SOL_LEFT_FLIPPER_RETRACT);
-        rightFlipper =  new FrcPneumatic("rightFlipper", RobotInfo.CANID_PCM1, 
+        rightFlipper =  new Flipper("rightFlipper", RobotInfo.CANID_PCM1, 
             RobotInfo.SOL_RIGHT_FLIPPER_EXTEND, RobotInfo.SOL_RIGHT_FLIPPER_RETRACT);
 
         cmdAutoCubePickup = new CmdAutoCubePickup(this);

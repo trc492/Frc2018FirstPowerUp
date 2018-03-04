@@ -226,26 +226,14 @@ public class FrcTeleOp implements TrcRobot.RobotMode
             case FrcJoystick.SIDEWINDER_BUTTON3:
             	if(pressed)
             	{
-            		if(robot.leftFlipper.isExtended())
-            		{
-            			robot.leftFlipper.retract();
-            		} else
-            		{
-            			robot.leftFlipper.extend();
-            		}
+            		robot.leftFlipper.extendAndRetract();
             	}
                 break;
 
             case FrcJoystick.SIDEWINDER_BUTTON4:
             	if(pressed)
             	{
-            		if(robot.rightFlipper.isExtended())
-            		{
-            			robot.rightFlipper.retract();
-            		} else
-            		{
-            			robot.rightFlipper.extend();
-            		}
+            		robot.rightFlipper.extendAndRetract();
             	}
                 break;
 
