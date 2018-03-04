@@ -58,9 +58,9 @@ import trclib.TrcGyro.DataType;
 import trclib.TrcMaxbotixSonarArray;
 import trclib.TrcPidController;
 import trclib.TrcPidController.PidCoefficients;
-import trclib.TrcRevBlinkin.LEDPattern;
 import trclib.TrcPidDrive;
 import trclib.TrcRevBlinkin;
+import trclib.TrcRevBlinkin.LEDPattern;
 import trclib.TrcRobot.RunMode;
 import trclib.TrcRobotBattery;
 import trclib.TrcSpuriousFilter;
@@ -142,7 +142,7 @@ public class Robot extends FrcRobotBase
     public FrcI2cLEDPanel messageBoard = null;
     public FrcEmic2TextToSpeech tts = null;
     private double nextTimeToSpeakInSeconds = 0.0;  //0 means disabled, no need to speak;
-    public TrcRevBlinkin cubeIndicator = null;
+    public TrcRevBlinkin ledStrip = null;
 
     //
     // DriveBase subsystem.
@@ -309,8 +309,9 @@ public class Robot extends FrcRobotBase
         {
             messageBoard = new FrcI2cLEDPanel("messageBoard", I2C.Port.kOnboard);
         }
-        cubeIndicator = new FrcRevBlinkin("cubeIndicator", RobotInfo.PWM_REV_BLINKIN);
-        cubeIndicator.setPattern(LEDPattern.SolidBlack);
+
+        ledStrip = new FrcRevBlinkin("LEDStrip", RobotInfo.PWM_REV_BLINKIN);
+        ledStrip.setPattern(LEDPattern.SolidBlack);
 
         //
         // DriveBase subsystem.

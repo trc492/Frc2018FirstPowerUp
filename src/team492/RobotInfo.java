@@ -23,7 +23,7 @@
 package team492;
 
 import frclib.FrcPixyCam;
-import trclib.TrcRevBlinkin;
+import trclib.TrcRevBlinkin.LEDPattern;;
 
 public class RobotInfo
 {
@@ -255,12 +255,12 @@ public class RobotInfo
     public static final double START_POS_1                      = -107.0;
     public static final double START_POS_2                      = 0.0;
     public static final double START_POS_3                      = 107.0;
-    
+
     //
     // LED Controller constants.
     //
-    public static final TrcRevBlinkin.LEDPattern CUBE_INDICATOR_SHOW_NO_CUBE       = TrcRevBlinkin.LEDPattern.SolidBlack;
-    public static final TrcRevBlinkin.LEDPattern CUBE_INDICATOR_SHOW_FULLY_GRABBED = TrcRevBlinkin.LEDPattern.SolidLime;
-    public static final TrcRevBlinkin.LEDPattern CUBE_INDICATOR_SHOW_CUBE_IN_FRONT = TrcRevBlinkin.LEDPattern.SolidOrange;
+    public static final LEDPattern LED_NO_CUBE                  = LEDPattern.SolidBlack;
+    public static final LEDPattern LED_CUBE_IN_POSSESSION       = LEDPattern.SolidLime;
+    public static final LEDPattern LED_CUBE_IN_PROXIMITY        = LEDPattern.SolidOrange;
 
 }   // class RobotInfo
