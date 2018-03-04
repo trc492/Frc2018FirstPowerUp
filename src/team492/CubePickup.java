@@ -218,12 +218,14 @@ public class CubePickup
     public void setProximityTriggerEnabled(boolean enabled, TrcEvent event)
     {
         proximityTriggerEvent = event;
+        proximityTriggerEvent.set(false);
         cubeProximityTrigger.setTaskEnabled(enabled);
     }
 
     public void setCurrentTriggerEnabled(boolean enabled, TrcEvent event)
     {
         currentTriggerEvent = event;
+        currentTriggerEvent.set(false);
         currentTrigger.setTaskEnabled(enabled);
     }
 
@@ -332,7 +334,9 @@ public class CubePickup
     public void currentTriggerEvent(int zoneIndex, double zoneValue)
     {
         robot.tracer.traceInfo("CurrentTrigger", "zone=%d, pickupCurrent=%.2f", zoneIndex, zoneValue);
-        if (zoneIndex == 1 && currentTriggerEvent != null)
+        
+        // Only trigger the event on the SECOND spike (currentDownEvent should be signaled)
+        if (zoneIndex == 1 && currentTriggerEvent != null && currentDownEvent.isSignaled())
         {
             // Detected current spike beyond current threshold, let's tell
             // somebody.
