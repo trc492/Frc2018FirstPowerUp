@@ -203,7 +203,7 @@ public class CubePickup
     public void dropCube(double power)
     {
         setPickupPower(-power);
-        robot.ledStrip.setPattern(RobotInfo.LED_NO_CUBE);
+        robot.ledStrip.setPattern(RobotInfo.LED_CUBE_NONE);
     }
 
     /**
@@ -273,7 +273,7 @@ public class CubePickup
                     // wait a bit to let the start up current spike past.
                     timer.set(1.0, timerEvent);
                     currentDownEvent.set(false);
-                    robot.ledStrip.setPattern(RobotInfo.LED_NO_CUBE);
+                    robot.ledStrip.setPattern(RobotInfo.LED_CUBE_NONE);
                     sm.addEvent(timerEvent);
                     sm.addEvent(currentDownEvent);
                     sm.waitForEvents(State.DETECT_CUBE);

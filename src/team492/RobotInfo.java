@@ -257,9 +257,9 @@ public class RobotInfo
     public static final double START_POS_3                      = 107.0;
 
     //
-    // LED Controller constants.
+    // LED strip pattern constants.
     //
-    public static final LEDPattern LED_NO_CUBE                  = LEDPattern.SolidBlack;
+    public static final LEDPattern LED_CUBE_NONE                = LEDPattern.SolidBlack;
     public static final LEDPattern LED_CUBE_IN_POSSESSION       = LEDPattern.SolidLime;
     public static final LEDPattern LED_CUBE_IN_PROXIMITY        = LEDPattern.SolidOrange;
 

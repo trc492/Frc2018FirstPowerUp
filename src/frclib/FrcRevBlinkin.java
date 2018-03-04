@@ -64,6 +64,8 @@ public class FrcRevBlinkin extends TrcRevBlinkin
 
     /**
      * This method sets the LED pattern value to the physical REV Blinkin device in a platform dependent way.
+     * This method is intended to be called by the super class, not by the client of this class. The client
+     * should call the setPattern method instead.
      *
      * @param value specifies the color pattern value.
      */
