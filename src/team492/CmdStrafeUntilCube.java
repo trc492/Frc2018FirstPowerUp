@@ -118,9 +118,9 @@ public class CmdStrafeUntilCube implements TrcRobot.RobotCommand
         return done;
     }
 
-    public void visionTriggerHandler(int zone, double value)
+    public void visionTriggerHandler(int currZone, int prevZone, double value)
     {
-        if (zone == 1)
+        if (currZone == 1)
         {
             if (visionTriggerEvent != null)
             {

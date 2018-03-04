@@ -57,10 +57,9 @@ public class CubePickup
     private TrcTaskMgr.TaskObject pickupTaskObj;
     private TrcStateMachine<State> sm;
     private TrcTimer timer;
-    private TrcEvent timerEvent, proximityEvent, currentEvent, currentDownEvent;
-    private TrcEvent cubePossessionEvent, proximityTriggerEvent, currentTriggerEvent;
+    private TrcEvent timerEvent, currentUpEvent, currentDownEvent;
+    private TrcEvent cubeInPossessionEvent, cubeInProximityEvent;
     public double startTime;
-    private int lastZone;
 
     /**
      * Initialize the CubePickup class.
@@ -94,8 +93,7 @@ public class CubePickup
         sm = new TrcStateMachine<>("pickupStateMachine");
         timer = new TrcTimer("pickupTimer");
         timerEvent = new TrcEvent("TimerEvent");
-        proximityEvent = new TrcEvent("ProximityEvent");
-        currentEvent = new TrcEvent("CurrentEvent");
+        currentUpEvent = new TrcEvent("CurrentUpEvent");
         currentDownEvent = new TrcEvent("CurrentDownEvent");
     }
 
@@ -152,13 +150,9 @@ public class CubePickup
         return deployer.isExtended();
     }
 
-    /**
-     * @return Returns true of there is a cube in the pickup
-     */
-     public boolean cubeDetected()
-     {
-         return cubeProximitySensor.isActive();
-     }
+    //
+    // Pickup motor methods.
+    //
 
     public double getPickupPower()
     {
@@ -168,6 +162,19 @@ public class CubePickup
     public double getPickupCurrent()
     {
         return controlMotor.motor.getOutputCurrent() + slaveMotor.motor.getOutputCurrent();
+    }
+
+    /**
+     * @return Returns true of there is a cube in the pickup
+     */
+    public boolean cubeInProximity()
+    {
+        return cubeProximitySensor.isActive();
+    }
+
+    public boolean cubeInPossession()
+    {
+        return getPickupCurrent() > RobotInfo.PICKUP_CURRENT_THRESHOLD;
     }
 
     private void setPickupTaskEnabled(boolean enabled)
@@ -217,15 +224,13 @@ public class CubePickup
 
     public void setProximityTriggerEnabled(boolean enabled, TrcEvent event)
     {
-        proximityTriggerEvent = event;
-        proximityTriggerEvent.set(false);
+        cubeInProximityEvent = event;
         cubeProximityTrigger.setTaskEnabled(enabled);
     }
 
     public void setCurrentTriggerEnabled(boolean enabled, TrcEvent event)
     {
-        currentTriggerEvent = event;
-        currentTriggerEvent.set(false);
+        cubeInPossessionEvent = event;
         currentTrigger.setTaskEnabled(enabled);
     }
 
@@ -237,7 +242,7 @@ public class CubePickup
         if (!sm.isEnabled())
         {
             controlMotor.setPower(power);
-            cubePossessionEvent = event;
+            cubeInPossessionEvent = event;
             setPickupTaskEnabled(true);
         }
         else
@@ -245,23 +250,6 @@ public class CubePickup
             robot.tracer.traceWarn("grabCube", "***** Caught double trigger *****");
         }
     }
-
-    // Step 1:
-    // - set timer for 0.3 second, when done goto step 2.
-    // - this allows us to ignore the current spike when the motors start up.
-    // Step 2:
-    // - enable both cube proximity and current spike triggers.
-    // - the proximity trigger will monitor if a cube is close enough to be grabbed and will automatically close
-    //   the claws on it.
-    // - the current spike trigger will monitor if we have the cube in possession (i.e. sucked in) and move on to
-    //   step 3.
-    // Step 3:
-    // - the cube is in possession, disable both triggers.
-    // - set timer for 0.3 second so that we will pull in the cube firmly before stopping the motor.
-    // Step 4:
-    // - stop motor.
-    // - set the given event to true if any.
-    // - stop the state machine.
 
     public void pickupTask(TaskType taskType, RunMode runMode)
     {
@@ -272,9 +260,16 @@ public class CubePickup
             switch (state)
             {
                 case START:
-                    // wait a bit to let the start up current spike past.
+                    // Enable both proximity and current triggers.
+                    // Proximity trigger will automatically close the claws.
+                    // Current trigger will detect the startup current spike subsiding so we can start monitoring
+                    //      the real current spike for cube possession.
+                    // The timer is for catching the case where we already have the cube in possession so the
+                    //      current is already spiking and will not come down. The timer timeout will move us to the
+                    //      next state so we don't wait forever for the startup current spike to subside.
+                    cubeProximityTrigger.setTaskEnabled(true);
+                    currentTrigger.setTaskEnabled(true);
                     timer.set(1.0, timerEvent);
-                    currentDownEvent.set(false);
                     robot.ledStrip.setPattern(RobotInfo.LED_CUBE_NONE);
                     sm.addEvent(timerEvent);
                     sm.addEvent(currentDownEvent);
@@ -282,33 +277,25 @@ public class CubePickup
                     break;
 
                 case DETECT_CUBE:
-                    // enable both proximity and current triggers to detect the cube close by or in possession.
-                    // proximity trigger will automatically close the claws.
-                    // current trigger will move us to the next state.
+                    // We are now waiting for the current spike ramping up indicating cube in possession.
                     robot.tracer.traceInfo("PickupCurrent", "pickupCurrent=%.2f", getPickupCurrent());
-                    setProximityTriggerEnabled(true, proximityEvent);
-                    setCurrentTriggerEnabled(true, currentEvent);
-                    sm.waitForSingleEvent(currentEvent, State.PULLIN_CUBE);
+                    sm.waitForSingleEvent(currentUpEvent, State.PULLIN_CUBE);
                     break;
 
                 case PULLIN_CUBE:
-                    // disable both trigger.
-                    // wait a bit to make sure we pull in the cube firmly.
-                    setCurrentTriggerEnabled(false, null);
-                    setProximityTriggerEnabled(false, null);
+                    // Disable both triggers.
+                    // Wait a bit to make sure we pull in the cube firmly before stopping.
+                    cubeProximityTrigger.setTaskEnabled(false);
+                    currentTrigger.setTaskEnabled(false);
                     timer.set(0.3, timerEvent);
                     sm.waitForSingleEvent(timerEvent, State.DONE);
                     break;
 
                 case DONE:
                 default:
-                    // we have the cube, stop the motor and tell somebody if necessary.
+                    // We have the cube, we can stop now.
                     controlMotor.setPower(0.0);
                     robot.ledStrip.setPattern(RobotInfo.LED_CUBE_IN_POSSESSION);
-                    if (cubePossessionEvent != null)
-                    {
-                        cubePossessionEvent.set(true);
-                    }
                     setPickupTaskEnabled(false);
                     break;
             }
@@ -324,31 +311,33 @@ public class CubePickup
         {
             // Detected cube close by, grab it.
             closeClaw();
-            if (proximityTriggerEvent != null)
+            if (cubeInProximityEvent != null)
             {
-                proximityTriggerEvent.set(true);
+                cubeInProximityEvent.set(true);
             }
         }
     }
 
-    public void currentTriggerEvent(int zoneIndex, double zoneValue)
+    public void currentTriggerEvent(int currZone, int prevZone, double zoneValue)
     {
-        robot.tracer.traceInfo("CurrentTrigger", "zone=%d, pickupCurrent=%.2f", zoneIndex, zoneValue);
-        
-        // Only trigger the event on the SECOND spike (currentDownEvent should be signaled)
-        if (zoneIndex == 1 && currentTriggerEvent != null && currentDownEvent.isSignaled())
+        robot.tracer.traceInfo("CurrentTrigger", "curZone=%d, prevZone=%d, pickupCurrent=%.2f",
+            currZone, prevZone, zoneValue);
+        //TODO: debug this. The condition may be too restrictive. It may be okay now that the trigger state
+        // is reset before enabling. So the last state does not persist across enable/disable.
+        if (prevZone == 0 && currZone == 1)
         {
-            // Detected current spike beyond current threshold, let's tell
-            // somebody.
-            currentTriggerEvent.set(true);
+            // Current is ramping up.
+            currentUpEvent.set(true);
+            if (cubeInPossessionEvent != null)
+            {
+                cubeInPossessionEvent.set(true);
+            }
         }
-        
-        if(zoneIndex == 0 && currentDownEvent != null && zoneIndex < lastZone)
+        else if (prevZone == 1 && currZone == 0)
         {
+            // Current is ramping down.
             currentDownEvent.set(true);
         }
-        
-        lastZone = zoneIndex;
     }
 
 }

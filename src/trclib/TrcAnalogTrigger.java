@@ -47,10 +47,11 @@ public class TrcAnalogTrigger<D>
         /**
          * This method is called when a threshold has been crossed.
          *
-         * @param zoneIndex specifies the zone index it is crossing into.
-         * @param zoneValue specifies the actual sensor value.
+         * @param currZone specifies the zone it is going into.
+         * @param prevZone specifies the zone it is coming out of.
+         * @param sensorValue specifies the actual sensor value.
          */
-        void triggerEvent(int zoneIndex, double zoneValue);
+        void triggerEvent(int currZone, int prevZone, double zoneValue);
 
     }   //interface TriggerHandler
 
@@ -164,6 +165,8 @@ public class TrcAnalogTrigger<D>
 
         if (enabled)
         {
+            zone = -1;
+            value = 0.0;
             preContinuousTaskObj.registerTask(TrcTaskMgr.TaskType.PRECONTINUOUS_TASK);
         }
         else
@@ -261,16 +264,17 @@ public class TrcAnalogTrigger<D>
                 //
                 if (triggerHandler != null)
                 {
-                    triggerHandler.triggerEvent(currZone, sample);
+                    triggerHandler.triggerEvent(currZone, zone, sample);
+                }
+
+                if (debugEnabled)
+                {
+                    dbgTrace.traceInfo(funcName, "%s going to zone %d from zone %d (value=%f)",
+                        instanceName, currZone, zone, value);
                 }
 
                 zone = currZone;
                 value = sample;
-
-                if (debugEnabled)
-                {
-                    dbgTrace.traceInfo(funcName, "%s entering zone %d (value=%f)", instanceName, zone, value);
-                }
             }
         }
 

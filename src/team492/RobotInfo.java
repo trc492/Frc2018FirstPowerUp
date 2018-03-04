@@ -200,6 +200,7 @@ public class RobotInfo
     //
     public static final double PICKUP_FREE_SPIN_CURRENT         = 10.0;
     public static final double PICKUP_STALL_CURRENT             = 50.0;
+    public static final double PICKUP_CURRENT_THRESHOLD         = (PICKUP_FREE_SPIN_CURRENT + PICKUP_STALL_CURRENT)/2.0;
     public static final double PICKUP_TELEOP_POWER              = 0.6; // TODO: This needs to be calibrated
 
     //
