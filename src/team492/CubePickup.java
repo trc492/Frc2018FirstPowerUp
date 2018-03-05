@@ -361,12 +361,11 @@ public class CubePickup
     {
         robot.tracer.traceInfo("CurrentTrigger", "prevZone=%d, currZone=%d, pickupCurrent=%.2f",
             prevZone, currZone, zoneValue);
-        //TODO: debug this. The condition may be too restrictive. It may be okay now that the trigger state
-        // is reset before enabling. So the last state does not persist across enable/disable.
         if (currZone == 1)
         {
             // Current is ramping up.
             currentUpEvent.set(true);
+            //TODO: think about this one a bit more...
             if (cubeInPossessionEvent != null)
             {
                 cubeInPossessionEvent.set(true);
