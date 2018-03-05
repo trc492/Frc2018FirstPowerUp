@@ -42,7 +42,7 @@ public class CubePickup
 {
     private enum State
     {
-        START, DETECT_CUBE, PULLIN_CUBE, DONE
+        START, CHECK_CURRENT, DETECT_CUBE, PULLIN_CUBE, DONE
     }
 
     private static final double[] currentThresholds =
@@ -199,6 +199,9 @@ public class CubePickup
     {
         if (sm.isEnabled())
         {
+            cubeProximityTrigger.setTaskEnabled(false);
+            currentTrigger.setTaskEnabled(false);
+            sm.stop();
             setPickupTaskEnabled(false);
         }
         controlMotor.setPower(power);
@@ -253,7 +256,9 @@ public class CubePickup
 
     public void pickupTask(TaskType taskType, RunMode runMode)
     {
+        final String funcName = "pickupTask";
         State state = sm.checkReadyAndGetState();
+        double pickupCurrent;
 
         if (state != null)
         {
@@ -267,26 +272,55 @@ public class CubePickup
                     // The timer is for catching the case where we already have the cube in possession so the
                     //      current is already spiking and will not come down. The timer timeout will move us to the
                     //      next state so we don't wait forever for the startup current spike to subside.
+                    robot.ledStrip.setPattern(RobotInfo.LED_CUBE_NONE);
                     cubeProximityTrigger.setTaskEnabled(true);
                     currentTrigger.setTaskEnabled(true);
-                    timer.set(1.0, timerEvent);
-                    robot.ledStrip.setPattern(RobotInfo.LED_CUBE_NONE);
-                    sm.addEvent(timerEvent);
+                    sm.addEvent(currentUpEvent);
                     sm.addEvent(currentDownEvent);
-                    sm.waitForEvents(State.DETECT_CUBE);
+                    sm.waitForEvents(State.CHECK_CURRENT);
+                    break;
+
+                case CHECK_CURRENT:
+                    pickupCurrent = getPickupCurrent();
+                    if (currentDownEvent.isSignaled())
+                    {
+                        robot.tracer.traceInfo(funcName, "Startup spike subsided (pickupCurrent=%.2f)",
+                            pickupCurrent);
+                        sm.setState(State.DETECT_CUBE);
+                    }
+                    else if (currentUpEvent.isSignaled())
+                    {
+                        if (pickupCurrent >= RobotInfo.PICKUP_STALL_CURRENT)
+                        {
+                            robot.tracer.traceInfo(funcName, "Cube already in possession (pickupCurent=%.2f)",
+                                pickupCurrent);
+                            sm.setState(State.DONE);
+                        }
+                        else
+                        {
+                            robot.tracer.traceInfo(funcName, "Startup spike detected (pickupCurrent=%.2f)",
+                                pickupCurrent);
+                            sm.waitForSingleEvent(currentDownEvent, State.DETECT_CUBE);
+                        }
+                    }
+                    else
+                    {
+                        robot.tracer.traceInfo(
+                            funcName, "Why are we here? (pickupCurrent=%.2f, upEvent=%b, downEvent=%b)",
+                            pickupCurrent, currentUpEvent.isSignaled(), currentDownEvent.isSignaled());
+                        throw new IllegalStateException("We should never come here.");
+                    }
                     break;
 
                 case DETECT_CUBE:
                     // We are now waiting for the current spike ramping up indicating cube in possession.
-                    robot.tracer.traceInfo("PickupCurrent", "pickupCurrent=%.2f", getPickupCurrent());
+                    robot.tracer.traceInfo(funcName, "pickupCurrent=%.2f, upEvent=%b, downEvent=%b",
+                        getPickupCurrent(), currentUpEvent.isSignaled(), currentDownEvent.isSignaled());
                     sm.waitForSingleEvent(currentUpEvent, State.PULLIN_CUBE);
                     break;
 
                 case PULLIN_CUBE:
-                    // Disable both triggers.
                     // Wait a bit to make sure we pull in the cube firmly before stopping.
-                    cubeProximityTrigger.setTaskEnabled(false);
-                    currentTrigger.setTaskEnabled(false);
                     timer.set(0.3, timerEvent);
                     sm.waitForSingleEvent(timerEvent, State.DONE);
                     break;
@@ -294,9 +328,8 @@ public class CubePickup
                 case DONE:
                 default:
                     // We have the cube, we can stop now.
-                    controlMotor.setPower(0.0);
+                    stopPickup();
                     robot.ledStrip.setPattern(RobotInfo.LED_CUBE_IN_POSSESSION);
-                    setPickupTaskEnabled(false);
                     break;
             }
 
@@ -320,11 +353,11 @@ public class CubePickup
 
     public void currentTriggerEvent(int currZone, int prevZone, double zoneValue)
     {
-        robot.tracer.traceInfo("CurrentTrigger", "curZone=%d, prevZone=%d, pickupCurrent=%.2f",
-            currZone, prevZone, zoneValue);
+        robot.tracer.traceInfo("CurrentTrigger", "prevZone=%d, currZone=%d, pickupCurrent=%.2f",
+            prevZone, currZone, zoneValue);
         //TODO: debug this. The condition may be too restrictive. It may be okay now that the trigger state
         // is reset before enabling. So the last state does not persist across enable/disable.
-        if (prevZone == 0 && currZone == 1)
+        if (currZone == 1)
         {
             // Current is ramping up.
             currentUpEvent.set(true);

@@ -193,7 +193,7 @@ public abstract class FrcRobotBase extends RobotBase
         //
         // loop forever, calling the appropriate mode-dependent function
         //
-        final double timesliceThreshold = 0.05;
+        final double timesliceThreshold = 0.1;
         RunMode prevMode = RunMode.INVALID_MODE;
         RunMode currMode = RunMode.INVALID_MODE;
 

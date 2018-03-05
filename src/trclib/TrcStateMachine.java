@@ -285,7 +285,6 @@ public class TrcStateMachine<T>
             //
             if (ready)
             {
-                clearAllEvents();
                 eventList.clear();
                 currState = nextState;
             }
@@ -376,6 +375,7 @@ public class TrcStateMachine<T>
         }
         this.waitForAllEvents = waitForAllEvents;
         ready = false;
+        clearAllEvents();
 
         if (debugEnabled)
         {
