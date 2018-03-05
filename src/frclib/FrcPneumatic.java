@@ -429,6 +429,35 @@ public class FrcPneumatic
         }
     }   //extend
 
+    public void extendThenRetract(double extendPeriod, double retractPeriod, TrcEvent event)
+    {
+        final String funcName = "extendThenRetract";
+
+        if (debugEnabled)
+        {
+            dbgTrace.traceEnter(funcName, TrcDbgTrace.TraceLevel.API, "extendPeriod=%.3f,retractPeriod=%.3f,event=%s",
+                extendPeriod, retractPeriod, event);
+        }
+
+        if (solenoids.length == 2)
+        {
+            //
+            // Two-valve cylinder: first channel is the extend valve and
+            // second channel is the retract valve.
+            //
+            set((byte)(1 << 0), extendPeriod, (byte)(1 << 1), retractPeriod, false, event);
+        }
+        else
+        {
+            throw new UnsupportedOperationException("Method supports only two-valve cylinders.");
+        }
+
+        if (debugEnabled)
+        {
+            dbgTrace.traceExit(funcName, TrcDbgTrace.TraceLevel.API);
+        }
+    }   //extendThenRetract
+
     public boolean isExtended()
     {
         final String funcName = "isExtended";
