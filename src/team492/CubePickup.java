@@ -154,6 +154,21 @@ public class CubePickup
     // Pickup motor methods.
     //
 
+    private void setPickupTaskEnabled(boolean enabled)
+    {
+        if (enabled)
+        {
+            pickupTaskObj.registerTask(TaskType.POSTCONTINUOUS_TASK);
+            startTime = TrcUtil.getCurrentTime();
+            sm.start(State.START);
+        }
+        else
+        {
+            pickupTaskObj.unregisterTask(TaskType.POSTCONTINUOUS_TASK);
+            sm.stop();
+        }
+    }
+
     public double getPickupPower()
     {
         return controlMotor.getPower();
@@ -170,26 +185,6 @@ public class CubePickup
     public boolean cubeInProximity()
     {
         return cubeProximitySensor.isActive();
-    }
-
-    public boolean cubeInPossession()
-    {
-        return getPickupCurrent() > RobotInfo.PICKUP_CURRENT_THRESHOLD;
-    }
-
-    private void setPickupTaskEnabled(boolean enabled)
-    {
-        if (enabled)
-        {
-            pickupTaskObj.registerTask(TaskType.POSTCONTINUOUS_TASK);
-            startTime = TrcUtil.getCurrentTime();
-            sm.start(State.START);
-        }
-        else
-        {
-            pickupTaskObj.unregisterTask(TaskType.POSTCONTINUOUS_TASK);
-            sm.stop();
-        }
     }
 
     /**
@@ -217,33 +212,22 @@ public class CubePickup
     }
 
     /**
-     * spin the motors to push out a cube
-     */
-    public void dropCube(double power)
-    {
-        setPickupPower(-power);
-        robot.ledStrip.setPattern(RobotInfo.LED_CUBE_NONE);
-    }
-
-    /**
      * stops the pickup motors, use after cube has been picked up or dropped.
      * caller can call this method to abort a cube pickup sequence in progress.
      */
     public void stopPickup()
     {
         setPickupPower(0.0);
+        robot.ledStrip.setPattern(RobotInfo.LED_CUBE_NONE);
     }
 
-    public void setProximityTriggerEnabled(boolean enabled, TrcEvent event)
+    /**
+     * spin the motors to push out a cube
+     */
+    public void dropCube(double power)
     {
-        cubeInProximityEvent = event;
-        cubeProximityTrigger.setTaskEnabled(enabled);
-    }
-
-    public void setCurrentTriggerEnabled(boolean enabled, TrcEvent event)
-    {
-        cubeInPossessionEvent = event;
-        currentTrigger.setTaskEnabled(enabled);
+        setPickupPower(-power);
+        robot.ledStrip.setPattern(RobotInfo.LED_CUBE_NONE);
     }
 
     /**
@@ -263,7 +247,19 @@ public class CubePickup
         }
     }
 
-    public void pickupTask(TaskType taskType, RunMode runMode)
+    public void setProximityTriggerEnabled(boolean enabled, TrcEvent event)
+    {
+        cubeInProximityEvent = event;
+        cubeProximityTrigger.setTaskEnabled(enabled);
+    }
+
+    public void setCurrentTriggerEnabled(boolean enabled, TrcEvent event)
+    {
+        cubeInPossessionEvent = event;
+        currentTrigger.setTaskEnabled(enabled);
+    }
+
+    private void pickupTask(TaskType taskType, RunMode runMode)
     {
         final String funcName = "pickupTask";
         State state = sm.checkReadyAndGetState();
@@ -281,7 +277,7 @@ public class CubePickup
                     // The timer is for catching the case where we already have the cube in possession so the
                     //      current is already spiking and will not come down. The timer timeout will move us to the
                     //      next state so we don't wait forever for the startup current spike to subside.
-                    robot.ledStrip.setPattern(RobotInfo.LED_CUBE_NONE);
+                    robot.ledStrip.setPattern(RobotInfo.LED_CUBE_SEEKING);
                     cubeProximityTrigger.setTaskEnabled(true);
                     currentTrigger.setTaskEnabled(true);
                     sm.addEvent(currentUpEvent);
@@ -346,7 +342,7 @@ public class CubePickup
         }
     }
 
-    public void cubeProximityEvent(boolean active)
+    private void cubeProximityEvent(boolean active)
     {
         robot.tracer.traceInfo("ProximityTrigger", "active=%b", active);
         if (active)
@@ -357,10 +353,11 @@ public class CubePickup
             {
                 cubeInProximityEvent.set(true);
             }
+            robot.ledStrip.setPattern(RobotInfo.LED_CUBE_IN_PROXIMITY);
         }
     }
 
-    public void currentTriggerEvent(int currZone, int prevZone, double zoneValue)
+    private void currentTriggerEvent(int currZone, int prevZone, double zoneValue)
     {
         robot.tracer.traceInfo("CurrentTrigger", "prevZone=%d, currZone=%d, pickupCurrent=%.2f",
             prevZone, currZone, zoneValue);

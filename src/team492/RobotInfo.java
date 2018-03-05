@@ -267,7 +267,8 @@ public class RobotInfo
     // LED strip pattern constants.
     //
     public static final LEDPattern LED_CUBE_NONE                = LEDPattern.SolidBlack;
-    public static final LEDPattern LED_CUBE_IN_POSSESSION       = LEDPattern.SolidLime;
-    public static final LEDPattern LED_CUBE_IN_PROXIMITY        = LEDPattern.SolidOrange;
+    public static final LEDPattern LED_CUBE_SEEKING             = LEDPattern.SolidAqua;
+    public static final LEDPattern LED_CUBE_IN_POSSESSION       = LEDPattern.SolidGreen;
+    public static final LEDPattern LED_CUBE_IN_PROXIMITY        = LEDPattern.SolidYellow;
 
 }   // class RobotInfo
