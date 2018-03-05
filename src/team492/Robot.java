@@ -41,6 +41,7 @@ import frclib.FrcAnalogInput;
 import frclib.FrcCANTalon;
 import frclib.FrcDigitalOutput;
 import frclib.FrcEmic2TextToSpeech;
+import frclib.FrcI2cDevice;
 import frclib.FrcI2cLEDPanel;
 import frclib.FrcJoystick;
 import frclib.FrcRevBlinkin;
@@ -54,6 +55,7 @@ import trclib.TrcEmic2TextToSpeech.Voice;
 import trclib.TrcFilter;
 import trclib.TrcGyro;
 import trclib.TrcGyro.DataType;
+//import trclib.TrcLidarLite;
 import trclib.TrcMaxbotixSonarArray;
 import trclib.TrcPidController;
 import trclib.TrcPidController.PidCoefficients;
@@ -88,6 +90,7 @@ public class Robot extends FrcRobotBase
     public static final boolean USE_TORQUE_BASED_DRIVING = false;
     public static final boolean USE_SONAR = true;
     public static final boolean USE_MAXBOTIX_SONAR_ARRAY = true;
+    public static final boolean USE_LIDAR = false;
 
     private static final boolean DEBUG_POWER_CONSUMPTION = true;
     private static final boolean DEBUG_DRIVE_BASE = false;
@@ -129,6 +132,9 @@ public class Robot extends FrcRobotBase
     public TrcMaxbotixSonarArray leftSonarArray = null;
     public TrcMaxbotixSonarArray rightSonarArray = null;
     public TrcMaxbotixSonarArray frontSonarArray = null;
+    public FrcI2cDevice lidarSensor = null;
+//    public TrcLidarLite frontRanger = null;
+//    public Lidar lidar = null;
 
     //
     // VisionTarget subsystem.
@@ -265,6 +271,12 @@ public class Robot extends FrcRobotBase
                 FrcDigitalOutput frontSonarPing = new FrcDigitalOutput("FrontSonarPing", RobotInfo.DIO_FRONT_SONAR_PING);
                 frontSonarArray = new TrcMaxbotixSonarArray("FrontSonar", frontSonarSensor, frontSonarPing);
             }
+        }
+
+        if (USE_LIDAR)
+        {
+//            lidarSensor = new FrcI2cDevice("LidarSensor", I2C.Port.kMXP, TrcLidarLite.DEF_I2C_ADDRESS_7BIT);
+//            frontRanger = new TrcLidarLite("LidarRanger", lidarSensor);
         }
 
         //
@@ -430,6 +442,11 @@ public class Robot extends FrcRobotBase
                 nextTimeToSpeakInSeconds = TrcUtil.getCurrentTime() + SPEAK_PERIOD_SECONDS;
             }
         }
+
+//        if (frontRanger != null)
+//        {
+//            frontRanger.start();
+//        }
 
         if (ds.isFMSAttached())
         {
@@ -651,6 +668,19 @@ public class Robot extends FrcRobotBase
         return value;
     }   //getFrontSonarDistance
 
+    public double getLidarDistane()
+    {
+        double value = 0.0;
+
+//        if (frontRanger != null)
+//        {
+//            value = frontRanger.getDistance().value;
+//        }
+//        value = lidar.getDistance();//*TrcUtil.INCHES_PER_CM;
+
+        return value;
+    }
+
     public double getPixyTargetAngle()
     {
         final String funcName = "getPixyTargetAngle";
@@ -669,7 +699,6 @@ public class Robot extends FrcRobotBase
         return targetInfo != null? targetInfo.angle: 0.0;
     }
 
-    //CodeReview: this is a more reliable place to print pixy info.
     public double getPixyTargetX()
     {
         final String funcName = "getPixyTargetX";

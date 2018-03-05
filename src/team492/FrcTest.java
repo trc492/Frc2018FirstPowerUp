@@ -167,6 +167,7 @@ public class FrcTest extends FrcTeleOp
         if (Robot.USE_TRACELOG && useTraceLog)
             robot.startTraceLog("Test");
 
+//        robot.lidar = new Lidar("Lidar", I2C.Port.kMXP, (byte)0x62);
         LiveWindow.setEnabled(liveWindowEnabled);
         sm.start(State.START);
     } // startMode
@@ -442,9 +443,9 @@ public class FrcTest extends FrcTeleOp
             robot.driveBase.getYPosition(), robot.driveBase.getHeading());
         robot.dashboard.displayPrintf(4, "Gyro: Rate=%.3f, Heading=%.1f", robot.gyro.getZRotationRate().value,
             robot.gyro.getZHeading().value);
-        robot.dashboard.displayPrintf(5, "Sensors: pressure=%.1f,lSonar=%.1f,rSonar=%.1f,fSonar=%.1f",
+        robot.dashboard.displayPrintf(5, "Sensors: pressure=%.1f,lSonar=%.1f,rSonar=%.1f,fSonar=%.1f,lidar=%.1f",
             robot.getPressure(), robot.getLeftSonarDistance(), robot.getRightSonarDistance(),
-            robot.getFrontSonarDistance());
+            robot.getFrontSonarDistance(), robot.getLidarDistane());
         robot.dashboard.displayPrintf(6, "CubePickup: cubeInProximity=%s", robot.cubePickup.cubeInProximity());
     } // doSensorsTest
 
