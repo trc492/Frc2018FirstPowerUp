@@ -43,17 +43,6 @@ public class FrcTeleOp implements TrcRobot.RobotMode
     public FrcTeleOp(Robot robot)
     {
         this.robot = robot;
-        //
-        // Configure joysticks.
-        //
-        robot.leftDriveStick.setButtonHandler(this::leftDriveStickButtonEvent);
-        robot.leftDriveStick.setYInverted(true);
-
-        robot.rightDriveStick.setButtonHandler(this::rightDriveStickButtonEvent);
-        robot.rightDriveStick.setYInverted(true);
-
-        robot.operatorStick.setButtonHandler(this::operatorStickButtonEvent);
-        robot.operatorStick.setYInverted(false);
     } // FrcTeleOp
 
     //
@@ -73,6 +62,17 @@ public class FrcTeleOp implements TrcRobot.RobotMode
         robot.encoderYPidCtrl.setOutputRange(-1.0, 1.0);
         robot.gyroTurnPidCtrl.setOutputRange(-1.0, 1.0);
         //robot.sonarDrivePidCtrl.setOutputRange(-1.0, 1.0);
+        //
+        // Configure joysticks.
+        //
+        robot.leftDriveStick.setButtonHandler(this::leftDriveStickButtonEvent);
+        robot.leftDriveStick.setYInverted(true);
+
+        robot.rightDriveStick.setButtonHandler(this::rightDriveStickButtonEvent);
+        robot.rightDriveStick.setYInverted(true);
+
+        robot.operatorStick.setButtonHandler(this::operatorStickButtonEvent);
+        robot.operatorStick.setYInverted(false);
     } // startMode
 
     @Override
