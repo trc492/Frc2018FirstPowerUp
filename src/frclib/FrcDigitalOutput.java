@@ -32,13 +32,6 @@ import trclib.TrcDigitalOutput;
  */
 public class FrcDigitalOutput extends TrcDigitalOutput
 {
-    private static final String moduleName = "FrcDigitalOutput";
-    private static final boolean debugEnabled = false;
-    private static final boolean tracingEnabled = false;
-    private static final TrcDbgTrace.TraceLevel traceLevel = TrcDbgTrace.TraceLevel.API;
-    private static final TrcDbgTrace.MsgLevel msgLevel = TrcDbgTrace.MsgLevel.INFO;
-    private TrcDbgTrace dbgTrace = null;
-
     private DigitalOutput digitalOutput;
 
     /**
@@ -50,12 +43,6 @@ public class FrcDigitalOutput extends TrcDigitalOutput
     public FrcDigitalOutput(String instanceName, int channel)
     {
         super(instanceName);
-
-        if (debugEnabled)
-        {
-            dbgTrace = new TrcDbgTrace(moduleName + "." + instanceName, tracingEnabled, traceLevel, msgLevel);
-        }
-
         digitalOutput = new DigitalOutput(channel);
     }   //FrcDigitalOutput
 

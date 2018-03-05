@@ -35,13 +35,6 @@ import java.util.function.Supplier;
  */
 public class TrcCascadePidController extends TrcPidController
 {
-    private static final String moduleName = "TrcCascadePidController";
-    private static final boolean debugEnabled = false;
-    private static final boolean tracingEnabled = false;
-    private static final TrcDbgTrace.TraceLevel traceLevel = TrcDbgTrace.TraceLevel.API;
-    private static final TrcDbgTrace.MsgLevel msgLevel = TrcDbgTrace.MsgLevel.INFO;
-    private TrcDbgTrace dbgTrace = null;
-
     public TrcPidController secondaryCtrl;
 
     /**
@@ -65,12 +58,6 @@ public class TrcCascadePidController extends TrcPidController
     {
         super(instanceName + ".primary",
               primaryPidCoefficients, primaryTolerance, primarySettlingTime, primaryInput);
-
-        if (debugEnabled)
-        {
-            dbgTrace = new TrcDbgTrace(moduleName + "." + instanceName, tracingEnabled, traceLevel, msgLevel);
-        }
-
         secondaryCtrl = new TrcPidController(
                 instanceName + ".secondary", secondaryPidCoefficients, secondaryTolerance, secondarySettlingTime,
                 secondaryInput);

@@ -55,6 +55,7 @@ public class TrcAnalogSensor extends TrcAnalogInput
     public TrcAnalogSensor(final String instanceName, final AnalogDataSource dataSource)
     {
         super(instanceName, 1, 0, null);
+
         this.dataSource = dataSource;
     }   //TrcAnalogSensor
 
@@ -67,7 +68,16 @@ public class TrcAnalogSensor extends TrcAnalogInput
      */
     public SensorData<Double> getRawData(int index, DataType dataType)
     {
-        return new SensorData<>(TrcUtil.getCurrentTime(), dataSource.getData());
+        final String funcName = "getRawData";
+        SensorData<Double> data = new SensorData<>(TrcUtil.getCurrentTime(), dataSource.getData());
+
+        if (debugEnabled)
+        {
+            dbgTrace.traceEnter(funcName, TrcDbgTrace.TraceLevel.API, "index=%d,type=%s", index, dataType);
+            dbgTrace.traceExit(funcName, TrcDbgTrace.TraceLevel.API, "=(%.3f,%f)", data.timestamp, data.value);
+        }
+
+        return data ;
     }   //getRawData
 
 }   //class TrcAnalogSensor

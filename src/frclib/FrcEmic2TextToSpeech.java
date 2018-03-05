@@ -33,13 +33,6 @@ import trclib.TrcSerialBusDevice;
  */
 public class FrcEmic2TextToSpeech extends TrcEmic2TextToSpeech
 {
-    private static final String moduleName = "FrcEmic2TextToSpeech";
-    private static final boolean debugEnabled = false;
-    private static final boolean tracingEnabled = false;
-    private static final TrcDbgTrace.TraceLevel traceLevel = TrcDbgTrace.TraceLevel.API;
-    private static final TrcDbgTrace.MsgLevel msgLevel = TrcDbgTrace.MsgLevel.INFO;
-    private TrcDbgTrace dbgTrace = null;
-
     public static final SerialPort.Port DEF_SERIAL_PORT = SerialPort.Port.kMXP;
     public static final int DEF_BAUD_RATE = 9600;
     public static final int DEF_DATA_BITS = 8;
@@ -63,11 +56,6 @@ public class FrcEmic2TextToSpeech extends TrcEmic2TextToSpeech
         SerialPort.StopBits stopBits)
     {
         super(instanceName);
-
-        if (debugEnabled)
-        {
-            dbgTrace = new TrcDbgTrace(moduleName + "." + instanceName, tracingEnabled, traceLevel, msgLevel);
-        }
 
         tts = new FrcSerialPortDevice(instanceName, port, baudRate, dataBits, parity, stopBits);
     }   //FrcEmic2TextToSpeech

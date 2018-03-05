@@ -31,13 +31,6 @@ import trclib.TrcUtil;
 
 public class FrcAHRSGyro extends TrcGyro
 {
-    private static final String moduleName = "FrcAHRSGyro";
-    private static final boolean debugEnabled = false;
-    private static final boolean tracingEnabled = false;
-    private static final TrcDbgTrace.TraceLevel traceLevel = TrcDbgTrace.TraceLevel.API;
-    private static final TrcDbgTrace.MsgLevel msgLevel = TrcDbgTrace.MsgLevel.INFO;
-    private TrcDbgTrace dbgTrace = null;
-
     public AHRS ahrs;
     private double xSign = 1.0;
     private double ySign = 1.0;
@@ -46,12 +39,6 @@ public class FrcAHRSGyro extends TrcGyro
     public FrcAHRSGyro(final String instanceName, Port port)
     {
         super(instanceName, 3, GYRO_HAS_X_AXIS | GYRO_HAS_Y_AXIS | GYRO_HAS_Z_AXIS, null);
-
-        if (debugEnabled)
-        {
-            dbgTrace = new TrcDbgTrace(moduleName + "." + instanceName, tracingEnabled, traceLevel, msgLevel);
-        }
-
         this.ahrs = new AHRS(port);
     }   //FrcAHRSGyro
 

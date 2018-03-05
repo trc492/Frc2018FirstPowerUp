@@ -38,13 +38,6 @@ import trclib.TrcMotor;
  */
 public class FrcCANTalon extends TrcMotor
 {
-    private static final String moduleName = "FrcCANTalon";
-    private static final boolean debugEnabled = false;
-    private static final boolean tracingEnabled = false;
-    private static final TrcDbgTrace.TraceLevel traceLevel = TrcDbgTrace.TraceLevel.API;
-    private static final TrcDbgTrace.MsgLevel msgLevel = TrcDbgTrace.MsgLevel.INFO;
-    private TrcDbgTrace dbgTrace = null;
-
     public TalonSRX motor;
     private boolean feedbackDeviceIsPot = false;
     private boolean limitSwitchesSwapped = false;
@@ -67,11 +60,6 @@ public class FrcCANTalon extends TrcMotor
         super(instanceName);
         motor = new TalonSRX(deviceNumber);
         resetPosition(true);
-
-        if (debugEnabled)
-        {
-            dbgTrace = new TrcDbgTrace(moduleName + "." + instanceName, tracingEnabled, traceLevel, msgLevel);
-        }
     }   //FrcCANTalon
 
     /**

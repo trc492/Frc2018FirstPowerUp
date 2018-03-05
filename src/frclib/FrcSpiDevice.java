@@ -34,13 +34,6 @@ import trclib.TrcSerialBusDevice;
  */
 public class FrcSpiDevice extends TrcSerialBusDevice
 {
-    private static final String moduleName = "FrcSpiDevice";
-    private static final boolean debugEnabled = false;
-    private static final boolean tracingEnabled = false;
-    private static final TrcDbgTrace.TraceLevel traceLevel = TrcDbgTrace.TraceLevel.API;
-    private static final TrcDbgTrace.MsgLevel msgLevel = TrcDbgTrace.MsgLevel.INFO;
-    private TrcDbgTrace dbgTrace = null;
-
     private SPI spi;
 
     /**
@@ -52,12 +45,6 @@ public class FrcSpiDevice extends TrcSerialBusDevice
     public FrcSpiDevice(final String instanceName, SPI spi)
     {
         super(instanceName);
-
-        if (debugEnabled)
-        {
-            dbgTrace = new TrcDbgTrace(moduleName + "." + instanceName, tracingEnabled, traceLevel, msgLevel);
-        }
-
         this.spi = spi;
     }   //FrcSpiDevice
 

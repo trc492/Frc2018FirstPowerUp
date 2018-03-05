@@ -34,13 +34,6 @@ import trclib.TrcUtil;
  */
 public class FrcAnalogInput extends TrcAnalogInput
 {
-    private static final String moduleName = "FrcAnalogInput";
-    private static final boolean debugEnabled = false;
-    private static final boolean tracingEnabled = false;
-    private static final TrcDbgTrace.TraceLevel traceLevel = TrcDbgTrace.TraceLevel.API;
-    private static final TrcDbgTrace.MsgLevel msgLevel = TrcDbgTrace.MsgLevel.INFO;
-    private TrcDbgTrace dbgTrace = null;
-
     private static final double maxVoltage = 5.0;
     private AnalogInput sensor;
     private double sensorData;
@@ -56,12 +49,6 @@ public class FrcAnalogInput extends TrcAnalogInput
     public FrcAnalogInput(String instanceName, int channel, TrcFilter[] filters)
     {
         super(instanceName, 1, 0, filters);
-
-        if (debugEnabled)
-        {
-            dbgTrace = new TrcDbgTrace(moduleName + "." + instanceName, tracingEnabled, traceLevel, msgLevel);
-        }
-
         sensor = new AnalogInput(channel);
     }   //FrcAnalogInput
 

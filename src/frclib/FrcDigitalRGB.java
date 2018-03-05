@@ -28,10 +28,6 @@ import trclib.TrcRGBLight;
 
 public class FrcDigitalRGB extends TrcRGBLight
 {
-    private static final String moduleName = "FrcDigitalRGB";
-    private static final boolean debugEnabled = false;
-    private TrcDbgTrace dbgTrace = null;
-
     private DigitalOutput redLight;
     private DigitalOutput greenLight;
     private DigitalOutput blueLight;
@@ -43,16 +39,6 @@ public class FrcDigitalRGB extends TrcRGBLight
             final String instanceName, int redChannel, int greenChannel, int blueChannel)
     {
         super(instanceName);
-
-        if (debugEnabled)
-        {
-            dbgTrace = new TrcDbgTrace(
-                    moduleName + "." + instanceName,
-                    false,
-                    TrcDbgTrace.TraceLevel.API,
-                    TrcDbgTrace.MsgLevel.INFO);
-        }
-
         redLight = new DigitalOutput(redChannel);
         greenLight = new DigitalOutput(greenChannel);
         blueLight = new DigitalOutput(blueChannel);

@@ -32,14 +32,6 @@ import trclib.TrcRevBlinkin;
  */
 public class FrcRevBlinkin extends TrcRevBlinkin
 {
-    private static final String moduleName = "FrcRevBlinkin";
-    private static final boolean debugEnabled = false;
-    private static final boolean tracingEnabled = false;
-    private static final boolean useGlobalTracer = false;
-    private static final TrcDbgTrace.TraceLevel traceLevel = TrcDbgTrace.TraceLevel.API;
-    private static final TrcDbgTrace.MsgLevel msgLevel = TrcDbgTrace.MsgLevel.INFO;
-    private TrcDbgTrace dbgTrace = null;
-
     private Spark device;
 
     /**
@@ -51,14 +43,6 @@ public class FrcRevBlinkin extends TrcRevBlinkin
     public FrcRevBlinkin(final String instanceName, int channel)
     {
         super(instanceName);
-
-        if (debugEnabled)
-        {
-            dbgTrace = useGlobalTracer?
-                TrcDbgTrace.getGlobalTracer():
-                new TrcDbgTrace(moduleName + "." + instanceName, tracingEnabled, traceLevel, msgLevel);
-        }
-
         device = new Spark(channel);
     }   //FrcRevBlinkin
 

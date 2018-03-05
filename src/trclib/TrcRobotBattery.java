@@ -28,12 +28,13 @@ package trclib;
  */
 public abstract class TrcRobotBattery
 {
-    private static final String moduleName = "TrcRobotBattery";
-    private static final boolean debugEnabled = false;
-    private static final boolean tracingEnabled = false;
-    private static final TrcDbgTrace.TraceLevel traceLevel = TrcDbgTrace.TraceLevel.API;
-    private static final TrcDbgTrace.MsgLevel msgLevel = TrcDbgTrace.MsgLevel.INFO;
-    private TrcDbgTrace dbgTrace = null;
+    protected static final String moduleName = "TrcRobotBattery";
+    protected static final boolean debugEnabled = false;
+    protected static final boolean tracingEnabled = false;
+    protected static final boolean useGlobalTracer = false;
+    protected static final TrcDbgTrace.TraceLevel traceLevel = TrcDbgTrace.TraceLevel.API;
+    protected static final TrcDbgTrace.MsgLevel msgLevel = TrcDbgTrace.MsgLevel.INFO;
+    protected TrcDbgTrace dbgTrace = null;
 
     /**
      * This method returns the robot battery voltage.
@@ -74,8 +75,11 @@ public abstract class TrcRobotBattery
     {
         if (debugEnabled)
         {
-            dbgTrace = new TrcDbgTrace(moduleName, tracingEnabled, traceLevel, msgLevel);
+            dbgTrace = useGlobalTracer?
+                TrcDbgTrace.getGlobalTracer():
+                new TrcDbgTrace(moduleName, tracingEnabled, traceLevel, msgLevel);
         }
+
         preContinuousTaskObj = TrcTaskMgr.getInstance().createTask(
             moduleName + ".preContinuous", this::preContinuousTask);
     }   //TrcRobotBattery

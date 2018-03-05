@@ -37,13 +37,6 @@ import trclib.TrcDbgTrace;
  */
 public abstract class FrcVisionTarget extends FrcOpenCVDetector<Rect[]>
 {
-    private static final String moduleName = "FrcVisionTarget";
-    private static final boolean debugEnabled = false;
-    private static final boolean tracingEnabled = false;
-    private static final TrcDbgTrace.TraceLevel traceLevel = TrcDbgTrace.TraceLevel.API;
-    private static final TrcDbgTrace.MsgLevel msgLevel = TrcDbgTrace.MsgLevel.INFO;
-    private TrcDbgTrace dbgTrace = null;
-
     /**
      * This method is called to process an image for detecting objects.
      *
@@ -74,11 +67,6 @@ public abstract class FrcVisionTarget extends FrcOpenCVDetector<Rect[]>
     public FrcVisionTarget(final String instanceName, CvSink videoIn, CvSource videoOut)
     {
         super(instanceName, videoIn, videoOut, NUM_IMAGE_BUFFERS, null);
-
-        if (debugEnabled)
-        {
-            dbgTrace = new TrcDbgTrace(moduleName, tracingEnabled, traceLevel, msgLevel);
-        }
     }   //FrcVisionTarget
 
     /**

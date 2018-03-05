@@ -37,13 +37,6 @@ import trclib.TrcDbgTrace;
  */
 public class FrcFaceDetector extends FrcOpenCVDetector<MatOfRect>
 {
-    private static final String moduleName = "FrcFaceDetector";
-    private static final boolean debugEnabled = false;
-    private static final boolean tracingEnabled = false;
-    private static final TrcDbgTrace.TraceLevel traceLevel = TrcDbgTrace.TraceLevel.API;
-    private static final TrcDbgTrace.MsgLevel msgLevel = TrcDbgTrace.MsgLevel.INFO;
-    private TrcDbgTrace dbgTrace = null;
-
     private static final int NUM_IMAGE_BUFFERS = 2;
     private static final int NUM_OBJECT_BUFFERS = 2;
 
@@ -66,10 +59,6 @@ public class FrcFaceDetector extends FrcOpenCVDetector<MatOfRect>
     {
         super(instanceName, videoIn, videoOut, NUM_IMAGE_BUFFERS, detectedFacesBuffers);
 
-        if (debugEnabled)
-        {
-            dbgTrace = new TrcDbgTrace(moduleName, tracingEnabled, traceLevel, msgLevel);
-        }
         //
         // Preallocate two MatOfRects for ping pong processing.
         //

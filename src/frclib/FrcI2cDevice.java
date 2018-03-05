@@ -36,13 +36,6 @@ import trclib.TrcSerialBusDevice;
  */
 public class FrcI2cDevice extends TrcSerialBusDevice
 {
-    private static final String moduleName = "FrcI2cDevice";
-    private static final boolean debugEnabled = false;
-    private static final boolean tracingEnabled = false;
-    private static final TrcDbgTrace.TraceLevel traceLevel = TrcDbgTrace.TraceLevel.API;
-    private static final TrcDbgTrace.MsgLevel msgLevel = TrcDbgTrace.MsgLevel.INFO;
-    private TrcDbgTrace dbgTrace = null;
-
     private I2C device;
 
     /**
@@ -55,12 +48,6 @@ public class FrcI2cDevice extends TrcSerialBusDevice
     public FrcI2cDevice(final String instanceName, Port port, int devAddress)
     {
         super(instanceName);
-
-        if (debugEnabled)
-        {
-            dbgTrace = new TrcDbgTrace(moduleName + "." + instanceName, tracingEnabled, traceLevel, msgLevel);
-        }
-
         device = new I2C(port, devAddress);
     }   //FrcI2cDevice
 

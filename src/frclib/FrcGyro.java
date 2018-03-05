@@ -29,25 +29,12 @@ import trclib.TrcUtil;
 
 public class FrcGyro extends TrcGyro
 {
-    private static final String moduleName = "FrcGyro";
-    private static final boolean debugEnabled = false;
-    private static final boolean tracingEnabled = false;
-    private static final TrcDbgTrace.TraceLevel traceLevel = TrcDbgTrace.TraceLevel.API;
-    private static final TrcDbgTrace.MsgLevel msgLevel = TrcDbgTrace.MsgLevel.INFO;
-    private TrcDbgTrace dbgTrace = null;
-
     private GyroBase gyro;
     private double zSign = 1.0;
 
     public FrcGyro(final String instanceName, GyroBase gyro)
     {
         super(instanceName, 1, GYRO_HAS_Z_AXIS, null);
-
-        if (debugEnabled)
-        {
-            dbgTrace = new TrcDbgTrace(moduleName + "." + instanceName, tracingEnabled, traceLevel, msgLevel);
-        }
-
         this.gyro = gyro;
         gyro.calibrate();
     }   //FrcGyro

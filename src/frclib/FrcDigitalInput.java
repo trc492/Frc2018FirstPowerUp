@@ -32,13 +32,6 @@ import trclib.TrcDigitalInput;
  */
 public class FrcDigitalInput extends TrcDigitalInput
 {
-    private static final String moduleName = "FrcDigitalInput";
-    private static final boolean debugEnabled = false;
-    private static final boolean tracingEnabled = false;
-    private static final TrcDbgTrace.TraceLevel traceLevel = TrcDbgTrace.TraceLevel.API;
-    private static final TrcDbgTrace.MsgLevel msgLevel = TrcDbgTrace.MsgLevel.INFO;
-    private TrcDbgTrace dbgTrace = null;
-
     private DigitalInput digitalInput;
     private boolean inverted = false;
     private boolean state = false;
@@ -52,12 +45,6 @@ public class FrcDigitalInput extends TrcDigitalInput
     public FrcDigitalInput(String instanceName, int channel)
     {
         super(instanceName);
-
-        if (debugEnabled)
-        {
-            dbgTrace = new TrcDbgTrace(moduleName + "." + instanceName, tracingEnabled, traceLevel, msgLevel);
-        }
-
         digitalInput = new DigitalInput(channel);
     }   //FrcDigitalInput
 

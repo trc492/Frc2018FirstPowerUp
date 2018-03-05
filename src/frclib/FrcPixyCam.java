@@ -37,13 +37,6 @@ import trclib.TrcPixyCam;
  */
 public class FrcPixyCam extends TrcPixyCam
 {
-    private static final String moduleName = "FrcPixyCam";
-    private static final boolean debugEnabled = false;
-    private static final boolean tracingEnabled = false;
-    private static final TrcDbgTrace.TraceLevel traceLevel = TrcDbgTrace.TraceLevel.API;
-    private static final TrcDbgTrace.MsgLevel msgLevel = TrcDbgTrace.MsgLevel.INFO;
-    private TrcDbgTrace dbgTrace = null;
-
     public static final I2C.Port DEF_I2C_PORT = I2C.Port.kOnboard;
     public static final int DEF_I2C_ADDRESS = 0x54;
 
@@ -64,12 +57,6 @@ public class FrcPixyCam extends TrcPixyCam
     public FrcPixyCam(final String instanceName, SPI.Port port)
     {
         super(instanceName, true);
-
-        if (debugEnabled)
-        {
-            dbgTrace = new TrcDbgTrace(moduleName + "." + instanceName, tracingEnabled, traceLevel, msgLevel);
-        }
-
         SPI spi = new SPI(port);
         spi.setMSBFirst();
         spi.setClockActiveHigh();

@@ -22,7 +22,10 @@
 
 package frclib;
 
+import java.util.Arrays;
+
 import edu.wpi.first.wpilibj.I2C;
+import trclib.TrcDbgTrace;
 import trclib.TrcI2cLEDPanel;
 
 /**
@@ -67,7 +70,16 @@ public class FrcI2cLEDPanel extends TrcI2cLEDPanel
      */
     public boolean isEnabled()
     {
-        return device.isTaskEnabled();
+        final String funcName = "isEnabled";
+        boolean enabled = device.isTaskEnabled();
+
+        if (debugEnabled)
+        {
+            dbgTrace.traceEnter(funcName, TrcDbgTrace.TraceLevel.API);
+            dbgTrace.traceExit(funcName, TrcDbgTrace.TraceLevel.API, "=%s", enabled);
+        }
+
+        return enabled;
     }   //isEnable
 
     /**
@@ -77,6 +89,14 @@ public class FrcI2cLEDPanel extends TrcI2cLEDPanel
      */
     public void setEnabled(boolean enabled)
     {
+        final String funcName = "setEnabled";
+
+        if (debugEnabled)
+        {
+            dbgTrace.traceEnter(funcName, TrcDbgTrace.TraceLevel.API, "enabled=%b", enabled);
+            dbgTrace.traceExit(funcName, TrcDbgTrace.TraceLevel.API);
+        }
+
         device.setTaskEnabled(enabled);
     }   //setEnabled
 
@@ -92,6 +112,14 @@ public class FrcI2cLEDPanel extends TrcI2cLEDPanel
     @Override
     public void asyncWriteData(byte[] data)
     {
+        final String funcName = "asyncWriteData";
+
+        if (debugEnabled)
+        {
+            dbgTrace.traceEnter(funcName, TrcDbgTrace.TraceLevel.API, "data=%s", Arrays.toString(data));
+            dbgTrace.traceExit(funcName, TrcDbgTrace.TraceLevel.API);
+        }
+
         device.asyncWrite(null, data, data.length, null, null);
     }   //asyncWriteData
 

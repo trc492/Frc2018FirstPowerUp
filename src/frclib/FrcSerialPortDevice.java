@@ -35,13 +35,6 @@ import trclib.TrcSerialBusDevice;
  */
 public class FrcSerialPortDevice extends TrcSerialBusDevice
 {
-    private static final String moduleName = "FrcSerialPortDevice";
-    private static final boolean debugEnabled = false;
-    private static final boolean tracingEnabled = false;
-    private static final TrcDbgTrace.TraceLevel traceLevel = TrcDbgTrace.TraceLevel.API;
-    private static final TrcDbgTrace.MsgLevel msgLevel = TrcDbgTrace.MsgLevel.INFO;
-    private TrcDbgTrace dbgTrace = null;
-
     private SerialPort device;
 
     /**
@@ -58,12 +51,6 @@ public class FrcSerialPortDevice extends TrcSerialBusDevice
         final String instanceName, Port port, int baudRate, int dataBits, Parity parity, StopBits stopBits)
     {
         super(instanceName);
-
-        if (debugEnabled)
-        {
-            dbgTrace = new TrcDbgTrace(moduleName + "." + instanceName, tracingEnabled, traceLevel, msgLevel);
-        }
-
         device = new SerialPort(baudRate, port, dataBits, parity, stopBits);
     }   //FrcSerialPortDevice
 

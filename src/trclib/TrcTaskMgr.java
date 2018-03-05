@@ -261,7 +261,8 @@ public class TrcTaskMgr
         if (debugEnabled)
         {
             dbgTrace = useGlobalTracer?
-                TrcDbgTrace.getGlobalTracer(): new TrcDbgTrace(moduleName, tracingEnabled, traceLevel, msgLevel);
+                TrcDbgTrace.getGlobalTracer():
+                new TrcDbgTrace(moduleName, tracingEnabled, traceLevel, msgLevel);
         }
 
         instance = this;
