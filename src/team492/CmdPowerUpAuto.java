@@ -156,7 +156,7 @@ class CmdPowerUpAuto implements TrcRobot.RobotCommand
                             //
                             // Don't need to go across the other side.
                             //
-                            if(rightSwitch)
+                            if (rightSwitch)
                             {
                                 robot.rightSonarArray.startRanging(true);
                             }
@@ -164,7 +164,6 @@ class CmdPowerUpAuto implements TrcRobot.RobotCommand
                             {
                                 robot.leftSonarArray.startRanging(true);
                             }
-                            // yDistance is negative for going backwards.
                             yDistance = RobotInfo.AUTO_DISTANCE_TO_SWITCH;
                             nextState = State.STRAFE_TO_SWITCH;
                         }
