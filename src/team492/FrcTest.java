@@ -28,6 +28,7 @@ import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 import frclib.FrcChoiceMenu;
 import frclib.FrcJoystick;
 import trclib.TrcEvent;
+import trclib.TrcRevBlinkin.LEDPattern;
 import trclib.TrcStateMachine;
 import trclib.TrcTimer;
 
@@ -481,6 +482,7 @@ public class FrcTest extends FrcTeleOp
                             robot.rightFrontWheel.setPower(0.0);
                             robot.leftRearWheel.setPower(0.0);
                             robot.rightRearWheel.setPower(0.0);
+                            robot.ledStrip.setPattern(LEDPattern.SolidRed);
                             break;
 
                         case 1:
@@ -491,6 +493,7 @@ public class FrcTest extends FrcTeleOp
                             robot.rightFrontWheel.setPower(robot.drivePower);
                             robot.leftRearWheel.setPower(0.0);
                             robot.rightRearWheel.setPower(0.0);
+                            robot.ledStrip.setPattern(LEDPattern.SolidGreen);
                             break;
 
                         case 2:
@@ -501,6 +504,7 @@ public class FrcTest extends FrcTeleOp
                             robot.rightFrontWheel.setPower(0.0);
                             robot.leftRearWheel.setPower(robot.drivePower);
                             robot.rightRearWheel.setPower(0.0);
+                            robot.ledStrip.setPattern(LEDPattern.SolidBlue);
                             break;
 
                         case 3:
@@ -511,6 +515,7 @@ public class FrcTest extends FrcTeleOp
                             robot.rightFrontWheel.setPower(0.0);
                             robot.leftRearWheel.setPower(0.0);
                             robot.rightRearWheel.setPower(robot.drivePower);
+                            robot.ledStrip.setPattern(LEDPattern.SolidWhite);
                             break;
                     }
                     motorIndex = motorIndex + 1;
