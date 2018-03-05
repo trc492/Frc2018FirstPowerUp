@@ -76,17 +76,18 @@ public class Flipper extends FrcPneumatic
             switch(state)
             {
                 case EXTEND:
-                    this.extend(0.0, event);
+                    this.extend(); // extend flipper
+                    timer.set(1.0, event); // Wait for pneumatics to extend
                     sm.waitForSingleEvent(event, State.DELAY);
                     break;
                     
                 case DELAY:
-                    timer.set(delay, event);
+                    timer.set(delay, event); // Wait for cube to get flung off
                     sm.waitForSingleEvent(event, State.RETRACT);
                     break;
                     
                 case RETRACT:
-                    this.retract();
+                    this.retract(); // retract flipper
                     setTaskEnabled(false);
                     break;
             }
