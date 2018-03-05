@@ -132,10 +132,10 @@ public class RobotInfo
     // DriveBase subsystem.
     //
 
-    public static final double DRIVE_HEADING_NORTH              = 0.0;
-    public static final double DRIVE_HEADING_EAST               = 90.0;
-    public static final double DRIVE_HEADING_WEST               = -90.0;
-    public static final double DRIVE_HEADING_SOUTH              = 180.0;
+    public static final double DRIVE_HEADING_NORTH              = 180.0;
+    public static final double DRIVE_HEADING_EAST               = -90.0;
+    public static final double DRIVE_HEADING_WEST               = 90.0;
+    public static final double DRIVE_HEADING_SOUTH              = 0.0;
 
     public static final double DRIVE_STALL_TIMEOUT              = 0.5;
     public static final double DRIVE_SLOW_XSCALE                = 3.0;
@@ -237,12 +237,12 @@ public class RobotInfo
     //
     // CmdPowerUpAuto variables.
     //
-    public static final double AUTO_DISTANCE_TO_SWITCH          = -158.0;
+    public static final double AUTO_DISTANCE_TO_SWITCH          = 158.0;
     public static final double FINAL_FRONT_SCALE_APPROACH_DISTANCE= 64.0;
     public static final double FINAL_SIDE_SCALE_APPROACH_DISTANCE= 24.0;
     public static final double RIGHT_SWITCH_LOCATION            = 107.0;
     public static final double LEFT_SWITCH_LOCATION             = -107.0;
-    public static final double ADVANCE_TO_SECOND_CUBE_DISTANCE  = -60.0;
+    public static final double ADVANCE_TO_SECOND_CUBE_DISTANCE  = 60.0;
     public static final double STRAFE_TO_SECOND_CUBE_DISTANCE   = 57.0;
     public static final double SCALE_FRONT_POSITION             = 75.0;
     public static final double SCALE_SIDE_POSITION              = 120.0;
@@ -256,12 +256,12 @@ public class RobotInfo
     //
     // FrcAuto constants.
     //
-    public static final double FWD_DISTANCE_1                   = -10.0;
-    public static final double FWD_DISTANCE_2                   = -60.0;
-    public static final double FWD_DISTANCE_3                   = -208.0;
-    public static final double START_POS_1                      = -107.0;
+    public static final double FWD_DISTANCE_1                   = 10.0;
+    public static final double FWD_DISTANCE_2                   = 60.0;
+    public static final double FWD_DISTANCE_3                   = 208.0;
+    public static final double START_POS_1                      = -107.0;   //CodeReview: should this be slightly different from LEFT_SWITCH_LOCATION???
     public static final double START_POS_2                      = 0.0;
-    public static final double START_POS_3                      = 107.0;
+    public static final double START_POS_3                      = 107.0;    //CodeReview: should this be slightly different from RIGHT_SWITCH_LOCATION???
 
     //
     // LED strip pattern constants.
