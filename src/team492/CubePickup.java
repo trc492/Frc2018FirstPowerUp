@@ -195,16 +195,25 @@ public class CubePickup
     /**
      * spin the pickup motors to the given power.
      */
-    public void setPickupPower(double power)
+    private void setPickupPower(double power, boolean userStop)
     {
         if (sm.isEnabled())
         {
+            if (userStop)
+            {
+                robot.tracer.traceInfo("setPickupPower", "Abort state machine (power=%.2f)", power);
+            }
             cubeProximityTrigger.setTaskEnabled(false);
             currentTrigger.setTaskEnabled(false);
             sm.stop();
             setPickupTaskEnabled(false);
         }
         controlMotor.setPower(power);
+    }
+
+    public void setPickupPower(double power)
+    {
+        setPickupPower(power, true);
     }
 
     /**
@@ -328,7 +337,7 @@ public class CubePickup
                 case DONE:
                 default:
                     // We have the cube, we can stop now.
-                    stopPickup();
+                    setPickupPower(0.0, false);
                     robot.ledStrip.setPattern(RobotInfo.LED_CUBE_IN_POSSESSION);
                     break;
             }
