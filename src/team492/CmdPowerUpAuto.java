@@ -115,6 +115,8 @@ class CmdPowerUpAuto implements TrcRobot.RobotCommand
     @Override
     public boolean cmdPeriodic(double elapsedTime)
     {
+        final String funcName = "PowerUpAutoPeriodic";
+
         boolean done = !sm.isEnabled();
 
         if (!done)
@@ -179,8 +181,9 @@ class CmdPowerUpAuto implements TrcRobot.RobotCommand
                             yDistance = forwardDistance;
                             nextState = State.TURN_TO_SWITCH;
                         }
-// Let's do it full speed!!!
-// robot.encoderYPidCtrl.setOutputRange(-0.5, 0.5);
+                        robot.cubePickup.deployPickup();
+                        // Don't do full speed. The wheels may slip and compromise accuracy.
+                        robot.encoderYPidCtrl.setOutputRange(-0.7, 0.7);
                         // We are actually moving backward because we start by parking backwards,
                         // so make yDistance negative.
                         robot.pidDrive.setTarget(xDistance, -yDistance, robot.targetHeading, false, event);
@@ -232,6 +235,7 @@ class CmdPowerUpAuto implements TrcRobot.RobotCommand
                     // CodeReview: if we have the ziptie feeler, don't need to strafe to switch and strafe back.
                     case STRAFE_TO_SWITCH:
                         sonarDistance = rightSwitch? robot.getRightSonarDistance(): robot.getLeftSonarDistance();
+                        robot.tracer.traceInfo(funcName, "sonarDistance=%.1f", sonarDistance);
                         if (sonarDistance < RobotInfo.SWITCH_SONAR_DISTANCE_THRESHOLD)
                         {
                             sm.setState(State.FLIP_CUBE);
@@ -343,7 +347,8 @@ class CmdPowerUpAuto implements TrcRobot.RobotCommand
                     case STRAFE_TO_SECOND_CUBE:
                         if (robot.cmdStrafeUntilCube.cmdPeriodic(elapsedTime))
                         {
-                            sm.setState(State.START_SECOND_PICKUP);
+                            //sm.setState(State.START_SECOND_PICKUP);
+                            sm.setState(State.DONE);
                         }
                         traceState = false;
                         break;

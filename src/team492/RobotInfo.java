@@ -189,6 +189,7 @@ public class RobotInfo
     public static final double SONAR_TOLERANCE                  = 1.0;
     public static final double SONAR_INCHES_PER_VOLT            = 1.0/0.0098; //9.8mV per inch
     public static final double SONAR_ERROR_THRESHOLD            = 50.0; //value should not jump 50-in per time slice.
+    public static final double SONAR_DISTANCE_OFFSET            = 5.0;
 
     //
     // Winch subsystem.
@@ -237,7 +238,7 @@ public class RobotInfo
     //
     // CmdPowerUpAuto variables.
     //
-    public static final double AUTO_DISTANCE_TO_SWITCH          = 158.0;
+    public static final double AUTO_DISTANCE_TO_SWITCH          = 145.0;
     public static final double FINAL_FRONT_SCALE_APPROACH_DISTANCE= 64.0;
     public static final double FINAL_SIDE_SCALE_APPROACH_DISTANCE= 24.0;
     public static final double RIGHT_SWITCH_LOCATION            = 107.0;

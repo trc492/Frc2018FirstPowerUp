@@ -79,6 +79,8 @@ public class CubePickup
             RobotInfo.SOL_CUBEPICKUP_CLAW_RETRACT);
         deployer = new FrcPneumatic("CubePickupDeploy", RobotInfo.CANID_PCM1, RobotInfo.SOL_CUBEPICKUP_ARM_EXTEND,
             RobotInfo.SOL_CUBEPICKUP_ARM_RETRACT);
+        closeClaw();
+        raisePickup();
 
         cubeProximitySensor = new FrcDigitalInput("CubeProximitySensor", RobotInfo.DIO_CUBE_PROXIMITY_SENSOR);
         cubeProximityTrigger = new TrcDigitalTrigger(

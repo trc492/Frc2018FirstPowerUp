@@ -84,7 +84,7 @@ public class Robot extends FrcRobotBase
     public static final boolean USE_USB_CAM = true;
     public static final boolean USE_PIXY_SPI = false;
     public static final boolean USE_PIXY_I2C = true;
-    public static final boolean USE_TEXT_TO_SPEECH = true;
+    public static final boolean USE_TEXT_TO_SPEECH = false;
     public static final boolean USE_MESSAGE_BOARD = false;
     public static final boolean USE_GYRO_ASSIST = true;
     public static final boolean USE_TORQUE_BASED_DRIVING = false;
@@ -92,7 +92,7 @@ public class Robot extends FrcRobotBase
     public static final boolean USE_MAXBOTIX_SONAR_ARRAY = true;
     public static final boolean USE_LIDAR = false;
 
-    private static final boolean DEBUG_POWER_CONSUMPTION = true;
+    private static final boolean DEBUG_POWER_CONSUMPTION = false;
     private static final boolean DEBUG_DRIVE_BASE = false;
     private static final boolean DEBUG_PID_DRIVE = false;
     private static final boolean DEBUG_WINCH = false;
@@ -633,7 +633,7 @@ public class Robot extends FrcRobotBase
             value = leftSonarSensor.getData(0).value;
         }
 
-        return value;
+        return value - RobotInfo.SONAR_DISTANCE_OFFSET;
     }   //getLeftSonarDistance
 
     public double getRightSonarDistance()
@@ -649,7 +649,7 @@ public class Robot extends FrcRobotBase
             value = rightSonarSensor.getData(0).value;
         }
 
-        return value;
+        return value - RobotInfo.SONAR_DISTANCE_OFFSET;
     }   //getRightSonarDistance
 
     public double getFrontSonarDistance()

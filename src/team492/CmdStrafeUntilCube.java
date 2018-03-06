@@ -12,7 +12,7 @@ public class CmdStrafeUntilCube implements TrcRobot.RobotCommand
 
     public enum State
     {
-        START_STRAFE, DONE
+        START_VISION_STRAFE, VISION_DONE
     }
 
     private static final double[] visionThresholds =
@@ -59,7 +59,7 @@ public class CmdStrafeUntilCube implements TrcRobot.RobotCommand
         stop();
         this.xDistance = xDistance;
         onFinishedEvent = event;
-        sm.start(State.START_STRAFE);
+        sm.start(State.START_VISION_STRAFE);
     }
 
     public void start(double xDistance)
@@ -80,6 +80,7 @@ public class CmdStrafeUntilCube implements TrcRobot.RobotCommand
     @Override
     public boolean cmdPeriodic(double elapsedTime)
     {
+        final String funcName = "VisionStrafePeriodic";
         boolean done = !sm.isEnabled();
 
         if (!done)
@@ -94,15 +95,17 @@ public class CmdStrafeUntilCube implements TrcRobot.RobotCommand
             {
                 switch (state)
                 {
-                    case START_STRAFE:
+                    case START_VISION_STRAFE:
                         setVisionTriggerEnabled(true, visionEvent);
                         sm.addEvent(visionEvent);
                         robot.pidDrive.setTarget(xDistance, 0.0, robot.targetHeading, false, event);
                         sm.addEvent(event);
-                        sm.waitForEvents(State.DONE);
+                        sm.waitForEvents(State.VISION_DONE);
                         break;
 
-                    case DONE:
+                    case VISION_DONE:
+                        robot.tracer.traceInfo(funcName, "visionEvent=%b, driveEvent=%b",
+                            visionEvent.isSignaled(), event.isSignaled());
                         stop();
                         if (onFinishedEvent != null)
                         {
@@ -120,6 +123,8 @@ public class CmdStrafeUntilCube implements TrcRobot.RobotCommand
 
     public void visionTriggerHandler(int currZone, int prevZone, double value)
     {
+        robot.tracer.traceInfo("VisionTrigger", "prevZone=%d, currZone=%d, value=%.2f",
+            prevZone, currZone, value);
         if (currZone == 1)
         {
             if (visionTriggerEvent != null)
