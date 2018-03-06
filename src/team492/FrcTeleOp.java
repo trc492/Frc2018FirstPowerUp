@@ -348,33 +348,17 @@ public class FrcTeleOp implements TrcRobot.RobotMode
                 break;
 
             case FrcJoystick.LOGITECH_BUTTON8:
-                if (pressed)
-                {
-                    robot.leftFlipper.extend();
-                }
-                else
-                {
-                    robot.leftFlipper.retract();
-                }
                 break;
 
             case FrcJoystick.LOGITECH_BUTTON9:
-                if (pressed)
-                {
-                    robot.rightFlipper.extend();
-                }
-                else
-                {
-                    robot.rightFlipper.retract();
-                }
                 break;
 
             case FrcJoystick.LOGITECH_BUTTON10:
-                robot.winch.setPower(pressed? RobotInfo.WINCH_TELEOP_POWER: 0.0);
+                robot.winch.setPower(pressed? -RobotInfo.WINCH_TELEOP_POWER: 0.0);
                 break;
 
             case FrcJoystick.LOGITECH_BUTTON11:
-                robot.winch.setPower(pressed? -RobotInfo.WINCH_TELEOP_POWER: 0.0);
+                robot.winch.setPower(pressed? RobotInfo.WINCH_TELEOP_POWER: 0.0);
                 break;
 
             case FrcJoystick.LOGITECH_BUTTON12:
