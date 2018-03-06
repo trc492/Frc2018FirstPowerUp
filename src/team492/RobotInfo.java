@@ -199,7 +199,7 @@ public class RobotInfo
     //
     // Flipper subsystem
     //
-    public static final double FLIPPER_DELAY                            = 2.0;
+    public static final double FLIPPER_DELAY                            = 0.75;
     
     //
     // CubePickup subsystem.
