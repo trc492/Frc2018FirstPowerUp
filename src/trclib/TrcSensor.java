@@ -308,31 +308,35 @@ public abstract class TrcSensor<D>
         final String funcName = "getProcessedData";
         @SuppressWarnings("unchecked")
         SensorData<Double> data = (SensorData<Double>)getRawData(index, dataType);
-        double value = (double)data.value;
 
-        if (debugEnabled) dbgTrace.traceInfo(funcName, "raw=%.3f", value);
-        if (filters[index] != null)
+        if (data != null)
         {
-            value = filters[index].filterData(value);
-            if (debugEnabled) dbgTrace.traceInfo(funcName, "filtered=%.3f", value);
-        }
+            double value = (double)data.value;
 
-        if (calibrator != null)
-        {
-            value = calibrator.getCalibratedData(index, value);
-            if (debugEnabled) dbgTrace.traceInfo(funcName, "calibrated=%.3f", value);
-        }
+            if (debugEnabled) dbgTrace.traceInfo(funcName, "raw=%.3f", value);
+            if (filters[index] != null)
+            {
+                value = filters[index].filterData(value);
+                if (debugEnabled) dbgTrace.traceInfo(funcName, "filtered=%.3f", value);
+            }
 
-        value *= signs[index]*scales[index] + offsets[index];
-        if (debugEnabled) dbgTrace.traceInfo(
-            funcName, "scaled=%.3f (scale=%f,offset=%f)", value, scales[index], offsets[index]);
-        data.value = value;
+            if (calibrator != null)
+            {
+                value = calibrator.getCalibratedData(index, value);
+                if (debugEnabled) dbgTrace.traceInfo(funcName, "calibrated=%.3f", value);
+            }
 
-        if (debugEnabled)
-        {
-            dbgTrace.traceEnter(funcName, TrcDbgTrace.TraceLevel.API, "index=%d", index);
-            dbgTrace.traceExit(funcName, TrcDbgTrace.TraceLevel.API,
-                               "=(timestamp=%0.3f,value=%f", data.timestamp, value);
+            value *= signs[index]*scales[index] + offsets[index];
+            if (debugEnabled) dbgTrace.traceInfo(
+                funcName, "scaled=%.3f (scale=%f,offset=%f)", value, scales[index], offsets[index]);
+            data.value = value;
+
+            if (debugEnabled)
+            {
+                dbgTrace.traceEnter(funcName, TrcDbgTrace.TraceLevel.API, "index=%d", index);
+                dbgTrace.traceExit(funcName, TrcDbgTrace.TraceLevel.API,
+                                   "=(timestamp=%0.3f,value=%f", data.timestamp, value);
+            }
         }
 
         return data;

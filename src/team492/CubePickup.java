@@ -42,7 +42,7 @@ public class CubePickup
 {
     private enum State
     {
-        START, CHECK_CURRENT, DETECT_CUBE, PULLIN_CUBE, DONE
+        START, DELAY_SAMPLING, SAMPLE_CURRENT, DONE
     }
 
     private static final double[] currentThresholds =
@@ -57,8 +57,10 @@ public class CubePickup
     private TrcTaskMgr.TaskObject pickupTaskObj;
     private TrcStateMachine<State> sm;
     private TrcTimer timer;
-    private TrcEvent timerEvent, currentUpEvent, currentDownEvent;
-    private TrcEvent cubeInPossessionEvent, cubeInProximityEvent;
+    private TrcEvent timerEvent, currentEvent;
+    private TrcEvent cubeInProximityEvent = null;
+    private TrcEvent cubeInPossessionEvent = null;
+    private TrcEvent currentTriggerEvent = null;
     public double startTime;
 
     /**
@@ -95,8 +97,7 @@ public class CubePickup
         sm = new TrcStateMachine<>("pickupStateMachine");
         timer = new TrcTimer("pickupTimer");
         timerEvent = new TrcEvent("TimerEvent");
-        currentUpEvent = new TrcEvent("CurrentUpEvent");
-        currentDownEvent = new TrcEvent("CurrentDownEvent");
+        currentEvent = new TrcEvent("CurrentUpEvent");
     }
 
     /**
@@ -198,7 +199,7 @@ public class CubePickup
         {
             if (userStop)
             {
-                robot.tracer.traceInfo("setPickupPower", "Abort state machine (power=%.2f)", power);
+                robot.tracer.traceInfo("setPickupPower", "User Aborted Pickup (power=%.2f)", power);
             }
             cubeProximityTrigger.setTaskEnabled(false);
             currentTrigger.setTaskEnabled(false);
@@ -255,9 +256,9 @@ public class CubePickup
         cubeProximityTrigger.setTaskEnabled(enabled);
     }
 
-    public void setCurrentTriggerEnabled(boolean enabled, TrcEvent event)
+    public void setCurrentTriggerEnabled(boolean enabled, TrcEvent currentTriggerEvent)
     {
-        cubeInPossessionEvent = event;
+        this.currentTriggerEvent = currentTriggerEvent;
         currentTrigger.setTaskEnabled(enabled);
     }
 
@@ -274,62 +275,35 @@ public class CubePickup
                 case START:
                     // Enable both proximity and current triggers.
                     // Proximity trigger will automatically close the claws.
-                    // Current trigger will detect the startup current spike subsiding so we can start monitoring
-                    //      the real current spike for cube possession.
-                    // The timer is for catching the case where we already have the cube in possession so the
-                    //      current is already spiking and will not come down. The timer timeout will move us to the
-                    //      next state so we don't wait forever for the startup current spike to subside.
+                    // Current trigger will detect the current spike so we can start monitoring the current value
+                    // to determine if it is a startup spike for stalled in cube possession.
                     robot.ledStrip.setPattern(RobotInfo.LED_CUBE_SEEKING);
                     cubeProximityTrigger.setTaskEnabled(true);
                     currentTrigger.setTaskEnabled(true);
-                    sm.addEvent(currentUpEvent);
-                    sm.addEvent(currentDownEvent);
-                    sm.waitForEvents(State.CHECK_CURRENT);
+                    sm.waitForSingleEvent(currentEvent, State.DELAY_SAMPLING);
                     break;
 
-                case CHECK_CURRENT:
+                case DELAY_SAMPLING:
+                    robot.tracer.traceInfo(funcName, "%s: current=%.2f",
+                        state, getPickupCurrent());
+                    timer.set(0.3, timerEvent);
+                    sm.waitForSingleEvent(timerEvent, State.SAMPLE_CURRENT);
+                    break;
+
+                case SAMPLE_CURRENT:
                     pickupCurrent = getPickupCurrent();
-                    if (currentDownEvent.isSignaled())
+                    if (pickupCurrent >= RobotInfo.PICKUP_STALL_CURRENT)
                     {
-                        robot.tracer.traceInfo(funcName, "Startup spike subsided (pickupCurrent=%.2f)",
-                            pickupCurrent);
-                        sm.setState(State.DETECT_CUBE);
-                    }
-                    else if (currentUpEvent.isSignaled())
-                    {
-                        if (pickupCurrent >= RobotInfo.PICKUP_STALL_CURRENT)
-                        {
-                            robot.tracer.traceInfo(funcName, "Cube already in possession (pickupCurent=%.2f)",
-                                pickupCurrent);
-                            sm.setState(State.DONE);
-                        }
-                        else
-                        {
-                            robot.tracer.traceInfo(funcName, "Startup spike detected (pickupCurrent=%.2f)",
-                                pickupCurrent);
-                            sm.waitForSingleEvent(currentDownEvent, State.DETECT_CUBE);
-                        }
+                        robot.tracer.traceInfo(funcName, "%s: Detected cube in possession (pickupCurent=%.2f)",
+                            state, pickupCurrent);
+                        sm.setState(State.DONE);
                     }
                     else
                     {
-                        robot.tracer.traceInfo(
-                            funcName, "Why are we here? (pickupCurrent=%.2f, upEvent=%b, downEvent=%b)",
-                            pickupCurrent, currentUpEvent.isSignaled(), currentDownEvent.isSignaled());
-                        throw new IllegalStateException("We should never come here.");
+                        robot.tracer.traceInfo(funcName, "%s: Detected startup spike (pickupCurrent=%.2f)",
+                            state, pickupCurrent);
+                        sm.setState(State.DELAY_SAMPLING);
                     }
-                    break;
-
-                case DETECT_CUBE:
-                    // We are now waiting for the current spike ramping up indicating cube in possession.
-                    robot.tracer.traceInfo(funcName, "pickupCurrent=%.2f, upEvent=%b, downEvent=%b",
-                        getPickupCurrent(), currentUpEvent.isSignaled(), currentDownEvent.isSignaled());
-                    sm.waitForSingleEvent(currentUpEvent, State.PULLIN_CUBE);
-                    break;
-
-                case PULLIN_CUBE:
-                    // Wait a bit to make sure we pull in the cube firmly before stopping.
-                    timer.set(0.3, timerEvent);
-                    sm.waitForSingleEvent(timerEvent, State.DONE);
                     break;
 
                 case DONE:
@@ -337,6 +311,10 @@ public class CubePickup
                     // We have the cube, we can stop now.
                     setPickupPower(0.0, false);
                     robot.ledStrip.setPattern(RobotInfo.LED_CUBE_IN_POSSESSION);
+                    if (cubeInPossessionEvent != null)
+                    {
+                        cubeInPossessionEvent.set(true);
+                    }
                     break;
             }
 
@@ -361,22 +339,16 @@ public class CubePickup
 
     private void currentTriggerEvent(int currZone, int prevZone, double zoneValue)
     {
-        robot.tracer.traceInfo("CurrentTrigger", "prevZone=%d, currZone=%d, pickupCurrent=%.2f",
-            prevZone, currZone, zoneValue);
-        if (currZone == 1)
+        robot.tracer.traceInfo("CurrentTrigger", "[%.3f] prevZone=%d, currZone=%d, pickupCurrent=%.2f",
+            TrcUtil.getCurrentTime() - startTime, prevZone, currZone, zoneValue);
+        if (currZone == 1 && currZone > prevZone)
         {
             // Current is ramping up.
-            currentUpEvent.set(true);
-            //TODO: think about this one a bit more...
-            if (cubeInPossessionEvent != null)
+            currentEvent.set(true);
+            if (currentTriggerEvent != null)
             {
-                cubeInPossessionEvent.set(true);
+                currentTriggerEvent.set(true);
             }
-        }
-        else if (prevZone == 1 && currZone == 0)
-        {
-            // Current is ramping down.
-            currentDownEvent.set(true);
         }
     }
 

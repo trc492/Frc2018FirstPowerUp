@@ -278,24 +278,27 @@ public class TrcCardinalConverter<D>
         {
             TrcSensor.SensorData<Double> data = sensor.getProcessedData(i, dataType);
 
-            if (Math.abs(data.value - prevData[i].value) > (cardinalRangeHighs[i] - cardinalRangeLows[i])/2.0)
+            if (data != null)
             {
-                if (data.value > prevData[i].value)
+                if (Math.abs(data.value - prevData[i].value) > (cardinalRangeHighs[i] - cardinalRangeLows[i])/2.0)
                 {
-                    numCrossovers[i]--;
+                    if (data.value > prevData[i].value)
+                    {
+                        numCrossovers[i]--;
+                    }
+                    else
+                    {
+                        numCrossovers[i]++;
+                    }
                 }
-                else
-                {
-                    numCrossovers[i]++;
-                }
+                prevData[i] = data;
             }
-            prevData[i] = data;
         }
 
         if (debugEnabled)
         {
             dbgTrace.traceExit(funcName, TrcDbgTrace.TraceLevel.TASK,
-                               "! (numCrossovers=%s)", Arrays.toString(numCrossovers));
+                "! (numCrossovers=%s)", Arrays.toString(numCrossovers));
         }
     }   //preContinuousTask
 

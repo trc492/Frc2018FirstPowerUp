@@ -234,7 +234,7 @@ public class TrcAnalogTrigger<D>
             dbgTrace.traceEnter(funcName, TrcDbgTrace.TraceLevel.TASK, "taskType=%s,runMode=%s", taskType, runMode);
         }
 
-        if (data.value != null)
+        if (data != null && data.value != null)
         {
             double sample = (double)data.value;
             int currZone = -1;

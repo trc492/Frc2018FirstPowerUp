@@ -93,7 +93,7 @@ public class Robot extends FrcRobotBase
     public static final boolean USE_MAXBOTIX_SONAR_ARRAY = true;
     public static final boolean USE_LIDAR = false;
 
-    private static final boolean DEBUG_POWER_CONSUMPTION = false;
+    private static final boolean DEBUG_POWER_CONSUMPTION = true;
     private static final boolean DEBUG_DRIVE_BASE = false;
     private static final boolean DEBUG_PID_DRIVE = false;
     private static final boolean DEBUG_WINCH = false;
@@ -682,7 +682,7 @@ public class Robot extends FrcRobotBase
         return value;
     }
 
-    public double getPixyTargetAngle()
+    public Double getPixyTargetAngle()
     {
         final String funcName = "getPixyTargetAngle";
         TargetInfo targetInfo = pixy.getTargetInfo();
@@ -697,10 +697,10 @@ public class Robot extends FrcRobotBase
             tracer.traceInfo(funcName, "Cube not found!");
         }
 
-        return targetInfo != null? targetInfo.angle: 0.0;
+        return targetInfo != null? targetInfo.angle: null;
     }
 
-    public double getPixyTargetX()
+    public Double getPixyTargetX()
     {
         final String funcName = "getPixyTargetX";
         TargetInfo targetInfo = pixy.getTargetInfo();
@@ -715,10 +715,10 @@ public class Robot extends FrcRobotBase
             tracer.traceInfo(funcName, "Cube not found!");
         }
 
-        return targetInfo != null? targetInfo.xDistance: 0.0;
+        return targetInfo != null? targetInfo.xDistance: null;
     }
 
-    public double getPixyTargetY()
+    public Double getPixyTargetY()
     {
         final String funcName = "getPixyTargetY";
         TargetInfo targetInfo = pixy.getTargetInfo();
@@ -733,7 +733,7 @@ public class Robot extends FrcRobotBase
             tracer.traceInfo(funcName, "Cube not found!");
         }
 
-        return targetInfo != null? targetInfo.yDistance: 0.0;
+        return targetInfo != null? targetInfo.yDistance: null;
     }
 
     public double translateMotorPower(double desiredForcePercentage, double ticksPerSecond)
