@@ -432,15 +432,10 @@ public class FrcPneumatic
             dbgTrace.traceExit(funcName, TrcDbgTrace.TraceLevel.API);
         }
     }   //extend
-    
-    public void extendThenRetract(double extendPeriod)
-    {
-    	extendThenRetract(extendPeriod, 0.0, null);
-    }
 
-    public void extendThenRetract(double extendPeriod, double retractPeriod, TrcEvent event)
+    public void timedExtend(double extendPeriod, double retractPeriod, TrcEvent event)
     {
-        final String funcName = "extendThenRetract";
+        final String funcName = "timedExtend";
 
         if (debugEnabled)
         {
@@ -465,7 +460,12 @@ public class FrcPneumatic
         {
             dbgTrace.traceExit(funcName, TrcDbgTrace.TraceLevel.API);
         }
-    }   //extendThenRetract
+    }   //timedExtend
+
+    public void timedExtend(double extendPeriod)
+    {
+        timedExtend(extendPeriod, 0.0, null);
+    }   //timedExtend
 
     public boolean isExtended()
     {
