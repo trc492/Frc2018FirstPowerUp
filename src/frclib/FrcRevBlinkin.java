@@ -33,6 +33,7 @@ import trclib.TrcRevBlinkin;
 public class FrcRevBlinkin extends TrcRevBlinkin
 {
     private Spark device;
+    private double currValue = 0.0;
 
     /**
      * Constructor: Create an instance of the object.
@@ -44,7 +45,20 @@ public class FrcRevBlinkin extends TrcRevBlinkin
     {
         super(instanceName);
         device = new Spark(channel);
+        set(currValue);
     }   //FrcRevBlinkin
+
+    /**
+     * This method is provided by the platform dependent subclass that extends this class. It gets the current set
+     * LED pattern value.
+     *
+     * @return currently set LED pattern value.
+     */
+    @Override
+    public double get()
+    {
+        return currValue;
+    }   //get
 
     /**
      * This method sets the LED pattern value to the physical REV Blinkin device in a platform dependent way.
@@ -53,6 +67,7 @@ public class FrcRevBlinkin extends TrcRevBlinkin
      *
      * @param value specifies the color pattern value.
      */
+    @Override
     public void set(double value)
     {
         final String funcName = "set";
@@ -62,6 +77,7 @@ public class FrcRevBlinkin extends TrcRevBlinkin
             dbgTrace.traceEnter(funcName, TrcDbgTrace.TraceLevel.API, "value=%.2f", value);
         }
 
+        currValue = value;
         device.set(value);
 
         if (debugEnabled)

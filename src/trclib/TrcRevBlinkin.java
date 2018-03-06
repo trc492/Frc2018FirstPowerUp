@@ -44,6 +44,14 @@ public abstract class TrcRevBlinkin
      */
     public abstract void set(double value);
 
+    /**
+     * This method is provided by the platform dependent subclass that extends this class. It gets the current set
+     * LED pattern value.
+     *
+     * @return currently set LED pattern value.
+     */
+    public abstract double get();
+
     public enum LEDPattern
     {
         FixedRainbowRainBow(-0.99),
@@ -149,10 +157,35 @@ public abstract class TrcRevBlinkin
 
         public double value;
 
-        LEDPattern(double value)
+        /**
+         * Constructor: Creates an enum member.
+         *
+         * @param value specifies the value of the new member.
+         */
+        private LEDPattern(double value)
         {
             this.value = value;
-        }
+        }   //LEDPattern
+
+        /**
+         * This method looks up the enum member that matches the given value.
+         *
+         * @param value specifies the enum member value.
+         * @return enum member with a matching value.
+         */
+        public static LEDPattern getPattern(double value)
+        {
+            for (LEDPattern p: LEDPattern.values())
+            {
+                if (value == p.value)
+                {
+                    return p;
+                }
+            }
+
+            return null;
+        }   //getPattern
+
     }   //enum LEDPattern
 
     private final String instanceName;
@@ -183,6 +216,25 @@ public abstract class TrcRevBlinkin
     {
         return instanceName;
     }   //toString
+
+    /**
+     * This method returns the currently set LED pattern
+     *
+     * @return currently set LED pattern.
+     */
+    public LEDPattern getPattern()
+    {
+        final String funcName = "getPattern";
+        LEDPattern pattern = LEDPattern.getPattern(get());
+
+        if (debugEnabled)
+        {
+            dbgTrace.traceEnter(funcName, TrcDbgTrace.TraceLevel.API);
+            dbgTrace.traceExit(funcName, TrcDbgTrace.TraceLevel.API, "=%s", pattern);
+        }
+
+        return pattern;
+    }   //getPattern
 
     /**
      * This method sets the color pattern of the LED strip.

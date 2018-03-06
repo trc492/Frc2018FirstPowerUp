@@ -271,5 +271,7 @@ public class RobotInfo
     public static final LEDPattern LED_CUBE_SEEKING             = LEDPattern.SolidAqua;
     public static final LEDPattern LED_CUBE_IN_POSSESSION       = LEDPattern.SolidGreen;
     public static final LEDPattern LED_CUBE_IN_PROXIMITY        = LEDPattern.SolidYellow;
+    public static final LEDPattern LED_GYRO_ASSIST_OFF          = LEDPattern.SolidBlack;
+    public static final LEDPattern LED_GYRO_ASSIST_ON           = LEDPattern.SolidRed;
 
 }   // class RobotInfo

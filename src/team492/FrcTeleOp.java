@@ -243,11 +243,13 @@ public class FrcTeleOp implements TrcRobot.RobotMode
                     gyroAssist = !gyroAssist;
                     if (gyroAssist)
                     {
+                        robot.ledStrip.setPattern(RobotInfo.LED_GYRO_ASSIST_ON);
                         robot.driveBase.enableGyroAssist(
                             RobotInfo.DRIVE_MAX_ROTATION_RATE, RobotInfo.DRIVE_GYRO_ASSIST_KP);
                     }
                     else
                     {
+                        robot.ledStrip.setPattern(RobotInfo.LED_GYRO_ASSIST_OFF);
                         robot.driveBase.disableGyroAssist();
                     }
                 }
