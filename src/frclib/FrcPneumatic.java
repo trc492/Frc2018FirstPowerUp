@@ -432,6 +432,11 @@ public class FrcPneumatic
             dbgTrace.traceExit(funcName, TrcDbgTrace.TraceLevel.API);
         }
     }   //extend
+    
+    public void extendThenRetract(double extendPeriod)
+    {
+    	extendThenRetract(extendPeriod, 0.0, null);
+    }
 
     public void extendThenRetract(double extendPeriod, double retractPeriod, TrcEvent event)
     {
