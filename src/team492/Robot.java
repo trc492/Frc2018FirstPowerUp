@@ -182,6 +182,7 @@ public class Robot extends FrcRobotBase
     public Elevator elevator;
     public CmdAutoCubePickup cmdAutoCubePickup;
     public CmdStrafeUntilCube cmdStrafeUntilCube;
+    public CmdExchangeAlign cmdExchangeAlign;
 
     // FMS provided the following info:
     //  - event name
@@ -418,6 +419,7 @@ public class Robot extends FrcRobotBase
 
         cmdAutoCubePickup = new CmdAutoCubePickup(this);
         cmdStrafeUntilCube = new CmdStrafeUntilCube(this);
+        cmdExchangeAlign = new CmdExchangeAlign(this);
 
         //
         // Robot Modes.

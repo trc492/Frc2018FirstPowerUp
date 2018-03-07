@@ -36,6 +36,8 @@ public class RobotInfo
     //
     public static final double FIELD_LENGTH                     = 54*12.0;
     public static final double FIELD_WIDTH                      = 27*12.0;
+    
+    public static final double EXCHANGE_WIDTH                   = 21.0; // 1ft 9in
 
     //
     // Robot dimensions.
@@ -64,8 +66,7 @@ public class RobotInfo
     public static final int DIO_LEFT_SONAR_PING                 = 0;
     public static final int DIO_RIGHT_SONAR_PING                = 1;
     public static final int DIO_FRONT_SONAR_PING                = 2;
-    public static final int DIO_LEFT_PROXIMITY_SENSOR           = 7;
-    public static final int DIO_RIGHT_PROXIMITY_SENSOR          = 8;
+    public static final int DIO_EXCHANGE_ALIGN_PROXIMITY_SENSOR = 8; // Might need to change this
     public static final int DIO_CUBE_PROXIMITY_SENSOR           = 9;
 
     //
@@ -116,6 +117,7 @@ public class RobotInfo
     public static final int USBCAM_HEIGHT                       = 240;
     public static final int USBCAM_FRAME_RATE                   = 15;
     public static final int USBCAM_BRIGHTNESS                   = 20;
+    public static final double EXCHANGE_ALIGN_SENSOR_OFFSET     = -8.0; // TUNE THIS. Inches offset from center of cube pickup
 
     //
     // Vision subsystem.
@@ -229,7 +231,7 @@ public class RobotInfo
     //
     // AutoAssist subsystem.
     //
-    public static final double PORTAL_ALIGN_STRAFE_DIST         = 36.0;     // 3 feet
+    public static final double EXCHANGE_ALIGN_STRAFE_DIST         = 36.0;     // 3 feet
     public static final double AUTO_PICKUP_MOVE_POWER           = 0.6;      // 60% power
     public static final double FIND_CUBE_X_TOLERANCE            = 6.0;      // 6-in
     public static final double FIND_CUBE_STRAFE_POWER           = 0.6;      // 60% power
