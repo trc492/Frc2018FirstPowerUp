@@ -34,7 +34,7 @@ public class CmdExchangeAlign implements TrcRobot.RobotCommand
     
     private enum State
     {
-    	START, ADJUST_POSITION, DONE
+    	START, START_STRAFE, ADJUST_POSITION, DONE
     }
     
     private Robot robot;
@@ -105,6 +105,30 @@ public class CmdExchangeAlign implements TrcRobot.RobotCommand
 			switch(state)
 			{
 				case START:
+					proximitySensor.setInverted(false);
+					if(!proximitySensor.isActive()) // If the proximity sensor can't detect the wall
+					{
+						robot.pidDrive.setTarget(0.0, RobotInfo.EXCHANGE_ALIGN_WALL_DIST, robot.targetHeading, false, pidEvent);
+						sm.addEvent(pidEvent);
+						sm.addEvent(proximityEvent);
+						sm.waitForEvents(State.START_STRAFE);
+					} else
+					{
+						sm.setState(State.START_STRAFE);
+					}
+					break;
+					
+				case START_STRAFE:
+					if(pidEvent.isSignaled() && !proximityEvent.isSignaled()) // Can't detect the wall for some reason
+					{
+						stop();
+						return true;
+					}
+					
+					robot.pidDrive.cancel();
+					proximitySensor.setInverted(true);
+					proximityEvent.clear();
+					
 					robot.pidDrive.setTarget(strafeDistance, 0.0, robot.targetHeading, false, pidEvent);
 					sm.addEvent(pidEvent);
 					sm.addEvent(proximityEvent);
