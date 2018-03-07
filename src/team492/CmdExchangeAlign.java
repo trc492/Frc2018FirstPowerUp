@@ -116,7 +116,7 @@ public class CmdExchangeAlign implements TrcRobot.RobotCommand
 					proximityTrigger.setTaskEnabled(false);
 					double xDistance = RobotInfo.EXCHANGE_WIDTH/2.0 + RobotInfo.EXCHANGE_ALIGN_SENSOR_OFFSET;
 					xDistance *= (strafeDistance < 0) ? 1 : -1;
-					robot.pidDrive.setTarget(xDistance, 0.0, robot.targetHeading, false, pidEvent);
+					robot.pidDrive.setTarget(xDistance, 0.0, robot.targetHeading, false, pidEvent, RobotInfo.EXCHANGE_ALIGN_TIMEOUT);
 					sm.waitForSingleEvent(pidEvent, State.DONE);
 					break;
 					
