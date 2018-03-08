@@ -194,7 +194,7 @@ public class RobotInfo
     //
     // Winch subsystem.
     //
-    public static final double WINCH_TELEOP_POWER               = 0.6; // TODO: This needs to be calibrated
+    public static final double WINCH_TELEOP_POWER               = 1.0; // TODO: This needs to be calibrated
 
     //
     // Flipper subsystem
@@ -241,8 +241,8 @@ public class RobotInfo
     public static final double AUTO_DISTANCE_TO_SWITCH          = 145.0;
     public static final double FINAL_FRONT_SCALE_APPROACH_DISTANCE= 64.0;
     public static final double FINAL_SIDE_SCALE_APPROACH_DISTANCE= 24.0;
-    public static final double RIGHT_SWITCH_LOCATION            = 107.0;
-    public static final double LEFT_SWITCH_LOCATION             = -107.0;
+    public static final double RIGHT_SWITCH_LOCATION            = 102.0;
+    public static final double LEFT_SWITCH_LOCATION             = -102.0;
     public static final double ADVANCE_TO_SECOND_CUBE_DISTANCE  = 60.0;
     public static final double STRAFE_TO_SECOND_CUBE_DISTANCE   = 57.0;
     public static final double SCALE_FRONT_POSITION             = 75.0;
@@ -260,9 +260,9 @@ public class RobotInfo
     public static final double FWD_DISTANCE_1                   = 10.0;
     public static final double FWD_DISTANCE_2                   = 60.0;
     public static final double FWD_DISTANCE_3                   = 208.0;
-    public static final double START_POS_1                      = -107.0;   //CodeReview: should this be slightly different from LEFT_SWITCH_LOCATION???
+    public static final double START_POS_1                      = -102.0;   //CodeReview: should this be slightly different from LEFT_SWITCH_LOCATION???
     public static final double START_POS_2                      = 0.0;
-    public static final double START_POS_3                      = 107.0;    //CodeReview: should this be slightly different from RIGHT_SWITCH_LOCATION???
+    public static final double START_POS_3                      = 102.0;    //CodeReview: should this be slightly different from RIGHT_SWITCH_LOCATION???
 
     //
     // LED strip pattern constants.
