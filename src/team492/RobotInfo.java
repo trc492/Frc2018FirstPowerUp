@@ -150,6 +150,10 @@ public class RobotInfo
     public static final double DRIVE_ENCODER_COUNTS_PER_ROTATION= 1440.0;
     public static final double DRIVE_GYRO_ASSIST_KP             = 1.5;
     public static final double DRIVE_MAX_ROTATION_RATE          = 6.5;      //radians per second
+    
+    public static final double MAX_X_OUTPUT_POWER               = 0.7;
+    public static final double MAX_Y_OUTPUT_POWER               = 0.7;
+    public static final double MAX_GYRO_OUTPUT_POWER            = 0.7;
 
     // 2017-03-21: 0.0152347136491642, 0.15, 0.0, 0.0
     // 0.7 power is pretty gud fam
@@ -247,8 +251,8 @@ public class RobotInfo
     public static final double FINAL_SIDE_SCALE_APPROACH_DISTANCE= 24.0;
     public static final double RIGHT_SWITCH_LOCATION            = 102.0;
     public static final double LEFT_SWITCH_LOCATION             = -102.0;
-    public static final double ADVANCE_TO_SECOND_CUBE_DISTANCE  = 60.0;
-    public static final double STRAFE_TO_SECOND_CUBE_DISTANCE   = 57.0;
+    public static final double ADVANCE_TO_SECOND_CUBE_DISTANCE  = 70.0;
+    public static final double STRAFE_TO_SECOND_CUBE_DISTANCE   = 36.0;
     public static final double SCALE_FRONT_POSITION             = 75.0;
     public static final double SCALE_SIDE_POSITION              = 120.0;
     public static final double FIRST_ELEVATOR_HEIGHT            = 30.0;
