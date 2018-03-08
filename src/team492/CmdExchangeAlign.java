@@ -52,7 +52,7 @@ public class CmdExchangeAlign implements TrcRobot.RobotCommand
     	pidEvent = new TrcEvent(moduleName + ".pidEvent");
     	sm = new TrcStateMachine<State>(moduleName);
     	
-    	proximitySensor = new FrcDigitalInput("ProximitySensor", RobotInfo.DIO_EXCHANGE_ALIGN_PROXIMITY_SENSOR);
+    	proximitySensor = new FrcDigitalInput("ProximitySensor", RobotInfo.DIO_LEFT_PROXIMITY_SENSOR);
     	proximitySensor.setInverted(true);
     	proximityTrigger = new TrcDigitalTrigger("ProximityTrigger", proximitySensor, this::proximityTriggerEvent);
     }
@@ -106,7 +106,7 @@ public class CmdExchangeAlign implements TrcRobot.RobotCommand
 			{
 				case START:
 					proximitySensor.setInverted(false);
-					if(!proximitySensor.isActive()) // If the proximity sensor can't detect the wall
+					if(!proximitySensor.isActive()) // If the proximity sensor can't detect the wall, attempt to find the wall
 					{
 						robot.pidDrive.setTarget(0.0, RobotInfo.EXCHANGE_ALIGN_WALL_DIST, robot.targetHeading, false, pidEvent);
 						sm.addEvent(pidEvent);
@@ -122,7 +122,7 @@ public class CmdExchangeAlign implements TrcRobot.RobotCommand
 					if(pidEvent.isSignaled() && !proximityEvent.isSignaled()) // Can't detect the wall for some reason
 					{
 						stop();
-						return true;
+						return true; // give up
 					}
 					
 					robot.pidDrive.cancel();
