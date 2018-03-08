@@ -66,7 +66,8 @@ public class RobotInfo
     public static final int DIO_LEFT_SONAR_PING                 = 0;
     public static final int DIO_RIGHT_SONAR_PING                = 1;
     public static final int DIO_FRONT_SONAR_PING                = 2;
-    public static final int DIO_EXCHANGE_ALIGN_PROXIMITY_SENSOR = 8; // Might need to change this
+    public static final int DIO_LEFT_PROXIMITY_SENSOR           = 7;
+    public static final int DIO_RIGHT_PROXIMITY_SENSOR          = 8;
     public static final int DIO_CUBE_PROXIMITY_SENSOR           = 9;
 
     //

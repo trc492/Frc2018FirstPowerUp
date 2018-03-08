@@ -281,58 +281,6 @@ public class FrcTest extends FrcTeleOp
     } // runContinuous
 
     @Override
-    public void leftDriveStickButtonEvent(int button, boolean pressed)
-    {
-        boolean processedInput = false;
-        
-        switch (button)
-        {
-            case FrcJoystick.LOGITECH_TRIGGER:
-                break;
-
-            case FrcJoystick.LOGITECH_BUTTON2:
-                break;
-
-            case FrcJoystick.LOGITECH_BUTTON3:
-                break;
-
-            case FrcJoystick.LOGITECH_BUTTON4:
-                break;
-
-            case FrcJoystick.LOGITECH_BUTTON5:
-                break;
-
-            case FrcJoystick.LOGITECH_BUTTON6:
-                break;
-
-            case FrcJoystick.LOGITECH_BUTTON7:
-                break;
-
-            case FrcJoystick.LOGITECH_BUTTON8:
-                break;
-
-            case FrcJoystick.LOGITECH_BUTTON9:
-                break;
-
-            case FrcJoystick.LOGITECH_BUTTON10:
-                robot.elevator.setPosition(36.0);
-                processedInput = true;
-                break;
-
-            case FrcJoystick.LOGITECH_BUTTON11:
-                break;
-
-            case FrcJoystick.LOGITECH_BUTTON12:
-                break;
-        }
-
-        if (!processedInput)
-        {
-            super.leftDriveStickButtonEvent(button, pressed);
-        }
-    }   //leftDriveStickButtonEvent
-
-    @Override
     public void operatorStickButtonEvent(int button, boolean pressed)
     {
         boolean processedInput = false;
@@ -379,18 +327,9 @@ public class FrcTest extends FrcTeleOp
                 break;
 
             case FrcJoystick.LOGITECH_BUTTON6:
-//                if(pressed)
-//                {
-//                    robot.elevator.setPosition(24.0);
-//                }
                 break;
 
             case FrcJoystick.LOGITECH_BUTTON7:
-//                if(pressed)
-//                {
-//                    robot.elevator.setPosition(48.0);
-//                    processedInput = true;
-//                }
                 break;
 
             case FrcJoystick.LOGITECH_BUTTON8:
@@ -404,10 +343,6 @@ public class FrcTest extends FrcTeleOp
                 break;
 
             case FrcJoystick.LOGITECH_BUTTON10:
-//                if(pressed)
-//                {
-//                    robot.elevator.setPosition(60.0);
-//                }
                 break;
 
             case FrcJoystick.LOGITECH_BUTTON11:
