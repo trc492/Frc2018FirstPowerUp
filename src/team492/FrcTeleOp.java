@@ -84,7 +84,13 @@ public class FrcTeleOp implements TrcRobot.RobotMode
     @Override
     public void runPeriodic(double elapsedTime)
     {
-        if (!robot.cmdAutoCubePickup.isEnabled())
+    	// Cancel auto assist if the driver does anything
+    	if(robot.leftDriveStick.getXWithDeadband(true) != 0 || robot.leftDriveStick.getYWithDeadband(true) != 0)
+    	{
+    		cancelAutoAssist();
+    	}
+    	
+        if (!isAutoAssistEnabled())
         {
             //
             // DriveBase operation.
@@ -148,7 +154,37 @@ public class FrcTeleOp implements TrcRobot.RobotMode
             robot.tracer.tracePrintf("Activated: %b", robot.cmdAutoCubePickup.isEnabled());
             robot.cmdAutoCubePickup.cmdPeriodic(elapsedTime);
         }
+        
+        if(robot.cmdExchangeAlign.isEnabled())
+        {
+        	robot.cmdExchangeAlign.cmdPeriodic(elapsedTime);
+        }
     } // runContinuous
+    
+    private void cancelAutoAssist()
+    {
+    	if(robot.cmdAutoCubePickup.isEnabled())
+    	{
+    		robot.cmdAutoCubePickup.stop();
+    	}
+    	
+    	if(robot.cmdExchangeAlign.isEnabled())
+    	{
+    		robot.cmdExchangeAlign.stop();
+    	}
+    	
+    	if(robot.cmdStrafeUntilCube.isEnabled())
+    	{
+    		robot.cmdStrafeUntilCube.stop();
+    	}
+    }
+    
+    private boolean isAutoAssistEnabled()
+    {
+    	return robot.cmdAutoCubePickup.isEnabled() ||
+    			robot.cmdExchangeAlign.isEnabled() ||
+    			robot.cmdStrafeUntilCube.isEnabled();
+    }
 
     //
     // Implements TrcJoystick.ButtonHandler.
@@ -179,9 +215,17 @@ public class FrcTeleOp implements TrcRobot.RobotMode
                 break;
 
             case FrcJoystick.LOGITECH_BUTTON4:
+            	if(pressed)
+            	{
+            		robot.cmdExchangeAlign.start(false);
+            	}
                 break;
 
             case FrcJoystick.LOGITECH_BUTTON5:
+            	if(pressed)
+            	{
+            		robot.cmdExchangeAlign.start(true);
+            	}
                 break;
 
             case FrcJoystick.LOGITECH_BUTTON6:
