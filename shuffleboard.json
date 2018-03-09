@@ -1,5 +1,5 @@
 {
-  "dividerPosition": 0.13204747774480713,
+  "dividerPosition": 0.17062314540059348,
   "tabPane": [
     {
       "title": "Match Info",
@@ -7,6 +7,7 @@
       "autoPopulatePrefix": "",
       "widgetPane": {
         "gridSize": 32.0,
+        "showGrid": true,
         "hgap": 16.0,
         "vgap": 16.0,
         "tiles": {
@@ -77,17 +78,6 @@
               "_source0": "network_table:///FMSInfo/GameSpecificMessage",
               "_title": "FMSInfo/GameSpecificMessage"
             }
-          },
-          "8,0": {
-            "size": [
-              8,
-              8
-            ],
-            "content": {
-              "_type": "Camera Stream",
-              "_source0": "camera_server://cam0",
-              "_title": "cam0"
-            }
           }
         }
       }
@@ -98,6 +88,7 @@
       "autoPopulatePrefix": "",
       "widgetPane": {
         "gridSize": 32.0,
+        "showGrid": true,
         "hgap": 16.0,
         "vgap": 16.0,
         "tiles": {
@@ -191,7 +182,7 @@
           },
           "12,0": {
             "size": [
-              12,
+              11,
               2
             ],
             "content": {
@@ -202,7 +193,7 @@
           },
           "12,2": {
             "size": [
-              12,
+              11,
               2
             ],
             "content": {
@@ -213,7 +204,7 @@
           },
           "12,4": {
             "size": [
-              12,
+              11,
               2
             ],
             "content": {
@@ -224,7 +215,7 @@
           },
           "12,6": {
             "size": [
-              12,
+              11,
               2
             ],
             "content": {
@@ -235,7 +226,7 @@
           },
           "12,8": {
             "size": [
-              12,
+              11,
               2
             ],
             "content": {
@@ -246,7 +237,7 @@
           },
           "12,10": {
             "size": [
-              12,
+              11,
               2
             ],
             "content": {
@@ -257,7 +248,7 @@
           },
           "12,12": {
             "size": [
-              12,
+              11,
               2
             ],
             "content": {
@@ -268,7 +259,7 @@
           },
           "12,14": {
             "size": [
-              12,
+              11,
               2
             ],
             "content": {
@@ -286,6 +277,7 @@
       "autoPopulatePrefix": "",
       "widgetPane": {
         "gridSize": 32.0,
+        "showGrid": true,
         "hgap": 16.0,
         "vgap": 16.0,
         "tiles": {
@@ -303,7 +295,7 @@
           "4,0": {
             "size": [
               5,
-              3
+              2
             ],
             "content": {
               "_type": "ComboBox Chooser",
@@ -332,17 +324,6 @@
               "_source0": "network_table:///SmartDashboard/Approaches",
               "_title": "SmartDashboard/Approaches"
             }
-          },
-          "10,3": {
-            "size": [
-              4,
-              2
-            ],
-            "content": {
-              "_type": "ComboBox Chooser",
-              "_source0": "network_table:///SmartDashboard/Start Positions",
-              "_title": "SmartDashboard/Start Positions"
-            }
           }
         }
       }
@@ -353,6 +334,7 @@
       "autoPopulatePrefix": "",
       "widgetPane": {
         "gridSize": 32.0,
+        "showGrid": true,
         "hgap": 16.0,
         "vgap": 16.0,
         "tiles": {
@@ -475,6 +457,7 @@
       "autoPopulatePrefix": "",
       "widgetPane": {
         "gridSize": 32.0,
+        "showGrid": true,
         "hgap": 16.0,
         "vgap": 16.0,
         "tiles": {
@@ -491,13 +474,50 @@
           },
           "12,0": {
             "size": [
-              12,
+              11,
               4
             ],
             "content": {
               "_type": "Graph",
               "_title": "Graph (no sources)",
               "Visible time": 30.0
+            }
+          },
+          "0,5": {
+            "size": [
+              12,
+              5
+            ],
+            "content": {
+              "_type": "Graph",
+              "_source0": "network_table:///SmartDashboard/pickupCurrent",
+              "_title": "/SmartDashboard/pickupCurrent",
+              "Visible time": 30.0,
+              "SmartDashboard/pickupCurrent visible": true
+            }
+          }
+        }
+      }
+    },
+    {
+      "title": "Camera",
+      "autoPopulate": false,
+      "autoPopulatePrefix": "",
+      "widgetPane": {
+        "gridSize": 32.0,
+        "showGrid": true,
+        "hgap": 16.0,
+        "vgap": 16.0,
+        "tiles": {
+          "0,0": {
+            "size": [
+              23,
+              11
+            ],
+            "content": {
+              "_type": "Camera Stream",
+              "_source0": "camera_server://cam0",
+              "_title": "cam0"
             }
           }
         }

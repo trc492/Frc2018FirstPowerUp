@@ -36,11 +36,6 @@ public class PixyVision
     private static final String moduleName = "PixyVision";
     private static final boolean debugEnabled = false;
 
-//    private static final boolean FILTER_ENABLED = false;
-//    private static final double PERCENT_TOLERANCE = 0.3;    // 30% tolerance
-//    private static final double PERCENT_TOLERANCE_LOWER = 1.0 - PERCENT_TOLERANCE;
-//    private static final double PERCENT_TOLERANCE_UPPER = 1.0 + PERCENT_TOLERANCE;
-
     public class TargetInfo
     {
         public Rect rect;
@@ -72,17 +67,13 @@ public class PixyVision
     }   //enum Orientation
 
     private static final double PIXY_DISTANCE_SCALE = 2300.0;   //DistanceInInches*targetWidthdInPixels
-//    private static final double POWER_CUBE_HEIGHT_INCHES = 11.0; // 11-in tall
     //CodeReview: why diagonal???
     private static final double TARGET_WIDTH_INCHES = 13.0 * Math.sqrt(2.0);// 13x13 square, diagonal is 13*sqrt(2) inches
-//    private static final double TARGET_HEIGHT_INCHES = POWER_CUBE_HEIGHT_INCHES;
 
     private FrcPixyCam pixyCamera;
     private Robot robot;
     private int signature;
     private Orientation orientation;
-//    private FrcPneumatic targetFoundLED = null;
-//    private FrcPneumatic targetAlignedLED = null;
 
     private void commonInit(Robot robot, int signature, int brightness, Orientation orientation)
     {
@@ -90,8 +81,6 @@ public class PixyVision
         this.signature = signature;
         this.orientation = orientation;
         pixyCamera.setBrightness((byte)brightness);
-//        targetFoundLED = new FrcPneumatic("TargetFoundLED", RobotInfo.CANID_PCM1, RobotInfo.SOL_TARGET_FOUND_LED);
-//        targetAlignedLED = new FrcPneumatic("TargetAlignedLED", RobotInfo.CANID_PCM1, RobotInfo.SOL_TARGET_ALIGNED_LED);
     }   //commonInit
 
     public PixyVision(
@@ -142,7 +131,6 @@ public class PixyVision
         if (detectedObjects != null && detectedObjects.length >= 1)
         {
             ArrayList<Rect> objectList = new ArrayList<>();
-//            double targetDistance = robot.getFrontSonarDistance() + RobotInfo.PIXY_CAM_OFFSET;
             //
             // Filter out objects that don't have the correct signature.
             //
@@ -196,39 +184,6 @@ public class PixyVision
                 }
             }
 
-//            double expectedWidth = PIXY_DISTANCE_SCALE/targetDistance;
-//            double expectedHeight = expectedWidth*TARGET_HEIGHT_INCHES/TARGET_WIDTH_INCHES;
-//
-//            if (debugEnabled)
-//            {
-//                robot.tracer.traceInfo(moduleName, "Expected Target: distance=%.1f, width=%.1f, height=%.1f",
-//                    targetDistance, expectedWidth, expectedHeight);
-//            }
-//
-//            if (FILTER_ENABLED)
-//            {
-//                //
-//                // Filter objects out if they aren't close enough to the expected dimensions
-//            	  // If there's more than a PERCENT_TOLERANCE error, then remove it from the arraylist
-//                //
-//                if (objectList.size() > 1)
-//                {
-//                    for (int i = 0; i < objectList.size(); i++)
-//                    {
-//                        Rect rect = objectList.get(i);
-//                        
-//                        double widthRatio = rect.width/expectedWidth;
-//                        double heightRatio = rect.height/expectedHeight;
-//                        
-//                        if (clamp(widthRatio, PERCENT_TOLERANCE_LOWER, PERCENT_TOLERANCE_UPPER) != widthRatio || 
-//                            clamp(heightRatio, PERCENT_TOLERANCE_LOWER, PERCENT_TOLERANCE_UPPER) != heightRatio)
-//                        {
-//                        	objectList.remove(i);
-//                        }
-//                    }
-//                }
-//            }
-
             if (targetRect == null && objectList.size() >= 1)
             {
                 //
@@ -256,7 +211,7 @@ public class PixyVision
 
         return targetRect;
     }   //getTargetRect
-    
+
     public TargetInfo getTargetInfo()
     {
         TargetInfo targetInfo = null;
@@ -264,7 +219,6 @@ public class PixyVision
 
         if (targetRect != null)
         {
-            //CodeReview: these numbers are for last year's target, needs updating...
             //
             // Physical target width:           W = 10 inches.
             // Physical target distance 1:      D1 = 20 inches.
@@ -299,15 +253,14 @@ public class PixyVision
             }
         }
 
-//        if (targetFoundLED != null)
-//        {
-//            targetFoundLED.setState(targetInfo != null);
-//        }
-//
-//        if (targetAlignedLED != null)
-//        {
-//            targetAlignedLED.setState(targetInfo != null && Math.abs(targetInfo.angle) <= 2.0);
-//        }
+        if (targetInfo != null && robot.ledStrip != null)
+        {
+            robot.ledStrip.setPattern(RobotInfo.LED_CUBE_IN_VIEW);
+            if(Math.abs(targetInfo.xDistance) <= 2.0)
+            {
+                robot.ledStrip.setPattern(RobotInfo.LED_CUBE_ALIGNED);
+            }
+        }
 
         return targetInfo;
     }   //getTargetInfo

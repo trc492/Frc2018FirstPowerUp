@@ -22,6 +22,8 @@
 
 package trclib;
 
+import java.util.EmptyStackException;
+import java.util.Stack;
 import java.util.function.Supplier;
 
 import hallib.HalDashboard;
@@ -117,6 +119,8 @@ public class TrcPidController
     private double maxTarget = 0.0;
     private double minOutput = -1.0;
     private double maxOutput = 1.0;
+    private double outputLimit = 1.0;
+    private Stack<Double> outputLimitStack = new Stack<>();
 
     private double prevTime = 0.0;
     private double currError = 0.0;
@@ -454,16 +458,125 @@ public class TrcPidController
 
         if (debugEnabled)
         {
-            dbgTrace.traceEnter(
-                    funcName, TrcDbgTrace.TraceLevel.API,
-                    "min=%f,max=%f",
-                    minOutput, maxOutput);
+            dbgTrace.traceEnter(funcName, TrcDbgTrace.TraceLevel.API, "min=%f,max=%f", minOutput, maxOutput);
             dbgTrace.traceExit(funcName, TrcDbgTrace.TraceLevel.API);
+        }
+
+        if (maxOutput <= minOutput)
+        {
+            throw new IllegalArgumentException("maxOutput must be greater than minOutput");
+        }
+
+        if (Math.abs(minOutput) == Math.abs(maxOutput))
+        {
+            outputLimit = maxOutput;
         }
 
         this.minOutput = minOutput;
         this.maxOutput = maxOutput;
     }   //setOutputRange
+
+    /**
+     * This method sets the output to the range -limit to +limit. It calls setOutputRange. If the caller wants
+     * to limit the output power symmetrically, this is the method to call, not setOutputRange.
+     *
+     * @param limit specifies the output limit as a positive number.
+     */
+    public void setOutputLimit(double limit)
+    {
+        limit = Math.abs(limit);
+        setOutputRange(-limit, limit);
+    }   //setOutputLimit
+
+    /**
+     * This method returns the last set output limit. It is sometimes useful to temporarily change the output
+     * range of the PID controller for an operation and restore it afterwards. This method allows the caller to
+     * save the last set output limit and restore it later on.
+     *
+     * @return last set output limit.
+     */
+    public double getOutputLimit()
+    {
+        final String funcName = "getOutputLimit";
+
+        if (debugEnabled)
+        {
+            dbgTrace.traceEnter(funcName, TrcDbgTrace.TraceLevel.API);
+            dbgTrace.traceExit(funcName, TrcDbgTrace.TraceLevel.API, "=%f", outputLimit);
+        }
+
+        return outputLimit;
+    }   //getOutputLimit
+
+    /**
+     * This method saves the current output limit of the PID controller and sets it to the given new limit.
+     * This is useful if the caller wants to temporarily set a limit for an operation and restore it afterwards.
+     * Note: this is implemented with a stack so it is assuming the saving and restoring calls are nested in
+     * nature. If this is called in a multi-threading environment where saving and restoring can be interleaved
+     * by different threads, unexpected result may happen. It is recommended to avoid this type of scenario if
+     * possible.
+     *
+     * @param limit specifies the new output limit.
+     * @return return the previous output limit.
+     */
+    public double saveAndSetOutputLimit(double limit)
+    {
+        final String funcName = "saveAndSetOutputLimit";
+        double prevLimit = outputLimit;
+
+        if (debugEnabled)
+        {
+            dbgTrace.traceEnter(funcName, TrcDbgTrace.TraceLevel.API, "limit=%f", limit);
+        }
+
+        outputLimitStack.push(outputLimit);
+        setOutputLimit(limit);
+
+        if (debugEnabled)
+        {
+            dbgTrace.traceExit(funcName, TrcDbgTrace.TraceLevel.API, "=%f", prevLimit);
+        }
+
+        return prevLimit;
+    }   //saveAndSetOutputLimit
+
+    /**
+     * This method restores the last saved output limit and return its value. If there was no previous call to
+     * saveAndSetOutputLimit, the current output limit is returned and the limit is not changed.
+     *
+     * @return last saved output limit.
+     */
+    public double restoreOutputLimit()
+    {
+        final String funcName = "restoreOutputLimit";
+        double limit;
+
+        if (debugEnabled)
+        {
+            dbgTrace.traceEnter(funcName, TrcDbgTrace.TraceLevel.API);
+        }
+
+        try
+        {
+            limit = outputLimitStack.pop();
+            setOutputRange(-limit, limit);
+        }
+        catch (EmptyStackException e)
+        {
+            //
+            // There was no previous saveAndSetOutputLimit call, don't do anything and just return the current
+            // output limit.
+            //
+            limit = outputLimit;
+        }
+
+        if (debugEnabled)
+        {
+            dbgTrace.traceExit(funcName, TrcDbgTrace.TraceLevel.API, "=%f", limit);
+        }
+
+        return limit;
+    }   //restoreOutputLimit
 
     /**
      * This method returns the current set point value.

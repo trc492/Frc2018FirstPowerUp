@@ -27,6 +27,7 @@ import common.CmdTimedDrive;
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 import frclib.FrcChoiceMenu;
 import frclib.FrcJoystick;
+import team492.PixyVision.TargetInfo;
 import trclib.TrcEvent;
 import trclib.TrcRevBlinkin.LEDPattern;
 import trclib.TrcStateMachine;
@@ -45,7 +46,6 @@ public class FrcTest extends FrcTeleOp
         X_DISTANCE_DRIVE,
         Y_DISTANCE_DRIVE,
         TURN_DEGREES,
-        SONAR_DRIVE,
         LIVE_WINDOW
     } // enum Test
 
@@ -93,7 +93,6 @@ public class FrcTest extends FrcTeleOp
         testMenu.addChoice("X Distance Drive", FrcTest.Test.X_DISTANCE_DRIVE, false, false);
         testMenu.addChoice("Y Distance Drive", FrcTest.Test.Y_DISTANCE_DRIVE, false, false);
         testMenu.addChoice("Turn Degrees", FrcTest.Test.TURN_DEGREES, false, false);
-        testMenu.addChoice("Sonar Drive", FrcTest.Test.SONAR_DRIVE, false, false);
         testMenu.addChoice("Live Window", FrcTest.Test.LIVE_WINDOW, false, true);
     } // FrcTest
 
@@ -154,10 +153,8 @@ public class FrcTest extends FrcTeleOp
                     robot.gyroTurnPidCtrl, 0.0, 0.0, 0.0, robot.turnDegrees, robot.drivePowerLimit, true);
                 break;
 
-            case SONAR_DRIVE:
-                useTraceLog = true;
-//                pidDriveCommand = new CmdPidDrive(robot, robot.sonarPidDrive, null, robot.sonarDrivePidCtrl,
-//                    robot.gyroTurnPidCtrl, 0.0, 0.0, robot.frontSonarTarget, 0.0, robot.drivePowerLimit, true);
+            case LIVE_WINDOW:
+                liveWindowEnabled = true;
                 break;
 
             default:
@@ -240,18 +237,10 @@ public class FrcTest extends FrcTeleOp
             case X_DISTANCE_DRIVE:
             case Y_DISTANCE_DRIVE:
             case TURN_DEGREES:
-            case SONAR_DRIVE:
                 robot.dashboard.displayPrintf(2, "xPos=%.1f,yPos=%.1f,heading=%.1f", robot.driveBase.getXPosition(),
                     robot.driveBase.getYPosition(), robot.driveBase.getHeading());
                 robot.encoderXPidCtrl.displayPidInfo(3);
-                if (test == Test.SONAR_DRIVE)
-                {
-                    //robot.sonarDrivePidCtrl.displayPidInfo(5);
-                }
-                else
-                {
-                    robot.encoderYPidCtrl.displayPidInfo(5);
-                }
+                robot.encoderYPidCtrl.displayPidInfo(5);
                 robot.gyroTurnPidCtrl.displayPidInfo(7);
 
                 if (!pidDriveCommand.cmdPeriodic(elapsedTime))
@@ -267,10 +256,6 @@ public class FrcTest extends FrcTeleOp
                     else if (test == Test.TURN_DEGREES)
                     {
                         robot.gyroTurnPidCtrl.printPidInfo(robot.tracer, elapsedTime, robot.battery);
-                    }
-                    else if (test == Test.SONAR_DRIVE)
-                    {
-                        //robot.sonarDrivePidCtrl.printPidInfo(robot.tracer, elapsedTime, robot.battery);
                     }
                 }
                 break;
@@ -366,22 +351,37 @@ public class FrcTest extends FrcTeleOp
      */
     private void doSensorsTest()
     {
-        double driveBaseAverage =
-            (robot.leftFrontWheel.getPosition() + robot.rightFrontWheel.getPosition() +
-             robot.leftRearWheel.getPosition() + robot.rightRearWheel.getPosition())/4.0;
-        robot.dashboard.displayPrintf(1, "Sensors Test (Batt=%.1f/%.1f):", robot.battery.getVoltage(),
-            robot.battery.getLowestVoltage());
+        double lfPos = robot.leftFrontWheel.getPosition();
+        double rfPos = robot.rightFrontWheel.getPosition();
+        double lrPos = robot.leftRearWheel.getPosition();
+        double rrPos = robot.rightRearWheel.getPosition();
+        double driveBaseAverage = (lfPos + rfPos + lrPos + rrPos)/4.0;
+        robot.dashboard.displayPrintf(1, "Sensors Test (Batt=%.1f/%.1f):",
+            robot.battery.getVoltage(), robot.battery.getLowestVoltage());
         robot.dashboard.displayPrintf(2, "DriveBase: lf=%.0f,rf=%.0f,lr=%.0f,rr=%.0f,avg=%.0f",
-            robot.leftFrontWheel.getPosition(), robot.rightFrontWheel.getPosition(), robot.leftRearWheel.getPosition(),
-            robot.rightRearWheel.getPosition(), driveBaseAverage);
-        robot.dashboard.displayPrintf(3, "DriveBase: X=%.1f, Y=%.1f, Heading=%.1f", robot.driveBase.getXPosition(),
-            robot.driveBase.getYPosition(), robot.driveBase.getHeading());
-        robot.dashboard.displayPrintf(4, "Gyro: Rate=%.3f, Heading=%.1f", robot.gyro.getZRotationRate().value,
-            robot.gyro.getZHeading().value);
-        robot.dashboard.displayPrintf(5, "Sensors: pressure=%.1f,lSonar=%.1f,rSonar=%.1f,fSonar=%.1f,lidar=%.1f",
+            lfPos, rfPos, lrPos, rrPos, driveBaseAverage);
+        robot.dashboard.displayPrintf(3, "DriveBase: X=%.1f,Y=%.1f,Heading=%.1f,GyroRate=%.3f",
+            robot.driveBase.getXPosition(), robot.driveBase.getYPosition(), robot.driveBase.getHeading(),
+            robot.gyro.getZRotationRate().value);
+        robot.dashboard.displayPrintf(4, "Sensors: pressure=%.1f,lSonar=%.1f,rSonar=%.1f,lidar=%.1f",
             robot.getPressure(), robot.getLeftSonarDistance(), robot.getRightSonarDistance(),
-            robot.getFrontSonarDistance(), robot.getLidarDistane());
-        robot.dashboard.displayPrintf(6, "CubePickup: cubeInProximity=%s", robot.cubePickup.cubeInProximity());
+            robot.getLidarDistane());
+        robot.dashboard.displayPrintf(5, "CubePickup: proximity=%b,current=%.1f Exchange: openSpace=%b",
+            robot.cubePickup.cubeInProximity(), robot.cubePickup.getPickupCurrent(),
+            robot.cmdExchangeAlign.isOpenSpace());
+        TargetInfo targetInfo = robot.pixy.getTargetInfo();
+        if (targetInfo == null)
+        {
+            robot.dashboard.displayPrintf(6, "Pixy: target not found");
+        }
+        else
+        {
+            robot.dashboard.displayPrintf(6, "Pixy: x=%.1f,y=%.1f,angle=%.1f",
+                targetInfo.xDistance, targetInfo.yDistance, targetInfo.angle);
+        }
+        robot.dashboard.displayPrintf(7, "Elevator: pos=%.1f,limitSwitches=%b,%b",
+            robot.elevator.getPosition(), robot.elevator.elevatorMotor.isLowerLimitSwitchActive(),
+            robot.elevator.elevatorMotor.isUpperLimitSwitchActive());
     } // doSensorsTest
 
     /**

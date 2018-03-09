@@ -78,6 +78,7 @@ class CmdPowerUpAuto implements TrcRobot.RobotCommand
     private TrcEvent event;
     private TrcTimer timer;
     private TrcStateMachine<State> sm;
+    private double xPowerLimit, yPowerLimit;
 
     private double xStart, yStart;
     private double cubeStrafeDistance;
@@ -102,6 +103,9 @@ class CmdPowerUpAuto implements TrcRobot.RobotCommand
         timer = new TrcTimer(moduleName);
         sm = new TrcStateMachine<>(moduleName);
         sm.start(State.DO_DELAY);
+
+        xPowerLimit = robot.encoderXPidCtrl.getOutputLimit();
+        yPowerLimit = robot.encoderYPidCtrl.getOutputLimit();
 
         robot.tracer.traceInfo(moduleName,
             "delay=%.3f, alliance=%s, targetSide=%s, startLocation=%d, forwardDist=%.1f, startPosition=%.1f",
@@ -182,8 +186,6 @@ class CmdPowerUpAuto implements TrcRobot.RobotCommand
                             nextState = State.TURN_TO_SWITCH;
                         }
                         robot.cubePickup.deployPickup();
-                        // Don't do full speed. The wheels may slip and compromise accuracy.
-                        robot.encoderYPidCtrl.setOutputRange(-0.7, 0.7);
                         // We are actually moving backward because we start by parking backwards,
                         // so make yDistance negative.
                         robot.pidDrive.setTarget(xDistance, -yDistance, robot.targetHeading, false, event);
@@ -242,55 +244,24 @@ class CmdPowerUpAuto implements TrcRobot.RobotCommand
                         }
                         else
                         {
+                            // Add a few more inches to make sure we are within rule.
                             xDistance = sonarDistance - RobotInfo.SWITCH_SONAR_DISTANCE_THRESHOLD + 3.0;
                             if (!rightSwitch) xDistance = -xDistance;
                             yDistance = 0.0;
 
-                            robot.encoderXPidCtrl.setOutputRange(-0.5, 0.5);
+                            xPowerLimit = robot.encoderXPidCtrl.getOutputLimit();
+                            robot.encoderXPidCtrl.setOutputLimit(0.5);
                             robot.pidDrive.setTarget(xDistance, yDistance, robot.targetHeading, false, event);
                             sm.waitForSingleEvent(event, State.FLIP_CUBE);
+                            // CodeReview: You can't restore it here!!! Pid drive is not even started!
+//                            robot.encoderXPidCtrl.setOutputRange(
+//                                -RobotInfo.DRIVE_MAX_XPID_POWER, RobotInfo.DRIVE_MAX_XPID_POWER);
                         }
-//                        xDistance = RobotInfo.SWITCH_STRAFE_DISTANCE - 21.0;    //CodeReview: How do you come up with this???
-//                        if(rightSwitch)
-//                        {
-//                            sonarDistance = robot.getRightSonarDistance();
-//                            if(sonarDistance < RobotInfo.SWITCH_SONAR_DISTANCE_THRESHOLD)
-//                            {
-//                                sm.setState(State.FLIP_CUBE);
-//                                needSomeStrafe = false;
-//                            }
-//                            else
-//                            {
-//                                needSomeStrafe = true;
-//                                yDistance = 0.0;
-//                                switchStrafeDistance = sonarDistance + 5.0;
-//                                xDistance = switchStrafeDistance;
-//                                robot.encoderXPidCtrl.setOutputRange(-0.5, 0.5);
-//                                robot.pidDrive.setTarget(xDistance, yDistance, robot.targetHeading, false, event);
-//                                sm.waitForSingleEvent(event, State.FLIP_CUBE);
-//                            }
-//                        }
-//                        else
-//                        {
-//                            if(robot.getLeftSonarDistance() < RobotInfo.SWITCH_SONAR_DISTANCE_THRESHOLD)
-//                            {
-//                                sm.setState(State.FLIP_CUBE);
-//                                needSomeStrafe = false;
-//                            }
-//                            else
-//                            {
-//                                needSomeStrafe = true;
-//                                yDistance = 0.0;
-//                                switchStrafeDistance = robot.getRightSonarDistance() + 5.0;
-//                                xDistance = -switchStrafeDistance;
-//                                robot.encoderXPidCtrl.setOutputRange(-0.5, 0.5);
-//                                robot.pidDrive.setTarget(xDistance, yDistance, robot.targetHeading, false, event);
-//                                sm.waitForSingleEvent(event, State.FLIP_CUBE);
-//                            }
-//                        }
                         break;
 
                     case FLIP_CUBE:
+                        // Restoring xPowerLimit if it has changed.
+                        robot.encoderXPidCtrl.setOutputLimit(xPowerLimit);
                         if(rightSwitch)
                         {
                             robot.rightFlipper.extend();
@@ -303,29 +274,7 @@ class CmdPowerUpAuto implements TrcRobot.RobotCommand
                         }
                         timer.set(0.5, event);
                         sm.waitForSingleEvent(event, State.DRIVE_TO_SECOND_CUBE);
-//                        if(needSomeStrafe)
-//                        {
-//                            sm.waitForSingleEvent(event, State.STRAFE_FROM_SWITCH);
-//                        }
-//                        else
-//                        {
-//                        }
                         break;
-
-                        // left this state for if we want it later
-//                    case STRAFE_FROM_SWITCH:
-//                        if(rightSwitch)
-//                        {
-//                            xDistance = -switchStrafeDistance;
-//                        }
-//                        else
-//                        {
-//                            xDistance = switchStrafeDistance;
-//                        }
-//                        yDistance = 0.0;
-//                        robot.pidDrive.setTarget(xDistance, yDistance, robot.targetHeading, false, event);
-//                        sm.waitForSingleEvent(event, State.DRIVE_TO_SECOND_CUBE);
-//                        break;
 
                     case DRIVE_TO_SECOND_CUBE:
                         xDistance = 0.0;
@@ -337,51 +286,45 @@ class CmdPowerUpAuto implements TrcRobot.RobotCommand
                     case START_STRAFE:
                         robot.leftFlipper.retract();
                         robot.rightFlipper.retract();
+                        robot.cubePickup.openClaw();
                         xStart = robot.driveBase.getXPosition();
                         xDistance = rightSwitch?
                             RobotInfo.STRAFE_TO_SECOND_CUBE_DISTANCE: -RobotInfo.STRAFE_TO_SECOND_CUBE_DISTANCE;
                         robot.cmdStrafeUntilCube.start(xDistance);
                         sm.setState(State.STRAFE_TO_SECOND_CUBE);
+                        xPowerLimit = robot.encoderXPidCtrl.getOutputLimit();
+                        robot.encoderXPidCtrl.setOutputLimit(0.5);
                         break;
 
                     case STRAFE_TO_SECOND_CUBE:
                         if (robot.cmdStrafeUntilCube.cmdPeriodic(elapsedTime))
                         {
-                            //sm.setState(State.START_SECOND_PICKUP);
-                            sm.setState(State.DONE);
+                            sm.setState(State.START_SECOND_PICKUP);
                         }
                         traceState = false;
                         break;
 
                     case START_SECOND_PICKUP:
+                        robot.encoderXPidCtrl.setOutputLimit(xPowerLimit);
                         cubeStrafeDistance = robot.driveBase.getXPosition() - xStart;
                         // Go forward to grab the cube or until it passes a certain distance.
                         yStart = robot.driveBase.getYPosition();
                         robot.cmdAutoCubePickup.start();
                         sm.setState(State.PICKUP_SECOND_CUBE);
+                        yPowerLimit = robot.encoderYPidCtrl.getOutputLimit();
+                        robot.encoderYPidCtrl.setOutputLimit(0.5);
                         break;
 
                     case PICKUP_SECOND_CUBE:
                         if(robot.cmdAutoCubePickup.cmdPeriodic(elapsedTime))
                         {
                             sm.setState(State.BACKUP_WITH_SECOND_CUBE);
-                            //CodeReview: may need to lift the cube a little off the ground.
-                            //Could be done in cmdAutoCubePickup.
-//                            if(pickupCancelled)
-//                            {
-//                                // might want to make this do something else if a cube is not found
-//                                sm.setState(State.DONE);
-//                            }
-//                            else
-//                            {
-//                                sm.setState(State.BACKUP_WITH_SECOND_CUBE);
-//                            }
                         }
                         traceState = false;
-//                        cubeAcquireDistance = robot.cmdAutoCubePickup.changeY();
                         break;
 
                     case BACKUP_WITH_SECOND_CUBE:
+                        robot.encoderYPidCtrl.setOutputLimit(yPowerLimit);
                         xDistance = 0.0;
                         yDistance = robot.driveBase.getYPosition() - yStart;
                         robot.pidDrive.setTarget(xDistance, -yDistance, robot.targetHeading, false, event);
@@ -461,12 +404,16 @@ class CmdPowerUpAuto implements TrcRobot.RobotCommand
                         {
                             yDistance = RobotInfo.FINAL_FRONT_SCALE_APPROACH_DISTANCE;
                         }
-                        robot.encoderYPidCtrl.setOutputRange(-0.5, 0.5);
+                        yPowerLimit = robot.encoderYPidCtrl.getOutputLimit();
+                        robot.encoderYPidCtrl.setOutputLimit(0.5);
                         robot.pidDrive.setTarget(xDistance, yDistance, robot.targetHeading, false, event);
                         sm.waitForSingleEvent(event, State.DEPOSIT_CUBE);
+                        robot.encoderYPidCtrl.setOutputRange(
+                            -RobotInfo.DRIVE_MAX_YPID_POWER, RobotInfo.DRIVE_MAX_YPID_POWER);
                         break;
 
                     case DEPOSIT_CUBE:
+                        robot.encoderYPidCtrl.setOutputLimit(yPowerLimit);
                         robot.cubePickup.dropCube(0.5);
                         timer.set(0.3, event);
                         sm.waitForSingleEvent(event, State.LOWER_ELEVATOR);

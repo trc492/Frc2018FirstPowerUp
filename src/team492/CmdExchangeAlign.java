@@ -30,13 +30,13 @@ import trclib.TrcStateMachine;
 
 public class CmdExchangeAlign implements TrcRobot.RobotCommand
 {
-    private static final String moduleName = "CmdPortalAlign";
-    
+    private static final String moduleName = "CmdExchangeAlign";
+
     private enum State
     {
     	START, START_STRAFE, ADJUST_POSITION, DONE
     }
-    
+
     private Robot robot;
     private FrcDigitalInput proximitySensor;
     private TrcDigitalTrigger proximityTrigger;
@@ -47,120 +47,129 @@ public class CmdExchangeAlign implements TrcRobot.RobotCommand
 
     public CmdExchangeAlign(Robot robot)
     {
-    	this.robot = robot;
-    	proximityEvent = new TrcEvent(moduleName + ".proximityEvent");
-    	pidEvent = new TrcEvent(moduleName + ".pidEvent");
-    	sm = new TrcStateMachine<State>(moduleName);
-    	
-    	proximitySensor = new FrcDigitalInput("ProximitySensor", RobotInfo.DIO_LEFT_PROXIMITY_SENSOR);
-    	proximitySensor.setInverted(true);
-    	proximityTrigger = new TrcDigitalTrigger("ProximityTrigger", proximitySensor, this::proximityTriggerEvent);
-    }
-    
-    public void start(boolean goRight)
-    {
-    	start(goRight ? RobotInfo.EXCHANGE_ALIGN_STRAFE_DIST : -RobotInfo.EXCHANGE_ALIGN_STRAFE_DIST, null);
-    }
-    
-    public void start(double strafeDistance, TrcEvent onFinishedEvent)
-    {
-    	if(onFinishedEvent != null)
-    	{
-    		onFinishedEvent.clear();
-    	}
-    	
-    	this.strafeDistance = strafeDistance;
-    	this.onFinishedEvent = onFinishedEvent;
-    	
-    	stop();
-    	proximityTrigger.setTaskEnabled(true);
-    	sm.start(State.START);
-    }
-    
-    public void stop()
-    {	
-    	if(sm.isEnabled())
-    	{
-    		robot.pidDrive.cancel();
-    		sm.stop();
-    		proximityTrigger.setTaskEnabled(false);
-    	}
-    }
-    
-    public boolean isEnabled()
-    {
-    	return sm.isEnabled();
+        this.robot = robot;
+        proximitySensor = new FrcDigitalInput("LeftProximitySensor", RobotInfo.DIO_LEFT_PROXIMITY_SENSOR);
+        proximitySensor.setInverted(true);
+        proximityTrigger = new TrcDigitalTrigger("ExchangeTrigger", proximitySensor, this::proximityTriggerEvent);
+        proximityEvent = new TrcEvent(moduleName + ".proximityEvent");
+        pidEvent = new TrcEvent(moduleName + ".pidEvent");
+        sm = new TrcStateMachine<State>(moduleName);
     }
 
-	@Override
-	public boolean cmdPeriodic(double elapsedTime) {
-		boolean done = !sm.isEnabled();
-		
-		if(done) return true;
-		
-		State state = sm.checkReadyAndGetState();
-		
-		if(state != null)
-		{
-			switch(state)
-			{
-				case START:
-					proximitySensor.setInverted(false);
-					if(!proximitySensor.isActive()) // If the proximity sensor can't detect the wall, attempt to find the wall
-					{
-						robot.pidDrive.setTarget(0.0, RobotInfo.EXCHANGE_ALIGN_WALL_DIST, robot.targetHeading, false, pidEvent);
-						sm.addEvent(pidEvent);
-						sm.addEvent(proximityEvent);
-						sm.waitForEvents(State.START_STRAFE);
-					} else
-					{
-						sm.setState(State.START_STRAFE);
-					}
-					break;
-					
-				case START_STRAFE:
-					if(pidEvent.isSignaled() && !proximityEvent.isSignaled()) // Can't detect the wall for some reason
-					{
-						stop();
-						return true; // give up
-					}
-					
-					robot.pidDrive.cancel();
-					proximitySensor.setInverted(true);
-					proximityEvent.clear();
-					
-					robot.pidDrive.setTarget(strafeDistance, 0.0, robot.targetHeading, false, pidEvent);
-					sm.addEvent(pidEvent);
-					sm.addEvent(proximityEvent);
-					sm.waitForEvents(State.ADJUST_POSITION);
-					break;
-				
-				case ADJUST_POSITION:
-					robot.pidDrive.cancel();
-					proximityTrigger.setTaskEnabled(false);
-					double xDistance = RobotInfo.EXCHANGE_WIDTH/2.0 + RobotInfo.EXCHANGE_ALIGN_SENSOR_OFFSET;
-					xDistance *= (strafeDistance < 0) ? 1 : -1;
-					robot.pidDrive.setTarget(xDistance, 0.0, robot.targetHeading, false, pidEvent, RobotInfo.EXCHANGE_ALIGN_TIMEOUT);
-					sm.waitForSingleEvent(pidEvent, State.DONE);
-					break;
-					
-				case DONE:
-					stop();
-					done = true;
-					if(onFinishedEvent != null)
-					{
-						onFinishedEvent.set(true);
-					}
-					break;
-			}
-			robot.traceStateInfo(elapsedTime, state.toString());
-		}
-		
-		return done;
-	}
-	
-	private void proximityTriggerEvent(boolean active)
-	{
-		proximityEvent.set(active);
-	}
+    public boolean isOpenSpace()
+    {
+        return proximitySensor.isActive();
+    }
+
+    public void start(boolean goRight)
+    {
+        start(goRight ? RobotInfo.EXCHANGE_ALIGN_STRAFE_DIST : -RobotInfo.EXCHANGE_ALIGN_STRAFE_DIST, null);
+    }
+
+    public void start(double strafeDistance, TrcEvent onFinishedEvent)
+    {
+        if(onFinishedEvent != null)
+        {
+            onFinishedEvent.clear();
+        }
+
+        this.strafeDistance = strafeDistance;
+        this.onFinishedEvent = onFinishedEvent;
+
+        stop();
+        proximityTrigger.setTaskEnabled(true);
+        sm.start(State.START);
+    }
+
+    public void stop()
+    {
+        if(sm.isEnabled())
+        {
+            robot.pidDrive.cancel();
+            proximityTrigger.setTaskEnabled(false);
+            sm.stop();
+        }
+    }
+
+    public boolean isEnabled()
+    {
+        return sm.isEnabled();
+    }
+
+    @Override
+    public boolean cmdPeriodic(double elapsedTime)
+    {
+        boolean done = !sm.isEnabled();
+
+        if(done) return true;
+
+        State state = sm.checkReadyAndGetState();
+        //
+        // Print debug info.
+        //
+        robot.dashboard.displayPrintf(1, "State: %s", state == null? "NotReady": state);
+        if(state != null)
+        {
+            switch(state)
+            {
+                case START:
+                    proximitySensor.setInverted(false); //CodeReview: Please explain!
+                    if(!proximitySensor.isActive()) // If the proximity sensor can't detect the wall, attempt to find the wall
+                    {
+                        robot.pidDrive.setTarget(0.0, RobotInfo.EXCHANGE_ALIGN_WALL_DIST, robot.targetHeading, false, pidEvent);
+                        sm.addEvent(pidEvent);
+                        sm.addEvent(proximityEvent);
+                        sm.waitForEvents(State.START_STRAFE);
+                    }
+                    else
+                    {
+                        sm.setState(State.START_STRAFE);
+                    }
+                    break;
+
+                case START_STRAFE:
+                    if(pidEvent.isSignaled() && !proximityEvent.isSignaled()) // Can't detect the wall for some reason
+                    {
+                        stop();
+                        return true; // give up CodeReview: just go to done state instead of returning in the middle.
+                    }
+
+                    robot.pidDrive.cancel();
+                    proximitySensor.setInverted(true);  //CodeReview: Please explain!
+                    proximityEvent.clear();
+
+                    robot.pidDrive.setTarget(strafeDistance, 0.0, robot.targetHeading, false, pidEvent);
+                    sm.addEvent(pidEvent);
+                    sm.addEvent(proximityEvent);
+                    sm.waitForEvents(State.ADJUST_POSITION);
+                    break;
+
+                case ADJUST_POSITION:
+                    robot.pidDrive.cancel();
+                    proximityTrigger.setTaskEnabled(false);
+                    double xDistance = RobotInfo.EXCHANGE_WIDTH/2.0 + RobotInfo.EXCHANGE_ALIGN_SENSOR_OFFSET;
+                    xDistance *= (strafeDistance < 0) ? 1 : -1;
+                    robot.pidDrive.setTarget(xDistance, 0.0, robot.targetHeading, false, pidEvent, RobotInfo.EXCHANGE_ALIGN_TIMEOUT);
+                    sm.waitForSingleEvent(pidEvent, State.DONE);
+                    break;
+
+                case DONE:
+                    stop();
+                    done = true;
+                    if(onFinishedEvent != null)
+                    {
+                        onFinishedEvent.set(true);
+                    }
+                    break;
+            }
+            robot.traceStateInfo(elapsedTime, state.toString());
+        }
+
+        return done;
+    }
+
+    private void proximityTriggerEvent(boolean active)
+    {
+        proximityEvent.set(active);
+    }
 }

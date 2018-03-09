@@ -36,7 +36,6 @@ public class RobotInfo
     //
     public static final double FIELD_LENGTH                     = 54*12.0;
     public static final double FIELD_WIDTH                      = 27*12.0;
-    
     public static final double EXCHANGE_WIDTH                   = 21.0; // 1ft 9in
 
     //
@@ -52,23 +51,6 @@ public class RobotInfo
     public static final int JSPORT_LEFT_DRIVESTICK              = 0;
     public static final int JSPORT_RIGHT_DRIVESTICK             = 1;
     public static final int JSPORT_OPERATORSTICK                = 2;
-
-    //
-    // Analog Input ports.
-    //
-    public static final int AIN_LEFT_SONAR_SENSOR               = 0;
-    public static final int AIN_RIGHT_SONAR_SENSOR              = 1;
-    public static final int AIN_FRONT_SONAR_SENSOR              = 2;
-    public static final int AIN_PRESSURE_SENSOR                 = 3;
-    //
-    // Digital Input/Output ports.
-    //
-    public static final int DIO_LEFT_SONAR_PING                 = 0;
-    public static final int DIO_RIGHT_SONAR_PING                = 1;
-    public static final int DIO_FRONT_SONAR_PING                = 2;
-    public static final int DIO_LEFT_PROXIMITY_SENSOR           = 7;
-    public static final int DIO_RIGHT_PROXIMITY_SENSOR          = 8;
-    public static final int DIO_CUBE_PROXIMITY_SENSOR           = 9;
 
     //
     // CAN IDs.
@@ -87,8 +69,28 @@ public class RobotInfo
     public static final int CANID_PDP                           = 16;
     public static final int CANID_PCM1                          = 17;
     public static final int CANID_PCM2                          = 18;
-    
+
+    //
+    // Analog Input ports.
+    //
+    public static final int AIN_LEFT_SONAR_SENSOR               = 0;
+    public static final int AIN_RIGHT_SONAR_SENSOR              = 1;
+    public static final int AIN_FRONT_SONAR_SENSOR              = 2;
+    public static final int AIN_PRESSURE_SENSOR                 = 3;
+
+    //
+    // Digital Input/Output ports.
+    //
+    public static final int DIO_LEFT_SONAR_PING                 = 0;
+    public static final int DIO_RIGHT_SONAR_PING                = 1;
+    public static final int DIO_FRONT_SONAR_PING                = 2;
+    public static final int DIO_LEFT_PROXIMITY_SENSOR           = 7;
+    public static final int DIO_RIGHT_PROXIMITY_SENSOR          = 8;
+    public static final int DIO_CUBE_PROXIMITY_SENSOR           = 9;
+
+    //
     // PWM Channels.
+    //
     public static final int PWM_REV_BLINKIN                     = 0;
 
     //
@@ -108,18 +110,6 @@ public class RobotInfo
     public static final int SOL_RIGHT_FLIPPER_RETRACT           = 6;    // Purple
     public static final int SOL_RIGHT_FLIPPER_EXTEND            = 7;    // White
 
-//    public static final int SOL_TARGET_FOUND_LED                = 6;    // White LED
-//    public static final int SOL_TARGET_ALIGNED_LED              = 7;    // Blue LED
-
-    //
-    // Miscellaneous sensors and devices.
-    //
-    public static final int USBCAM_WIDTH                        = 320;
-    public static final int USBCAM_HEIGHT                       = 240;
-    public static final int USBCAM_FRAME_RATE                   = 15;
-    public static final int USBCAM_BRIGHTNESS                   = 20;
-    public static final double EXCHANGE_ALIGN_SENSOR_OFFSET     = -8.0; // TUNE THIS. Inches offset from center of cube pickup
-
     //
     // Vision subsystem.
     //
@@ -131,10 +121,21 @@ public class RobotInfo
     public static final PixyVision.Orientation PIXY_ORIENTATION = PixyVision.Orientation.NORMAL_LANDSCAPE;
     public static final int PIXYCAM_I2C_ADDRESS                 = FrcPixyCam.DEF_I2C_ADDRESS;
 
+    public static final int USBCAM_WIDTH                        = 320;
+    public static final int USBCAM_HEIGHT                       = 240;
+    public static final int USBCAM_FRAME_RATE                   = 15;
+    public static final int USBCAM_BRIGHTNESS                   = 20;
+
+    //
+    // Ultrasonic sensors.
+    //
+    public static final double SONAR_INCHES_PER_VOLT            = 1.0/0.0098; //9.8mV per inch
+    public static final double SONAR_ERROR_THRESHOLD            = 50.0; //value should not jump 50-in per time slice.
+    public static final double SONAR_DISTANCE_OFFSET            = 5.0;
+
     //
     // DriveBase subsystem.
     //
-
     public static final double DRIVE_HEADING_NORTH              = 180.0;
     public static final double DRIVE_HEADING_EAST               = -90.0;
     public static final double DRIVE_HEADING_WEST               = 90.0;
@@ -152,9 +153,9 @@ public class RobotInfo
     public static final double DRIVE_GYRO_ASSIST_KP             = 1.5;
     public static final double DRIVE_MAX_ROTATION_RATE          = 6.5;      //radians per second
     
-    public static final double MAX_X_OUTPUT_POWER               = 0.7;
-    public static final double MAX_Y_OUTPUT_POWER               = 0.7;
-    public static final double MAX_GYRO_OUTPUT_POWER            = 0.7;
+    public static final double DRIVE_MAX_XPID_POWER             = 0.7;
+    public static final double DRIVE_MAX_YPID_POWER             = 0.7;
+    public static final double DRIVE_MAX_TURNPID_POWER          = 0.7;
 
     // 2017-03-21: 0.0152347136491642, 0.15, 0.0, 0.0
     // 0.7 power is pretty gud fam
@@ -187,35 +188,6 @@ public class RobotInfo
     public static final double GYRO_TURN_KF                     = 0.0;
     public static final double GYRO_TURN_TOLERANCE              = 2.0;
 
-    // 2017-03-12: 0.01, 0.0, 0.0
-    // 2017-03-14: 0.0165, 0.0, 0.002
-    public static final double SONAR_KP                         = 0.0165;
-    public static final double SONAR_KI                         = 0.0;
-    public static final double SONAR_KD                         = 0.002;
-    public static final double SONAR_KF                         = 0.0;
-    public static final double SONAR_TOLERANCE                  = 1.0;
-    public static final double SONAR_INCHES_PER_VOLT            = 1.0/0.0098; //9.8mV per inch
-    public static final double SONAR_ERROR_THRESHOLD            = 50.0; //value should not jump 50-in per time slice.
-    public static final double SONAR_DISTANCE_OFFSET            = 5.0;
-
-    //
-    // Winch subsystem.
-    //
-    public static final double WINCH_TELEOP_POWER               = 1.0; // TODO: This needs to be calibrated
-
-    //
-    // Flipper subsystem
-    //
-    public static final double FLIPPER_EXTEND_PERIOD            = 0.75;
-
-    //
-    // CubePickup subsystem.
-    //
-    public static final double PICKUP_FREE_SPIN_CURRENT         = 10.0;
-    public static final double PICKUP_STALL_CURRENT             = 45.0;
-    public static final double PICKUP_CURRENT_THRESHOLD         = (PICKUP_FREE_SPIN_CURRENT + PICKUP_STALL_CURRENT)/2.0;
-    public static final double PICKUP_TELEOP_POWER              = 0.6; // TODO: This needs to be calibrated
-
     //
     // Elevator subsystem.
     //
@@ -225,20 +197,40 @@ public class RobotInfo
     public static final double ELEVATOR_KI                      = 0.0;      // hopefully not this
     public static final double ELEVATOR_KD                      = 0.0;      // this too
     public static final double ELEVATOR_TOLERANCE               = 0.5;      // this too
+    public static final double ELEVATOR_GRAVITY_COMPENSATION    = 0.08;     // Tuned during testing
+    public static final double ELEVATOR_CAL_POWER               = 0.3;      // this too
+    public static final double ELEVATOR_POSITION_OFFSET         = 8.0;
     public static final double ELEVATOR_MIN_HEIGHT              = 8.0;
     public static final double ELEVATOR_MAX_HEIGHT              = 85.0;     //need calibration
-    public static final double ELEVATOR_MID_HEIGHT              = 4.0;
-    public static final double ELEVATOR_CAL_POWER               = 0.3;      // this too
-    public static final double ELEVATOR_FLOOR_PICKUP_HEIGHT     = 0.0;      // Lowest point on elevator
-    public static final double ELEVATOR_GRAVITY_COMPENSATION    = 0.08;     // Tuned during testing
-    public static final double ELEVATOR_POSITION_OFFSET         = 8.0;
+
+    public static final double ELEVATOR_FLOOR_PICKUP_HEIGHT     = ELEVATOR_MIN_HEIGHT;  // Lowest point on elevator
+    public static final double ELEVATOR_OFF_GROUND              = ELEVATOR_MIN_HEIGHT + 4.0;
+    public static final double ELEVATOR_MID_HEIGHT              = ELEVATOR_MIN_HEIGHT + 4.0;
 
     //
-    // AutoAssist subsystem.
+    // CubePickup subsystem.
+    //
+    public static final double PICKUP_FREE_SPIN_CURRENT         = 10.0;
+    public static final double PICKUP_STALL_CURRENT             = 45.0;
+    public static final double PICKUP_TELEOP_POWER              = 0.6; // TODO: This needs to be calibrated
+
+    //
+    // Winch subsystem.
+    //
+    public static final double WINCH_TELEOP_POWER               = 1.0; // TODO: This needs to be calibrated
+
+    //
+    // Flipper subsystem.
+    //
+    public static final double FLIPPER_EXTEND_PERIOD            = 0.75;
+
+    //
+    // AutoAssist subsystems.
     //
     public static final double EXCHANGE_ALIGN_STRAFE_DIST       = 60.0;     // 5 feet
     public static final double EXCHANGE_ALIGN_TIMEOUT           = 4.0;      // 4 seconds
     public static final double EXCHANGE_ALIGN_WALL_DIST         = 12.0;     // 1 foot
+    public static final double EXCHANGE_ALIGN_SENSOR_OFFSET     = -8.0; // TUNE THIS. Inches offset from center of cube pickup
     public static final double AUTO_PICKUP_MOVE_POWER           = 0.6;      // 60% power
     public static final double FIND_CUBE_X_TOLERANCE            = 6.0;      // 6-in
     public static final double FIND_CUBE_STRAFE_POWER           = 0.6;      // 60% power
@@ -261,7 +253,6 @@ public class RobotInfo
     public static final double SWITCH_STRAFE_DISTANCE           = 26.0;
     public static final double MAX_CUBE_DISTANCE                = 20.0;
     public static final double SWITCH_SONAR_DISTANCE_THRESHOLD  = 16.0;
-    
 
     //
     // FrcAuto constants.
@@ -282,5 +273,7 @@ public class RobotInfo
     public static final LEDPattern LED_CUBE_IN_PROXIMITY        = LEDPattern.SolidYellow;
     public static final LEDPattern LED_GYRO_ASSIST_OFF          = LEDPattern.SolidBlack;
     public static final LEDPattern LED_GYRO_ASSIST_ON           = LEDPattern.SolidRed;
+    public static final LEDPattern LED_CUBE_IN_VIEW             = LEDPattern.SolidBlue;
+    public static final LEDPattern LED_CUBE_ALIGNED             = LEDPattern.SolidViolet;
 
 }   // class RobotInfo

@@ -64,7 +64,6 @@ public class Elevator
     } // zeroCalibrate
 
     /**
-     * 
      * @param pos
      *            (Altitude in inches)
      * @param event

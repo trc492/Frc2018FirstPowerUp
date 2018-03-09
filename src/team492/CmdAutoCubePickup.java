@@ -32,18 +32,18 @@ public class CmdAutoCubePickup implements TrcRobot.RobotCommand
 
     public static enum State
     {
-        START, DRIVE, DONE
+        START, DRIVE, RAISE_ELEVATOR, DONE
     }
 
     private Robot robot;
-    private TrcEvent event, proximityEvent;
+    private TrcEvent event, pickupEvent;
     private TrcStateMachine<State> sm;
 
     public CmdAutoCubePickup(Robot robot)
     {
         this.robot = robot;
         event = new TrcEvent(moduleName);
-        proximityEvent = new TrcEvent(moduleName + ".proximity");
+        pickupEvent = new TrcEvent(moduleName + ".cubePickup");
         sm = new TrcStateMachine<>(moduleName);
     }
 
@@ -105,13 +105,22 @@ public class CmdAutoCubePickup implements TrcRobot.RobotCommand
                     case DRIVE:
                         // Go forward the expected distance or until the cube is in possession.
                         xDistance = 0.0;
-                        yDistance = robot.frontSonarSensor != null?
-                            robot.getFrontSonarDistance(): RobotInfo.AUTO_PICKUP_CUBE_DISTANCE;
-                        robot.cubePickup.setProximityTriggerEnabled(true, proximityEvent);
-                        sm.addEvent(proximityEvent);
+                        yDistance = RobotInfo.AUTO_PICKUP_CUBE_DISTANCE;
+//                        yDistance = robot.frontSonarSensor != null?
+//                            robot.getFrontSonarDistance(): RobotInfo.AUTO_PICKUP_CUBE_DISTANCE;
+                        robot.cubePickup.grabCube(RobotInfo.PICKUP_TELEOP_POWER, pickupEvent);
+//                        robot.cubePickup.setProximityTriggerEnabled(true, proximityEvent);
+//                        sm.addEvent(proximityEvent);
+                        sm.addEvent(pickupEvent);
                         robot.pidDrive.setTarget(xDistance, yDistance, robot.targetHeading, false, event);
                         sm.addEvent(event);
-                        sm.waitForEvents(State.DONE);
+                        sm.waitForEvents(State.RAISE_ELEVATOR);
+                        break;
+
+                    case RAISE_ELEVATOR:
+                        //CodeReview: should you check if the cube is in possession? If not, what do you do?
+                        robot.elevator.setPosition(RobotInfo.ELEVATOR_OFF_GROUND, event, 0.0);
+                        sm.waitForSingleEvent(event, State.DONE);
                         break;
 
                     case DONE:

@@ -58,10 +58,6 @@ public class FrcTeleOp implements TrcRobot.RobotMode
         robot.driveBase.resetPosition();
         robot.targetHeading = 0.0;
 
-        robot.encoderXPidCtrl.setOutputRange(-1.0, 1.0);
-        robot.encoderYPidCtrl.setOutputRange(-1.0, 1.0);
-        robot.gyroTurnPidCtrl.setOutputRange(-1.0, 1.0);
-        //robot.sonarDrivePidCtrl.setOutputRange(-1.0, 1.0);
         //
         // Configure joysticks.
         //
@@ -84,12 +80,12 @@ public class FrcTeleOp implements TrcRobot.RobotMode
     @Override
     public void runPeriodic(double elapsedTime)
     {
-    	// Cancel auto assist if the driver does anything
-    	if(robot.leftDriveStick.getXWithDeadband(true) != 0 || robot.leftDriveStick.getYWithDeadband(true) != 0)
-    	{
-    		cancelAutoAssist();
-    	}
-    	
+        // Cancel auto assist if the driver does anything
+        if(robot.leftDriveStick.getXWithDeadband(true) != 0 || robot.leftDriveStick.getYWithDeadband(true) != 0)
+        {
+            cancelAutoAssist();
+        }
+
         if (!isAutoAssistEnabled())
         {
             //
@@ -154,36 +150,36 @@ public class FrcTeleOp implements TrcRobot.RobotMode
             robot.tracer.tracePrintf("Activated: %b", robot.cmdAutoCubePickup.isEnabled());
             robot.cmdAutoCubePickup.cmdPeriodic(elapsedTime);
         }
-        
+
         if(robot.cmdExchangeAlign.isEnabled())
         {
-        	robot.cmdExchangeAlign.cmdPeriodic(elapsedTime);
+            robot.cmdExchangeAlign.cmdPeriodic(elapsedTime);
         }
     } // runContinuous
-    
+
     private void cancelAutoAssist()
     {
-    	if(robot.cmdAutoCubePickup.isEnabled())
-    	{
-    		robot.cmdAutoCubePickup.stop();
-    	}
-    	
-    	if(robot.cmdExchangeAlign.isEnabled())
-    	{
-    		robot.cmdExchangeAlign.stop();
-    	}
-    	
-    	if(robot.cmdStrafeUntilCube.isEnabled())
-    	{
-    		robot.cmdStrafeUntilCube.stop();
-    	}
+        if(robot.cmdAutoCubePickup.isEnabled())
+        {
+            robot.cmdAutoCubePickup.stop();
+        }
+
+        if(robot.cmdExchangeAlign.isEnabled())
+        {
+            robot.cmdExchangeAlign.stop();
+        }
+
+        if(robot.cmdStrafeUntilCube.isEnabled())
+        {
+            robot.cmdStrafeUntilCube.stop();
+        }
     }
-    
+
     private boolean isAutoAssistEnabled()
     {
-    	return robot.cmdAutoCubePickup.isEnabled() ||
-    			robot.cmdExchangeAlign.isEnabled() ||
-    			robot.cmdStrafeUntilCube.isEnabled();
+        return robot.cmdAutoCubePickup.isEnabled() ||
+               robot.cmdExchangeAlign.isEnabled() ||
+               robot.cmdStrafeUntilCube.isEnabled();
     }
 
     //
@@ -215,17 +211,17 @@ public class FrcTeleOp implements TrcRobot.RobotMode
                 break;
 
             case FrcJoystick.LOGITECH_BUTTON4:
-            	if(pressed)
-            	{
-            		robot.cmdExchangeAlign.start(false);
-            	}
+                if(pressed)
+                {
+                    robot.cmdExchangeAlign.start(false);
+                }
                 break;
 
             case FrcJoystick.LOGITECH_BUTTON5:
-            	if(pressed)
-            	{
-            		robot.cmdExchangeAlign.start(true);
-            	}
+                if(pressed)
+                {
+                    robot.cmdExchangeAlign.start(true);
+                }
                 break;
 
             case FrcJoystick.LOGITECH_BUTTON6:
@@ -317,6 +313,7 @@ public class FrcTeleOp implements TrcRobot.RobotMode
     {
         robot.dashboard.displayPrintf(8, "  OperatorStick: button=0x%04x %s", button, pressed? "pressed": "released");
 
+        //CodeReview: add a pair of buttons to go up/down preset elevator heights.
         switch (button)
         {
             case FrcJoystick.LOGITECH_TRIGGER:
@@ -394,9 +391,11 @@ public class FrcTeleOp implements TrcRobot.RobotMode
                 break;
 
             case FrcJoystick.LOGITECH_BUTTON8:
+                //CodeReview: preset elevator down.
                 break;
 
             case FrcJoystick.LOGITECH_BUTTON9:
+                //CodeReview: preset elevator up.
                 break;
 
             case FrcJoystick.LOGITECH_BUTTON10:

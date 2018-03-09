@@ -123,8 +123,7 @@ public class CmdStrafeUntilCube implements TrcRobot.RobotCommand
 
     public void visionTriggerHandler(int currZone, int prevZone, double value)
     {
-        robot.tracer.traceInfo("VisionTrigger", "prevZone=%d, currZone=%d, value=%.2f",
-            prevZone, currZone, value);
+        robot.tracer.traceInfo("VisionTrigger", "prevZone=%d, currZone=%d, value=%.2f", prevZone, currZone, value);
         if (currZone == 1)
         {
             if (visionTriggerEvent != null)

@@ -174,7 +174,7 @@ public class CubePickup
 
     public double getPickupPower()
     {
-        return controlMotor.getPower();
+        return controlMotor.getPower() + slaveMotor.getPower();
     }
 
     public double getPickupCurrent()
