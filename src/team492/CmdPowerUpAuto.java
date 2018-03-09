@@ -137,7 +137,6 @@ class CmdPowerUpAuto implements TrcRobot.RobotCommand
             {
                 double xDistance, yDistance, sonarDistance;
                 State nextState;
-                double nextHeading;
                 boolean traceState = true;
 
                 //TODO: check if it actually works
@@ -383,10 +382,7 @@ class CmdPowerUpAuto implements TrcRobot.RobotCommand
 
                     case TURN_ROBOT:
                         xDistance = yDistance = 0.0;
-                        nextHeading = RobotInfo.DRIVE_HEADING_NORTH;
-                        // Make sure we don't turn more than 180 degrees.
-                        if (nextHeading - robot.targetHeading > 180.0) nextHeading *= -1.0;
-                        robot.targetHeading = nextHeading;
+                        robot.targetHeading = RobotInfo.DRIVE_HEADING_NORTH;
                         robot.pidDrive.setTarget(xDistance, yDistance, robot.targetHeading, false, event);
                         if(sideApproach)
                         {
@@ -407,9 +403,7 @@ class CmdPowerUpAuto implements TrcRobot.RobotCommand
 
                     case TURN_AGAIN:
                         xDistance = yDistance = 0.0;
-                        nextHeading = rightScale? RobotInfo.DRIVE_HEADING_WEST: RobotInfo.DRIVE_HEADING_EAST;
-                        if (nextHeading - robot.targetHeading > 180.0) nextHeading *= -1.0;
-                        robot.targetHeading = nextHeading;
+                        robot.targetHeading = rightScale? RobotInfo.DRIVE_HEADING_WEST: RobotInfo.DRIVE_HEADING_EAST;
                         robot.pidDrive.setTarget(xDistance, yDistance, robot.targetHeading, false, event);
                         sm.waitForSingleEvent(event, State.RAISE_ELEVATOR);
                         break;

@@ -355,6 +355,24 @@ public class TrcPidController
     }   //setAbsoluteSetPoint
 
     /**
+     * This method returns true if setpoints are absolute, false otherwise.
+     *
+     * @return true if setpoints are absolute, false otherwise.
+     */
+    public boolean getAbsoluteSetPoint()
+    {
+        final String funcName = "getAbsoluteSetPoint";
+
+        if (debugEnabled)
+        {
+            dbgTrace.traceEnter(funcName, TrcDbgTrace.TraceLevel.API);
+            dbgTrace.traceExit(funcName, TrcDbgTrace.TraceLevel.API, "=%b", absSetPoint);
+        }
+
+        return absSetPoint;
+    }   //getAbsoluteSetPoint
+
+    /**
      * This method enables/disables NoOscillation mode. In PID control, if the PID constants are not tuned quite
      * correctly, it may cause oscillation that could waste a lot of time. In some scenarios, passing the target
      * beyond the tolerance may be acceptable. This method allows the PID controller to declare "On Target" even
@@ -600,14 +618,15 @@ public class TrcPidController
      * This methods sets the target set point.
      *
      * @param target specifies the target set point.
+     * @param warpSpace specifies the warp space object if the target is in one, null if not.
      */
-    public void setTarget(double target)
+    public void setTarget(double target, TrcWarpSpace warpSpace)
     {
         final String funcName = "setTarget";
 
         if (debugEnabled)
         {
-            dbgTrace.traceEnter(funcName, TrcDbgTrace.TraceLevel.API, "target=%f", target);
+            dbgTrace.traceEnter(funcName, TrcDbgTrace.TraceLevel.API, "target=%f,warpSpace=%s", target, warpSpace);
         }
 
         double input = pidInput.get();
@@ -625,6 +644,10 @@ public class TrcPidController
             // Set point is absolute, use as is.
             //
             setPoint = target;
+            if (warpSpace != null)
+            {
+                setPoint = warpSpace.optimizedTarget(setPoint, input);
+            }
             currError = setPoint - input;
         }
 
@@ -657,6 +680,16 @@ public class TrcPidController
         {
             dbgTrace.traceExit(funcName, TrcDbgTrace.TraceLevel.API);
         }
+    }   //setTarget
+
+    /**
+     * This methods sets the target set point.
+     *
+     * @param target specifies the target set point.
+     */
+    public void setTarget(double target)
+    {
+        setTarget(target, null);
     }   //setTarget
 
     /**

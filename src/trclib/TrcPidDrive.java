@@ -82,6 +82,7 @@ public class TrcPidDrive
     private final TrcPidController turnPidCtrl;
     private final TrcTaskMgr.TaskObject stopTaskObj;
     private final TrcTaskMgr.TaskObject postContinuousTaskObj;
+    private TrcWarpSpace warpSpace = null;
     private StuckWheelHandler stuckWheelHandler = null;
     private double stuckTimeout = 0.0;
     private TurnMode turnMode = TurnMode.IN_PLACE;
@@ -127,6 +128,11 @@ public class TrcPidDrive
         TrcTaskMgr taskMgr = TrcTaskMgr.getInstance();
         stopTaskObj = taskMgr.createTask(instanceName + ".stop", this::stopTask);
         postContinuousTaskObj = taskMgr.createTask(instanceName + ".postContinuous", this::postContinuousTask);
+
+        if (turnPidCtrl != null && turnPidCtrl.getAbsoluteSetPoint())
+        {
+            warpSpace = new TrcWarpSpace(instanceName, 0.0, 360.0);
+        }
     }   //TrcPidDrive
 
     /**
@@ -380,7 +386,7 @@ public class TrcPidDrive
 
         if (turnPidCtrl != null)
         {
-            turnPidCtrl.setTarget(turnTarget);
+            turnPidCtrl.setTarget(turnTarget, warpSpace);
         }
 
         if (event != null)
