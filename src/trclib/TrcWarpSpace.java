@@ -90,15 +90,13 @@ public class TrcWarpSpace
      * @param range specifies the warp space range.
      * @return optimized target position resulted in shorter traveling distance.
      */
-    public static double optimizedTarget(double targetPos, double currentPos, double range)
+    public static double getOptimizedTarget(double targetPos, double currentPos, double range)
     {
         double distance = (targetPos - currentPos) % range;
         double absDistance = Math.abs(distance);
-        double optimizedDistance = (absDistance > range/2.0)? -Math.signum(distance)*(range - absDistance): distance;
-        double optimizedTargetPos = optimizedDistance + currentPos;
 
-        return optimizedTargetPos;
-    }   //optimizedTarget
+        return currentPos + (absDistance > range/2? -Math.signum(distance)*(range - absDistance): distance);
+    }   //getOptimizedTarget
 
     /**
      * This method returns the optimized target position. In the compass example, if one is currently headed NORTH
@@ -110,18 +108,18 @@ public class TrcWarpSpace
      * @param currentPos specifies the current position.
      * @return optimized target position resulted in shorter traveling distance.
      */
-    public double optimizedTarget(double targetPos, double currentPos)
+    public double getOptimizedTarget(double targetPos, double currentPos)
     {
-        final String funcName = "optimizedTarget";
-        double optimizedTargetPos = optimizedTarget(targetPos, currentPos, warpSpaceRange);
+        final String funcName = "getOptimizedTarget";
+        double optimizedTarget = getOptimizedTarget(targetPos, currentPos, warpSpaceRange);
 
         if (debugEnabled)
         {
             dbgTrace.traceEnter(funcName, TrcDbgTrace.TraceLevel.API, "target=%f,current=%f", targetPos, currentPos);
-            dbgTrace.traceExit(funcName, TrcDbgTrace.TraceLevel.API, "=%f", optimizedTargetPos);
+            dbgTrace.traceExit(funcName, TrcDbgTrace.TraceLevel.API, "=%f", optimizedTarget);
         }
 
-        return optimizedTargetPos;
-    }   //optimizedTarget
+        return optimizedTarget;
+    }   //getOptimizedTarget
 
 }   //class TrcWarpSpace

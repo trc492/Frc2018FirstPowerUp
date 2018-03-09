@@ -646,7 +646,7 @@ public class TrcPidController
             setPoint = target;
             if (warpSpace != null)
             {
-                setPoint = warpSpace.optimizedTarget(setPoint, input);
+                setPoint = warpSpace.getOptimizedTarget(setPoint, input);
             }
             currError = setPoint - input;
         }
