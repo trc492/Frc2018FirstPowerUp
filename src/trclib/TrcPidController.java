@@ -641,7 +641,7 @@ public class TrcPidController
         else
         {
             //
-            // Set point is absolute, use as is.
+            // Set point is absolute, use as is but optimize it if it is in warp space.
             //
             setPoint = target;
             if (warpSpace != null)
