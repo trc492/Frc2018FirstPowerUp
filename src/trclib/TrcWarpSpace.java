@@ -24,7 +24,7 @@ package trclib;
 
 /**
  * This class implements a generic warp space. A warp space is originally a linear space with two points: a low
- * point and a high point. The space is warped such that point A and point B represent the same physical position
+ * point A and a high point B. The space is warped such that point A and point B represent the same physical position
  * in space even though the linear distance between the two points is far away. A typical example of warp space is
  * demonstrated by a compass. A compass has a low point of 0-degree and a high point of 360-degree but these two
  * points are at the same physical position (NORTH).
@@ -65,7 +65,7 @@ public class TrcWarpSpace
         }
         else
         {
-            throw new IllegalArgumentException("LowPoint must be less than HighPoint.");
+            throw new IllegalArgumentException("HighPoint must be greater than LowPoint.");
         }
     }   //TrcWarpSpace
 
@@ -80,10 +80,10 @@ public class TrcWarpSpace
     }   //toString
 
     /**
-     * This method returns the optimized target position. In the compass example, if one is currently headed NORTH
-     * (0-degree) and wants to turn to WEST (270-degree), one may turn all the way 270 degrees clockwise and landed
-     * pointing WEST. But one could also turn towards the warp point (0-degree), passed it and landed WEST by turning
-     * counter clockwise.
+     * This method returns the optimized target position such that the travel distance to the target is minimum.
+     * In the compass example, if one is currently headed NORTH (0-degree) and wants to turn to WEST (270-degree),
+     * one may turn all the way 270 degrees clockwise and landed pointing WEST. But one could also turn towards the
+     * warp point (0-degree), passed it and landed WEST by turning counter clockwise 90 degrees.
      *
      * @param targetPos specifies the target position.
      * @param currentPos specifies the current position.
@@ -99,10 +99,10 @@ public class TrcWarpSpace
     }   //getOptimizedTarget
 
     /**
-     * This method returns the optimized target position. In the compass example, if one is currently headed NORTH
-     * (0-degree) and wants to turn to WEST (270-degree), one may turn all the way 270 degrees clockwise and landed
-     * pointing WEST. But one could also turn towards the warp point (0-degree), passed it and landed WEST by turning
-     * counter clockwise 90 degrees.
+     * This method returns the optimized target position such that the travel distance to the target is minimum.
+     * In the compass example, if one is currently headed NORTH (0-degree) and wants to turn to WEST (270-degree),
+     * one may turn all the way 270 degrees clockwise and landed pointing WEST. But one could also turn towards the
+     * warp point (0-degree), passed it and landed WEST by turning counter clockwise 90 degrees.
      *
      * @param targetPos specifies the target position.
      * @param currentPos specifies the current position.
