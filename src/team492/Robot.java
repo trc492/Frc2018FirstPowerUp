@@ -489,6 +489,9 @@ public class Robot extends FrcRobotBase
     {
         driveBase.stop();
         battery.setTaskEnabled(false);
+        
+        cancelAutoAssist();
+        cubePickup.stopPickup();
     }   //robotStopMode
 
     public void setVisionEnabled(boolean enabled)
@@ -499,6 +502,25 @@ public class Robot extends FrcRobotBase
             tracer.traceInfo("Vision", "Pixy is %s!", enabled? "enabled": "disabled");
         }
     }   //setVisionEnabled
+    
+
+    public void cancelAutoAssist()
+    {
+        if(cmdAutoCubePickup.isEnabled())
+        {
+            cmdAutoCubePickup.stop();
+        }
+
+        if(cmdExchangeAlign.isEnabled())
+        {
+            cmdExchangeAlign.stop();
+        }
+
+        if(cmdStrafeUntilCube.isEnabled())
+        {
+            cmdStrafeUntilCube.stop();
+        }
+    }
 
     public void updateDashboard()
     {

@@ -83,7 +83,7 @@ public class FrcTeleOp implements TrcRobot.RobotMode
         // Cancel auto assist if the driver does anything
         if(robot.leftDriveStick.getXWithDeadband(true) != 0 || robot.leftDriveStick.getYWithDeadband(true) != 0)
         {
-            cancelAutoAssist();
+            robot.cancelAutoAssist();
         }
 
         if (!isAutoAssistEnabled())
@@ -156,24 +156,6 @@ public class FrcTeleOp implements TrcRobot.RobotMode
             robot.cmdExchangeAlign.cmdPeriodic(elapsedTime);
         }
     } // runContinuous
-
-    private void cancelAutoAssist()
-    {
-        if(robot.cmdAutoCubePickup.isEnabled())
-        {
-            robot.cmdAutoCubePickup.stop();
-        }
-
-        if(robot.cmdExchangeAlign.isEnabled())
-        {
-            robot.cmdExchangeAlign.stop();
-        }
-
-        if(robot.cmdStrafeUntilCube.isEnabled())
-        {
-            robot.cmdStrafeUntilCube.stop();
-        }
-    }
 
     private boolean isAutoAssistEnabled()
     {
