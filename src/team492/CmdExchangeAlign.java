@@ -44,6 +44,7 @@ public class CmdExchangeAlign implements TrcRobot.RobotCommand
     private TrcEvent onFinishedEvent = null;
     private TrcStateMachine<State> sm;
     private double strafeDistance;
+    private boolean failed;
 
     public CmdExchangeAlign(Robot robot)
     {
@@ -79,6 +80,7 @@ public class CmdExchangeAlign implements TrcRobot.RobotCommand
         stop();
         proximityTrigger.setTaskEnabled(true);
         sm.start(State.START);
+        failed = false;
     }
 
     public void stop()
@@ -130,18 +132,20 @@ public class CmdExchangeAlign implements TrcRobot.RobotCommand
                 case START_STRAFE:
                     if(pidEvent.isSignaled() && !proximityEvent.isSignaled()) // Can't detect the wall for some reason
                     {
-                        stop();
-                        return true; // give up CodeReview: just go to done state instead of returning in the middle.
+                        failed = true;
+                        sm.setState(State.DONE);
+                    } else
+                    {
+                        robot.pidDrive.cancel();
+                        proximitySensor.setInverted(true);  //CodeReview: Please explain!
+                        proximityEvent.clear();
+                        
+                        robot.pidDrive.setTarget(strafeDistance, 0.0, robot.targetHeading, false, pidEvent);
+                        sm.addEvent(pidEvent);
+                        sm.addEvent(proximityEvent);
+                        sm.waitForEvents(State.ADJUST_POSITION);                        
                     }
 
-                    robot.pidDrive.cancel();
-                    proximitySensor.setInverted(true);  //CodeReview: Please explain!
-                    proximityEvent.clear();
-
-                    robot.pidDrive.setTarget(strafeDistance, 0.0, robot.targetHeading, false, pidEvent);
-                    sm.addEvent(pidEvent);
-                    sm.addEvent(proximityEvent);
-                    sm.waitForEvents(State.ADJUST_POSITION);
                     break;
 
                 case ADJUST_POSITION:
@@ -158,6 +162,13 @@ public class CmdExchangeAlign implements TrcRobot.RobotCommand
                     done = true;
                     if(onFinishedEvent != null)
                     {
+                        if(failed)
+                        {
+                            onFinishedEvent.cancel();
+                        } else
+                        {
+                            onFinishedEvent.set(true);
+                        }
                         onFinishedEvent.set(true);
                     }
                     break;
