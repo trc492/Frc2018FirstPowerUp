@@ -32,7 +32,7 @@ public class CmdAutoCubePickup implements TrcRobot.RobotCommand
 
     public static enum State
     {
-        START, DRIVE, RAISE_ELEVATOR, DONE
+        START, DRIVE, DONE
     }
 
     private Robot robot;
@@ -114,13 +114,7 @@ public class CmdAutoCubePickup implements TrcRobot.RobotCommand
                         sm.addEvent(pickupEvent);
                         robot.pidDrive.setTarget(xDistance, yDistance, robot.targetHeading, false, event);
                         sm.addEvent(event);
-                        sm.waitForEvents(State.RAISE_ELEVATOR);
-                        break;
-
-                    case RAISE_ELEVATOR:
-                        //CodeReview: should you check if the cube is in possession? If not, what do you do?
-                        robot.elevator.setPosition(RobotInfo.ELEVATOR_OFF_GROUND, event, 0.0);
-                        sm.waitForSingleEvent(event, State.DONE);
+                        sm.waitForEvents(State.DONE);
                         break;
 
                     case DONE:

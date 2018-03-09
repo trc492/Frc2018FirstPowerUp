@@ -44,9 +44,11 @@ class CmdPowerUpAuto implements TrcRobot.RobotCommand
         DRIVE_TO_SECOND_CUBE,
         START_STRAFE,
         STRAFE_TO_SECOND_CUBE,
+        PRECISION_STRAFE,
         START_SECOND_PICKUP,
         PICKUP_SECOND_CUBE,
         BACKUP_WITH_SECOND_CUBE,
+        LIFT_CUBE_SLIGHTLY,
         REPOSITION_TURN,
         DRIVE_TO_SECOND_TARGET,
         CLOSE_TARGET_DRIVE,
@@ -135,6 +137,7 @@ class CmdPowerUpAuto implements TrcRobot.RobotCommand
             {
                 double xDistance, yDistance, sonarDistance;
                 State nextState;
+                double nextHeading;
                 boolean traceState = true;
 
                 //TODO: check if it actually works
@@ -253,9 +256,6 @@ class CmdPowerUpAuto implements TrcRobot.RobotCommand
                             robot.encoderXPidCtrl.setOutputLimit(0.5);
                             robot.pidDrive.setTarget(xDistance, yDistance, robot.targetHeading, false, event);
                             sm.waitForSingleEvent(event, State.FLIP_CUBE);
-                            // CodeReview: You can't restore it here!!! Pid drive is not even started!
-//                            robot.encoderXPidCtrl.setOutputRange(
-//                                -RobotInfo.DRIVE_MAX_XPID_POWER, RobotInfo.DRIVE_MAX_XPID_POWER);
                         }
                         break;
 
@@ -299,12 +299,29 @@ class CmdPowerUpAuto implements TrcRobot.RobotCommand
                     case STRAFE_TO_SECOND_CUBE:
                         if (robot.cmdStrafeUntilCube.cmdPeriodic(elapsedTime))
                         {
-                            sm.setState(State.START_SECOND_PICKUP);
+                            sm.setState(State.PRECISION_STRAFE);
                         }
                         traceState = false;
                         break;
 
+                    case PRECISION_STRAFE:
+                        yDistance = 0.0;
+                        Double visionTarget = robot.getPixyTargetX();
+                        xDistance = visionTarget != null? visionTarget: 0.0;
+                        robot.pidDrive.setTarget(xDistance, yDistance, robot.targetHeading, false, event);
+                        sm.waitForSingleEvent(event, State.START_SECOND_PICKUP);
+                        break;
+
                     case START_SECOND_PICKUP:
+                        visionTarget = robot.getPixyTargetX();
+                        if (visionTarget == null)
+                        {
+                            robot.tracer.traceInfo(funcName, "Vision Target not found");
+                        }
+                        else
+                        {
+                            robot.tracer.traceInfo(funcName, "visionTargetX=%.1f", robot.getPixyTargetX());
+                        }
                         robot.encoderXPidCtrl.setOutputLimit(xPowerLimit);
                         cubeStrafeDistance = robot.driveBase.getXPosition() - xStart;
                         // Go forward to grab the cube or until it passes a certain distance.
@@ -312,7 +329,7 @@ class CmdPowerUpAuto implements TrcRobot.RobotCommand
                         robot.cmdAutoCubePickup.start();
                         sm.setState(State.PICKUP_SECOND_CUBE);
                         yPowerLimit = robot.encoderYPidCtrl.getOutputLimit();
-                        robot.encoderYPidCtrl.setOutputLimit(0.5);
+                        robot.encoderYPidCtrl.setOutputLimit(0.3);
                         break;
 
                     case PICKUP_SECOND_CUBE:
@@ -328,15 +345,21 @@ class CmdPowerUpAuto implements TrcRobot.RobotCommand
                         xDistance = 0.0;
                         yDistance = robot.driveBase.getYPosition() - yStart;
                         robot.pidDrive.setTarget(xDistance, -yDistance, robot.targetHeading, false, event);
-                        sm.waitForSingleEvent(event, State.REPOSITION_TURN);
+                        sm.waitForSingleEvent(event, State.REPOSITION_TURN, 1.5);
                         break;
 
+//                    case LIFT_CUBE_SLIGHTLY:
+//                        //CodeReview: should you check if the cube is in possession? If not, what do you do?
+//                        robot.elevator.setPosition(RobotInfo.ELEVATOR_OFF_GROUND, event, 0.0);
+//                        sm.waitForSingleEvent(event, State.REPOSITION_TURN);
+//                        break;
+
                     case REPOSITION_TURN:
+                        robot.elevator.setPosition(RobotInfo.ELEVATOR_OFF_GROUND, event, 0.0);
                         xDistance = yDistance = 0.0;
                         robot.targetHeading = rightScale? RobotInfo.DRIVE_HEADING_EAST: RobotInfo.DRIVE_HEADING_WEST;
                         robot.pidDrive.setTarget(xDistance, yDistance, robot.targetHeading, false, event);
-                        //sm.waitForSingleEvent(event, State.DRIVE_TO_SECOND_TARGET);
-                        sm.waitForSingleEvent(event, State.DONE);
+                        sm.waitForSingleEvent(event, State.DRIVE_TO_SECOND_TARGET);
                         break;
 
                     case DRIVE_TO_SECOND_TARGET:
@@ -360,9 +383,10 @@ class CmdPowerUpAuto implements TrcRobot.RobotCommand
 
                     case TURN_ROBOT:
                         xDistance = yDistance = 0.0;
+                        nextHeading = RobotInfo.DRIVE_HEADING_NORTH;
                         // Make sure we don't turn more than 180 degrees.
-                        if (RobotInfo.DRIVE_HEADING_NORTH - robot.targetHeading > 180.0) robot.targetHeading += 360.0;
-                        robot.targetHeading = RobotInfo.DRIVE_HEADING_NORTH;
+                        if (nextHeading - robot.targetHeading > 180.0) nextHeading *= -1.0;
+                        robot.targetHeading = nextHeading;
                         robot.pidDrive.setTarget(xDistance, yDistance, robot.targetHeading, false, event);
                         if(sideApproach)
                         {
@@ -383,8 +407,9 @@ class CmdPowerUpAuto implements TrcRobot.RobotCommand
 
                     case TURN_AGAIN:
                         xDistance = yDistance = 0.0;
-                        robot.targetHeading =
-                            rightScale? RobotInfo.DRIVE_HEADING_WEST: RobotInfo.DRIVE_HEADING_EAST + 360.0;
+                        nextHeading = rightScale? RobotInfo.DRIVE_HEADING_WEST: RobotInfo.DRIVE_HEADING_EAST;
+                        if (nextHeading - robot.targetHeading > 180.0) nextHeading *= -1.0;
+                        robot.targetHeading = nextHeading;
                         robot.pidDrive.setTarget(xDistance, yDistance, robot.targetHeading, false, event);
                         sm.waitForSingleEvent(event, State.RAISE_ELEVATOR);
                         break;

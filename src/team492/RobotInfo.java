@@ -204,8 +204,8 @@ public class RobotInfo
     public static final double ELEVATOR_MAX_HEIGHT              = 85.0;     //need calibration
 
     public static final double ELEVATOR_FLOOR_PICKUP_HEIGHT     = ELEVATOR_MIN_HEIGHT;  // Lowest point on elevator
-    public static final double ELEVATOR_OFF_GROUND              = ELEVATOR_MIN_HEIGHT + 4.0;
-    public static final double ELEVATOR_MID_HEIGHT              = ELEVATOR_MIN_HEIGHT + 4.0;
+    public static final double ELEVATOR_OFF_GROUND              = ELEVATOR_MIN_HEIGHT + 8.0;
+    public static final double ELEVATOR_MID_HEIGHT              = ELEVATOR_MIN_HEIGHT + 6.0;
 
     //
     // CubePickup subsystem.
@@ -232,9 +232,9 @@ public class RobotInfo
     public static final double EXCHANGE_ALIGN_WALL_DIST         = 12.0;     // 1 foot
     public static final double EXCHANGE_ALIGN_SENSOR_OFFSET     = -8.0; // TUNE THIS. Inches offset from center of cube pickup
     public static final double AUTO_PICKUP_MOVE_POWER           = 0.6;      // 60% power
-    public static final double FIND_CUBE_X_TOLERANCE            = 6.0;      // 6-in
+    public static final double FIND_CUBE_X_TOLERANCE            = 1.0;      // 1-in
     public static final double FIND_CUBE_STRAFE_POWER           = 0.6;      // 60% power
-    public static final double AUTO_PICKUP_CUBE_DISTANCE        = 16.0;     // TODO: tune this.
+    public static final double AUTO_PICKUP_CUBE_DISTANCE        = 24.0;     // TODO: tune this.
 
     //
     // CmdPowerUpAuto variables.
