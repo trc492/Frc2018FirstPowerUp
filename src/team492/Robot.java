@@ -489,7 +489,7 @@ public class Robot extends FrcRobotBase
     {
         driveBase.stop();
         battery.setTaskEnabled(false);
-        
+
         cancelAutoAssist();
         cubePickup.stopPickup();
     }   //robotStopMode
