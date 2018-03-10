@@ -163,7 +163,7 @@ public class RobotInfo
     public static final double ENCODER_X_INCHES_PER_COUNT       = 0.0129836759876149;//0.0148258400720388;//0.0144546649145861;//0.0152347136491642;//0.0264367338026265;
     public static final double ENCODER_X_KP                     = 0.15;
     public static final double ENCODER_X_KI                     = 0.0;
-    public static final double ENCODER_X_KD                     = 0.0;
+    public static final double ENCODER_X_KD                     = 0.015;
     public static final double ENCODER_X_KF                     = 0.0;
     public static final double ENCODER_X_TOLERANCE              = 1.0;
 
@@ -201,7 +201,8 @@ public class RobotInfo
     public static final double ELEVATOR_CAL_POWER               = 0.3;      // this too
     public static final double ELEVATOR_POSITION_OFFSET         = 8.0;
     public static final double ELEVATOR_MIN_HEIGHT              = 8.0;
-    public static final double ELEVATOR_MAX_HEIGHT              = 85.0;     //need calibration
+    public static final double ELEVATOR_MAX_HEIGHT              = 82.0;     //need calibration
+    public static final double ELEVATOR_SCALE_HIGH              = ELEVATOR_MAX_HEIGHT-3.0;     //need calibration
 
     public static final double ELEVATOR_FLOOR_PICKUP_HEIGHT     = ELEVATOR_MIN_HEIGHT;  // Lowest point on elevator
     public static final double ELEVATOR_OFF_GROUND              = ELEVATOR_MIN_HEIGHT + 8.0;
@@ -241,15 +242,15 @@ public class RobotInfo
     //
     public static final double AUTO_DISTANCE_TO_SWITCH          = 145.0;
     public static final double FINAL_FRONT_SCALE_APPROACH_DISTANCE= 64.0;
-    public static final double FINAL_SIDE_SCALE_APPROACH_DISTANCE= 24.0;
+    public static final double FINAL_SIDE_SCALE_APPROACH_DISTANCE= 0.0;
     public static final double RIGHT_SWITCH_LOCATION            = 102.0;
     public static final double LEFT_SWITCH_LOCATION             = -102.0;
     public static final double ADVANCE_TO_SECOND_CUBE_DISTANCE  = 70.0;
     public static final double STRAFE_TO_SECOND_CUBE_DISTANCE   = 36.0;
     public static final double SCALE_FRONT_POSITION             = 75.0;
-    public static final double SCALE_SIDE_POSITION              = 120.0;
+    public static final double SCALE_SIDE_POSITION              = 136.0;
     public static final double FIRST_ELEVATOR_HEIGHT            = 30.0;
-    public static final double ADVANCE_AROUND_SCALE_DISTANCE    = 106.0;
+    public static final double ADVANCE_AROUND_SCALE_DISTANCE    = 89.0;
     public static final double SWITCH_STRAFE_DISTANCE           = 26.0;
     public static final double MAX_CUBE_DISTANCE                = 20.0;
     public static final double SWITCH_SONAR_DISTANCE_THRESHOLD  = 16.0;

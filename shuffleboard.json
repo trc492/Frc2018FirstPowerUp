@@ -453,8 +453,8 @@
     },
     {
       "title": "Power",
-      "autoPopulate": false,
-      "autoPopulatePrefix": "",
+      "autoPopulate": true,
+      "autoPopulatePrefix": "SmartDashboard/Power",
       "widgetPane": {
         "gridSize": 32.0,
         "showGrid": true,
@@ -463,37 +463,54 @@
         "tiles": {
           "0,0": {
             "size": [
-              12,
-              4
-            ],
-            "content": {
-              "_type": "Graph",
-              "_title": "Graph (no sources)",
-              "Visible time": 30.0
-            }
-          },
-          "12,0": {
-            "size": [
               11,
-              4
-            ],
-            "content": {
-              "_type": "Graph",
-              "_title": "Graph (no sources)",
-              "Visible time": 30.0
-            }
-          },
-          "0,5": {
-            "size": [
-              12,
               5
             ],
             "content": {
               "_type": "Graph",
-              "_source0": "network_table:///SmartDashboard/pickupCurrent",
-              "_title": "/SmartDashboard/pickupCurrent",
+              "_source0": "network_table:///SmartDashboard/Power/pdpTotalCurrent",
+              "_title": "pdpTotalCurrent",
               "Visible time": 30.0,
-              "SmartDashboard/pickupCurrent visible": true
+              "SmartDashboard/Power/pdpTotalCurrent visible": true
+            }
+          },
+          "11,0": {
+            "size": [
+              11,
+              5
+            ],
+            "content": {
+              "_type": "Graph",
+              "_source0": "network_table:///SmartDashboard/Power/elevatorCurrent",
+              "_title": "elevatorCurrent",
+              "Visible time": 30.0,
+              "SmartDashboard/Power/elevatorCurrent visible": true
+            }
+          },
+          "11,5": {
+            "size": [
+              11,
+              5
+            ],
+            "content": {
+              "_type": "Graph",
+              "_source0": "network_table:///SmartDashboard/Power/winchCurrent",
+              "_title": "winchCurrent",
+              "Visible time": 30.0,
+              "SmartDashboard/Power/winchCurrent visible": true
+            }
+          },
+          "0,5": {
+            "size": [
+              11,
+              5
+            ],
+            "content": {
+              "_type": "Graph",
+              "_source0": "network_table:///SmartDashboard/Power/pickupCurrent",
+              "_title": "pickupCurrent",
+              "Visible time": 30.0,
+              "SmartDashboard/Power/pickupCurrent visible": true
             }
           }
         }

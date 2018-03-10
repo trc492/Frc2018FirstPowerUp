@@ -305,6 +305,7 @@ class CmdPowerUpAuto implements TrcRobot.RobotCommand
 
                     case PRECISION_STRAFE:
                         yDistance = 0.0;
+                        //robot.encoderXPidCtrl.setOutputLimit(0.5);
                         Double visionTarget = robot.getPixyTargetX();
                         xDistance = visionTarget != null? visionTarget: 0.0;
                         robot.pidDrive.setTarget(xDistance, yDistance, robot.targetHeading, false, event);
@@ -358,7 +359,7 @@ class CmdPowerUpAuto implements TrcRobot.RobotCommand
                         xDistance = yDistance = 0.0;
                         robot.targetHeading = rightScale? RobotInfo.DRIVE_HEADING_EAST: RobotInfo.DRIVE_HEADING_WEST;
                         robot.pidDrive.setTarget(xDistance, yDistance, robot.targetHeading, false, event);
-                        sm.waitForSingleEvent(event, State.DRIVE_TO_SECOND_TARGET);
+                        sm.waitForSingleEvent(event, State.DRIVE_TO_SECOND_TARGET, 1.5);
                         break;
 
                     case DRIVE_TO_SECOND_TARGET:
@@ -386,11 +387,11 @@ class CmdPowerUpAuto implements TrcRobot.RobotCommand
                         robot.pidDrive.setTarget(xDistance, yDistance, robot.targetHeading, false, event);
                         if(sideApproach)
                         {
-                            sm.waitForSingleEvent(event, State.ADVANCE_TO_SCALE);
+                            sm.waitForSingleEvent(event, State.ADVANCE_TO_SCALE, 1.5);
                         }
                         else
                         {
-                            sm.waitForSingleEvent(event, State.RAISE_ELEVATOR);
+                            sm.waitForSingleEvent(event, State.RAISE_ELEVATOR, 1.5);
                         }
                         break;
 
@@ -409,8 +410,8 @@ class CmdPowerUpAuto implements TrcRobot.RobotCommand
                         break;
 
                     case RAISE_ELEVATOR:
-                        robot.elevator.setPosition(RobotInfo.ELEVATOR_MAX_HEIGHT, event, 0.0);
-                        sm.waitForSingleEvent(event, State.APPROACH_FINAL_TARGET);
+                        robot.elevator.setPosition(RobotInfo.ELEVATOR_SCALE_HIGH, event, 0.0);
+                        sm.waitForSingleEvent(event, State.APPROACH_FINAL_TARGET, 2.0);
                         break;
 
                     case APPROACH_FINAL_TARGET:
@@ -433,12 +434,13 @@ class CmdPowerUpAuto implements TrcRobot.RobotCommand
 
                     case DEPOSIT_CUBE:
                         robot.encoderYPidCtrl.setOutputLimit(yPowerLimit);
-                        robot.cubePickup.dropCube(0.5);
+                        robot.cubePickup.dropCube(1.0);
                         timer.set(0.3, event);
                         sm.waitForSingleEvent(event, State.LOWER_ELEVATOR);
                         break;
 
                     case LOWER_ELEVATOR:
+                        robot.cubePickup.stopPickup();
                         robot.elevator.setPosition(RobotInfo.ELEVATOR_MIN_HEIGHT, event, 0.0);
                         sm.waitForSingleEvent(event, State.DONE);
                         break;
@@ -464,3 +466,5 @@ class CmdPowerUpAuto implements TrcRobot.RobotCommand
     } // cmdPeriodic
 
 } // class CmdPowerUpAuto
+
+// leave a comment if you find this
