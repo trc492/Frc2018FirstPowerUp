@@ -51,8 +51,6 @@ class CmdPowerUpAuto implements TrcRobot.RobotCommand
         LIFT_CUBE_SLIGHTLY,
         REPOSITION_TURN,
         DRIVE_TO_SECOND_TARGET,
-        CLOSE_TARGET_DRIVE,
-        FAR_TARGET_DRIVE,
         TURN_ROBOT,
         ADVANCE_TO_SCALE,
         TURN_AGAIN,
@@ -140,7 +138,6 @@ class CmdPowerUpAuto implements TrcRobot.RobotCommand
                 State nextState;
                 boolean traceState = true;
 
-                //TODO: check if it actually works
                 switch (state)
                 {
                     case DO_DELAY:
@@ -315,7 +312,9 @@ class CmdPowerUpAuto implements TrcRobot.RobotCommand
                         break;
 
                     case START_SECOND_PICKUP:
+                        // not sure if this works
                         double xError = visionTarget != null? visionTarget - (robot.driveBase.getXPosition() - lastXPosition): 0.0;
+                        robot.tracer.traceInfo(funcName, "visionStrafeError=%.1f", xError);
                         visionTarget = robot.getPixyTargetX();
                         if (visionTarget == null)
                         {
@@ -360,9 +359,18 @@ class CmdPowerUpAuto implements TrcRobot.RobotCommand
                     case REPOSITION_TURN:
                         robot.elevator.setPosition(RobotInfo.ELEVATOR_OFF_GROUND, event, 0.0);
                         xDistance = yDistance = 0.0;
-                        robot.targetHeading = rightScale? RobotInfo.DRIVE_HEADING_EAST: RobotInfo.DRIVE_HEADING_WEST;
+                        if(!sideApproach && (rightScale == rightSwitch))
+                        {
+                            robot.targetHeading = RobotInfo.DRIVE_HEADING_NORTH;
+                            nextState = State.RAISE_ELEVATOR;
+                        }
+                        else
+                        {
+                            robot.targetHeading = rightScale? RobotInfo.DRIVE_HEADING_EAST: RobotInfo.DRIVE_HEADING_WEST;
+                            nextState = State.DRIVE_TO_SECOND_TARGET;
+                        }
                         robot.pidDrive.setTarget(xDistance, yDistance, robot.targetHeading, false, event);
-                        sm.waitForSingleEvent(event, State.DRIVE_TO_SECOND_TARGET, 1.5);
+                        sm.waitForSingleEvent(event, nextState, 1.5);
                         break;
 
                     case DRIVE_TO_SECOND_TARGET:
@@ -409,18 +417,26 @@ class CmdPowerUpAuto implements TrcRobot.RobotCommand
                         xDistance = yDistance = 0.0;
                         robot.targetHeading = rightScale? RobotInfo.DRIVE_HEADING_WEST: RobotInfo.DRIVE_HEADING_EAST;
                         robot.pidDrive.setTarget(xDistance, yDistance, robot.targetHeading, false, event);
-                        sm.waitForSingleEvent(event, State.RAISE_ELEVATOR);
+                        sm.waitForSingleEvent(event, State.RAISE_ELEVATOR, 1.5);
                         break;
 
                     case RAISE_ELEVATOR:
                         robot.elevator.setPosition(RobotInfo.ELEVATOR_SCALE_HIGH, event, 0.0);
-                        sm.waitForSingleEvent(event, State.APPROACH_FINAL_TARGET, 2.0);
+                        if(sideApproach)
+                        {
+                            sm.waitForSingleEvent(event, State.DEPOSIT_CUBE, 2.0);
+                        }
+                        else
+                        {
+                            sm.waitForSingleEvent(event, State.APPROACH_FINAL_TARGET, 2.0);
+                        }
                         break;
 
                     case APPROACH_FINAL_TARGET:
                         xDistance = 0.0;
                         if(sideApproach)
                         {
+                            // left this side approach distance just in case we need it again
                             yDistance = RobotInfo.FINAL_SIDE_SCALE_APPROACH_DISTANCE;
                         }
                         else
