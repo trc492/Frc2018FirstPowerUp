@@ -41,6 +41,7 @@ public class FrcTeleOp implements TrcRobot.RobotMode
     private boolean driveInverted = false;
     private boolean gyroAssist = false;
     private int elevatorHeightIndex = 0;
+    private int winchDirection = 0;
 
     public FrcTeleOp(Robot robot)
     {
@@ -138,6 +139,9 @@ public class FrcTeleOp implements TrcRobot.RobotMode
 
             double elevatorPower = robot.operatorStick.getYWithDeadband(true);
             robot.elevator.setPower(elevatorPower); // Pull joystick back -> move elevator up
+
+            double winchPower = winchDirection*(1.0 - robot.operatorStick.getZ())/2.0;
+            robot.winch.setPower(winchPower);
         }
 
         robot.updateDashboard();
@@ -390,11 +394,11 @@ public class FrcTeleOp implements TrcRobot.RobotMode
                 break;
 
             case FrcJoystick.LOGITECH_BUTTON10:
-                robot.winch.setPower(pressed? -RobotInfo.WINCH_TELEOP_POWER: 0.0);
+                winchDirection = pressed? -1: 0;
                 break;
 
             case FrcJoystick.LOGITECH_BUTTON11:
-                robot.winch.setPower(pressed? RobotInfo.WINCH_TELEOP_POWER: 0.0);
+                winchDirection = pressed? 1: 0;
                 break;
 
             case FrcJoystick.LOGITECH_BUTTON12:

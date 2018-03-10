@@ -38,6 +38,8 @@ public class CmdAutoCubePickup implements TrcRobot.RobotCommand
     private Robot robot;
     private TrcEvent event, pickupEvent;
     private TrcStateMachine<State> sm;
+    
+    private double xError;
 
     public CmdAutoCubePickup(Robot robot)
     {
@@ -59,11 +61,18 @@ public class CmdAutoCubePickup implements TrcRobot.RobotCommand
 
     public void start()
     {
+        start(0.0);
+    }
+    
+    public void start(double xError)
+    {
+        this.xError = xError;
         if (!sm.isEnabled())
         {
             sm.start(State.START);
         }
     }
+
 
     public void stop()
     {
@@ -104,7 +113,7 @@ public class CmdAutoCubePickup implements TrcRobot.RobotCommand
 
                     case DRIVE:
                         // Go forward the expected distance or until the cube is in possession.
-                        xDistance = 0.0;
+                        xDistance = xError;
                         yDistance = RobotInfo.AUTO_PICKUP_CUBE_DISTANCE;
 //                        yDistance = robot.frontSonarSensor != null?
 //                            robot.getFrontSonarDistance(): RobotInfo.AUTO_PICKUP_CUBE_DISTANCE;

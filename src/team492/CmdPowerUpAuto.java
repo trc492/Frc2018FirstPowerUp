@@ -135,7 +135,8 @@ class CmdPowerUpAuto implements TrcRobot.RobotCommand
 
             if (state != null)
             {
-                double xDistance, yDistance, sonarDistance;
+                double xDistance, yDistance, sonarDistance, lastXPosition = 0.0;
+                Double visionTarget = null;
                 State nextState;
                 boolean traceState = true;
 
@@ -306,13 +307,15 @@ class CmdPowerUpAuto implements TrcRobot.RobotCommand
                     case PRECISION_STRAFE:
                         yDistance = 0.0;
                         //robot.encoderXPidCtrl.setOutputLimit(0.5);
-                        Double visionTarget = robot.getPixyTargetX();
+                        visionTarget = robot.getPixyTargetX();
                         xDistance = visionTarget != null? visionTarget: 0.0;
+                        lastXPosition = robot.driveBase.getXPosition();
                         robot.pidDrive.setTarget(xDistance, yDistance, robot.targetHeading, false, event);
                         sm.waitForSingleEvent(event, State.START_SECOND_PICKUP);
                         break;
 
                     case START_SECOND_PICKUP:
+                        double xError = visionTarget != null? visionTarget - (robot.driveBase.getXPosition() - lastXPosition): 0.0;
                         visionTarget = robot.getPixyTargetX();
                         if (visionTarget == null)
                         {
@@ -323,10 +326,9 @@ class CmdPowerUpAuto implements TrcRobot.RobotCommand
                             robot.tracer.traceInfo(funcName, "visionTargetX=%.1f", robot.getPixyTargetX());
                         }
                         robot.encoderXPidCtrl.setOutputLimit(xPowerLimit);
-                        cubeStrafeDistance = robot.driveBase.getXPosition() - xStart;
                         // Go forward to grab the cube or until it passes a certain distance.
                         yStart = robot.driveBase.getYPosition();
-                        robot.cmdAutoCubePickup.start();
+                        robot.cmdAutoCubePickup.start(xError);
                         sm.setState(State.PICKUP_SECOND_CUBE);
                         yPowerLimit = robot.encoderYPidCtrl.getOutputLimit();
                         robot.encoderYPidCtrl.setOutputLimit(0.3);
@@ -341,6 +343,7 @@ class CmdPowerUpAuto implements TrcRobot.RobotCommand
                         break;
 
                     case BACKUP_WITH_SECOND_CUBE:
+                        cubeStrafeDistance = robot.driveBase.getXPosition() - xStart;
                         robot.encoderYPidCtrl.setOutputLimit(yPowerLimit);
                         xDistance = 0.0;
                         yDistance = robot.driveBase.getYPosition() - yStart;

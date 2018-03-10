@@ -98,9 +98,7 @@ public class Robot extends FrcRobotBase
     private static final boolean DEBUG_POWER_CONSUMPTION = true;
     private static final boolean DEBUG_DRIVE_BASE = false;
     private static final boolean DEBUG_PID_DRIVE = false;
-    private static final boolean DEBUG_WINCH = false;
-    private static final boolean DEBUG_ELEVATOR = true;
-    private static final boolean DEBUG_CUBE_PICKUP = true;
+    private static final boolean DEBUG_ELEVATOR_WINCH_PICKUP = true;
     private static final boolean DEBUG_PIXY = true;
 
     private static final double DASHBOARD_UPDATE_INTERVAL = 0.1;
@@ -565,22 +563,14 @@ public class Robot extends FrcRobotBase
                 HalDashboard.putNumber("DriveBase/heading", driveBase.getHeading());
             }
 
-            if (DEBUG_WINCH)
-            {
-                dashboard.displayPrintf(8, "Winch: power=%.1f", winch.getPower());
-            }
-
-            if (DEBUG_ELEVATOR)
+            if (DEBUG_ELEVATOR_WINCH_PICKUP)
             {
                 dashboard.displayPrintf(8, "Elevator: power=%.1f, position=%.1f(%.1f), limitSw=%b/%b",
                     elevator.getPower(), elevator.getPosition(), elevator.elevatorMotor.getPosition(),
                     elevator.elevatorMotor.isLowerLimitSwitchActive(),
                     elevator.elevatorMotor.isUpperLimitSwitchActive());
-            }
-
-            if (DEBUG_CUBE_PICKUP)
-            {
-                dashboard.displayPrintf(9, "CubePickup: power=%.1f, current=%.1f, cubeDetected=%b",
+                dashboard.displayPrintf(9, "Winch: power=%.1f", winch.getPower());
+                dashboard.displayPrintf(10, "CubePickup: power=%.1f, current=%.1f, cubeDetected=%b",
                     cubePickup.getPickupPower(), cubePickup.getPickupCurrent(), cubePickup.cubeInProximity());
             }
 
@@ -591,14 +581,14 @@ public class Robot extends FrcRobotBase
                     PixyVision.TargetInfo targetInfo = pixy.getTargetInfo();
                     if (targetInfo == null)
                     {
-                        dashboard.displayPrintf(10, "Pixy: Target not found!");
+                        dashboard.displayPrintf(11, "Pixy: Target not found!");
                     }
                     else
                     {
-                        dashboard.displayPrintf(10, "Pixy: x=%d, y=%d, width=%d, height=%d",
+                        dashboard.displayPrintf(11, "Pixy: xDistance=%.1f, yDistance=%.1f, angle=%.1f",
+                            targetInfo.xDistance, targetInfo.yDistance, targetInfo.angle);
+                        dashboard.displayPrintf(12, "x=%d, y=%d, width=%d, height=%d",
                             targetInfo.rect.x, targetInfo.rect.y, targetInfo.rect.width, targetInfo.rect.height);
-                        dashboard.displayPrintf(11, "xDistance=%.1f, yDistance=%.1f, angle=%.1f, ultrasonic=%.1f",
-                            targetInfo.xDistance, targetInfo.yDistance, targetInfo.angle, getFrontSonarDistance());
                     }
                 }
             }
