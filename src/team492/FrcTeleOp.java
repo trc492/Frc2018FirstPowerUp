@@ -25,7 +25,6 @@ package team492;
 import frclib.FrcJoystick;
 import hallib.HalDashboard;
 import trclib.TrcRobot;
-import trclib.TrcUtil;
 
 public class FrcTeleOp implements TrcRobot.RobotMode
 {
@@ -40,7 +39,6 @@ public class FrcTeleOp implements TrcRobot.RobotMode
     private DriveMode driveMode = DriveMode.MECANUM_MODE;
     private boolean driveInverted = false;
     private boolean gyroAssist = false;
-    private int elevatorHeightIndex = 0;
 
     public FrcTeleOp(Robot robot)
     {
@@ -375,20 +373,40 @@ public class FrcTeleOp implements TrcRobot.RobotMode
                 break;
 
             case FrcJoystick.LOGITECH_BUTTON8:
-                if(pressed)
+                // Go up to next elevator preset
+                if(pressed && robot.elevator.getPosition() < RobotInfo.ELEVATOR_HEIGHTS[RobotInfo.ELEVATOR_HEIGHTS.length-1])
                 {
-                    elevatorHeightIndex--;
-                    elevatorHeightIndex = TrcUtil.clipRange(elevatorHeightIndex, 0, RobotInfo.ELEVATOR_HEIGHTS.length-1);
-                    robot.elevator.setPosition(RobotInfo.ELEVATOR_HEIGHTS[elevatorHeightIndex]);
+                    double currHeight = robot.elevator.getPosition();
+                    
+                    for(int i = 0; i < RobotInfo.ELEVATOR_HEIGHTS.length; i++)
+                    {
+                        if(RobotInfo.ELEVATOR_HEIGHTS[i] > currHeight)
+                        {
+                            double targetHeight = RobotInfo.ELEVATOR_HEIGHTS[i];
+                            robot.elevator.setPosition(targetHeight);
+                            break;
+                        }
+                    }
+                    
                 }
                 break;
 
             case FrcJoystick.LOGITECH_BUTTON9:
-                if(pressed)
+                // Go down to next elevator preset
+                if(pressed && robot.elevator.getPosition() > RobotInfo.ELEVATOR_HEIGHTS[0])
                 {
-                    elevatorHeightIndex++;
-                    elevatorHeightIndex = TrcUtil.clipRange(elevatorHeightIndex, 0, RobotInfo.ELEVATOR_HEIGHTS.length-1);
-                    robot.elevator.setPosition(RobotInfo.ELEVATOR_HEIGHTS[elevatorHeightIndex]);                    
+                    double currHeight = robot.elevator.getPosition();
+                    
+                    for(int i = RobotInfo.ELEVATOR_HEIGHTS.length-1; i >= 0; i--)
+                    {
+                        if(RobotInfo.ELEVATOR_HEIGHTS[i] < currHeight)
+                        {
+                            double targetHeight = RobotInfo.ELEVATOR_HEIGHTS[i];
+                            robot.elevator.setPosition(targetHeight);
+                            break;
+                        }
+                    }
+                    
                 }
                 break;
 
