@@ -39,7 +39,6 @@ public class FrcTeleOp implements TrcRobot.RobotMode
     private DriveMode driveMode = DriveMode.MECANUM_MODE;
     private boolean driveInverted = false;
     private boolean gyroAssist = false;
-    private int elevatorHeightIndex = 0;
     private int winchDirection = 0;
 
     public FrcTeleOp(Robot robot)
