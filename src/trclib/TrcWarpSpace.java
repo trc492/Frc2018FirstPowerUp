@@ -95,7 +95,7 @@ public class TrcWarpSpace
         double distance = (targetPos - currentPos) % range;
         double absDistance = Math.abs(distance);
 
-        return currentPos + (absDistance > range/2? -Math.signum(distance)*(range - absDistance): distance);
+        return currentPos + ((absDistance > (range / 2)) ? -Math.signum(distance) * (range - absDistance) : distance);
     }   //getOptimizedTarget
 
     /**
