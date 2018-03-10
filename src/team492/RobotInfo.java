@@ -216,8 +216,7 @@ public class RobotInfo
     public static final double ELEVATOR_SCALE_MED               = 60.0 + CUBE_HEIGHT + 5.0; // 5ft + cube height + 5 in buffer
     public static final double ELEVATOR_SCALE_HIGH              = 72.0 + CUBE_HEIGHT + 5.0; // 6ft + cube height + 5 in buffer
     
-    public static final double[] ELEVATOR_HEIGHTS = new double[] { ELEVATOR_FLOOR_PICKUP_HEIGHT,
-                                                                   ELEVATOR_OFF_GROUND,
+    public static final double[] ELEVATOR_HEIGHTS = new double[] { ELEVATOR_OFF_GROUND,
                                                                    ELEVATOR_SWITCH_HEIGHT,
                                                                    ELEVATOR_SCALE_LOW,
                                                                    ELEVATOR_SCALE_MED,

@@ -25,7 +25,6 @@ package team492;
 import frclib.FrcJoystick;
 import hallib.HalDashboard;
 import trclib.TrcRobot;
-import trclib.TrcUtil;
 
 public class FrcTeleOp implements TrcRobot.RobotMode
 {
@@ -301,6 +300,7 @@ public class FrcTeleOp implements TrcRobot.RobotMode
     {
         robot.dashboard.displayPrintf(8, "  OperatorStick: button=0x%04x %s", button, pressed? "pressed": "released");
 
+        double currHeight;
         //CodeReview: add a pair of buttons to go up/down preset elevator heights.
         switch (button)
         {
@@ -379,18 +379,41 @@ public class FrcTeleOp implements TrcRobot.RobotMode
                 break;
 
             case FrcJoystick.LOGITECH_BUTTON8:
-                if(pressed)
+                // Go up to next elevator preset
+                currHeight = robot.elevator.getPosition();
+                if(pressed && currHeight < RobotInfo.ELEVATOR_HEIGHTS[RobotInfo.ELEVATOR_HEIGHTS.length-1])
                 {
-                    elevatorHeightIndex--;
-                    TrcUtil.clipRange(elevatorHeightIndex, 0, RobotInfo.ELEVATOR_HEIGHTS.length-1);
-                    robot.elevator.setPosition(RobotInfo.ELEVATOR_HEIGHTS[elevatorHeightIndex]);
+                    
+                    for(int i = 0; i < RobotInfo.ELEVATOR_HEIGHTS.length; i++)
+                    {
+                        if(RobotInfo.ELEVATOR_HEIGHTS[i] > currHeight)
+                        {
+                            double targetHeight = RobotInfo.ELEVATOR_HEIGHTS[i];
+                            robot.elevator.setPosition(targetHeight);
+                            break;
+                        }
+                    }
+                    
                 }
                 break;
 
             case FrcJoystick.LOGITECH_BUTTON9:
-                elevatorHeightIndex++;
-                TrcUtil.clipRange(elevatorHeightIndex, 0, RobotInfo.ELEVATOR_HEIGHTS.length-1);
-                robot.elevator.setPosition(RobotInfo.ELEVATOR_HEIGHTS[elevatorHeightIndex]);
+                // Go down to next elevator preset
+                currHeight = robot.elevator.getPosition();
+                if(pressed && currHeight > RobotInfo.ELEVATOR_HEIGHTS[0])
+                {
+                    
+                    for(int i = RobotInfo.ELEVATOR_HEIGHTS.length-1; i >= 0; i--)
+                    {
+                        if(RobotInfo.ELEVATOR_HEIGHTS[i] < currHeight)
+                        {
+                            double targetHeight = RobotInfo.ELEVATOR_HEIGHTS[i];
+                            robot.elevator.setPosition(targetHeight);
+                            break;
+                        }
+                    }
+                    
+                }
                 break;
 
             case FrcJoystick.LOGITECH_BUTTON10:
