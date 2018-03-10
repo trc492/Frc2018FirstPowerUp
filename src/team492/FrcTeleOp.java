@@ -25,6 +25,7 @@ package team492;
 import frclib.FrcJoystick;
 import hallib.HalDashboard;
 import trclib.TrcRobot;
+import trclib.TrcUtil;
 
 public class FrcTeleOp implements TrcRobot.RobotMode
 {
@@ -39,6 +40,7 @@ public class FrcTeleOp implements TrcRobot.RobotMode
     private DriveMode driveMode = DriveMode.MECANUM_MODE;
     private boolean driveInverted = false;
     private boolean gyroAssist = false;
+    private int elevatorHeightIndex = 0;
 
     public FrcTeleOp(Robot robot)
     {
@@ -373,11 +375,18 @@ public class FrcTeleOp implements TrcRobot.RobotMode
                 break;
 
             case FrcJoystick.LOGITECH_BUTTON8:
-                //CodeReview: preset elevator down.
+                if(pressed)
+                {
+                    elevatorHeightIndex--;
+                    TrcUtil.clipRange(elevatorHeightIndex, 0, RobotInfo.ELEVATOR_HEIGHTS.length-1);
+                    robot.elevator.setPosition(RobotInfo.ELEVATOR_HEIGHTS[elevatorHeightIndex]);
+                }
                 break;
 
             case FrcJoystick.LOGITECH_BUTTON9:
-                //CodeReview: preset elevator up.
+                elevatorHeightIndex++;
+                TrcUtil.clipRange(elevatorHeightIndex, 0, RobotInfo.ELEVATOR_HEIGHTS.length-1);
+                robot.elevator.setPosition(RobotInfo.ELEVATOR_HEIGHTS[elevatorHeightIndex]);
                 break;
 
             case FrcJoystick.LOGITECH_BUTTON10:

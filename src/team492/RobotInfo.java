@@ -36,7 +36,13 @@ public class RobotInfo
     //
     public static final double FIELD_LENGTH                     = 54*12.0;
     public static final double FIELD_WIDTH                      = 27*12.0;
+    
     public static final double EXCHANGE_WIDTH                   = 21.0; // 1ft 9in
+    public static final double SWITCH_FENCE_HEIGHT              = 18.75; // 1ft 6.75in
+    
+    public static final double CUBE_HEIGHT                      = 11.0;
+    public static final double CUBE_WIDTH                       = 13.0;
+    public static final double CUBE_DEPTH                       = 13.0;
 
     //
     // Robot dimensions.
@@ -202,12 +208,20 @@ public class RobotInfo
     public static final double ELEVATOR_POSITION_OFFSET         = 8.0;
     public static final double ELEVATOR_MIN_HEIGHT              = 8.0;
     public static final double ELEVATOR_MAX_HEIGHT              = 82.0;     //need calibration
-    public static final double ELEVATOR_SCALE_HIGH              = ELEVATOR_MAX_HEIGHT-3.0;     //need calibration
 
     public static final double ELEVATOR_FLOOR_PICKUP_HEIGHT     = ELEVATOR_MIN_HEIGHT;  // Lowest point on elevator
-    public static final double ELEVATOR_OFF_GROUND              = ELEVATOR_MIN_HEIGHT + 8.0;
-    public static final double ELEVATOR_MID_HEIGHT              = ELEVATOR_MIN_HEIGHT + 6.0;
-
+    public static final double ELEVATOR_OFF_GROUND              = ELEVATOR_MIN_HEIGHT + 8.0; // 16 in
+    public static final double ELEVATOR_SWITCH_HEIGHT           = SWITCH_FENCE_HEIGHT + CUBE_HEIGHT + 5.0; // fence height + cube height + 5 in buffer
+    public static final double ELEVATOR_SCALE_LOW               = 48.0 + CUBE_HEIGHT + 5.0; // 4ft + cube height + 5 in buffer
+    public static final double ELEVATOR_SCALE_MED               = 60.0 + CUBE_HEIGHT + 5.0; // 5ft + cube height + 5 in buffer
+    public static final double ELEVATOR_SCALE_HIGH              = 72.0 + CUBE_HEIGHT + 5.0; // 6ft + cube height + 5 in buffer
+    
+    public static final double[] ELEVATOR_HEIGHTS = new double[] { ELEVATOR_FLOOR_PICKUP_HEIGHT,
+                                                                   ELEVATOR_OFF_GROUND,
+                                                                   ELEVATOR_SWITCH_HEIGHT,
+                                                                   ELEVATOR_SCALE_LOW,
+                                                                   ELEVATOR_SCALE_MED,
+                                                                   ELEVATOR_SCALE_HIGH };
     //
     // CubePickup subsystem.
     //
