@@ -378,15 +378,18 @@ public class FrcTeleOp implements TrcRobot.RobotMode
                 if(pressed)
                 {
                     elevatorHeightIndex--;
-                    TrcUtil.clipRange(elevatorHeightIndex, 0, RobotInfo.ELEVATOR_HEIGHTS.length-1);
+                    elevatorHeightIndex = TrcUtil.clipRange(elevatorHeightIndex, 0, RobotInfo.ELEVATOR_HEIGHTS.length-1);
                     robot.elevator.setPosition(RobotInfo.ELEVATOR_HEIGHTS[elevatorHeightIndex]);
                 }
                 break;
 
             case FrcJoystick.LOGITECH_BUTTON9:
-                elevatorHeightIndex++;
-                TrcUtil.clipRange(elevatorHeightIndex, 0, RobotInfo.ELEVATOR_HEIGHTS.length-1);
-                robot.elevator.setPosition(RobotInfo.ELEVATOR_HEIGHTS[elevatorHeightIndex]);
+                if(pressed)
+                {
+                    elevatorHeightIndex++;
+                    elevatorHeightIndex = TrcUtil.clipRange(elevatorHeightIndex, 0, RobotInfo.ELEVATOR_HEIGHTS.length-1);
+                    robot.elevator.setPosition(RobotInfo.ELEVATOR_HEIGHTS[elevatorHeightIndex]);                    
+                }
                 break;
 
             case FrcJoystick.LOGITECH_BUTTON10:
