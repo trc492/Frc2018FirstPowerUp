@@ -25,6 +25,7 @@ package team492;
 import trclib.TrcEvent;
 import trclib.TrcPidActuator;
 import trclib.TrcPidController;
+import trclib.TrcUtil;
 import frclib.FrcCANTalon;
 import frclib.FrcCANTalonLimitSwitch;
 
@@ -74,11 +75,13 @@ public class Elevator
      */
     public void setPosition(double pos)
     {
+        pos = TrcUtil.clipRange(pos, RobotInfo.ELEVATOR_MIN_HEIGHT, RobotInfo.ELEVATOR_MAX_HEIGHT);
         elevator.setTarget(pos, true);
     } // setPosition
 
     public void setPosition(double pos, TrcEvent event, double timeout)
     {
+        pos = TrcUtil.clipRange(pos, RobotInfo.ELEVATOR_MIN_HEIGHT, RobotInfo.ELEVATOR_MAX_HEIGHT);
         elevator.setTarget(pos,  event, timeout);
     }
 
