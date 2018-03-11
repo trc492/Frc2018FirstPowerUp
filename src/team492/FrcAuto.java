@@ -63,9 +63,9 @@ public class FrcAuto implements TrcRobot.RobotMode
     public static enum StartPosition
     {
         // Different choices for start positions
-        START_POS_1,
-        START_POS_2,
-        START_POS_3
+        LEFT_START_POS,
+        MID_START_POS,
+        RIGHT_START_POS
     } // enum StartPosition
 
     private Robot robot;
@@ -119,9 +119,9 @@ public class FrcAuto implements TrcRobot.RobotMode
         approachMenu.addChoice("Front Approach", Approach.FRONT, false, false);
         approachMenu.addChoice("Side Approach", Approach.SIDE, true, true);
 
-        startPositionMenu.addChoice("Left Side Start", StartPosition.START_POS_1, true, false);
-        startPositionMenu.addChoice("Middle Start", StartPosition.START_POS_2, false, false);
-        startPositionMenu.addChoice("Right Side Start", StartPosition.START_POS_3, false, true);
+        startPositionMenu.addChoice("Left Side Start", StartPosition.LEFT_START_POS, true, false);
+        startPositionMenu.addChoice("Middle Start", StartPosition.MID_START_POS, false, false);
+        startPositionMenu.addChoice("Right Side Start", StartPosition.RIGHT_START_POS, false, true);
     } // FrcAuto
 
     //
@@ -170,14 +170,14 @@ public class FrcAuto implements TrcRobot.RobotMode
         startPosition = startPositionMenu.getCurrentChoiceObject();
         switch (startPosition)
         {
-            case START_POS_1:
-                robotStartPosition = RobotInfo.START_POS_1;
+            case LEFT_START_POS:
+                robotStartPosition = RobotInfo.LEFT_START_POS;
                 break;
-            case START_POS_2:
-                robotStartPosition = RobotInfo.START_POS_2;
+            case MID_START_POS:
+                robotStartPosition = RobotInfo.MID_START_POS;
                 break;
-            case START_POS_3:
-                robotStartPosition = RobotInfo.START_POS_3;
+            case RIGHT_START_POS:
+                robotStartPosition = RobotInfo.RIGHT_START_POS;
                 break;
         }
 

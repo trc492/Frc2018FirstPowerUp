@@ -59,11 +59,11 @@ public class CmdScaleAuto implements TrcRobot.RobotCommand
         
         this.delay = delay;
         
-        if(startPosition == RobotInfo.START_POS_1) this.startPosition = Position.LEFT;
-        else if(startPosition == RobotInfo.START_POS_3) this.startPosition = Position.RIGHT;
+        if(startPosition == RobotInfo.LEFT_START_POS) this.startPosition = Position.LEFT;
+        else if(startPosition == RobotInfo.RIGHT_START_POS) this.startPosition = Position.RIGHT;
         else this.startPosition = Position.MIDDLE;
         
-        startRight = (startPosition == RobotInfo.START_POS_1);
+        startRight = (startPosition == RobotInfo.LEFT_START_POS);
         
         String gameMessage = robot.ds.getGameSpecificMessage();
         scaleRight = (gameMessage.charAt(1) == 'R');

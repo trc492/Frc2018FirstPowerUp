@@ -377,11 +377,11 @@ class CmdPowerUpAuto implements TrcRobot.RobotCommand
                         xDistance = 0;
                         if (rightScale == rightSwitch)
                         {
-                            yDistance = RobotInfo.SCALE_FRONT_POSITION - (RobotInfo.START_POS_3 - cubeStrafeDistance);
+                            yDistance = RobotInfo.SCALE_FRONT_POSITION - (RobotInfo.RIGHT_START_POS - cubeStrafeDistance);
                         }
                         else
                         {
-                            yDistance = RobotInfo.SCALE_FRONT_POSITION + (RobotInfo.START_POS_3 - cubeStrafeDistance);
+                            yDistance = RobotInfo.SCALE_FRONT_POSITION + (RobotInfo.RIGHT_START_POS - cubeStrafeDistance);
                         }
 
                         if(sideApproach)

@@ -288,9 +288,9 @@ public class RobotInfo
     public static final double FWD_DISTANCE_1                   = 10.0;
     public static final double FWD_DISTANCE_2                   = 60.0;
     public static final double FWD_DISTANCE_3                   = 208.0;
-    public static final double START_POS_1                      = -102.0;   //CodeReview: should this be slightly different from LEFT_SWITCH_LOCATION???
-    public static final double START_POS_2                      = 0.0;
-    public static final double START_POS_3                      = 102.0;    //CodeReview: should this be slightly different from RIGHT_SWITCH_LOCATION???
+    public static final double LEFT_START_POS                      = LEFT_SWITCH_LOCATION;   //CodeReview: should this be slightly different from LEFT_SWITCH_LOCATION???
+    public static final double MID_START_POS                      = 0.0;
+    public static final double RIGHT_START_POS                      = RIGHT_SWITCH_LOCATION;    //CodeReview: should this be slightly different from RIGHT_SWITCH_LOCATION???
 
     //
     // LED strip pattern constants.
