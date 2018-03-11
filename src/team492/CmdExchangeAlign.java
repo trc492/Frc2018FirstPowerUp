@@ -44,14 +44,15 @@ public class CmdExchangeAlign implements TrcRobot.RobotCommand
     private TrcEvent onFinishedEvent = null;
     private TrcStateMachine<State> sm;
     private double strafeDistance;
-    private boolean failed;
 
     public CmdExchangeAlign(Robot robot)
     {
         this.robot = robot;
+        
         proximitySensor = new FrcDigitalInput("LeftProximitySensor", RobotInfo.DIO_LEFT_PROXIMITY_SENSOR);
         proximitySensor.setInverted(true);
         proximityTrigger = new TrcDigitalTrigger("ExchangeTrigger", proximitySensor, this::proximityTriggerEvent);
+        
         proximityEvent = new TrcEvent(moduleName + ".proximityEvent");
         pidEvent = new TrcEvent(moduleName + ".pidEvent");
         sm = new TrcStateMachine<State>(moduleName);
@@ -78,9 +79,13 @@ public class CmdExchangeAlign implements TrcRobot.RobotCommand
         this.onFinishedEvent = onFinishedEvent;
 
         stop();
-        proximityTrigger.setTaskEnabled(true);
         sm.start(State.START);
-        failed = false;
+    }
+    
+    private void setProximityTriggerEnabled(boolean enabled)
+    {
+        proximityTrigger.setTaskEnabled(enabled);
+        if(enabled) proximityEvent.clear();
     }
 
     public void stop()
@@ -88,7 +93,7 @@ public class CmdExchangeAlign implements TrcRobot.RobotCommand
         if(sm.isEnabled())
         {
             robot.pidDrive.cancel();
-            proximityTrigger.setTaskEnabled(false);
+            setProximityTriggerEnabled(false);
             sm.stop();
         }
     }
@@ -115,44 +120,29 @@ public class CmdExchangeAlign implements TrcRobot.RobotCommand
             switch(state)
             {
                 case START:
-                    proximitySensor.setInverted(false); //CodeReview: Please explain!
-                    if(!proximitySensor.isActive()) // If the proximity sensor can't detect the wall, attempt to find the wall
+                    if(isOpenSpace()) // If can't detect the wall, just quit
                     {
-                        robot.pidDrive.setTarget(0.0, RobotInfo.EXCHANGE_ALIGN_WALL_DIST, robot.targetHeading, false, pidEvent);
-                        sm.addEvent(pidEvent);
-                        sm.addEvent(proximityEvent);
-                        sm.waitForEvents(State.START_STRAFE);
-                    }
-                    else
+                        sm.setState(State.DONE);
+                    } else
                     {
                         sm.setState(State.START_STRAFE);
                     }
                     break;
 
                 case START_STRAFE:
-                    if(pidEvent.isSignaled() && !proximityEvent.isSignaled()) // Can't detect the wall for some reason
-                    {
-                        failed = true;
-                        sm.setState(State.DONE);
-                    } else
-                    {
-                        robot.pidDrive.cancel();
-                        proximitySensor.setInverted(true);  //CodeReview: Please explain!
-                        proximityEvent.clear();
-                        
-                        robot.pidDrive.setTarget(strafeDistance, 0.0, robot.targetHeading, false, pidEvent);
-                        sm.addEvent(pidEvent);
-                        sm.addEvent(proximityEvent);
-                        sm.waitForEvents(State.ADJUST_POSITION);                        
-                    }
-
+                    setProximityTriggerEnabled(true);
+                    
+                    robot.pidDrive.setTarget(strafeDistance, 0.0, robot.targetHeading, false, pidEvent);
+                    sm.addEvent(pidEvent);
+                    sm.addEvent(proximityEvent);
+                    sm.waitForEvents(State.ADJUST_POSITION);
                     break;
 
                 case ADJUST_POSITION:
                     robot.pidDrive.cancel();
                     proximityTrigger.setTaskEnabled(false);
                     double xDistance = RobotInfo.EXCHANGE_WIDTH/2.0 + RobotInfo.EXCHANGE_ALIGN_SENSOR_OFFSET;
-                    xDistance *= (strafeDistance < 0) ? 1 : -1;
+                    if(strafeDistance > 0) xDistance *= -1;
                     robot.pidDrive.setTarget(xDistance, 0.0, robot.targetHeading, false, pidEvent, RobotInfo.EXCHANGE_ALIGN_TIMEOUT);
                     sm.waitForSingleEvent(pidEvent, State.DONE);
                     break;
@@ -162,13 +152,6 @@ public class CmdExchangeAlign implements TrcRobot.RobotCommand
                     done = true;
                     if(onFinishedEvent != null)
                     {
-                        if(failed)
-                        {
-                            onFinishedEvent.cancel();
-                        } else
-                        {
-                            onFinishedEvent.set(true);
-                        }
                         onFinishedEvent.set(true);
                     }
                     break;
