@@ -124,6 +124,7 @@ public class CmdScaleAuto implements TrcRobot.RobotCommand
                 case CUBE_PICKUP:
                     if(robot.cmdAutoCubePickup.cmdPeriodic(elapsedTime))
                     {
+                    	robot.elevator.setPosition(RobotInfo.ELEVATOR_OFF_GROUND);
                         sm.setState(State.DRIVE_TO_SWITCH);
                     }
                     break;
