@@ -132,6 +132,7 @@ public class CmdExchangeAlign implements TrcRobot.RobotCommand
                 case START_STRAFE:
                     setProximityTriggerEnabled(true);
                     
+                    robot.elevator.setPosition(RobotInfo.ELEVATOR_EXCHANGE_HEIGHT);
                     robot.pidDrive.setTarget(strafeDistance, 0.0, robot.targetHeading, false, pidEvent);
                     sm.addEvent(pidEvent);
                     sm.addEvent(proximityEvent);
