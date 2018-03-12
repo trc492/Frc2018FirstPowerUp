@@ -23,6 +23,8 @@
 package team492;
 
 import hallib.HalDashboard;
+import trclib.TrcAnalogInput;
+import trclib.TrcAnalogTrigger;
 import trclib.TrcEvent;
 import trclib.TrcRobot;
 import trclib.TrcStateMachine;
@@ -38,6 +40,7 @@ class CmdPowerUpAuto implements TrcRobot.RobotCommand
         MOVE_ACROSS,
         SWITCH_TURN,
         DRIVE_TO_TARGET,
+        CHECK_SONAR_DISTANCE,
         STRAFE_TO_SWITCH,
         FLIP_CUBE,
         STRAFE_FROM_SWITCH,
@@ -62,12 +65,14 @@ class CmdPowerUpAuto implements TrcRobot.RobotCommand
     } // enum State
 
     private static final String moduleName = "CmdPowerUpAuto";
+    private static final double[] sonarTriggerPoints = {8.0, 32.0};
 
     private Robot robot;
     private double delay;
     private double forwardDistance;
     private boolean sideApproach;
     private double startPosition;
+    private boolean flipInFlight;
 
     private String targetSide;
     private int startLocation;
@@ -78,12 +83,16 @@ class CmdPowerUpAuto implements TrcRobot.RobotCommand
     private TrcEvent event;
     private TrcTimer timer;
     private TrcStateMachine<State> sm;
+    private TrcAnalogTrigger<TrcAnalogInput.DataType> sonarTrigger = null;
+    private TrcEvent sonarEvent;
     private double xPowerLimit, yPowerLimit;
 
     private double xStart, yStart;
     private double cubeStrafeDistance;
+    private double sonarDistance;
 
-    CmdPowerUpAuto(Robot robot, double delay, double forwardDistance, boolean sideApproach, double startPosition)
+    CmdPowerUpAuto(Robot robot, double delay, double forwardDistance, boolean sideApproach, double startPosition,
+        boolean flipInFlight)
     {
         this.robot = robot;
         this.delay = delay;
@@ -92,6 +101,7 @@ class CmdPowerUpAuto implements TrcRobot.RobotCommand
             forwardDistance: HalDashboard.getNumber("Forward Distance", 10.0);
         this.sideApproach = sideApproach;
         this.startPosition = startPosition;
+        this.flipInFlight = flipInFlight;
 
         this.targetSide = robot.ds.getGameSpecificMessage();
         this.startLocation = robot.ds.getLocation();
@@ -103,6 +113,11 @@ class CmdPowerUpAuto implements TrcRobot.RobotCommand
         timer = new TrcTimer(moduleName);
         sm = new TrcStateMachine<>(moduleName);
         sm.start(State.DO_DELAY);
+
+        sonarTrigger = new TrcAnalogTrigger<>(
+            "SonarTrigger", rightSwitch? robot.rightSonarSensor: robot.leftSonarSensor,
+            0, TrcAnalogInput.DataType.INPUT_DATA, sonarTriggerPoints, this::sonarTriggerEvent);
+        sonarEvent = new TrcEvent("SonarEvent");
 
         xPowerLimit = robot.encoderXPidCtrl.getOutputLimit();
         yPowerLimit = robot.encoderYPidCtrl.getOutputLimit();
@@ -133,7 +148,7 @@ class CmdPowerUpAuto implements TrcRobot.RobotCommand
 
             if (state != null)
             {
-                double xDistance, yDistance, sonarDistance, lastXPosition = 0.0;
+                double xDistance, yDistance, lastXPosition = 0.0;
                 Double visionTarget = null;
                 State nextState;
                 boolean traceState = true;
@@ -170,8 +185,15 @@ class CmdPowerUpAuto implements TrcRobot.RobotCommand
                             {
                                 robot.leftSonarArray.startRanging(true);
                             }
+
                             yDistance = RobotInfo.AUTO_DISTANCE_TO_SWITCH;
-                            nextState = State.STRAFE_TO_SWITCH;
+                            nextState = State.CHECK_SONAR_DISTANCE;
+                            if (flipInFlight)
+                            {
+                                sonarTrigger.setTaskEnabled(true);
+                                sm.addEvent(sonarEvent);
+                                yDistance += RobotInfo.ADVANCE_TO_SECOND_CUBE_DISTANCE;
+                            }
                         }
                         else
                         {
@@ -189,7 +211,8 @@ class CmdPowerUpAuto implements TrcRobot.RobotCommand
                         // We are actually moving backward because we start by parking backwards,
                         // so make yDistance negative.
                         robot.pidDrive.setTarget(xDistance, -yDistance, robot.targetHeading, false, event);
-                        sm.waitForSingleEvent(event, nextState);
+                        sm.addEvent(event);
+                        sm.waitForEvents(nextState);
                         break;
 
                     case TURN_TO_SWITCH:
@@ -227,33 +250,60 @@ class CmdPowerUpAuto implements TrcRobot.RobotCommand
                         {
                             robot.leftSonarArray.startRanging(true);
                         }
+
                         xDistance = 0.0;
                         yDistance = RobotInfo.AUTO_DISTANCE_TO_SWITCH - forwardDistance;
+                        if (flipInFlight)
+                        {
+                            sonarTrigger.setTaskEnabled(true);
+                            sm.addEvent(sonarEvent);
+                            yDistance += RobotInfo.ADVANCE_TO_SECOND_CUBE_DISTANCE;
+                        }
+
                         // We are going backward, so make yDistance negative.
                         robot.pidDrive.setTarget(xDistance, -yDistance, robot.targetHeading, false, event);
-                        sm.waitForSingleEvent(event, State.STRAFE_TO_SWITCH);
+                        sm.addEvent(event);
+                        sm.waitForEvents(State.CHECK_SONAR_DISTANCE);
                         break;
 
-                    // CodeReview: if we have the ziptie feeler, don't need to strafe to switch and strafe back.
-                    case STRAFE_TO_SWITCH:
+                    case CHECK_SONAR_DISTANCE:
                         sonarDistance = rightSwitch? robot.getRightSonarDistance(): robot.getLeftSonarDistance();
                         robot.tracer.traceInfo(funcName, "sonarDistance=%.1f", sonarDistance);
+
+                        if (flipInFlight)
+                        {
+                            sonarTrigger.setTaskEnabled(false);
+                        }
+
                         if (sonarDistance < RobotInfo.SWITCH_SONAR_DISTANCE_THRESHOLD)
                         {
                             sm.setState(State.FLIP_CUBE);
                         }
+                        else if (flipInFlight)
+                        {
+                            // We are beyond legal distance to throw the cube, go to the AUTO_DISTANCE_TO_SWITCH
+                            // and strafe to within legal distance.
+                            xDistance = 0.0;
+                            yDistance = RobotInfo.AUTO_DISTANCE_TO_SWITCH - robot.driveBase.getYPosition();
+                            robot.pidDrive.setTarget(xDistance, -yDistance, robot.targetHeading, false, event);
+                            sm.waitForSingleEvent(event, State.STRAFE_TO_SWITCH);
+                        }
                         else
                         {
-                            // Add a few more inches to make sure we are within rule.
-                            xDistance = sonarDistance - RobotInfo.SWITCH_SONAR_DISTANCE_THRESHOLD + 3.0;
-                            if (!rightSwitch) xDistance = -xDistance;
-                            yDistance = 0.0;
-
-                            xPowerLimit = robot.encoderXPidCtrl.getOutputLimit();
-                            robot.encoderXPidCtrl.setOutputLimit(0.5);
-                            robot.pidDrive.setTarget(xDistance, yDistance, robot.targetHeading, false, event);
-                            sm.waitForSingleEvent(event, State.FLIP_CUBE);
+                            sm.setState(State.STRAFE_TO_SWITCH);
                         }
+                        break;
+
+                    case STRAFE_TO_SWITCH:
+                        // Add a few more inches to make sure we are within rule.
+                        xDistance = sonarDistance - RobotInfo.SWITCH_SONAR_DISTANCE_THRESHOLD + 3.0;
+                        if (!rightSwitch) xDistance = -xDistance;
+                        yDistance = 0.0;
+
+                        xPowerLimit = robot.encoderXPidCtrl.getOutputLimit();
+                        robot.encoderXPidCtrl.setOutputLimit(0.5);
+                        robot.pidDrive.setTarget(xDistance, yDistance, robot.targetHeading, false, event);
+                        sm.waitForSingleEvent(event, State.FLIP_CUBE);
                         break;
 
                     case FLIP_CUBE:
@@ -269,8 +319,17 @@ class CmdPowerUpAuto implements TrcRobot.RobotCommand
                             robot.leftFlipper.extend();
                             robot.leftSonarArray.stopRanging();
                         }
-                        timer.set(0.5, event);
-                        sm.waitForSingleEvent(event, State.DRIVE_TO_SECOND_CUBE);
+
+                        if (flipInFlight)
+                        {
+                            // Wait for the ADVANCE_TO_SECOND_CUBE_DISTACNE to be reached.
+                            sm.waitForSingleEvent(event, State.START_STRAFE);
+                        }
+                        else
+                        {
+                            timer.set(0.5, event);
+                            sm.waitForSingleEvent(event, State.DRIVE_TO_SECOND_CUBE);
+                        }
                         break;
 
                     case DRIVE_TO_SECOND_CUBE:
@@ -484,6 +543,15 @@ class CmdPowerUpAuto implements TrcRobot.RobotCommand
         return done;
     } // cmdPeriodic
 
-} // class CmdPowerUpAuto
+    private void sonarTriggerEvent(int currZone, int prevZone, double zoneValue)
+    {
+        robot.tracer.traceInfo("SonarTrigger", "[%.3f] prevZone=%d, currZone=%d, pickupCurrent=%.2f",
+            Robot.getModeElapsedTime(), prevZone, currZone, zoneValue);
+        if (currZone == 1 && currZone > prevZone)
+        {
+            // Detected the switch fence.
+            sonarEvent.set(true);
+        }
+    }
 
-// leave a comment if you find this
+} // class CmdPowerUpAuto

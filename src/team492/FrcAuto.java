@@ -82,6 +82,7 @@ public class FrcAuto implements TrcRobot.RobotMode
     private ForwardDistance forwardDistance;
     private StartPosition startPosition;
     private double delay;
+    private boolean flipInFlight;
 
     private double forwardDriveDistance;
     private boolean sideApproach;
@@ -186,12 +187,13 @@ public class FrcAuto implements TrcRobot.RobotMode
 
         autoStrategy = autoStrategyMenu.getCurrentChoiceObject();
         delay = HalDashboard.getNumber("Delay", 0.0);
+        flipInFlight = HalDashboard.getBoolean("FlipInFlight", false);
 
         switch (autoStrategy)
         {
             case POWER_UP_AUTO:
                 autoCommand = new CmdPowerUpAuto(
-                    robot, delay, forwardDriveDistance, sideApproach, robotStartPosition);
+                    robot, delay, forwardDriveDistance, sideApproach, robotStartPosition, flipInFlight);
                 break;
 
             case X_TIMED_DRIVE:

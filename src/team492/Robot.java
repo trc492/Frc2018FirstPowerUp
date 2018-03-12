@@ -485,6 +485,8 @@ public class Robot extends FrcRobotBase
 
     public void robotStopMode(RunMode runMode)
     {
+        cubePickup.closeClaw();
+        cubePickup.raisePickup();
         driveBase.stop();
         battery.setTaskEnabled(false);
 

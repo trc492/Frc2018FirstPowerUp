@@ -38,7 +38,6 @@ public class CmdAutoCubePickup implements TrcRobot.RobotCommand
     private Robot robot;
     private TrcEvent event, pickupEvent;
     private TrcStateMachine<State> sm;
-    
     private double xError;
 
     public CmdAutoCubePickup(Robot robot)
@@ -63,7 +62,7 @@ public class CmdAutoCubePickup implements TrcRobot.RobotCommand
     {
         start(0.0);
     }
-    
+
     public void start(double xError)
     {
         this.xError = xError;
@@ -72,7 +71,6 @@ public class CmdAutoCubePickup implements TrcRobot.RobotCommand
             sm.start(State.START);
         }
     }
-
 
     public void stop()
     {

@@ -40,8 +40,6 @@ public class FrcDisabled implements TrcRobot.RobotMode
     @Override
     public void startMode()
     {
-        robot.cubePickup.closeClaw();
-        robot.cubePickup.raisePickup();
     } // startMode
 
     @Override
