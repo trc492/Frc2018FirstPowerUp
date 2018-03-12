@@ -85,6 +85,7 @@ public class CubePickup
         raisePickup();
 
         cubeProximitySensor = new FrcDigitalInput("CubeProximitySensor", RobotInfo.DIO_CUBE_PROXIMITY_SENSOR);
+        cubeProximitySensor.setInverted(true);
         cubeProximityTrigger = new TrcDigitalTrigger(
             "CubeProximityTrigger", cubeProximitySensor, this::cubeProximityEvent);
 

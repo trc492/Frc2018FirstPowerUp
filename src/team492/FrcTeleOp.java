@@ -75,6 +75,8 @@ public class FrcTeleOp implements TrcRobot.RobotMode
     @Override
     public void stopMode()
     {
+        robot.cubePickup.closeClaw();
+        robot.cubePickup.raisePickup();
         robot.setVisionEnabled(false);
     } // stopMode
 

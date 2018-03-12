@@ -347,6 +347,7 @@ class CmdPowerUpAuto implements TrcRobot.RobotCommand
                         xDistance = 0.0;
                         yDistance = robot.driveBase.getYPosition() - yStart;
                         robot.pidDrive.setTarget(xDistance, -yDistance, robot.targetHeading, false, event);
+                        robot.elevator.setPosition(RobotInfo.ELEVATOR_OFF_GROUND, event, 0.0);
                         sm.waitForSingleEvent(event, State.REPOSITION_TURN, 1.5);
                         break;
 
@@ -357,7 +358,6 @@ class CmdPowerUpAuto implements TrcRobot.RobotCommand
 //                        break;
 
                     case REPOSITION_TURN:
-                        robot.elevator.setPosition(RobotInfo.ELEVATOR_OFF_GROUND, event, 0.0);
                         xDistance = yDistance = 0.0;
                         if(!sideApproach && (rightScale == rightSwitch))
                         {
@@ -424,11 +424,11 @@ class CmdPowerUpAuto implements TrcRobot.RobotCommand
                         robot.elevator.setPosition(RobotInfo.ELEVATOR_SCALE_HIGH, event, 0.0);
                         if(sideApproach)
                         {
-                            sm.waitForSingleEvent(event, State.DEPOSIT_CUBE, 2.0);
+                            sm.waitForSingleEvent(event, State.DEPOSIT_CUBE, 5.0);
                         }
                         else
                         {
-                            sm.waitForSingleEvent(event, State.APPROACH_FINAL_TARGET, 2.0);
+                            sm.waitForSingleEvent(event, State.APPROACH_FINAL_TARGET, 5.0);
                         }
                         break;
 

@@ -250,7 +250,7 @@ public class RobotInfo
     public static final double AUTO_PICKUP_MOVE_POWER           = 0.6;      // 60% power
     public static final double FIND_CUBE_X_TOLERANCE            = 1.0;      // 1-in
     public static final double FIND_CUBE_STRAFE_POWER           = 0.6;      // 60% power
-    public static final double AUTO_PICKUP_CUBE_DISTANCE        = 24.0;     // TODO: tune this.
+    public static final double AUTO_PICKUP_CUBE_DISTANCE        = 36.0;//24.0;     // TODO: tune this.
 
     //
     // CmdPowerUpAuto variables.
@@ -260,12 +260,12 @@ public class RobotInfo
     public static final double FINAL_SIDE_SCALE_APPROACH_DISTANCE= 0.0;
     public static final double RIGHT_SWITCH_LOCATION            = 102.0;
     public static final double LEFT_SWITCH_LOCATION             = -102.0;
-    public static final double ADVANCE_TO_SECOND_CUBE_DISTANCE  = 70.0;
+    public static final double ADVANCE_TO_SECOND_CUBE_DISTANCE  = 60.0;
     public static final double STRAFE_TO_SECOND_CUBE_DISTANCE   = 36.0;
     public static final double SCALE_FRONT_POSITION             = 75.0;
-    public static final double SCALE_SIDE_POSITION              = 122.0;
+    public static final double SCALE_SIDE_POSITION              = 136.0;
     public static final double FIRST_ELEVATOR_HEIGHT            = 30.0;
-    public static final double ADVANCE_AROUND_SCALE_DISTANCE    = 89.0;
+    public static final double ADVANCE_AROUND_SCALE_DISTANCE    = 85.0;
     public static final double SWITCH_STRAFE_DISTANCE           = 26.0;
     public static final double MAX_CUBE_DISTANCE                = 20.0;
     public static final double SWITCH_SONAR_DISTANCE_THRESHOLD  = 16.0;

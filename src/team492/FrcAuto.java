@@ -131,6 +131,9 @@ public class FrcAuto implements TrcRobot.RobotMode
     @Override
     public void startMode()
     {
+        robot.encoderYPidCtrl.setOutputLimit(0.6);
+        robot.encoderXPidCtrl.setOutputLimit(RobotInfo.DRIVE_MAX_XPID_POWER);
+        
         HalDashboard.getInstance().clearDisplay();
 
         if (Robot.USE_TRACELOG)
