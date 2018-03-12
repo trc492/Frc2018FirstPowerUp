@@ -290,7 +290,7 @@ class CmdPowerUpAuto implements TrcRobot.RobotCommand
                         robot.cmdStrafeUntilCube.start(xDistance);
                         sm.setState(State.STRAFE_TO_SECOND_CUBE);
                         xPowerLimit = robot.encoderXPidCtrl.getOutputLimit();
-                        robot.encoderXPidCtrl.setOutputLimit(0.5);
+                        robot.encoderXPidCtrl.setOutputLimit(0.45); // 0.5 originally, try 0.4
                         break;
 
                     case STRAFE_TO_SECOND_CUBE:
