@@ -129,7 +129,7 @@ public class TrcPidDrive
         stopTaskObj = taskMgr.createTask(instanceName + ".stop", this::stopTask);
         postContinuousTaskObj = taskMgr.createTask(instanceName + ".postContinuous", this::postContinuousTask);
 
-        if (turnPidCtrl != null && turnPidCtrl.getAbsoluteSetPoint())
+        if (turnPidCtrl != null && turnPidCtrl.hasAbsoluteSetPoint())
         {
             warpSpace = new TrcWarpSpace(instanceName, 0.0, 360.0);
         }

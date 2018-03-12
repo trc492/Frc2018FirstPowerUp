@@ -359,9 +359,9 @@ public class TrcPidController
      *
      * @return true if setpoints are absolute, false otherwise.
      */
-    public boolean getAbsoluteSetPoint()
+    public boolean hasAbsoluteSetPoint()
     {
-        final String funcName = "getAbsoluteSetPoint";
+        final String funcName = "hasAbsoluteSetPoint";
 
         if (debugEnabled)
         {
@@ -370,7 +370,7 @@ public class TrcPidController
         }
 
         return absSetPoint;
-    }   //getAbsoluteSetPoint
+    }   //hasAbsoluteSetPoint
 
     /**
      * This method enables/disables NoOscillation mode. In PID control, if the PID constants are not tuned quite
