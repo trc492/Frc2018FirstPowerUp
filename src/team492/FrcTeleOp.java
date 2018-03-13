@@ -53,7 +53,7 @@ public class FrcTeleOp implements TrcRobot.RobotMode
     @Override
     public void startMode()
     {
-        HalDashboard.getInstance().clearDisplay();
+        robot.dashboard.clearDisplay();
         robot.setVisionEnabled(true);
 
         robot.driveBase.resetPosition();

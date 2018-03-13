@@ -100,7 +100,7 @@ class CmdPowerUpAuto implements TrcRobot.RobotCommand
         this.delay = delay;
         // if forwardDistance is -1, it means the driver picked "custom".
         this.forwardDistance = forwardDistance != -1.0?
-            forwardDistance: HalDashboard.getNumber("Forward Distance", 10.0);
+            forwardDistance: HalDashboard.getNumber("Auto/Forward Distance", 10.0);
         this.sideApproach = sideApproach;
         this.startPosition = startPosition;
         this.flipInFlight = flipInFlight;

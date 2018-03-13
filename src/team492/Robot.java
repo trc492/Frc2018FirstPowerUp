@@ -472,15 +472,15 @@ public class Robot extends FrcRobotBase
         gameSpecificMessage = ds.getGameSpecificMessage();
 
         battery.setTaskEnabled(true);
-        driveTime = HalDashboard.getNumber("DriveTime", 5.0);
-        drivePower = HalDashboard.getNumber("DrivePower", 0.2);
-        driveDistance = HalDashboard.getNumber("DriveDistance", 6.0);
-        drivePowerLimit = HalDashboard.getNumber("DrivePowerLimit", 0.5);
-        turnDegrees = HalDashboard.getNumber("TurnDegrees", 90.0);
-        tuneKp = HalDashboard.getNumber("TuneKp", RobotInfo.GYRO_TURN_KP);
-        tuneKi = HalDashboard.getNumber("TuneKi", RobotInfo.GYRO_TURN_KI);
-        tuneKd = HalDashboard.getNumber("TuneKd", RobotInfo.GYRO_TURN_KD);
-        tuneKf = HalDashboard.getNumber("TuneKf", 0.0);
+        driveTime = HalDashboard.getNumber("Test/DriveTime", 5.0);
+        drivePower = HalDashboard.getNumber("Test/DrivePower", 0.2);
+        driveDistance = HalDashboard.getNumber("Test/DriveDistance", 6.0);
+        drivePowerLimit = HalDashboard.getNumber("Test/DrivePowerLimit", 0.5);
+        turnDegrees = HalDashboard.getNumber("Test/TurnDegrees", 90.0);
+        tuneKp = HalDashboard.getNumber("Test/TuneKp", RobotInfo.GYRO_TURN_KP);
+        tuneKi = HalDashboard.getNumber("Test/TuneKi", RobotInfo.GYRO_TURN_KI);
+        tuneKd = HalDashboard.getNumber("Test/TuneKd", RobotInfo.GYRO_TURN_KD);
+        tuneKf = HalDashboard.getNumber("Test/TuneKf", 0.0);
     }   //robotStartMode
 
     public void robotStopMode(RunMode runMode)
@@ -539,7 +539,7 @@ public class Robot extends FrcRobotBase
                 HalDashboard.putNumber("Power/elevatorCurrent", elevator.elevatorMotor.motor.getOutputCurrent());
                 HalDashboard.putNumber("Power/winchCurrent", winch.getCurrent());
                 HalDashboard.putNumber("Power/pickupCurrent", cubePickup.getPickupCurrent());
-                dashboard.displayPrintf(15, "TotalEnergy=%.1f", battery.getTotalEnergy());
+                HalDashboard.putNumber("Power/totalEnergy", battery.getTotalEnergy());
             }
 
             if (DEBUG_DRIVE_BASE)

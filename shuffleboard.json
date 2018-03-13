@@ -1,10 +1,10 @@
 {
-  "dividerPosition": 0.17062314540059348,
+  "dividerPosition": 0.17087276550998948,
   "tabPane": [
     {
-      "title": "Match Info",
+      "title": "FMSInfo",
       "autoPopulate": false,
-      "autoPopulatePrefix": "",
+      "autoPopulatePrefix": "FMSInfo",
       "widgetPane": {
         "gridSize": 32.0,
         "showGrid": true,
@@ -77,6 +77,16 @@
               "_type": "Text View",
               "_source0": "network_table:///FMSInfo/GameSpecificMessage",
               "_title": "FMSInfo/GameSpecificMessage"
+            }
+          },
+          "8,0": {
+            "size": [
+              8,
+              4
+            ],
+            "content": {
+              "_type": "Basic FMS Info",
+              "_title": ""
             }
           }
         }
@@ -274,7 +284,7 @@
     {
       "title": "Autonomous",
       "autoPopulate": false,
-      "autoPopulatePrefix": "",
+      "autoPopulatePrefix": "SmartDashboard/Auto",
       "widgetPane": {
         "gridSize": 32.0,
         "showGrid": true,
@@ -294,7 +304,7 @@
           },
           "4,0": {
             "size": [
-              5,
+              4,
               2
             ],
             "content": {
@@ -303,7 +313,7 @@
               "_title": "SmartDashboard/Start Positions"
             }
           },
-          "9,0": {
+          "4,2": {
             "size": [
               4,
               2
@@ -324,6 +334,30 @@
               "_source0": "network_table:///SmartDashboard/Approaches",
               "_title": "SmartDashboard/Approaches"
             }
+          },
+          "0,4": {
+            "size": [
+              6,
+              6
+            ],
+            "content": {
+              "_type": "Gyro",
+              "_title": "",
+              "majorTickSpace": 45.0,
+              "startAngle": 180.0,
+              "tickMarkRingVisible": true
+            }
+          },
+          "6,4": {
+            "size": [
+              9,
+              6
+            ],
+            "content": {
+              "_type": "Mecanum Drivebase",
+              "_title": "",
+              "showForceVectors": true
+            }
           }
         }
       }
@@ -331,7 +365,7 @@
     {
       "title": "Tests",
       "autoPopulate": false,
-      "autoPopulatePrefix": "",
+      "autoPopulatePrefix": "SmartDashboard/Test",
       "widgetPane": {
         "gridSize": 32.0,
         "showGrid": true,
@@ -453,7 +487,7 @@
     },
     {
       "title": "Power",
-      "autoPopulate": true,
+      "autoPopulate": false,
       "autoPopulatePrefix": "SmartDashboard/Power",
       "widgetPane": {
         "gridSize": 32.0,
@@ -469,7 +503,7 @@
             "content": {
               "_type": "Graph",
               "_source0": "network_table:///SmartDashboard/Power/pdpTotalCurrent",
-              "_title": "pdpTotalCurrent",
+              "_title": "/SmartDashboard/Power/pdpTotalCurrent",
               "Visible time": 30.0,
               "SmartDashboard/Power/pdpTotalCurrent visible": true
             }
@@ -482,7 +516,7 @@
             "content": {
               "_type": "Graph",
               "_source0": "network_table:///SmartDashboard/Power/elevatorCurrent",
-              "_title": "elevatorCurrent",
+              "_title": "/SmartDashboard/Power/elevatorCurrent",
               "Visible time": 30.0,
               "SmartDashboard/Power/elevatorCurrent visible": true
             }
@@ -495,7 +529,7 @@
             "content": {
               "_type": "Graph",
               "_source0": "network_table:///SmartDashboard/Power/winchCurrent",
-              "_title": "winchCurrent",
+              "_title": "/SmartDashboard/Power/winchCurrent",
               "Visible time": 30.0,
               "SmartDashboard/Power/winchCurrent visible": true
             }
@@ -508,9 +542,20 @@
             "content": {
               "_type": "Graph",
               "_source0": "network_table:///SmartDashboard/Power/pickupCurrent",
-              "_title": "pickupCurrent",
+              "_title": "/SmartDashboard/Power/pickupCurrent",
               "Visible time": 30.0,
               "SmartDashboard/Power/pickupCurrent visible": true
+            }
+          },
+          "0,10": {
+            "size": [
+              11,
+              7
+            ],
+            "content": {
+              "_type": "PDP",
+              "_title": "",
+              "showIndicatorText": true
             }
           }
         }
@@ -542,4 +587,3 @@
     }
   ]
 }
-

@@ -97,10 +97,10 @@ public class FrcAuto implements TrcRobot.RobotMode
         //
         // Create Autonomous Mode specific menus.
         //
-        autoStrategyMenu = new FrcChoiceMenu<>("Autonomous Strategies");
-        forwardDistanceMenu = new FrcChoiceMenu<>("Forward Distances");
-        approachMenu = new FrcChoiceMenu<>("Approaches");
-        startPositionMenu = new FrcChoiceMenu<>("Start Positions");
+        autoStrategyMenu = new FrcChoiceMenu<>("Auto/Autonomous Strategies");
+        forwardDistanceMenu = new FrcChoiceMenu<>("Auto/Forward Distances");
+        approachMenu = new FrcChoiceMenu<>("Auto/Approaches");
+        startPositionMenu = new FrcChoiceMenu<>("Auto/Start Positions");
 
         //
         // Populate Autonomous Mode menus.
@@ -137,7 +137,7 @@ public class FrcAuto implements TrcRobot.RobotMode
         robot.encoderYPidCtrl.setOutputLimit(0.6);
         robot.encoderXPidCtrl.setOutputLimit(RobotInfo.DRIVE_MAX_XPID_POWER);
         
-        HalDashboard.getInstance().clearDisplay();
+        robot.dashboard.clearDisplay();
 
         if (Robot.USE_TRACELOG)
             robot.startTraceLog(null);
@@ -188,8 +188,8 @@ public class FrcAuto implements TrcRobot.RobotMode
         }
 
         autoStrategy = autoStrategyMenu.getCurrentChoiceObject();
-        delay = HalDashboard.getNumber("Delay", 0.0);
-        flipInFlight = HalDashboard.getBoolean("FlipInFlight", false);
+        delay = HalDashboard.getNumber("Auto/Delay", 0.0);
+        flipInFlight = HalDashboard.getBoolean("Auto/FlipInFlight", false);
 
         switch (autoStrategy)
         {
