@@ -1,5 +1,5 @@
 {
-  "dividerPosition": 0.17087276550998948,
+  "dividerPosition": 0.1327893175074184,
   "tabPane": [
     {
       "title": "FMSInfo",
@@ -77,16 +77,6 @@
               "_type": "Text View",
               "_source0": "network_table:///FMSInfo/GameSpecificMessage",
               "_title": "FMSInfo/GameSpecificMessage"
-            }
-          },
-          "8,0": {
-            "size": [
-              8,
-              4
-            ],
-            "content": {
-              "_type": "Basic FMS Info",
-              "_title": ""
             }
           }
         }
@@ -283,7 +273,7 @@
     },
     {
       "title": "Autonomous",
-      "autoPopulate": false,
+      "autoPopulate": true,
       "autoPopulatePrefix": "SmartDashboard/Auto",
       "widgetPane": {
         "gridSize": 32.0,
@@ -298,30 +288,8 @@
             ],
             "content": {
               "_type": "ComboBox Chooser",
-              "_source0": "network_table:///SmartDashboard/Autonomous Strategies",
-              "_title": "SmartDashboard/Autonomous Strategies"
-            }
-          },
-          "4,0": {
-            "size": [
-              4,
-              2
-            ],
-            "content": {
-              "_type": "ComboBox Chooser",
-              "_source0": "network_table:///SmartDashboard/Start Positions",
-              "_title": "SmartDashboard/Start Positions"
-            }
-          },
-          "4,2": {
-            "size": [
-              4,
-              2
-            ],
-            "content": {
-              "_type": "ComboBox Chooser",
-              "_source0": "network_table:///SmartDashboard/Forward Distances",
-              "_title": "SmartDashboard/Forward Distances"
+              "_source0": "network_table:///SmartDashboard/Auto/Autonomous Strategies",
+              "_title": "Autonomous Strategies"
             }
           },
           "0,2": {
@@ -331,32 +299,41 @@
             ],
             "content": {
               "_type": "ComboBox Chooser",
-              "_source0": "network_table:///SmartDashboard/Approaches",
-              "_title": "SmartDashboard/Approaches"
+              "_source0": "network_table:///SmartDashboard/Auto/Forward Distances",
+              "_title": "Forward Distances"
             }
           },
-          "0,4": {
+          "4,2": {
             "size": [
-              6,
-              6
+              4,
+              2
             ],
             "content": {
-              "_type": "Gyro",
-              "_title": "",
-              "majorTickSpace": 45.0,
-              "startAngle": 180.0,
-              "tickMarkRingVisible": true
+              "_type": "ComboBox Chooser",
+              "_source0": "network_table:///SmartDashboard/Auto/Approaches",
+              "_title": "Approaches"
             }
           },
-          "6,4": {
+          "4,0": {
             "size": [
-              9,
-              6
+              4,
+              2
             ],
             "content": {
-              "_type": "Mecanum Drivebase",
-              "_title": "",
-              "showForceVectors": true
+              "_type": "ComboBox Chooser",
+              "_source0": "network_table:///SmartDashboard/Auto/Start Positions",
+              "_title": "Start Positions"
+            }
+          },
+          "8,0": {
+            "size": [
+              2,
+              2
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/Auto/Delay",
+              "_title": "Delay"
             }
           }
         }
@@ -372,39 +349,6 @@
         "hgap": 16.0,
         "vgap": 16.0,
         "tiles": {
-          "0,0": {
-            "size": [
-              4,
-              2
-            ],
-            "content": {
-              "_type": "ComboBox Chooser",
-              "_source0": "network_table:///SmartDashboard/Tests",
-              "_title": "SmartDashboard/Tests"
-            }
-          },
-          "4,0": {
-            "size": [
-              4,
-              2
-            ],
-            "content": {
-              "_type": "Text View",
-              "_source0": "network_table:///SmartDashboard/DriveDistance",
-              "_title": "SmartDashboard/DriveDistance"
-            }
-          },
-          "12,0": {
-            "size": [
-              4,
-              2
-            ],
-            "content": {
-              "_type": "Text View",
-              "_source0": "network_table:///SmartDashboard/DrivePowerLimit",
-              "_title": "SmartDashboard/DrivePowerLimit"
-            }
-          },
           "0,2": {
             "size": [
               4,
@@ -412,8 +356,8 @@
             ],
             "content": {
               "_type": "Text View",
-              "_source0": "network_table:///SmartDashboard/DrivePower",
-              "_title": "SmartDashboard/DrivePower"
+              "_source0": "network_table:///SmartDashboard/Test/DrivePower",
+              "_title": "DrivePower"
             }
           },
           "4,2": {
@@ -423,52 +367,19 @@
             ],
             "content": {
               "_type": "Text View",
-              "_source0": "network_table:///SmartDashboard/DriveTime",
-              "_title": "SmartDashboard/DriveTime"
+              "_source0": "network_table:///SmartDashboard/Test/DriveTime",
+              "_title": "DriveTime"
             }
           },
-          "8,4": {
+          "0,0": {
             "size": [
               4,
               2
             ],
             "content": {
-              "_type": "Text View",
-              "_source0": "network_table:///SmartDashboard/TuneKd",
-              "_title": "SmartDashboard/TuneKd"
-            }
-          },
-          "12,4": {
-            "size": [
-              4,
-              2
-            ],
-            "content": {
-              "_type": "Text View",
-              "_source0": "network_table:///SmartDashboard/TuneKf",
-              "_title": "SmartDashboard/TuneKf"
-            }
-          },
-          "4,4": {
-            "size": [
-              4,
-              2
-            ],
-            "content": {
-              "_type": "Text View",
-              "_source0": "network_table:///SmartDashboard/TuneKi",
-              "_title": "SmartDashboard/TuneKi"
-            }
-          },
-          "0,4": {
-            "size": [
-              4,
-              2
-            ],
-            "content": {
-              "_type": "Text View",
-              "_source0": "network_table:///SmartDashboard/TuneKp",
-              "_title": "SmartDashboard/TuneKp"
+              "_type": "ComboBox Chooser",
+              "_source0": "network_table:///SmartDashboard/Test/Tests",
+              "_title": "Tests"
             }
           },
           "8,0": {
@@ -478,8 +389,74 @@
             ],
             "content": {
               "_type": "Text View",
-              "_source0": "network_table:///SmartDashboard/TurnDegrees",
-              "_title": "SmartDashboard/TurnDegrees"
+              "_source0": "network_table:///SmartDashboard/Test/TurnDegrees",
+              "_title": "TurnDegrees"
+            }
+          },
+          "8,4": {
+            "size": [
+              4,
+              2
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/Test/TuneKd",
+              "_title": "TuneKd"
+            }
+          },
+          "4,4": {
+            "size": [
+              4,
+              2
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/Test/TuneKi",
+              "_title": "TuneKi"
+            }
+          },
+          "12,4": {
+            "size": [
+              4,
+              2
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/Test/TuneKf",
+              "_title": "TuneKf"
+            }
+          },
+          "0,4": {
+            "size": [
+              4,
+              2
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/Test/TuneKp",
+              "_title": "TuneKp"
+            }
+          },
+          "12,0": {
+            "size": [
+              4,
+              2
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/Test/DrivePowerLimit",
+              "_title": "DrivePowerLimit"
+            }
+          },
+          "4,0": {
+            "size": [
+              4,
+              2
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/Test/DriveDistance",
+              "_title": "DriveDistance"
             }
           }
         }
@@ -495,67 +472,113 @@
         "hgap": 16.0,
         "vgap": 16.0,
         "tiles": {
-          "0,0": {
+          "0,5": {
             "size": [
-              11,
-              5
+              4,
+              2
             ],
             "content": {
-              "_type": "Graph",
-              "_source0": "network_table:///SmartDashboard/Power/pdpTotalCurrent",
-              "_title": "/SmartDashboard/Power/pdpTotalCurrent",
-              "Visible time": 30.0,
-              "SmartDashboard/Power/pdpTotalCurrent visible": true
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/Power/totalEnergy",
+              "_title": "totalEnergy"
             }
           },
-          "11,0": {
+          "18,0": {
             "size": [
-              11,
-              5
-            ],
-            "content": {
-              "_type": "Graph",
-              "_source0": "network_table:///SmartDashboard/Power/elevatorCurrent",
-              "_title": "/SmartDashboard/Power/elevatorCurrent",
-              "Visible time": 30.0,
-              "SmartDashboard/Power/elevatorCurrent visible": true
-            }
-          },
-          "11,5": {
-            "size": [
-              11,
+              6,
               5
             ],
             "content": {
               "_type": "Graph",
               "_source0": "network_table:///SmartDashboard/Power/winchCurrent",
-              "_title": "/SmartDashboard/Power/winchCurrent",
+              "_title": "SmartDashboard/Power/winchCurrent",
               "Visible time": 30.0,
               "SmartDashboard/Power/winchCurrent visible": true
             }
           },
-          "0,5": {
+          "12,0": {
             "size": [
-              11,
+              6,
               5
             ],
             "content": {
               "_type": "Graph",
               "_source0": "network_table:///SmartDashboard/Power/pickupCurrent",
-              "_title": "/SmartDashboard/Power/pickupCurrent",
+              "_title": "SmartDashboard/Power/pickupCurrent",
               "Visible time": 30.0,
               "SmartDashboard/Power/pickupCurrent visible": true
             }
           },
-          "0,10": {
+          "6,0": {
             "size": [
-              11,
-              7
+              6,
+              5
             ],
             "content": {
-              "_type": "PDP",
-              "_title": "",
-              "showIndicatorText": true
+              "_type": "Graph",
+              "_source0": "network_table:///SmartDashboard/Power/elevatorCurrent",
+              "_title": "SmartDashboard/Power/elevatorCurrent",
+              "Visible time": 30.0,
+              "SmartDashboard/Power/elevatorCurrent visible": true
+            }
+          },
+          "0,0": {
+            "size": [
+              6,
+              5
+            ],
+            "content": {
+              "_type": "Graph",
+              "_source0": "network_table:///SmartDashboard/Power/pdpTotalCurrent",
+              "_title": "SmartDashboard/Power/pdpTotalCurrent",
+              "Visible time": 30.0,
+              "SmartDashboard/Power/pdpTotalCurrent visible": true
+            }
+          }
+        }
+      }
+    },
+    {
+      "title": "DriveBase",
+      "autoPopulate": true,
+      "autoPopulatePrefix": "SmartDashboard/DriveBase",
+      "widgetPane": {
+        "gridSize": 32.0,
+        "showGrid": true,
+        "hgap": 16.0,
+        "vgap": 16.0,
+        "tiles": {
+          "0,0": {
+            "size": [
+              4,
+              2
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/DriveBase/xPos",
+              "_title": "xPos"
+            }
+          },
+          "4,0": {
+            "size": [
+              4,
+              2
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/DriveBase/yPos",
+              "_title": "yPos"
+            }
+          },
+          "8,0": {
+            "size": [
+              4,
+              2
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/DriveBase/heading",
+              "_title": "heading"
             }
           }
         }
@@ -573,8 +596,8 @@
         "tiles": {
           "0,0": {
             "size": [
-              23,
-              11
+              9,
+              9
             ],
             "content": {
               "_type": "Camera Stream",

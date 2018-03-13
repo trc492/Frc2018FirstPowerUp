@@ -55,7 +55,6 @@ import trclib.TrcDriveBase;
 import trclib.TrcEmic2TextToSpeech.Voice;
 import trclib.TrcFilter;
 import trclib.TrcGyro;
-import trclib.TrcGyro.DataType;
 //import trclib.TrcLidarLite;
 import trclib.TrcMaxbotixSonarArray;
 import trclib.TrcPidController;
@@ -531,7 +530,14 @@ public class Robot extends FrcRobotBase
         if (currTime >= nextUpdateTime)
         {
             nextUpdateTime = currTime + DASHBOARD_UPDATE_INTERVAL;
-            HalDashboard.putNumber("DriveBase/gyroTurnRate", gyro.getRawZData(DataType.ROTATION_RATE).value);
+
+            double xPos = driveBase.getXPosition();
+            double yPos = driveBase.getYPosition();
+            double heading = driveBase.getHeading();
+
+            HalDashboard.putNumber("DriveBase/xPos", xPos);
+            HalDashboard.putNumber("DriveBase/yPos", yPos);
+            HalDashboard.putNumber("DriveBase/heading", heading);
 
             if (DEBUG_POWER_CONSUMPTION)
             {
@@ -554,8 +560,7 @@ public class Robot extends FrcRobotBase
 
                 dashboard.displayPrintf(8, "DriveBase: lf=%.0f, rf=%.0f, lr=%.0f, rr=%.0f, avg=%.0f",
                     lfEnc, rfEnc, lrEnc, rrEnc, (lfEnc + rfEnc + lrEnc + rrEnc)/4.0);
-                dashboard.displayPrintf(9, "DriveBase: X=%.1f, Y=%.1f, Heading=%.1f",
-                    driveBase.getXPosition(), driveBase.getYPosition(), driveBase.getHeading());
+                dashboard.displayPrintf(9, "DriveBase: X=%.1f, Y=%.1f, Heading=%.1f", xPos, yPos, heading);
 
                 if (DEBUG_PID_DRIVE)
                 {
@@ -563,9 +568,6 @@ public class Robot extends FrcRobotBase
                     encoderYPidCtrl.displayPidInfo(12);
                     gyroTurnPidCtrl.displayPidInfo(14);
                 }
-                HalDashboard.putNumber("DriveBase/xPos", driveBase.getXPosition());
-                HalDashboard.putNumber("DriveBase/yPos", driveBase.getYPosition());
-                HalDashboard.putNumber("DriveBase/heading", driveBase.getHeading());
             }
 
             if (DEBUG_ELEVATOR_WINCH_PICKUP)
