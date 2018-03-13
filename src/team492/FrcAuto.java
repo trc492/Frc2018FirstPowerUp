@@ -106,6 +106,7 @@ public class FrcAuto implements TrcRobot.RobotMode
         // Populate Autonomous Mode menus.
         //
         autoStrategyMenu.addChoice("Power Up Auto", AutoStrategy.POWER_UP_AUTO, true, false);
+        autoStrategyMenu.addChoice("Scale Auto", AutoStrategy.SCALE_AUTO, false, false);
         autoStrategyMenu.addChoice("X Timed Drive", AutoStrategy.X_TIMED_DRIVE, false, false);
         autoStrategyMenu.addChoice("Y Timed Drive", AutoStrategy.Y_TIMED_DRIVE, false, false);
         autoStrategyMenu.addChoice("X Distance Drive", AutoStrategy.X_DISTANCE_DRIVE, false, false);
