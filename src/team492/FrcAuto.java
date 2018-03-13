@@ -36,6 +36,7 @@ public class FrcAuto implements TrcRobot.RobotMode
     {
         // Different choices for autonomous
         POWER_UP_AUTO,
+        SCALE_AUTO,
         X_TIMED_DRIVE,
         Y_TIMED_DRIVE,
         X_DISTANCE_DRIVE,
@@ -195,6 +196,10 @@ public class FrcAuto implements TrcRobot.RobotMode
                 autoCommand = new CmdPowerUpAuto(
                     robot, delay, forwardDriveDistance, sideApproach, robotStartPosition, flipInFlight);
                 break;
+
+            case SCALE_AUTO:
+            	autoCommand = new CmdScaleAuto(robot, delay, robotStartPosition);
+            	break;
 
             case X_TIMED_DRIVE:
                 autoCommand = new CmdTimedDrive(robot, delay, robot.driveTime, robot.drivePower, 0.0, 0.0);

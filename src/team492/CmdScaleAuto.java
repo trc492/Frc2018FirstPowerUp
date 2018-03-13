@@ -67,6 +67,16 @@ public class CmdScaleAuto implements TrcRobot.RobotCommand
     private boolean startRight;
     private boolean scaleRight;
     private TrcAnalogTrigger<TrcAnalogInput.DataType> sonarTrigger;
+    
+    private double distanceFromWall = 0;
+    private double sonarDistance = 0;
+    
+    /**
+     * 
+     * @param robot Robot class
+     * @param delay How much to delay (in seconds) before starting
+     * @param startPosition Either RobotInfo.LEFT_START_POS, RobotInfo.MID_START_POS, or RobotInfo.RIGHT_START_POS
+     */
     public CmdScaleAuto(Robot robot, double delay, double startPosition)
     {
         this.robot = robot;
@@ -80,8 +90,7 @@ public class CmdScaleAuto implements TrcRobot.RobotCommand
         else if(startPosition == RobotInfo.RIGHT_START_POS) this.startPosition = Position.RIGHT;
         else this.startPosition = Position.MIDDLE;
 
-        //CodeReview: Why startRight is true when position is left???
-        startRight = startPosition == RobotInfo.LEFT_START_POS;
+        startRight = this.startPosition == Position.RIGHT;
         scaleRight = robot.gameSpecificMessage.charAt(1) == 'R';
 
         sonarTrigger = new TrcAnalogTrigger<>(
@@ -113,9 +122,6 @@ public class CmdScaleAuto implements TrcRobot.RobotCommand
         if(state != null)
         {
             double xDistance, yDistance;
-            // CodeReview: need to move the two below as class variables.
-            double distanceFromWall = 0;
-            double sonarDistance = 0;
 
             switch(state)
             {
