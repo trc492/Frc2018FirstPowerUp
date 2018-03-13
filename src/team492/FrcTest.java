@@ -180,9 +180,6 @@ public class FrcTest extends FrcTeleOp
         if (robot.leftSonarArray != null) robot.leftSonarArray.stopRanging();
         if (robot.rightSonarArray != null) robot.rightSonarArray.stopRanging();
         if (robot.frontSonarArray != null) robot.frontSonarArray.stopRanging();
-
-        if (Robot.USE_TRACELOG && useTraceLog)
-            robot.stopTraceLog();
     } // stopMode
 
     //

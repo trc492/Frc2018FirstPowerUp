@@ -57,21 +57,29 @@ public abstract class TrcRobotBattery
      */
     public abstract double getPower();
 
+    private boolean voltageSupported = true;
+    private boolean currentSupported = true;
+    private boolean powerSupported = true;
     private final TrcTaskMgr.TaskObject preContinuousTaskObj;
     private double lowestVoltage = 0.0;
     private double highestVoltage = 0.0;
-    private boolean voltageSupported = true;
     private double lowestCurrent = 0.0;
     private double highestCurrent = 0.0;
-    private boolean currentSupported = true;
     private double lowestPower = 0.0;
     private double highestPower = 0.0;
-    private boolean powerSupported = true;
+    private double totalEnergy = 0.0;
+    private double lastTimestamp = 0.0;
 
     /**
-     * Constructor: create an instance of the object.
      */
-    public TrcRobotBattery()
+    /**
+     * Constructor: create an instance of the object.
+     *
+     * @param voltageSupported specifies true if getVoltage is supported, false otherwise.
+     * @param currentSupported specifies true if getCurrent is supported, false otherwise.
+     * @param powerSupported specifies true if getPower is supported, false otherwise.
+     */
+    public TrcRobotBattery(boolean voltageSupported, boolean currentSupported, boolean powerSupported)
     {
         if (debugEnabled)
         {
@@ -96,7 +104,7 @@ public abstract class TrcRobotBattery
 
         if (debugEnabled)
         {
-            dbgTrace.traceEnter(funcName, TrcDbgTrace.TraceLevel.FUNC, "enabled=%b", enabled);
+            dbgTrace.traceEnter(funcName, TrcDbgTrace.TraceLevel.API, "enabled=%b", enabled);
         }
 
         if (enabled)
@@ -137,6 +145,8 @@ public abstract class TrcRobotBattery
                 }
             }
 
+            totalEnergy = 0.0;
+            lastTimestamp = TrcUtil.getCurrentTime();
             preContinuousTaskObj.registerTask(TrcTaskMgr.TaskType.PRECONTINUOUS_TASK);
         }
         else
@@ -146,7 +156,7 @@ public abstract class TrcRobotBattery
 
         if (debugEnabled)
         {
-            dbgTrace.traceExit(funcName, TrcDbgTrace.TraceLevel.FUNC);
+            dbgTrace.traceExit(funcName, TrcDbgTrace.TraceLevel.API);
         }
     }   //setTaskEnabled
 
@@ -246,6 +256,16 @@ public abstract class TrcRobotBattery
         return highestPower;
     }   //getHighestPower
 
+    /**
+     * This method returns the total energy consumed since the task was enabled.
+     *
+     * @return total energy consumed in WH (Watt-Hour).
+     */
+    public double getTotalEnergy()
+    {
+        return totalEnergy;
+    }   //getTotalEnergy
+
     //
     // Implements TrcTaskMgr.Task
     //
@@ -260,6 +280,8 @@ public abstract class TrcRobotBattery
     public void preContinuousTask(TrcTaskMgr.TaskType taskType, TrcRobot.RunMode runMode)
     {
         final String funcName = "preContinuousTask";
+        double currTime = TrcUtil.getCurrentTime();
+        double voltage = 0.0, current = 0.0, power = 0.0;
 
         if (debugEnabled)
         {
@@ -268,7 +290,7 @@ public abstract class TrcRobotBattery
 
         if (voltageSupported)
         {
-            double voltage = getVoltage();
+            voltage = getVoltage();
             if (voltage < lowestVoltage)
             {
                 lowestVoltage = voltage;
@@ -281,7 +303,7 @@ public abstract class TrcRobotBattery
 
         if (currentSupported)
         {
-            double current = getCurrent();
+            current = getCurrent();
             if (current < lowestCurrent)
             {
                 lowestCurrent = current;
@@ -294,7 +316,7 @@ public abstract class TrcRobotBattery
 
         if (powerSupported)
         {
-            double power = getPower();
+            power = getPower();
             if (power < lowestPower)
             {
                 lowestPower = power;
@@ -303,7 +325,14 @@ public abstract class TrcRobotBattery
             {
                 highestPower = power;
             }
+            totalEnergy += power*(currTime - lastTimestamp)/3600.0;
         }
+        else if (voltageSupported && currentSupported)
+        {
+            totalEnergy += voltage*current*(currTime - lastTimestamp)/3600.0;
+        }
+
+        lastTimestamp = currTime;
 
         if (debugEnabled)
         {

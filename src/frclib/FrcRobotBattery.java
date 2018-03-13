@@ -41,7 +41,7 @@ public class FrcRobotBattery extends TrcRobotBattery
      */
     public FrcRobotBattery(int module)
     {
-        super();
+        super(true, true, true);
         pdp = new PowerDistributionPanel(module);
     }   //FrcRobotBattery
 

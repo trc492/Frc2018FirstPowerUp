@@ -492,6 +492,8 @@ public class Robot extends FrcRobotBase
 
         cancelAutoAssist();
         cubePickup.stopPickup();
+        tracer.traceInfo(moduleName, "TotalEnergy=%.1f", battery.getTotalEnergy());
+        stopTraceLog();
     }   //robotStopMode
 
     public void setVisionEnabled(boolean enabled)
@@ -537,6 +539,7 @@ public class Robot extends FrcRobotBase
                 HalDashboard.putNumber("Power/elevatorCurrent", elevator.elevatorMotor.motor.getOutputCurrent());
                 HalDashboard.putNumber("Power/winchCurrent", winch.getCurrent());
                 HalDashboard.putNumber("Power/pickupCurrent", cubePickup.getPickupCurrent());
+                dashboard.displayPrintf(15, "TotalEnergy=%.1f", battery.getTotalEnergy());
             }
 
             if (DEBUG_DRIVE_BASE)

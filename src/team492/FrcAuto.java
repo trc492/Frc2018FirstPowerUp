@@ -243,9 +243,6 @@ public class FrcAuto implements TrcRobot.RobotMode
     public void stopMode()
     {
         robot.setVisionEnabled(false);
-
-        if (Robot.USE_TRACELOG)
-            robot.stopTraceLog();
     } // stopMode
 
     @Override
