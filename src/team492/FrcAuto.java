@@ -69,6 +69,12 @@ public class FrcAuto implements TrcRobot.RobotMode
         RIGHT_START_POS
     } // enum StartPosition
 
+    public static enum FlipInFlight
+    {
+        YES,
+        NO
+    } // enum FlipInFlight
+
     private Robot robot;
 
     //
@@ -78,6 +84,7 @@ public class FrcAuto implements TrcRobot.RobotMode
     private FrcChoiceMenu<ForwardDistance> forwardDistanceMenu;
     private FrcChoiceMenu<Approach> approachMenu;
     private FrcChoiceMenu<StartPosition> startPositionMenu;
+    private FrcChoiceMenu<FlipInFlight> flipInFlightMenu;
 
     private AutoStrategy autoStrategy;
     private ForwardDistance forwardDistance;
@@ -101,6 +108,7 @@ public class FrcAuto implements TrcRobot.RobotMode
         forwardDistanceMenu = new FrcChoiceMenu<>("Auto/Forward Distances");
         approachMenu = new FrcChoiceMenu<>("Auto/Approaches");
         startPositionMenu = new FrcChoiceMenu<>("Auto/Start Positions");
+        flipInFlightMenu = new FrcChoiceMenu<>("Auto/FlipInFlight");
 
         //
         // Populate Autonomous Mode menus.
@@ -125,6 +133,9 @@ public class FrcAuto implements TrcRobot.RobotMode
         startPositionMenu.addChoice("Left Side Start", StartPosition.LEFT_START_POS, true, false);
         startPositionMenu.addChoice("Middle Start", StartPosition.MID_START_POS, false, false);
         startPositionMenu.addChoice("Right Side Start", StartPosition.RIGHT_START_POS, false, true);
+
+        flipInFlightMenu.addChoice("Yes", FlipInFlight.YES, true, false);
+        flipInFlightMenu.addChoice("No", FlipInFlight.NO, false, true);
     } // FrcAuto
 
     //
@@ -189,7 +200,7 @@ public class FrcAuto implements TrcRobot.RobotMode
 
         autoStrategy = autoStrategyMenu.getCurrentChoiceObject();
         delay = HalDashboard.getNumber("Auto/Delay", 0.0);
-        flipInFlight = HalDashboard.getBoolean("Auto/FlipInFlight", false);
+        flipInFlight = flipInFlightMenu.getCurrentChoiceObject() == FlipInFlight.YES;
 
         switch (autoStrategy)
         {
