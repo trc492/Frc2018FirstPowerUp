@@ -188,13 +188,16 @@ class CmdPowerUpAuto implements TrcRobot.RobotCommand
                             }
 
                             yDistance = RobotInfo.AUTO_DISTANCE_TO_SWITCH;
-                            nextState = State.CHECK_SONAR_DISTANCE;
                             if (flipInFlight)
                             {
+//                              yPowerLimit = robot.encoderYPidCtrl.getOutputLimit();
+//                              robot.encoderYPidCtrl.setOutputLimit(0.5);
+                                // Need to slow down sooner so the cube doesn't fly over the switch.
                                 sonarTrigger.setTaskEnabled(true);
                                 sm.addEvent(sonarEvent);
-                                yDistance += RobotInfo.ADVANCE_TO_SECOND_CUBE_DISTANCE;
+                                yDistance -= 16;
                             }
+                            nextState = State.CHECK_SONAR_DISTANCE;
                         }
                         else
                         {
@@ -258,7 +261,8 @@ class CmdPowerUpAuto implements TrcRobot.RobotCommand
                         {
                             sonarTrigger.setTaskEnabled(true);
                             sm.addEvent(sonarEvent);
-                            yDistance += RobotInfo.ADVANCE_TO_SECOND_CUBE_DISTANCE;
+                            yDistance -= 10;
+//                            yDistance += RobotInfo.ADVANCE_TO_SECOND_CUBE_DISTANCE;
                         }
 
                         // We are going backward, so make yDistance negative.
@@ -269,11 +273,14 @@ class CmdPowerUpAuto implements TrcRobot.RobotCommand
 
                     case CHECK_SONAR_DISTANCE:
                         sonarDistance = rightSwitch? robot.getRightSonarDistance(): robot.getLeftSonarDistance();
-                        robot.tracer.traceInfo(funcName, "sonarDistance=%.1f", sonarDistance);
+                        // Since we moved backward, yPos is negative, let's make yStart positive.
+                        yStart = -robot.driveBase.getYPosition();
+                        robot.tracer.traceInfo(funcName, "sonarDistance=%.1f, yPos=%.1f", sonarDistance, yStart);
 
                         if (flipInFlight)
                         {
                             sonarTrigger.setTaskEnabled(false);
+//                            robot.encoderYPidCtrl.setOutputLimit(yPowerLimit);
                         }
 
                         if (sonarDistance < RobotInfo.SWITCH_SONAR_DISTANCE_THRESHOLD)
@@ -296,6 +303,8 @@ class CmdPowerUpAuto implements TrcRobot.RobotCommand
                         break;
 
                     case STRAFE_TO_SWITCH:
+                        // Since we moved backward, yPos is negative, let's make yStart positive.
+                        yStart = -robot.driveBase.getYPosition();
                         // Add a few more inches to make sure we are within rule.
                         xDistance = sonarDistance - RobotInfo.SWITCH_SONAR_DISTANCE_THRESHOLD + 3.0;
                         if (!rightSwitch) xDistance = -xDistance;
@@ -320,22 +329,16 @@ class CmdPowerUpAuto implements TrcRobot.RobotCommand
                             robot.leftFlipper.extend();
                             robot.leftSonarArray.stopRanging();
                         }
-
-                        if (flipInFlight)
-                        {
-                            // Wait for the ADVANCE_TO_SECOND_CUBE_DISTACNE to be reached.
-                            sm.waitForSingleEvent(event, State.START_STRAFE);
-                        }
-                        else
-                        {
-                            timer.set(0.5, event);
-                            sm.waitForSingleEvent(event, State.DRIVE_TO_SECOND_CUBE);
-                        }
+                        // CodeReview: Can we not wait???
+                        timer.set(0.5, event);
+                        sm.waitForSingleEvent(event, State.DRIVE_TO_SECOND_CUBE);
                         break;
 
                     case DRIVE_TO_SECOND_CUBE:
                         xDistance = 0.0;
-                        yDistance = RobotInfo.ADVANCE_TO_SECOND_CUBE_DISTANCE;
+//                        yDistance = RobotInfo.ADVANCE_TO_SECOND_CUBE_DISTANCE;
+                        yDistance = RobotInfo.AUTO_DISTANCE_TO_SWITCH + RobotInfo.ADVANCE_TO_SECOND_CUBE_DISTANCE -
+                                    yStart;
                         robot.pidDrive.setTarget(xDistance, -yDistance, robot.targetHeading, false, event);
                         sm.waitForSingleEvent(event, State.START_STRAFE);
                         break;
@@ -476,12 +479,14 @@ class CmdPowerUpAuto implements TrcRobot.RobotCommand
                         break;
 
                     case RAISE_ELEVATOR:
+                        robot.tracer.traceInfo(funcName, "ElevatorStartHeight=%.1f", robot.elevator.getPosition());
                         robot.elevator.setPosition(RobotInfo.ELEVATOR_SCALE_HIGH, event, 0.0);
                         nextState = sideApproach? State.DEPOSIT_CUBE: State.APPROACH_FINAL_TARGET;
                         sm.waitForSingleEvent(event, nextState, 5.0);
                         break;
 
                     case APPROACH_FINAL_TARGET:
+                        robot.tracer.traceInfo(funcName, "ElevatorStopHeight=%.1f", robot.elevator.getPosition());
                         xDistance = 0.0;
                         // left this side approach distance just in case we need it again
                         yDistance = sideApproach?
@@ -528,12 +533,16 @@ class CmdPowerUpAuto implements TrcRobot.RobotCommand
 
     private void sonarTriggerEvent(int currZone, int prevZone, double zoneValue)
     {
-        robot.tracer.traceInfo("SonarTrigger", "[%.3f] prevZone=%d, currZone=%d, pickupCurrent=%.2f",
+        robot.tracer.traceInfo("SonarTrigger", "[%.3f] prevZone=%d, currZone=%d, distance=%.2f",
             Robot.getModeElapsedTime(), prevZone, currZone, zoneValue);
-        if (currZone == 1 && currZone > prevZone)
+        if (prevZone == 1 && currZone == 0)
         {
             // Detected the switch fence.
             sonarEvent.set(true);
+            if (robot.pidDrive.isActive())
+            {
+                robot.pidDrive.cancel();
+            }
         }
     }
 

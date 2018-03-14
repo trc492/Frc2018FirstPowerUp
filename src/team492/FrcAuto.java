@@ -69,11 +69,11 @@ public class FrcAuto implements TrcRobot.RobotMode
         RIGHT_START_POS
     } // enum StartPosition
 
-    public static enum FlipInFlight
+    public static enum YesOrNo
     {
         YES,
         NO
-    } // enum FlipInFlight
+    } // enum YesOrNo
 
     private Robot robot;
 
@@ -84,7 +84,7 @@ public class FrcAuto implements TrcRobot.RobotMode
     private FrcChoiceMenu<ForwardDistance> forwardDistanceMenu;
     private FrcChoiceMenu<Approach> approachMenu;
     private FrcChoiceMenu<StartPosition> startPositionMenu;
-    private FrcChoiceMenu<FlipInFlight> flipInFlightMenu;
+    private FrcChoiceMenu<YesOrNo> flipInFlightMenu;
 
     private AutoStrategy autoStrategy;
     private ForwardDistance forwardDistance;
@@ -134,8 +134,8 @@ public class FrcAuto implements TrcRobot.RobotMode
         startPositionMenu.addChoice("Middle Start", StartPosition.MID_START_POS, false, false);
         startPositionMenu.addChoice("Right Side Start", StartPosition.RIGHT_START_POS, false, true);
 
-        flipInFlightMenu.addChoice("Yes", FlipInFlight.YES, true, false);
-        flipInFlightMenu.addChoice("No", FlipInFlight.NO, false, true);
+        flipInFlightMenu.addChoice("Yes", YesOrNo.YES, true, false);
+        flipInFlightMenu.addChoice("No", YesOrNo.NO, false, true);
     } // FrcAuto
 
     //
@@ -200,7 +200,7 @@ public class FrcAuto implements TrcRobot.RobotMode
 
         autoStrategy = autoStrategyMenu.getCurrentChoiceObject();
         delay = HalDashboard.getNumber("Auto/Delay", 0.0);
-        flipInFlight = flipInFlightMenu.getCurrentChoiceObject() == FlipInFlight.YES;
+        flipInFlight = flipInFlightMenu.getCurrentChoiceObject() == YesOrNo.YES;
 
         switch (autoStrategy)
         {
