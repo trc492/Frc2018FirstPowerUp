@@ -247,7 +247,7 @@ public class Robot extends FrcRobotBase
 
             TrcSpuriousFilter rightSonarFilter =
                 new TrcSpuriousFilter("RightSonarFilter", RobotInfo.SONAR_ERROR_THRESHOLD, tracer);
-            FrcAnalogInput rightSonarSensor = new FrcAnalogInput(
+            rightSonarSensor = new FrcAnalogInput(
                 "RightSonarSensor", RobotInfo.AIN_RIGHT_SONAR_SENSOR, new TrcFilter[] {rightSonarFilter});
             rightSonarSensor.setScale(RobotInfo.SONAR_INCHES_PER_VOLT);
 
