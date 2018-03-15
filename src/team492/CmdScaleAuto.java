@@ -32,7 +32,7 @@ import trclib.TrcRobot;
 public class CmdScaleAuto implements TrcRobot.RobotCommand
 {
     private static final String moduleName = "CmdScaleAuto";
-    private static final double[] distances = new double[] { RobotInfo.NO_SWITCH_DISTANCE, RobotInfo.SWITCH_DISTANCE };
+    private static final double[] distances = new double[] { 32.0, 8.0 };
 
     private enum State
     {
@@ -94,6 +94,8 @@ public class CmdScaleAuto implements TrcRobot.RobotCommand
         sonarTrigger = new TrcAnalogTrigger<>(
             "SwitchDistanceTrigger", startRight? robot.leftSonarSensor: robot.rightSonarSensor,
             0, TrcAnalogInput.DataType.INPUT_DATA, distances, this::sonarTriggerEvent);
+        
+        sm.start(State.START);
     }
 
     public void setSonarTriggerEnabled(boolean enabled)
@@ -104,6 +106,7 @@ public class CmdScaleAuto implements TrcRobot.RobotCommand
 
     private void sonarTriggerEvent(int currZone, int prevZone, double zoneValue)
     {
+        robot.tracer.traceInfo("CmdScaleAuto.sonarTriggerEvent", "Sonar event - currZone:%d, prevZone:%d", currZone, prevZone);
         if(currZone == 1 && prevZone == 0)
         {
             sonarEvent.set(true);
@@ -117,6 +120,12 @@ public class CmdScaleAuto implements TrcRobot.RobotCommand
         if(done || startPosition == Position.MIDDLE) return true;
 
         State state = sm.checkReadyAndGetState();
+        
+        //
+        // Print debug info.
+        //
+        robot.dashboard.displayPrintf(1, "State: %s", state != null? state: sm.getState());
+        
         if(state != null)
         {
             double xDistance, yDistance;
@@ -230,6 +239,7 @@ public class CmdScaleAuto implements TrcRobot.RobotCommand
                     sm.stop();
                     break;
             }
+            robot.traceStateInfo(elapsedTime, state.toString());
         }
         return done;
     }
