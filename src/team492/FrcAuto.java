@@ -205,7 +205,7 @@ public class FrcAuto implements TrcRobot.RobotMode
         switch (autoStrategy)
         {
             case POWER_UP_AUTO:
-                autoCommand = new CmdPowerUpAuto(
+                autoCommand = new CmdAutoSameSideSwitch(
                     robot, delay, forwardDriveDistance, sideApproach, robotStartPosition, flipInFlight);
                 break;
 

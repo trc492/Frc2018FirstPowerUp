@@ -30,8 +30,11 @@ import trclib.TrcRobot;
 import trclib.TrcStateMachine;
 import trclib.TrcTimer;
 
-class CmdPowerUpAuto implements TrcRobot.RobotCommand
+class CmdAutoSameSideSwitch implements TrcRobot.RobotCommand
 {
+    private static final String moduleName = "CmdAutoSameSideSwitch";
+    private static final double[] sonarTriggerPoints = {8.0, 32.0};
+
     private static enum State
     {
         DO_DELAY,
@@ -64,9 +67,6 @@ class CmdPowerUpAuto implements TrcRobot.RobotCommand
         DONE
     } // enum State
 
-    private static final String moduleName = "CmdPowerUpAuto";
-    private static final double[] sonarTriggerPoints = {8.0, 32.0};
-
     private Robot robot;
     private double delay;
     private double forwardDistance;
@@ -93,7 +93,8 @@ class CmdPowerUpAuto implements TrcRobot.RobotCommand
     private Double visionTarget;
     private double sonarDistance;
 
-    CmdPowerUpAuto(Robot robot, double delay, double forwardDistance, boolean sideApproach, double startPosition,
+    CmdAutoSameSideSwitch(
+        Robot robot, double delay, double forwardDistance, boolean sideApproach, double startPosition,
         boolean flipInFlight)
     {
         this.robot = robot;
@@ -546,4 +547,4 @@ class CmdPowerUpAuto implements TrcRobot.RobotCommand
         }
     }
 
-} // class CmdPowerUpAuto
+} // class CmdAutoSameSideSwitch
