@@ -206,7 +206,7 @@ public class FrcAuto implements TrcRobot.RobotMode
         {
             case AUTO_SWITCH:
                 autoCommand = new CmdAutoSwitch(
-                    robot, delay, forwardDriveDistance, sideApproach, robotStartPosition, flipInFlight);
+                    robot, delay, forwardDriveDistance, robotStartPosition, flipInFlight);
                 break;
 
             case AUTO_SCALE:
