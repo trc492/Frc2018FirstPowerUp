@@ -67,7 +67,6 @@ class CmdAutoSwitch implements TrcRobot.RobotCommand
         DONE
     } // enum State
 
-    
     // TODO: move these to RobotInfo
     private static final double OPPOSITE_SWITCH_OVERSHOOT = 21.0;
     private static final double STRAFE_FROM_SWITCH_DISTANCE = 12.0;
@@ -79,9 +78,8 @@ class CmdAutoSwitch implements TrcRobot.RobotCommand
     private double startPosition;
     private boolean flipInFlight;
 
-    private String targetSide;
     private boolean rightSwitch;
-    private double targetLocation;
+    private double switchLocation;
 
     private TrcEvent event;
     private TrcTimer timer;
@@ -92,12 +90,10 @@ class CmdAutoSwitch implements TrcRobot.RobotCommand
 
     //leaving xStart in case we want to extend the program later
     private double xStart, yStart;
-    private double lastXPosition;
     private Double visionTarget;
     private double sonarDistance;
 
-    CmdAutoSwitch(Robot robot, double delay, double forwardDistance, double startPosition, 
-    		boolean flipInFlight)
+    CmdAutoSwitch(Robot robot, double delay, double forwardDistance, double startPosition, boolean flipInFlight)
     {
         this.robot = robot;
         this.delay = delay;
@@ -107,9 +103,8 @@ class CmdAutoSwitch implements TrcRobot.RobotCommand
         this.startPosition = startPosition;
         this.flipInFlight = flipInFlight;
 
-        this.targetSide = robot.ds.getGameSpecificMessage();
-        this.rightSwitch = (targetSide.charAt(0) == 'R');
-        this.targetLocation = rightSwitch? RobotInfo.RIGHT_SWITCH_LOCATION: RobotInfo.LEFT_SWITCH_LOCATION;
+        this.rightSwitch = (robot.gameSpecificMessage.charAt(0) == 'R');
+        this.switchLocation = rightSwitch? RobotInfo.RIGHT_SWITCH_LOCATION: RobotInfo.LEFT_SWITCH_LOCATION;
 
         event = new TrcEvent(moduleName);
         timer = new TrcTimer(moduleName);
@@ -169,7 +164,7 @@ class CmdAutoSwitch implements TrcRobot.RobotCommand
 
                     case DRIVE_FORWARD_DISTANCE:
                         xDistance = 0.0;
-                        if (targetLocation == startPosition)
+                        if (switchLocation == startPosition)
                         {
                             //
                             // Don't need to go across the other side.
@@ -228,7 +223,7 @@ class CmdAutoSwitch implements TrcRobot.RobotCommand
 
                     case MOVE_ACROSS:
                         xDistance = 0.0;
-                        yDistance = Math.abs(targetLocation - startPosition) - OPPOSITE_SWITCH_OVERSHOOT;
+                        yDistance = Math.abs(switchLocation - startPosition) - OPPOSITE_SWITCH_OVERSHOOT;
                         // CodeReview: If going across backward, need to make yDistance negative.
                         robot.pidDrive.setTarget(xDistance, yDistance, robot.targetHeading, false, event);
                         sm.waitForSingleEvent(event, State.STRAFE_TO_SWITCH);
@@ -310,15 +305,15 @@ class CmdAutoSwitch implements TrcRobot.RobotCommand
                         robot.pidDrive.setTarget(xDistance, yDistance, robot.targetHeading, false, event);
                         sm.waitForSingleEvent(event, State.SONAR_FLIP_CUBE);
                         break;
-                        
+
                     case STRAFE_TO_SWITCH:
-                    	//TODO: strafe distance probably needs to be tuned down a lot
-                    	yDistance = 0.0;
-                    	xDistance = RobotInfo.AUTO_DISTANCE_TO_SWITCH - forwardDistance;
-                    	if(rightSwitch) xDistance = -xDistance;
-                    	robot.pidDrive.setTarget(xDistance, yDistance, robot.targetHeading, false, event);
-                    	sm.waitForSingleEvent(event, State.FLIP_CUBE);
-                    	break;
+                        //TODO: strafe distance probably needs to be tuned down a lot
+                        yDistance = 0.0;
+                        xDistance = RobotInfo.AUTO_DISTANCE_TO_SWITCH - forwardDistance;
+                        if(rightSwitch) xDistance = -xDistance;
+                        robot.pidDrive.setTarget(xDistance, yDistance, robot.targetHeading, false, event);
+                        sm.waitForSingleEvent(event, State.FLIP_CUBE);
+                        break;
 
                     case SONAR_FLIP_CUBE:
                         // Restoring xPowerLimit if it has changed.
@@ -337,60 +332,60 @@ class CmdAutoSwitch implements TrcRobot.RobotCommand
                         timer.set(0.5, event);
                         sm.waitForSingleEvent(event, State.SONAR_POSITION_TO_STRAFE);
                         break;
-                        
+
                     case FLIP_CUBE:
-                    	if((rightSwitch && forwardDistance == RobotInfo.FWD_DISTANCE_3) 
-                    			|| (!rightSwitch && forwardDistance != RobotInfo.FWD_DISTANCE_3))
-                    	{
-                    		robot.rightFlipper.extend();
-                    	}
-                    	else
-                    	{
-                    		robot.leftFlipper.extend();
-                    	}
-                    	timer.set(0.3, event);
-                    	if(forwardDistance == RobotInfo.FWD_DISTANCE_3)
-                    	{
-                    		sm.waitForSingleEvent(event, State.STRAFE_FROM_SWITCH);
-                    	}
-                    	sm.waitForSingleEvent(event, State.TURN_SOUTH);
-                    	break;
-                    	
+                        if((rightSwitch && forwardDistance == RobotInfo.FWD_DISTANCE_3) ||
+                           (!rightSwitch && forwardDistance != RobotInfo.FWD_DISTANCE_3))
+                        {
+                            robot.rightFlipper.extend();
+                        }
+                        else
+                        {
+                            robot.leftFlipper.extend();
+                        }
+                        timer.set(0.3, event);
+                        if(forwardDistance == RobotInfo.FWD_DISTANCE_3)
+                        {
+                            sm.waitForSingleEvent(event, State.STRAFE_FROM_SWITCH);
+                        }
+                        sm.waitForSingleEvent(event, State.TURN_SOUTH);
+                        break;
+
                     case STRAFE_FROM_SWITCH:
-                    	yDistance = 0.0;
-                    	xDistance = STRAFE_FROM_SWITCH_DISTANCE;
-                    	if(!rightSwitch) xDistance = -xDistance;
-                    	robot.pidDrive.setTarget(xDistance, yDistance, robot.targetHeading, false, event);
-                    	sm.waitForSingleEvent(event, State.TURN_SOUTH);
-                    	break;
-                    	
+                        yDistance = 0.0;
+                        xDistance = STRAFE_FROM_SWITCH_DISTANCE;
+                        if(!rightSwitch) xDistance = -xDistance;
+                        robot.pidDrive.setTarget(xDistance, yDistance, robot.targetHeading, false, event);
+                        sm.waitForSingleEvent(event, State.TURN_SOUTH);
+                        break;
+
                     case DRIVE_PAST_SWITCH:
-                    	xDistance = 0.0;
-                    	yDistance = OPPOSITE_SWITCH_OVERSHOOT;
-                    	robot.pidDrive.setTarget(xDistance, yDistance, robot.targetHeading, false, event);
-                    	sm.waitForSingleEvent(event, State.TURN_SOUTH);
-                    	break;
-                    	
+                        xDistance = 0.0;
+                        yDistance = OPPOSITE_SWITCH_OVERSHOOT;
+                        robot.pidDrive.setTarget(xDistance, yDistance, robot.targetHeading, false, event);
+                        sm.waitForSingleEvent(event, State.TURN_SOUTH);
+                        break;
+
                     case TURN_SOUTH:
-                    	xDistance = yDistance = 0.0;
-                    	robot.targetHeading = DRIVE_HEADING_SOUTH;
-                    	robot.pidDrive.setTarget(xDistance, yDistance, robot.targetHeading, false, event);
-                    	if(forwardDistance == RobotInfo.FWD_DISTANCE_3)
-                    	{
-                    	sm.waitForSingleEvent(event, State.PRECISION_STRAFE);
-                    	}
-                    	else
-                    	{
-                    		sm.waitForSingleEvent(event, State.POSITION_TO_STRAFE);
-                    	}
-                    	break;
-                    	
+                        xDistance = yDistance = 0.0;
+                        robot.targetHeading = DRIVE_HEADING_SOUTH;
+                        robot.pidDrive.setTarget(xDistance, yDistance, robot.targetHeading, false, event);
+                        if(forwardDistance == RobotInfo.FWD_DISTANCE_3)
+                        {
+                            sm.waitForSingleEvent(event, State.PRECISION_STRAFE);
+                        }
+                        else
+                        {
+                            sm.waitForSingleEvent(event, State.POSITION_TO_STRAFE);
+                        }
+                        break;
+
                     case POSITION_TO_STRAFE:
-                    	xDistance = 0.0;
-                    	yDistance = POSITION_TO_STRAFE_DISTANCE;
-                    	robot.pidDrive.setTarget(xDistance, -yDistance, robot.targetHeading, false, event);
-                    	sm.waitForSingleEvent(event, State.START_STRAFE);
-                    	break;
+                        xDistance = 0.0;
+                        yDistance = POSITION_TO_STRAFE_DISTANCE;
+                        robot.pidDrive.setTarget(xDistance, -yDistance, robot.targetHeading, false, event);
+                        sm.waitForSingleEvent(event, State.START_STRAFE);
+                        break;
 
                     case SONAR_POSITION_TO_STRAFE:
                         xDistance = 0.0;
@@ -424,7 +419,7 @@ class CmdAutoSwitch implements TrcRobot.RobotCommand
 
                     case PRECISION_STRAFE:
                         visionTarget = robot.getPixyTargetX();
-                        lastXPosition = robot.driveBase.getXPosition();
+                        xStart = robot.driveBase.getXPosition();
                         if (visionTarget != null && visionTarget > RobotInfo.FIND_CUBE_X_TOLERANCE)
                         {
                             //robot.encoderXPidCtrl.setOutputLimit(0.5);
@@ -441,7 +436,7 @@ class CmdAutoSwitch implements TrcRobot.RobotCommand
 
                     case START_SECOND_PICKUP:
                         double xError = visionTarget != null?
-                            visionTarget - (robot.driveBase.getXPosition() - lastXPosition): 0.0;
+                            visionTarget - (robot.driveBase.getXPosition() - xStart): 0.0;
                         robot.tracer.traceInfo(funcName, "visionStrafeError=%.1f", xError);
                         visionTarget = robot.getPixyTargetX();
                         if (visionTarget == null)
