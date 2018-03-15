@@ -273,8 +273,8 @@ public class RobotInfo
     //
     // CmdScaleAuto constants.
     //
-    public static final double NO_SWITCH_DISTANCE = 120.0;
-    public static final double SWITCH_DISTANCE = 50.0;
+    public static final double NO_SWITCH_DISTANCE = 60.0;
+    public static final double SWITCH_DISTANCE = 12.0;
     public static final double MOVE_TO_SWITCH_Y_POWER = 0.5;
     public static final double SWITCH_TO_WALL_DISTANCE = 85.25;
     public static final double SCALE_TO_WALL_DISTANCE = 71.57;

@@ -32,7 +32,7 @@ import trclib.TrcRobot;
 public class CmdScaleAuto implements TrcRobot.RobotCommand
 {
     private static final String moduleName = "CmdScaleAuto";
-    private static final double[] distances = new double[] { 32.0, 8.0 };
+    private static final double[] distances = new double[] { 10.0, 60.0 };
 
     private enum State
     {
@@ -68,6 +68,7 @@ public class CmdScaleAuto implements TrcRobot.RobotCommand
     
     private double distanceFromWall = 0;
     private double sonarDistance = 0;
+    private double startY = 0;
     
     /**
      * 
@@ -100,14 +101,30 @@ public class CmdScaleAuto implements TrcRobot.RobotCommand
 
     public void setSonarTriggerEnabled(boolean enabled)
     {
+        robot.tracer.traceInfo("CmdScaleAuto.setSonarTriggerEnabled", 
+            "Sonar trigger enabled: %b", enabled);
         sonarTrigger.setTaskEnabled(enabled);
         if(enabled) sonarEvent.clear();
+        
+        if(startRight && enabled)
+        {
+            robot.leftSonarArray.startRanging(true);
+        } else if(!startRight && enabled)
+        {
+            robot.rightSonarArray.startRanging(true);
+        } else if(!enabled)
+        {
+            robot.leftSonarArray.stopRanging();
+            robot.rightSonarArray.stopRanging();
+        }
+        
     }
 
     private void sonarTriggerEvent(int currZone, int prevZone, double zoneValue)
     {
-        robot.tracer.traceInfo("CmdScaleAuto.sonarTriggerEvent", "Sonar event - currZone:%d, prevZone:%d", currZone, prevZone);
-        if(currZone == 1 && prevZone == 0)
+        robot.tracer.traceInfo("CmdScaleAuto.sonarTriggerEvent", 
+            "Sonar event - currZone:%d, prevZone:%d, value:%.3f", currZone, prevZone, zoneValue);
+        if(currZone == 0 && prevZone == 1)
         {
             sonarEvent.set(true);
         }
@@ -145,7 +162,6 @@ public class CmdScaleAuto implements TrcRobot.RobotCommand
                     break;
 
                 case DRIVE_TO_SWITCH:
-                    robot.pidDrive.driveMaintainHeading(0.0, RobotInfo.MOVE_TO_SWITCH_Y_POWER, robot.targetHeading);
                     setSonarTriggerEnabled(true);
                     State nextState;
                     if(scaleRight && startRight || !scaleRight && !startRight)
@@ -159,7 +175,11 @@ public class CmdScaleAuto implements TrcRobot.RobotCommand
                         // CodeReview: Why fix yourself to lane 3 only? Should let the drive choose.
                         nextState = State.DRIVE_TO_LANE_3;
                     }
-                    sm.waitForSingleEvent(sonarEvent, nextState); // TODO: Add a timeout to this                        
+                    startY = robot.driveBase.getYPosition();
+                    robot.pidDrive.setTarget(0.0, RobotInfo.AUTO_DISTANCE_TO_SWITCH, robot.targetHeading, false, event);
+                    sm.addEvent(event);
+                    sm.addEvent(sonarEvent);
+                    sm.waitForEvents(nextState); // TODO: Add a timeout to this                        
                     break;
 
                 case DRIVE_TO_LANE_3:
@@ -204,15 +224,21 @@ public class CmdScaleAuto implements TrcRobot.RobotCommand
                     robot.pidDrive.cancel();
                     sonarDistance = startRight?robot.getLeftSonarDistance():robot.getRightSonarDistance();
                     distanceFromWall = RobotInfo.SWITCH_TO_WALL_DISTANCE - sonarDistance;
+                    robot.tracer.traceInfo("CmdScaleAuto.cmdPeriodic", 
+                        "DRIVE_TO_SCALE - sonarDistance:%.3f, distanceFromWall:%.3f, scaleToWall:%.2f",
+                        sonarDistance, distanceFromWall, RobotInfo.SCALE_TO_WALL_DISTANCE);
                     xDistance = distanceFromWall - RobotInfo.SCALE_TO_WALL_DISTANCE;
                     if(!startRight) xDistance *= -1;
-                    yDistance = RobotInfo.SWITCH_TO_SCALE_DISTANCE;
+                    yDistance = RobotInfo.FIELD_LENGTH/2.0 - (robot.driveBase.getYPosition()-startY);
                     robot.pidDrive.setTarget(xDistance, yDistance, robot.targetHeading, false, event);
                     sm.waitForSingleEvent(event, State.TURN_TO_FACE_SCALE);
+                    robot.tracer.traceInfo("CmdScaleAuto.cmdPeriodic", 
+                        "DRIVE_TO_SCALE pid drive - x:%.3f, y:%.3f, heading:%.3f", 
+                        xDistance, yDistance, robot.targetHeading);
                     break;
 
                 case TURN_TO_FACE_SCALE:
-                    robot.targetHeading = startRight?RobotInfo.DRIVE_HEADING_WEST:RobotInfo.DRIVE_HEADING_EAST;
+                    robot.targetHeading = startRight?RobotInfo.DRIVE_HEADING_EAST:RobotInfo.DRIVE_HEADING_WEST;
                     robot.pidDrive.setTarget(0.0, 0.0, robot.targetHeading, false, event);
                     sm.waitForSingleEvent(event, State.RAISE_ELEVATOR);
                     break;
