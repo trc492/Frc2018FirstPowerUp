@@ -268,16 +268,12 @@ public class RobotInfo
     //
     // CmdScaleAuto constants.
     //
-    public static final double NO_SWITCH_DISTANCE = 60.0;
-    public static final double SWITCH_DISTANCE = 12.0;
-    public static final double MOVE_TO_SWITCH_Y_POWER = 0.5;
     public static final double SWITCH_TO_WALL_DISTANCE = 85.25;
     public static final double SCALE_TO_WALL_DISTANCE = 71.57;
-    public static final double SWITCH_TO_SCALE_DISTANCE = 184.0;
+    public static final double ALLIANCE_WALL_TO_LANE_3_DISTANCE = 228.735;
+    public static final double ALLIANCE_WALL_TO_SCALE_DISTANCE = 324.0;
     public static final double CUBE_PICKUP_DROP_POWER = 0.5; // TODO: tune this
     public static final double DROP_CUBE_TIMEOUT = 1.0;
-    public static final double SWITCH_TO_LANE_3_DISTANCE = 90.0;
-    public static final double LANE_3_TO_SCALE_DISTANCE = SWITCH_TO_SCALE_DISTANCE - SWITCH_TO_LANE_3_DISTANCE;
 
     //
     // FrcAuto constants.

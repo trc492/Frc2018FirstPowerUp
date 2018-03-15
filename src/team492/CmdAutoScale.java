@@ -71,7 +71,6 @@ public class CmdAutoScale implements TrcRobot.RobotCommand
 
     private double distanceFromWall = 0.0;
     private double sonarDistance = 0.0;
-    private double startY = 0.0;
 
     /**
      * 
@@ -183,8 +182,6 @@ public class CmdAutoScale implements TrcRobot.RobotCommand
                         // CodeReview: Why fix yourself to lane 3 only? Should let the drive choose.
                         nextState = State.DRIVE_TO_LANE_3;
                     }
-                    // CodeReview: startY is always zero here. Do you really need this???
-                    startY = robot.driveBase.getYPosition();
                     robot.pidDrive.setTarget(0.0, RobotInfo.AUTO_DISTANCE_TO_SWITCH, robot.targetHeading, false, event);
                     sm.addEvent(event);
                     sm.addEvent(sonarEvent);
@@ -192,13 +189,14 @@ public class CmdAutoScale implements TrcRobot.RobotCommand
                     break;
 
                 case DRIVE_TO_LANE_3:
+                    setSonarTriggerEnabled(false);
                     sonarDistance = startRight?robot.getLeftSonarDistance():robot.getRightSonarDistance();
                     // Note: distanceFromWall is the distance of the sonar sensor from the field wall.
                     distanceFromWall = RobotInfo.SWITCH_TO_WALL_DISTANCE - sonarDistance - RobotInfo.ROBOT_WIDTH/2.0;
                     robot.tracer.traceInfo(moduleName, "sonarDistance=%.1f, distanceFromWall=%.1f",
                         sonarDistance, distanceFromWall);
                     // CodeReview: the distance should be AUTO_DISTANCE_TO_SWITCH + SWITCH_TO_LANE_3_DISTANCE - currYPos.
-                    robot.pidDrive.setTarget(0.0, RobotInfo.SWITCH_TO_LANE_3_DISTANCE, 
+                    robot.pidDrive.setTarget(0.0, RobotInfo.ALLIANCE_WALL_TO_LANE_3_DISTANCE - robot.driveBase.getYPosition(), 
                         robot.targetHeading, false, event);
                     sm.waitForSingleEvent(event, State.DRIVE_TO_OPPOSITE_SCALE);
                     break;
@@ -222,7 +220,8 @@ public class CmdAutoScale implements TrcRobot.RobotCommand
                     break;
 
                 case FINISH_DRIVE_TO_SCALE:
-                    robot.pidDrive.setTarget(0.0, RobotInfo.LANE_3_TO_SCALE_DISTANCE, robot.targetHeading, false, event);
+                    robot.pidDrive.setTarget(0.0, RobotInfo.ALLIANCE_WALL_TO_SCALE_DISTANCE - RobotInfo.ALLIANCE_WALL_TO_LANE_3_DISTANCE,
+                        robot.targetHeading, false, event);
                     sm.waitForSingleEvent(event, State.TURN_TO_FACE_SCALE);
                     break;
 
@@ -238,13 +237,9 @@ public class CmdAutoScale implements TrcRobot.RobotCommand
                         sonarDistance, distanceFromWall, xDistance);
                     if(!startRight) xDistance *= -1;
                     // CodeReview: startY is always 0!!!
-                    yDistance = RobotInfo.FIELD_LENGTH/2.0 - (robot.driveBase.getYPosition()-startY);
+                    yDistance = RobotInfo.FIELD_LENGTH/2.0 - robot.driveBase.getYPosition() - RobotInfo.ROBOT_LENGTH/2.0;
                     robot.pidDrive.setTarget(xDistance, yDistance, robot.targetHeading, false, event);
                     sm.waitForSingleEvent(event, State.TURN_TO_FACE_SCALE);
-                    // CodeReview: state info already have these.
-//                    robot.tracer.traceInfo("CmdScaleAuto.cmdPeriodic", 
-//                        "DRIVE_TO_SCALE pid drive - x:%.3f, y:%.3f, heading:%.3f", 
-//                        xDistance, yDistance, robot.targetHeading);
                     break;
 
                 case TURN_TO_FACE_SCALE:
