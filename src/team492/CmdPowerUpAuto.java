@@ -146,7 +146,7 @@ class CmdPowerUpAuto implements TrcRobot.RobotCommand
             //
             // Print debug info.
             //
-            robot.dashboard.displayPrintf(1, "State: %s", state == null? "NotReady": state);
+            robot.dashboard.displayPrintf(1, "State: %s", state != null? state: sm.getState());
 
             if (state != null)
             {
