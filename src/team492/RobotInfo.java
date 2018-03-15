@@ -142,11 +142,6 @@ public class RobotInfo
     //
     // DriveBase subsystem.
     //
-    public static final double DRIVE_HEADING_NORTH              = 180.0;
-    public static final double DRIVE_HEADING_EAST               = -90.0;
-    public static final double DRIVE_HEADING_WEST               = 90.0;
-    public static final double DRIVE_HEADING_SOUTH              = 0.0;
-
     public static final double DRIVE_STALL_TIMEOUT              = 0.5;
     public static final double DRIVE_SLOW_XSCALE                = 3.0;
     public static final double DRIVE_SLOW_YSCALE                = 3.0;

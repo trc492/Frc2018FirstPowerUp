@@ -35,8 +35,8 @@ public class FrcAuto implements TrcRobot.RobotMode
     public static enum AutoStrategy
     {
         // Different choices for autonomous
-        POWER_UP_AUTO,
-        SCALE_AUTO,
+        AUTO_SWITCH,
+        AUTO_SCALE,
         X_TIMED_DRIVE,
         Y_TIMED_DRIVE,
         X_DISTANCE_DRIVE,
@@ -113,8 +113,8 @@ public class FrcAuto implements TrcRobot.RobotMode
         //
         // Populate Autonomous Mode menus.
         //
-        autoStrategyMenu.addChoice("Power Up Auto", AutoStrategy.POWER_UP_AUTO, true, false);
-        autoStrategyMenu.addChoice("Scale Auto", AutoStrategy.SCALE_AUTO, false, false);
+        autoStrategyMenu.addChoice("Auto Switch", AutoStrategy.AUTO_SWITCH, true, false);
+        autoStrategyMenu.addChoice("Auto Scale", AutoStrategy.AUTO_SCALE, false, false);
         autoStrategyMenu.addChoice("X Timed Drive", AutoStrategy.X_TIMED_DRIVE, false, false);
         autoStrategyMenu.addChoice("Y Timed Drive", AutoStrategy.Y_TIMED_DRIVE, false, false);
         autoStrategyMenu.addChoice("X Distance Drive", AutoStrategy.X_DISTANCE_DRIVE, false, false);
@@ -204,13 +204,13 @@ public class FrcAuto implements TrcRobot.RobotMode
 
         switch (autoStrategy)
         {
-            case POWER_UP_AUTO:
-                autoCommand = new CmdAutoSameSideSwitch(
+            case AUTO_SWITCH:
+                autoCommand = new CmdAutoSwitch(
                     robot, delay, forwardDriveDistance, sideApproach, robotStartPosition, flipInFlight);
                 break;
 
-            case SCALE_AUTO:
-            	autoCommand = new CmdScaleAuto(robot, delay, robotStartPosition);
+            case AUTO_SCALE:
+            	autoCommand = new CmdAutoScale(robot, delay, robotStartPosition);
             	break;
 
             case X_TIMED_DRIVE:

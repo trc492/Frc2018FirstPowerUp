@@ -26,7 +26,7 @@ import trclib.TrcEvent;
 import trclib.TrcRobot;
 import trclib.TrcStateMachine;
 
-public class CmdAutoCubePickup implements TrcRobot.RobotCommand
+public class CmdCubePickup implements TrcRobot.RobotCommand
 {
     private static final String moduleName = "CmdAutoCubePickup";
 
@@ -40,7 +40,7 @@ public class CmdAutoCubePickup implements TrcRobot.RobotCommand
     private TrcStateMachine<State> sm;
     private double xError;
 
-    public CmdAutoCubePickup(Robot robot)
+    public CmdCubePickup(Robot robot)
     {
         this.robot = robot;
         event = new TrcEvent(moduleName);

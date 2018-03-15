@@ -176,7 +176,7 @@ public class Robot extends FrcRobotBase
     public FrcPneumatic leftFlipper;
     public FrcPneumatic rightFlipper;
 
-    public CmdAutoCubePickup cmdAutoCubePickup;
+    public CmdCubePickup cmdAutoCubePickup;
     public CmdStrafeUntilCube cmdStrafeUntilCube;
     public CmdExchangeAlign cmdExchangeAlign;
 
@@ -421,7 +421,7 @@ public class Robot extends FrcRobotBase
         //
         // AutoAssist commands.
         //
-        cmdAutoCubePickup = new CmdAutoCubePickup(this);
+        cmdAutoCubePickup = new CmdCubePickup(this);
         cmdStrafeUntilCube = new CmdStrafeUntilCube(this);
         cmdExchangeAlign = new CmdExchangeAlign(this);
 
