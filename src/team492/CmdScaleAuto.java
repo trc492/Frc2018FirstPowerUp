@@ -37,8 +37,6 @@ public class CmdScaleAuto implements TrcRobot.RobotCommand
     private enum State
     {
         START,
-        START_CUBE_PICKUP,
-        CUBE_PICKUP,
         DRIVE_TO_SWITCH,
         DRIVE_TO_LANE_3,
         TURN_TO_OPPOSITE_SCALE,
@@ -128,24 +126,12 @@ public class CmdScaleAuto implements TrcRobot.RobotCommand
                 case START:
                     if(delay != 0.0)
                     {
-                        sm.setState(State.START_CUBE_PICKUP);
+                        sm.setState(State.DRIVE_TO_SWITCH);
                     }
                     else
                     {
                         timer.set(delay, event);
-                        sm.waitForSingleEvent(event, State.START_CUBE_PICKUP);
-                    }
-                    break;
-
-                case START_CUBE_PICKUP:
-                    robot.cmdAutoCubePickup.start();
-                    break;
-
-                case CUBE_PICKUP:
-                    if(robot.cmdAutoCubePickup.cmdPeriodic(elapsedTime))
-                    {
-                        robot.elevator.setPosition(RobotInfo.ELEVATOR_OFF_GROUND);
-                        sm.setState(State.DRIVE_TO_SWITCH);
+                        sm.waitForSingleEvent(event, State.DRIVE_TO_SWITCH);
                     }
                     break;
 
