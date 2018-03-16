@@ -43,6 +43,8 @@ public class CmdAutoScale implements TrcRobot.RobotCommand
     {
         START,
         DRIVE_TO_LANE,
+        TURN_TO_DRIVE_ACROSS_FIELD,
+        DRIVE_ACROSS_FIELD,
         TURN_NORTH,
         DRIVE_TO_SWITCH,
         DRIVE_TO_LANE_3,
@@ -199,13 +201,21 @@ public class CmdAutoScale implements TrcRobot.RobotCommand
 
                 case DRIVE_TO_LANE:
                     robot.pidDrive.setTarget(0.0, forwardDriveDistance, robot.targetHeading, false, event);
-                    //CodeReview: You are already pointing NORTH, why do you need the state turn NORTH???
-                    sm.waitForSingleEvent(event, State.TURN_NORTH);
+                    sm.waitForSingleEvent(event, State.TURN_TO_DRIVE_ACROSS_FIELD);
                     break;
 
+                case TURN_TO_DRIVE_ACROSS_FIELD:
+                	robot.targetHeading = startRight?DRIVE_HEADING_WEST:DRIVE_HEADING_EAST;
+                	robot.pidDrive.setTarget(0.0, 0.0, robot.targetHeading, false, event);
+                	sm.waitForSingleEvent(event, State.DRIVE_ACROSS_FIELD);
+                	break;
+
+                case DRIVE_ACROSS_FIELD:
+                	robot.pidDrive.setTarget(0.0, RobotInfo.DRIVE_ACROSS_FIELD_DISTANCE, robot.targetHeading, false, event);
+                	sm.waitForSingleEvent(event, State.TURN_NORTH);
+                	break;
+
                 case TURN_NORTH:
-                    // CodeReview: I think you are missing a bunch of states:
-                    // DRIVE_TO_LANE, TURN_TO_OPPOSITE_SIDE, DRIVE_ACROSS, TURN_NORTH
                     robot.targetHeading = DRIVE_HEADING_NORTH;
                     robot.pidDrive.setTarget(0.0, 0.0, robot.targetHeading, false, event);
                     sm.waitForSingleEvent(event, State.DRIVE_TO_SWITCH);
@@ -214,16 +224,10 @@ public class CmdAutoScale implements TrcRobot.RobotCommand
                 case DRIVE_TO_SWITCH:
                     setRangingEnabled(true);
                     setSonarTriggerEnabled(true);
-                    if (sameSide)
-                    {
-                        // Same side, no need to go across.
-                        nextState = State.DRIVE_TO_SCALE;
-                    }
-                    else
-                    {
-                        // The other side, must go across.
-                        nextState = State.DRIVE_TO_LANE_3;
-                    }
+                    // If same side, no need to go across. Otherwise, go to lane 3 to cross field.
+                    nextState = sameSide ? State.DRIVE_TO_SCALE : State.DRIVE_TO_LANE_3;
+                    robot.driveBase.getYSpeed();
+
                     // CodeReview: this logic is wrong. DRIVE_TO_SWITCH should just drive
                     // AUTO_DISTANCE_TO_SWITCH + 24.0 only.
                     // You only come to this state if sameSide || lane3 and forwardDriveDistance is only
@@ -310,7 +314,6 @@ public class CmdAutoScale implements TrcRobot.RobotCommand
                     break;
 
                 case THROW_CUBE:
-                    // CodeReview: you may want to spit the cube with full power since you are pointing upward.
                     robot.cubePickup.deployPickup();
                     robot.cubePickup.dropCube(RobotInfo.CUBE_PICKUP_DROP_POWER);
                     timer.set(RobotInfo.DROP_CUBE_TIMEOUT, event);

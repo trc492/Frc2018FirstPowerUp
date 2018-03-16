@@ -39,6 +39,7 @@ public class RobotInfo
     
     public static final double EXCHANGE_WIDTH                   = 21.0; // 1ft 9in
     public static final double SWITCH_FENCE_HEIGHT              = 18.75; // 1ft 6.75in
+    public static final double SWITCH_FENCE_WIDTH               = 153.5; // 12ft 9.5in
     
     public static final double CUBE_HEIGHT                      = 11.0;
     public static final double CUBE_WIDTH                       = 13.0;
@@ -278,6 +279,7 @@ public class RobotInfo
     public static final double ROBOT_TO_SCALE_DISTANCE = 30.0;
     public static final double ALLIANCE_WALL_TO_LANE_3_DISTANCE = 228.735;
     public static final double ALLIANCE_WALL_TO_SCALE_DISTANCE = 324.0;
+    public static final double DRIVE_ACROSS_FIELD_DISTANCE = SWITCH_FENCE_WIDTH + SWITCH_TO_WALL_DISTANCE;
     public static final double CUBE_PICKUP_DROP_POWER = 1.0;
     public static final double DROP_CUBE_TIMEOUT = 0.5;
 
