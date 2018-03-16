@@ -22,9 +22,11 @@
 
 package team492;
 
+import frclib.FrcAnalogInput;
 import trclib.TrcAnalogInput;
 import trclib.TrcAnalogTrigger;
 import trclib.TrcEvent;
+import trclib.TrcMaxbotixSonarArray;
 import trclib.TrcStateMachine;
 import trclib.TrcTimer;
 import trclib.TrcRobot;
@@ -71,6 +73,8 @@ public class CmdAutoScale implements TrcRobot.RobotCommand
     private boolean scaleRight;
     private double forwardDriveDistance;
     private TrcAnalogTrigger<TrcAnalogInput.DataType> sonarTrigger;
+    private TrcMaxbotixSonarArray sonarArray;
+    private FrcAnalogInput sonarSensor;
 
     private double distanceFromWall = 0.0;
     private double sonarDistance = 0.0;
@@ -99,9 +103,34 @@ public class CmdAutoScale implements TrcRobot.RobotCommand
 
         startRight = this.startPosition == Position.RIGHT;
         scaleRight = robot.gameSpecificMessage.charAt(1) == 'R';
+        
+        if(scaleRight)
+        {
+            if(startRight || !startRight && forwardDriveDistance <= RobotInfo.AUTO_DISTANCE_TO_SWITCH)
+            {
+                sonarArray = robot.leftSonarArray;
+                sonarSensor = robot.leftSonarSensor;
+            } else if(!startRight && forwardDriveDistance > RobotInfo.AUTO_DISTANCE_TO_SWITCH)
+            {
+                sonarArray = robot.rightSonarArray;
+                sonarSensor = robot.rightSonarSensor;
+            }
+        }
+        else
+        {
+            if(!startRight || startRight && forwardDriveDistance <= RobotInfo.AUTO_DISTANCE_TO_SWITCH)
+            {
+                sonarArray = robot.rightSonarArray;
+                sonarSensor = robot.rightSonarSensor;
+            } else if(startRight && forwardDriveDistance > RobotInfo.AUTO_DISTANCE_TO_SWITCH)
+            {
+                sonarArray = robot.leftSonarArray;
+                sonarSensor = robot.leftSonarSensor;
+            }
+        }
 
         sonarTrigger = new TrcAnalogTrigger<>(
-            "SwitchDistanceTrigger", startRight? robot.leftSonarSensor: robot.rightSonarSensor,
+            "SwitchDistanceTrigger", sonarSensor,
             0, TrcAnalogInput.DataType.INPUT_DATA, distances, this::sonarTriggerEvent);
 
         sm.start(State.START);
@@ -120,18 +149,12 @@ public class CmdAutoScale implements TrcRobot.RobotCommand
     
     public void setRangingEnabled(boolean enabled)
     {
-        if (startRight && enabled)
+        if(enabled)
         {
-            robot.leftSonarArray.startRanging(true);
-        }
-        else if (!startRight && enabled)
+            sonarArray.startRanging(true);
+        } else
         {
-            robot.rightSonarArray.startRanging(true);
-        }
-        else if (!enabled)
-        {
-            robot.leftSonarArray.stopRanging();
-            robot.rightSonarArray.stopRanging();
+            sonarArray.stopRanging();
         }
     }
 
@@ -213,7 +236,7 @@ public class CmdAutoScale implements TrcRobot.RobotCommand
 
                 case DRIVE_TO_LANE_3:
                     setSonarTriggerEnabled(false);
-                    sonarDistance = startRight?robot.getLeftSonarDistance():robot.getRightSonarDistance();
+                    sonarDistance = sonarSensor.getData(0).value - RobotInfo.SONAR_DISTANCE_OFFSET;
                     // Note: distanceFromWall is the distance of the sonar sensor from the field wall.
                     distanceFromWall = RobotInfo.SWITCH_TO_WALL_DISTANCE - sonarDistance - RobotInfo.ROBOT_WIDTH/2.0;
                     robot.tracer.traceInfo(moduleName, "sonarDistance=%.1f, distanceFromWall=%.1f",
@@ -253,7 +276,7 @@ public class CmdAutoScale implements TrcRobot.RobotCommand
                 case DRIVE_TO_SCALE:
                     setSonarTriggerEnabled(false);
                     robot.pidDrive.cancel();
-                    sonarDistance = startRight?robot.getLeftSonarDistance():robot.getRightSonarDistance();
+                    sonarDistance = sonarSensor.getData(0).value - RobotInfo.SONAR_DISTANCE_OFFSET;
                     distanceFromWall = RobotInfo.SWITCH_TO_WALL_DISTANCE - sonarDistance - RobotInfo.ROBOT_WIDTH/2.0;
                     xDistance = -(RobotInfo.SCALE_TO_WALL_DISTANCE - RobotInfo.ROBOT_TO_SCALE_DISTANCE - distanceFromWall);
                     robot.tracer.traceInfo(moduleName, "sonarDistance=%.1f, distanceFromWall=%.1f,xDistance=%.1f",
