@@ -106,7 +106,7 @@ public class CmdAutoScale implements TrcRobot.RobotCommand
         
         if(scaleRight)
         {
-            if(startRight || !startRight && forwardDriveDistance <= RobotInfo.AUTO_DISTANCE_TO_SWITCH)
+            if(startRight || forwardDriveDistance <= RobotInfo.AUTO_DISTANCE_TO_SWITCH)
             {
                 sonarArray = robot.leftSonarArray;
                 sonarSensor = robot.leftSonarSensor;
@@ -118,7 +118,7 @@ public class CmdAutoScale implements TrcRobot.RobotCommand
         }
         else
         {
-            if(!startRight || startRight && forwardDriveDistance <= RobotInfo.AUTO_DISTANCE_TO_SWITCH)
+            if(!startRight || forwardDriveDistance <= RobotInfo.AUTO_DISTANCE_TO_SWITCH)
             {
                 sonarArray = robot.rightSonarArray;
                 sonarSensor = robot.rightSonarSensor;
@@ -149,6 +149,7 @@ public class CmdAutoScale implements TrcRobot.RobotCommand
     
     public void setRangingEnabled(boolean enabled)
     {
+    	robot.tracer.traceInfo(moduleName, "setRangingEnabled(%b)", enabled);
         if(enabled)
         {
             sonarArray.startRanging(true);
@@ -190,14 +191,20 @@ public class CmdAutoScale implements TrcRobot.RobotCommand
             switch(state)
             {
                 case START:
-                    if (delay != 0.0)
+                	nextState = State.DRIVE_TO_SWITCH;
+                	if(startRight != scaleRight && forwardDriveDistance < RobotInfo.AUTO_DISTANCE_TO_SWITCH);
+                	{
+                		nextState = State.DRIVE_TO_LANE;
+                	}
+                	
+                    if (delay == 0.0)
                     {
-                        sm.setState(State.DRIVE_TO_SWITCH);
+                        sm.setState(nextState);
                     }
                     else
                     {
                         timer.set(delay, event);
-                        sm.waitForSingleEvent(event, State.DRIVE_TO_SWITCH);
+                        sm.waitForSingleEvent(event, nextState);
                     }
                     break;
 
@@ -215,7 +222,7 @@ public class CmdAutoScale implements TrcRobot.RobotCommand
                 case DRIVE_TO_SWITCH:
                     setSonarTriggerEnabled(true);
                     setRangingEnabled(true);
-                    if (scaleRight && startRight || !scaleRight && !startRight)
+                    if (scaleRight == startRight)
                     {
                         // Same side, no need to go across.
                         nextState = State.DRIVE_TO_SCALE;
@@ -231,7 +238,7 @@ public class CmdAutoScale implements TrcRobot.RobotCommand
                     robot.pidDrive.setTarget(0.0, yDistance, robot.targetHeading, false, event);
                     sm.addEvent(event);
                     sm.addEvent(sonarEvent);
-                    sm.waitForEvents(nextState); // TODO: Add a timeout to this                        
+                    sm.waitForEvents(nextState);                      
                     break;
 
                 case DRIVE_TO_LANE_3:
@@ -241,7 +248,6 @@ public class CmdAutoScale implements TrcRobot.RobotCommand
                     distanceFromWall = RobotInfo.SWITCH_TO_WALL_DISTANCE - sonarDistance - RobotInfo.ROBOT_WIDTH/2.0;
                     robot.tracer.traceInfo(moduleName, "sonarDistance=%.1f, distanceFromWall=%.1f",
                         sonarDistance, distanceFromWall);
-                    // CodeReview: the distance should be AUTO_DISTANCE_TO_SWITCH + SWITCH_TO_LANE_3_DISTANCE - currYPos.
                     robot.pidDrive.setTarget(0.0, RobotInfo.ALLIANCE_WALL_TO_LANE_3_DISTANCE - robot.driveBase.getYPosition(), 
                         robot.targetHeading, false, event);
                     sm.waitForSingleEvent(event, State.DRIVE_TO_OPPOSITE_SCALE);
@@ -296,6 +302,7 @@ public class CmdAutoScale implements TrcRobot.RobotCommand
                     break;
 
                 case RAISE_ELEVATOR:
+                	// Already started to raise elevator, so wait for it to complete
                     sm.waitForSingleEvent(elevatorEvent, State.THROW_CUBE);
                     break;
 

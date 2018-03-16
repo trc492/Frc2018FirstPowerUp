@@ -276,8 +276,8 @@ public class RobotInfo
     public static final double ROBOT_TO_SCALE_DISTANCE = 30.0;
     public static final double ALLIANCE_WALL_TO_LANE_3_DISTANCE = 228.735;
     public static final double ALLIANCE_WALL_TO_SCALE_DISTANCE = 324.0;
-    public static final double CUBE_PICKUP_DROP_POWER = 1.0; // TODO: tune this
-    public static final double DROP_CUBE_TIMEOUT = 1.0;
+    public static final double CUBE_PICKUP_DROP_POWER = 1.0;
+    public static final double DROP_CUBE_TIMEOUT = 0.5;
 
     //
     // FrcAuto constants.
