@@ -79,8 +79,8 @@ public class RobotInfo
     //
     // Analog Input ports.
     //
-    public static final int AIN_LEFT_SONAR_SENSOR               = 1;//0;
-    public static final int AIN_RIGHT_SONAR_SENSOR              = 0;//1;
+    public static final int AIN_LEFT_SONAR_SENSOR               = 0;
+    public static final int AIN_RIGHT_SONAR_SENSOR              = 1;
     public static final int AIN_FRONT_SONAR_SENSOR              = 2;
     public static final int AIN_PRESSURE_SENSOR                 = 3;
 
@@ -264,6 +264,9 @@ public class RobotInfo
     public static final double SWITCH_STRAFE_DISTANCE           = 26.0;
     public static final double MAX_CUBE_DISTANCE                = 20.0;
     public static final double SWITCH_SONAR_DISTANCE_THRESHOLD  = 16.0;
+    public static final double OPPOSITE_SWITCH_OVERSHOOT = 48.0;
+    public static final double STRAFE_FROM_SWITCH_DISTANCE = 12.0;
+    public static final double POSITION_TO_STRAFE_DISTANCE = 62.0;
     
     //
     // CmdScaleAuto constants.

@@ -37,7 +37,7 @@ class CmdAutoSwitch implements TrcRobot.RobotCommand
     private static final double DRIVE_HEADING_EAST = -90.0;
     private static final double DRIVE_HEADING_WEST = 90.0;
     private static final double DRIVE_HEADING_SOUTH = 0.0;
-    private static final double[] sonarTriggerPoints = {8.0, 32.0};
+    private static double[] sonarTriggerPoints = {8.0, 32.0};
 
     private static enum State
     {
@@ -66,11 +66,6 @@ class CmdAutoSwitch implements TrcRobot.RobotCommand
         LIFT_CUBE_SLIGHTLY,
         DONE
     } // enum State
-
-    // TODO: move these to RobotInfo
-    private static final double OPPOSITE_SWITCH_OVERSHOOT = 21.0;
-    private static final double STRAFE_FROM_SWITCH_DISTANCE = 12.0;
-    private static final double POSITION_TO_STRAFE_DISTANCE = 62.0;
 
     private Robot robot;
     private double delay;
@@ -222,8 +217,9 @@ class CmdAutoSwitch implements TrcRobot.RobotCommand
                         break;
 
                     case MOVE_ACROSS:
+                        sonarTriggerPoints[0] = 0.0;
                         xDistance = 0.0;
-                        yDistance = Math.abs(switchLocation - startPosition) - OPPOSITE_SWITCH_OVERSHOOT;
+                        yDistance = Math.abs(switchLocation - startPosition) - RobotInfo.OPPOSITE_SWITCH_OVERSHOOT;
                         // CodeReview: If going across backward, need to make yDistance negative.
                         robot.pidDrive.setTarget(xDistance, yDistance, robot.targetHeading, false, event);
                         sm.waitForSingleEvent(event, State.STRAFE_TO_SWITCH);
@@ -307,12 +303,22 @@ class CmdAutoSwitch implements TrcRobot.RobotCommand
                         break;
 
                     case STRAFE_TO_SWITCH:
-                        //TODO: strafe distance probably needs to be tuned down a lot
+                        if((rightSwitch && forwardDistance == RobotInfo.FWD_DISTANCE_3) || (!rightSwitch && forwardDistance != RobotInfo.FWD_DISTANCE_3))
+                        {
+                            robot.rightSonarArray.startRanging(true);
+                        }
+                        else
+                        {
+                            robot.leftSonarArray.startRanging(true);
+                        }
+                        sonarTrigger.setTaskEnabled(true);
+                        sm.addEvent(sonarEvent);
                         yDistance = 0.0;
-                        xDistance = RobotInfo.AUTO_DISTANCE_TO_SWITCH - forwardDistance;
+                        xDistance = (RobotInfo.AUTO_DISTANCE_TO_SWITCH - forwardDistance) - 36.0;
                         if(rightSwitch) xDistance = -xDistance;
                         robot.pidDrive.setTarget(xDistance, yDistance, robot.targetHeading, false, event);
-                        sm.waitForSingleEvent(event, State.FLIP_CUBE);
+                        sm.addEvent(event);
+                        sm.waitForEvents(State.FLIP_CUBE);
                         break;
 
                     case SONAR_FLIP_CUBE:
@@ -334,6 +340,9 @@ class CmdAutoSwitch implements TrcRobot.RobotCommand
                         break;
 
                     case FLIP_CUBE:
+                        robot.rightSonarArray.stopRanging();
+                        robot.leftSonarArray.stopRanging();
+                        sonarTrigger.setTaskEnabled(false);
                         if((rightSwitch && forwardDistance == RobotInfo.FWD_DISTANCE_3) ||
                            (!rightSwitch && forwardDistance != RobotInfo.FWD_DISTANCE_3))
                         {
@@ -348,12 +357,12 @@ class CmdAutoSwitch implements TrcRobot.RobotCommand
                         {
                             sm.waitForSingleEvent(event, State.STRAFE_FROM_SWITCH);
                         }
-                        sm.waitForSingleEvent(event, State.TURN_SOUTH);
+                        sm.waitForSingleEvent(event, State.DRIVE_PAST_SWITCH);
                         break;
 
                     case STRAFE_FROM_SWITCH:
                         yDistance = 0.0;
-                        xDistance = STRAFE_FROM_SWITCH_DISTANCE;
+                        xDistance = RobotInfo.STRAFE_FROM_SWITCH_DISTANCE;
                         if(!rightSwitch) xDistance = -xDistance;
                         robot.pidDrive.setTarget(xDistance, yDistance, robot.targetHeading, false, event);
                         sm.waitForSingleEvent(event, State.TURN_SOUTH);
@@ -361,7 +370,7 @@ class CmdAutoSwitch implements TrcRobot.RobotCommand
 
                     case DRIVE_PAST_SWITCH:
                         xDistance = 0.0;
-                        yDistance = OPPOSITE_SWITCH_OVERSHOOT;
+                        yDistance = RobotInfo.OPPOSITE_SWITCH_OVERSHOOT;
                         robot.pidDrive.setTarget(xDistance, yDistance, robot.targetHeading, false, event);
                         sm.waitForSingleEvent(event, State.TURN_SOUTH);
                         break;
@@ -382,7 +391,7 @@ class CmdAutoSwitch implements TrcRobot.RobotCommand
 
                     case POSITION_TO_STRAFE:
                         xDistance = 0.0;
-                        yDistance = POSITION_TO_STRAFE_DISTANCE;
+                        yDistance = RobotInfo.POSITION_TO_STRAFE_DISTANCE;
                         robot.pidDrive.setTarget(xDistance, -yDistance, robot.targetHeading, false, event);
                         sm.waitForSingleEvent(event, State.START_STRAFE);
                         break;
