@@ -53,7 +53,6 @@ import team492.PixyVision.TargetInfo;
 import trclib.TrcDbgTrace;
 import trclib.TrcDriveBase;
 import trclib.TrcEmic2TextToSpeech.Voice;
-import trclib.TrcFilter;
 import trclib.TrcGyro;
 //import trclib.TrcLidarLite;
 import trclib.TrcMaxbotixSonarArray;
@@ -64,7 +63,6 @@ import trclib.TrcRevBlinkin;
 import trclib.TrcRevBlinkin.LEDPattern;
 import trclib.TrcRobot.RunMode;
 import trclib.TrcRobotBattery;
-import trclib.TrcSpuriousFilter;
 import trclib.TrcUtil;
 
 /**
@@ -239,24 +237,27 @@ public class Robot extends FrcRobotBase
 
         if (USE_SONAR)
         {
-            TrcSpuriousFilter leftSonarFilter =
-                new TrcSpuriousFilter("LeftSonarFilter", RobotInfo.SONAR_ERROR_THRESHOLD, tracer);
-            leftSonarSensor = new FrcAnalogInput(
-                "LeftSonarSensor", RobotInfo.AIN_LEFT_SONAR_SENSOR, new TrcFilter[] {leftSonarFilter});
+//            TrcSpuriousFilter leftSonarFilter =
+//                new TrcSpuriousFilter("LeftSonarFilter", RobotInfo.SONAR_ERROR_THRESHOLD, tracer);
+//            leftSonarSensor = new FrcAnalogInput(
+//                "LeftSonarSensor", RobotInfo.AIN_LEFT_SONAR_SENSOR, new TrcFilter[] {leftSonarFilter});
+            leftSonarSensor = new FrcAnalogInput("LeftSonarSensor", RobotInfo.AIN_LEFT_SONAR_SENSOR);
             leftSonarSensor.setScale(RobotInfo.SONAR_INCHES_PER_VOLT);
 
-            TrcSpuriousFilter rightSonarFilter =
-                new TrcSpuriousFilter("RightSonarFilter", RobotInfo.SONAR_ERROR_THRESHOLD, tracer);
-            rightSonarSensor = new FrcAnalogInput(
-                "RightSonarSensor", RobotInfo.AIN_RIGHT_SONAR_SENSOR, new TrcFilter[] {rightSonarFilter});
+//            TrcSpuriousFilter rightSonarFilter =
+//                new TrcSpuriousFilter("RightSonarFilter", RobotInfo.SONAR_ERROR_THRESHOLD, tracer);
+//            rightSonarSensor = new FrcAnalogInput(
+//                "RightSonarSensor", RobotInfo.AIN_RIGHT_SONAR_SENSOR, new TrcFilter[] {rightSonarFilter});
+            rightSonarSensor = new FrcAnalogInput("RightSonarSensor", RobotInfo.AIN_RIGHT_SONAR_SENSOR);
             rightSonarSensor.setScale(RobotInfo.SONAR_INCHES_PER_VOLT);
 
             if (USE_FRONT_SONAR)
             {
-                TrcSpuriousFilter frontSonarFilter =
-                    new TrcSpuriousFilter("FrontSonarFilter", RobotInfo.SONAR_ERROR_THRESHOLD, tracer);
-                FrcAnalogInput frontSonarSensor = new FrcAnalogInput(
-                    "FrontSonarSensor", RobotInfo.AIN_FRONT_SONAR_SENSOR, new TrcFilter[] {frontSonarFilter});
+//                TrcSpuriousFilter frontSonarFilter =
+//                    new TrcSpuriousFilter("FrontSonarFilter", RobotInfo.SONAR_ERROR_THRESHOLD, tracer);
+//                frontSonarSensor = new FrcAnalogInput(
+//                    "FrontSonarSensor", RobotInfo.AIN_FRONT_SONAR_SENSOR, new TrcFilter[] {frontSonarFilter});
+                frontSonarSensor = new FrcAnalogInput("FrontSonarSensor", RobotInfo.AIN_FRONT_SONAR_SENSOR);
                 frontSonarSensor.setScale(RobotInfo.SONAR_INCHES_PER_VOLT);
             }
 

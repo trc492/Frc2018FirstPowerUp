@@ -65,13 +65,15 @@ public class CmdAutoScale implements TrcRobot.RobotCommand
 
     private Robot robot;
     private double delay;
+    private Position startPosition;
+    private double forwardDriveDistance;
     private TrcEvent event, sonarEvent, elevatorEvent;
     private TrcStateMachine<State> sm;
     private TrcTimer timer;
-    private Position startPosition;
     private boolean startRight;
     private boolean scaleRight;
-    private double forwardDriveDistance;
+    private boolean sameSide;
+    private boolean lane3;
     private TrcAnalogTrigger<TrcAnalogInput.DataType> sonarTrigger;
     private TrcMaxbotixSonarArray sonarArray;
     private FrcAnalogInput sonarSensor;
@@ -90,6 +92,11 @@ public class CmdAutoScale implements TrcRobot.RobotCommand
     {
         this.robot = robot;
         this.delay = delay;
+
+        if (startPosition == RobotInfo.LEFT_START_POS) this.startPosition = Position.LEFT;
+        else if (startPosition == RobotInfo.RIGHT_START_POS) this.startPosition = Position.RIGHT;
+        else this.startPosition = Position.MIDDLE;
+
         this.forwardDriveDistance = forwardDriveDistance;
         event = new TrcEvent(moduleName);
         sonarEvent = new TrcEvent(moduleName + ".sonarEvent");
@@ -97,36 +104,22 @@ public class CmdAutoScale implements TrcRobot.RobotCommand
         sm = new TrcStateMachine<>(moduleName);
         timer = new TrcTimer(moduleName);
 
-        if (startPosition == RobotInfo.LEFT_START_POS) this.startPosition = Position.LEFT;
-        else if (startPosition == RobotInfo.RIGHT_START_POS) this.startPosition = Position.RIGHT;
-        else this.startPosition = Position.MIDDLE;
-
         startRight = this.startPosition == Position.RIGHT;
         scaleRight = robot.gameSpecificMessage.charAt(1) == 'R';
-        
-        if(scaleRight)
+        sameSide = startRight == scaleRight;
+        lane3 = forwardDriveDistance > RobotInfo.AUTO_DISTANCE_TO_SWITCH;
+
+        if (scaleRight && sameSide ||
+            scaleRight && !sameSide && !lane3 ||
+            !scaleRight && !sameSide && lane3)
         {
-            if(startRight || forwardDriveDistance <= RobotInfo.AUTO_DISTANCE_TO_SWITCH)
-            {
-                sonarArray = robot.leftSonarArray;
-                sonarSensor = robot.leftSonarSensor;
-            } else if(!startRight && forwardDriveDistance > RobotInfo.AUTO_DISTANCE_TO_SWITCH)
-            {
-                sonarArray = robot.rightSonarArray;
-                sonarSensor = robot.rightSonarSensor;
-            }
+            sonarArray = robot.leftSonarArray;
+            sonarSensor = robot.leftSonarSensor;
         }
         else
         {
-            if(!startRight || forwardDriveDistance <= RobotInfo.AUTO_DISTANCE_TO_SWITCH)
-            {
-                sonarArray = robot.rightSonarArray;
-                sonarSensor = robot.rightSonarSensor;
-            } else if(startRight && forwardDriveDistance > RobotInfo.AUTO_DISTANCE_TO_SWITCH)
-            {
-                sonarArray = robot.leftSonarArray;
-                sonarSensor = robot.leftSonarSensor;
-            }
+            sonarArray = robot.rightSonarArray;
+            sonarSensor = robot.rightSonarSensor;
         }
 
         sonarTrigger = new TrcAnalogTrigger<>(
@@ -136,8 +129,8 @@ public class CmdAutoScale implements TrcRobot.RobotCommand
         sm.start(State.START);
 
         robot.tracer.traceInfo(moduleName,
-            "alliance=%s, gameSpecifiMsg=%s, delay=%.3f, startPosition=%.1f",
-             robot.alliance, robot.gameSpecificMessage, delay, startPosition);
+            "alliance=%s, gameSpecificMsg=%s, delay=%.3f, startPosition=%.1f, fwdDistance=%.0f",
+             robot.alliance, robot.gameSpecificMessage, delay, startPosition, forwardDriveDistance);
     }
 
     public void setSonarTriggerEnabled(boolean enabled)
@@ -153,7 +146,8 @@ public class CmdAutoScale implements TrcRobot.RobotCommand
         if(enabled)
         {
             sonarArray.startRanging(true);
-        } else
+        }
+        else
         {
             sonarArray.stopRanging();
         }
@@ -191,12 +185,7 @@ public class CmdAutoScale implements TrcRobot.RobotCommand
             switch(state)
             {
                 case START:
-                	nextState = State.DRIVE_TO_SWITCH;
-                	if(startRight != scaleRight && forwardDriveDistance < RobotInfo.AUTO_DISTANCE_TO_SWITCH);
-                	{
-                		nextState = State.DRIVE_TO_LANE;
-                	}
-                	
+                    nextState = sameSide || lane3? State.DRIVE_TO_SWITCH: State.DRIVE_TO_LANE;
                     if (delay == 0.0)
                     {
                         sm.setState(nextState);
@@ -210,19 +199,22 @@ public class CmdAutoScale implements TrcRobot.RobotCommand
 
                 case DRIVE_TO_LANE:
                     robot.pidDrive.setTarget(0.0, forwardDriveDistance, robot.targetHeading, false, event);
+                    //CodeReview: You are already pointing NORTH, why do you need the state turn NORTH???
                     sm.waitForSingleEvent(event, State.TURN_NORTH);
                     break;
 
                 case TURN_NORTH:
+                    // CodeReview: I think you are missing a bunch of states:
+                    // DRIVE_TO_LANE, TURN_TO_OPPOSITE_SIDE, DRIVE_ACROSS, TURN_NORTH
                     robot.targetHeading = DRIVE_HEADING_NORTH;
                     robot.pidDrive.setTarget(0.0, 0.0, robot.targetHeading, false, event);
                     sm.waitForSingleEvent(event, State.DRIVE_TO_SWITCH);
                     break;
 
                 case DRIVE_TO_SWITCH:
-                    setSonarTriggerEnabled(true);
                     setRangingEnabled(true);
-                    if (scaleRight == startRight)
+                    setSonarTriggerEnabled(true);
+                    if (sameSide)
                     {
                         // Same side, no need to go across.
                         nextState = State.DRIVE_TO_SCALE;
@@ -230,15 +222,26 @@ public class CmdAutoScale implements TrcRobot.RobotCommand
                     else
                     {
                         // The other side, must go across.
-                        // CodeReview: Why fix yourself to lane 3 only? Should let the drive choose.
                         nextState = State.DRIVE_TO_LANE_3;
                     }
+                    // CodeReview: this logic is wrong. DRIVE_TO_SWITCH should just drive
+                    // AUTO_DISTANCE_TO_SWITCH + 24.0 only.
+                    // You only come to this state if sameSide || lane3 and forwardDriveDistance is only
+                    // applicable for !sameSide && lane3. But in that case, you still want to only drive
+                    // AUTO_DISTANCE_TO_SWITCH so you can range the switch.
+                    //
+                    // Ok, I don't quite understand what you are trying to do. Here is what I am expecting:
+                    // 1: if sameSide || lane3 drive to DISTANCE_TO_SWTICH + 24.0 and goto 3 else drive to forwardDistance and goto 2
+                    // 2: turn to opposite side, drive across, turn north, drive DISTANCE_TO_SWITCH + 24.0 - forwardDistance, goto 3
+                    // 3: range the switch, calculate the xDistance, calculate the yDistance either to lane 3 then goto 4 or to the scale then goto 5.
+                    // 4: turn to opposite side, drive across, turn north, drive to DISTANCE_TO_SCALE - DISTANCE_TO_LANE3 then goto 5
+                    // 5: raise elevator, deposit cube, done.
                     yDistance = RobotInfo.AUTO_DISTANCE_TO_SWITCH + 24.0 - forwardDriveDistance;
-                    if(yDistance <= 0) yDistance = RobotInfo.AUTO_DISTANCE_TO_SWITCH + 24.0;
+                    if (yDistance <= 0) yDistance = RobotInfo.AUTO_DISTANCE_TO_SWITCH + 24.0;
                     robot.pidDrive.setTarget(0.0, yDistance, robot.targetHeading, false, event);
                     sm.addEvent(event);
                     sm.addEvent(sonarEvent);
-                    sm.waitForEvents(nextState);                      
+                    sm.waitForEvents(nextState);
                     break;
 
                 case DRIVE_TO_LANE_3:
@@ -302,7 +305,7 @@ public class CmdAutoScale implements TrcRobot.RobotCommand
                     break;
 
                 case RAISE_ELEVATOR:
-                	// Already started to raise elevator, so wait for it to complete
+                    // Already started to raise elevator, so wait for it to complete
                     sm.waitForSingleEvent(elevatorEvent, State.THROW_CUBE);
                     break;
 

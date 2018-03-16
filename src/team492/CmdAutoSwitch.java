@@ -119,7 +119,11 @@ class CmdAutoSwitch implements TrcRobot.RobotCommand
 
         xPowerLimit = robot.encoderXPidCtrl.getOutputLimit();
         yPowerLimit = robot.encoderYPidCtrl.getOutputLimit();
-    } // CmdPidDrive
+
+        robot.tracer.traceInfo(moduleName,
+            "alliance=%s, gameSpecificMsg=%s, delay=%.3f, fwdDistance=%.0f, startPosition=%.1f, flipInFlight=%b",
+             robot.alliance, robot.gameSpecificMessage, delay, forwardDistance, startPosition, flipInFlight);
+    } // CmdAutoSwitch
 
     //
     // Implements the TrcRobot.RobotCommand interface.
