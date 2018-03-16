@@ -141,10 +141,10 @@ public class CmdAutoScale implements TrcRobot.RobotCommand
         sonarTrigger.setTaskEnabled(enabled);
         if (enabled) sonarEvent.clear();
     }
-    
+
     public void setRangingEnabled(boolean enabled)
     {
-    	robot.tracer.traceInfo(moduleName, "setRangingEnabled(%b)", enabled);
+        robot.tracer.traceInfo(moduleName, "setRangingEnabled(%b)", enabled);
         if(enabled)
         {
             sonarArray.startRanging(true);
@@ -205,15 +205,17 @@ public class CmdAutoScale implements TrcRobot.RobotCommand
                     break;
 
                 case TURN_TO_DRIVE_ACROSS_FIELD:
-                	robot.targetHeading = startRight?DRIVE_HEADING_WEST:DRIVE_HEADING_EAST;
-                	robot.pidDrive.setTarget(0.0, 0.0, robot.targetHeading, false, event);
-                	sm.waitForSingleEvent(event, State.DRIVE_ACROSS_FIELD);
-                	break;
+                    robot.targetHeading = startRight?DRIVE_HEADING_WEST:DRIVE_HEADING_EAST;
+                    robot.pidDrive.setTarget(0.0, 0.0, robot.targetHeading, false, event);
+                    sm.waitForSingleEvent(event, State.DRIVE_ACROSS_FIELD);
+                    break;
 
                 case DRIVE_ACROSS_FIELD:
-                	robot.pidDrive.setTarget(0.0, RobotInfo.DRIVE_ACROSS_FIELD_DISTANCE, robot.targetHeading, false, event);
-                	sm.waitForSingleEvent(event, State.TURN_NORTH);
-                	break;
+                    // CodeReview: DRIVE_ACROSS_FIELD_DISTANCE calculation seems wrong. You are going way too far.
+                    // Please explain.
+                    robot.pidDrive.setTarget(0.0, RobotInfo.DRIVE_ACROSS_FIELD_DISTANCE, robot.targetHeading, false, event);
+                    sm.waitForSingleEvent(event, State.TURN_NORTH);
+                    break;
 
                 case TURN_NORTH:
                     robot.targetHeading = DRIVE_HEADING_NORTH;
@@ -226,6 +228,7 @@ public class CmdAutoScale implements TrcRobot.RobotCommand
                     setSonarTriggerEnabled(true);
                     // If same side, no need to go across. Otherwise, go to lane 3 to cross field.
                     nextState = sameSide ? State.DRIVE_TO_SCALE : State.DRIVE_TO_LANE_3;
+                    // CodeReview: What is this getYSpeed for? BTW, you are not using the value anyway.
                     robot.driveBase.getYSpeed();
 
                     // CodeReview: this logic is wrong. DRIVE_TO_SWITCH should just drive
