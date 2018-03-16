@@ -463,17 +463,8 @@ class CmdAutoSwitch implements TrcRobot.RobotCommand
 
                     case DRIVE_TO_SECOND_TARGET:
                         xDistance = 0;
-                        if (rightScale == rightSwitch)
-                        {
-                            yDistance =
-                                RobotInfo.SCALE_FRONT_POSITION - (RobotInfo.RIGHT_START_POS - cubeStrafeDistance);
-                        }
-                        else
-                        {
-                            yDistance =
-                                RobotInfo.SCALE_FRONT_POSITION + (RobotInfo.RIGHT_START_POS - cubeStrafeDistance);
-                        }
-
+                        yDistance =
+                            RobotInfo.SCALE_FRONT_POSITION + (RobotInfo.RIGHT_START_POS - cubeStrafeDistance);
                         robot.pidDrive.setTarget(xDistance, yDistance, robot.targetHeading, false, event);
                         sm.waitForSingleEvent(event, State.TURN_ROBOT);
                         break;
@@ -500,7 +491,6 @@ class CmdAutoSwitch implements TrcRobot.RobotCommand
                         robot.encoderYPidCtrl.setOutputLimit(0.5);
                         robot.pidDrive.setTarget(xDistance, yDistance, robot.targetHeading, false, event);
                         sm.waitForSingleEvent(event, State.DEPOSIT_CUBE);
-                        robot.encoderYPidCtrl.setOutputLimit(RobotInfo.DRIVE_MAX_YPID_POWER);
                         break;
 
                     case DEPOSIT_CUBE:
