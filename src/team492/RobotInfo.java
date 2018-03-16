@@ -137,7 +137,9 @@ public class RobotInfo
     //
     public static final double SONAR_INCHES_PER_VOLT            = 1.0/0.0098; //9.8mV per inch
     public static final double SONAR_ERROR_THRESHOLD            = 50.0; //value should not jump 50-in per time slice.
-    public static final double SONAR_DISTANCE_OFFSET            = 5.0;
+    public static final double SONAR_LEFT_DISTANCE_OFFSET       = -5.0;
+    public static final double SONAR_RIGHT_DISTANCE_OFFSET      = -5.0;
+    public static final double SONAR_FRONT_DISTANCE_OFFSET      = -5.0;
 
     //
     // DriveBase subsystem.

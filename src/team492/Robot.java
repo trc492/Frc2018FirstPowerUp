@@ -242,14 +242,14 @@ public class Robot extends FrcRobotBase
 //            leftSonarSensor = new FrcAnalogInput(
 //                "LeftSonarSensor", RobotInfo.AIN_LEFT_SONAR_SENSOR, new TrcFilter[] {leftSonarFilter});
             leftSonarSensor = new FrcAnalogInput("LeftSonarSensor", RobotInfo.AIN_LEFT_SONAR_SENSOR);
-            leftSonarSensor.setScale(RobotInfo.SONAR_INCHES_PER_VOLT);
+            leftSonarSensor.setScale(RobotInfo.SONAR_INCHES_PER_VOLT, RobotInfo.SONAR_LEFT_DISTANCE_OFFSET);
 
 //            TrcSpuriousFilter rightSonarFilter =
 //                new TrcSpuriousFilter("RightSonarFilter", RobotInfo.SONAR_ERROR_THRESHOLD, tracer);
 //            rightSonarSensor = new FrcAnalogInput(
 //                "RightSonarSensor", RobotInfo.AIN_RIGHT_SONAR_SENSOR, new TrcFilter[] {rightSonarFilter});
             rightSonarSensor = new FrcAnalogInput("RightSonarSensor", RobotInfo.AIN_RIGHT_SONAR_SENSOR);
-            rightSonarSensor.setScale(RobotInfo.SONAR_INCHES_PER_VOLT);
+            rightSonarSensor.setScale(RobotInfo.SONAR_INCHES_PER_VOLT, RobotInfo.SONAR_RIGHT_DISTANCE_OFFSET);
 
             if (USE_FRONT_SONAR)
             {
@@ -258,7 +258,7 @@ public class Robot extends FrcRobotBase
 //                frontSonarSensor = new FrcAnalogInput(
 //                    "FrontSonarSensor", RobotInfo.AIN_FRONT_SONAR_SENSOR, new TrcFilter[] {frontSonarFilter});
                 frontSonarSensor = new FrcAnalogInput("FrontSonarSensor", RobotInfo.AIN_FRONT_SONAR_SENSOR);
-                frontSonarSensor.setScale(RobotInfo.SONAR_INCHES_PER_VOLT);
+                frontSonarSensor.setScale(RobotInfo.SONAR_INCHES_PER_VOLT, RobotInfo.SONAR_FRONT_DISTANCE_OFFSET);
             }
 
             if (USE_MAXBOTIX_SONAR_ARRAY)
@@ -666,7 +666,7 @@ public class Robot extends FrcRobotBase
             value = leftSonarSensor.getData(0).value;
         }
 
-        return value - RobotInfo.SONAR_DISTANCE_OFFSET;
+        return value;
     }   //getLeftSonarDistance
 
     public double getRightSonarDistance()
@@ -682,7 +682,7 @@ public class Robot extends FrcRobotBase
             value = rightSonarSensor.getData(0).value;
         }
 
-        return value - RobotInfo.SONAR_DISTANCE_OFFSET;
+        return value;
     }   //getRightSonarDistance
 
     public double getFrontSonarDistance()

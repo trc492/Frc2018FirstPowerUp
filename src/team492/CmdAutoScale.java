@@ -76,7 +76,6 @@ public class CmdAutoScale implements TrcRobot.RobotCommand
     private boolean lane3;
     private TrcAnalogTrigger<TrcAnalogInput.DataType> sonarTrigger;
     private TrcMaxbotixSonarArray sonarArray;
-    private FrcAnalogInput sonarSensor;
 
     private double distanceFromWall = 0.0;
     private double sonarDistance = 0.0;
@@ -109,6 +108,7 @@ public class CmdAutoScale implements TrcRobot.RobotCommand
         sameSide = startRight == scaleRight;
         lane3 = forwardDriveDistance > RobotInfo.AUTO_DISTANCE_TO_SWITCH;
 
+        FrcAnalogInput sonarSensor;
         if (scaleRight && sameSide ||
             scaleRight && !sameSide && !lane3 ||
             !scaleRight && !sameSide && lane3)
@@ -246,7 +246,7 @@ public class CmdAutoScale implements TrcRobot.RobotCommand
 
                 case DRIVE_TO_LANE_3:
                     setSonarTriggerEnabled(false);
-                    sonarDistance = sonarSensor.getData(0).value - RobotInfo.SONAR_DISTANCE_OFFSET;
+                    sonarDistance = sonarArray.getDistance(0).value;
                     // Note: distanceFromWall is the distance of the sonar sensor from the field wall.
                     distanceFromWall = RobotInfo.SWITCH_TO_WALL_DISTANCE - sonarDistance - RobotInfo.ROBOT_WIDTH/2.0;
                     robot.tracer.traceInfo(moduleName, "sonarDistance=%.1f, distanceFromWall=%.1f",
@@ -285,7 +285,7 @@ public class CmdAutoScale implements TrcRobot.RobotCommand
                 case DRIVE_TO_SCALE:
                     setSonarTriggerEnabled(false);
                     robot.pidDrive.cancel();
-                    sonarDistance = sonarSensor.getData(0).value - RobotInfo.SONAR_DISTANCE_OFFSET;
+                    sonarDistance = sonarArray.getDistance(0).value;
                     distanceFromWall = RobotInfo.SWITCH_TO_WALL_DISTANCE - sonarDistance - RobotInfo.ROBOT_WIDTH/2.0;
                     xDistance = -(RobotInfo.SCALE_TO_WALL_DISTANCE - RobotInfo.ROBOT_TO_SCALE_DISTANCE - distanceFromWall);
                     robot.tracer.traceInfo(moduleName, "sonarDistance=%.1f, distanceFromWall=%.1f,xDistance=%.1f",
