@@ -228,8 +228,6 @@ public class CmdAutoScale implements TrcRobot.RobotCommand
                     setSonarTriggerEnabled(true);
                     // If same side, no need to go across. Otherwise, go to lane 3 to cross field.
                     nextState = sameSide ? State.DRIVE_TO_SCALE : State.DRIVE_TO_LANE_3;
-                    // CodeReview: What is this getYSpeed for? BTW, you are not using the value anyway.
-                    robot.driveBase.getYSpeed();
 
                     // CodeReview: this logic is wrong. DRIVE_TO_SWITCH should just drive
                     // AUTO_DISTANCE_TO_SWITCH + 24.0 only.
