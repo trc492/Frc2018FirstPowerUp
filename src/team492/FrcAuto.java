@@ -54,13 +54,6 @@ public class FrcAuto implements TrcRobot.RobotMode
         CUSTOM
     } // enum ForwardDistance
 
-    public static enum Approach
-    {
-        // Different choices for approaches
-        SIDE,
-        FRONT
-    } // enum Approach
-
     public static enum StartPosition
     {
         // Different choices for start positions
@@ -82,7 +75,6 @@ public class FrcAuto implements TrcRobot.RobotMode
     //
     private FrcChoiceMenu<AutoStrategy> autoStrategyMenu;
     private FrcChoiceMenu<ForwardDistance> forwardDistanceMenu;
-    private FrcChoiceMenu<Approach> approachMenu;
     private FrcChoiceMenu<StartPosition> startPositionMenu;
     private FrcChoiceMenu<YesOrNo> flipInFlightMenu;
 
@@ -105,7 +97,6 @@ public class FrcAuto implements TrcRobot.RobotMode
         //
         autoStrategyMenu = new FrcChoiceMenu<>("Auto/Autonomous Strategies");
         forwardDistanceMenu = new FrcChoiceMenu<>("Auto/Forward Distances");
-        approachMenu = new FrcChoiceMenu<>("Auto/Approaches");
         startPositionMenu = new FrcChoiceMenu<>("Auto/Start Positions");
         flipInFlightMenu = new FrcChoiceMenu<>("Auto/FlipInFlight");
 
@@ -125,9 +116,6 @@ public class FrcAuto implements TrcRobot.RobotMode
         forwardDistanceMenu.addChoice("Distance 2", ForwardDistance.FWD_DISTANCE_2, true, false);
         forwardDistanceMenu.addChoice("Distance 3", ForwardDistance.FWD_DISTANCE_3, false, false);
         forwardDistanceMenu.addChoice("Custom Distance", ForwardDistance.CUSTOM, false, true);
-
-        approachMenu.addChoice("Front Approach", Approach.FRONT, false, false);
-        approachMenu.addChoice("Side Approach", Approach.SIDE, true, true);
 
         startPositionMenu.addChoice("Left Side Start", StartPosition.LEFT_START_POS, true, false);
         startPositionMenu.addChoice("Middle Start", StartPosition.MID_START_POS, false, false);
