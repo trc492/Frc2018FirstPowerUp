@@ -311,7 +311,7 @@ public class CmdAutoScale implements TrcRobot.RobotCommand
 
                 case RAISE_ELEVATOR:
                     // Already started to raise elevator, so wait for it to complete
-                    sm.waitForSingleEvent(elevatorEvent, State.THROW_CUBE, 1.0);
+                    sm.waitForSingleEvent(elevatorEvent, State.THROW_CUBE, 0.3);
                     break;
 
                 case THROW_CUBE:

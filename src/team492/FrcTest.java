@@ -322,9 +322,21 @@ public class FrcTest extends FrcTeleOp
                 break;
 
             case FrcJoystick.LOGITECH_BUTTON10:
+            	if(pressed)
+            	{
+            	robot.targetHeading += 90;
+            	robot.pidDrive.setTarget(0.0, 0.0, robot.targetHeading, false, event);
+            	processedInput = true;
+            	}
                 break;
 
             case FrcJoystick.LOGITECH_BUTTON11:
+            	if(pressed)
+            	{
+            	robot.targetHeading += 180;
+            	robot.pidDrive.setTarget(0.0, 0.0, robot.targetHeading, false, event);
+            	processedInput = true;
+            	}
                 break;
 
             case FrcJoystick.LOGITECH_BUTTON12:

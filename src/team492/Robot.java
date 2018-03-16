@@ -79,7 +79,7 @@ public class Robot extends FrcRobotBase
 
     public static final boolean USE_TRACELOG = true;
     public static final boolean USE_NAV_X = true;
-    public static final boolean USE_USB_CAM = true;
+    public static final boolean USE_USB_CAM = false;
     public static final boolean USE_PIXY_SPI = false;
     public static final boolean USE_PIXY_I2C = true;
     public static final boolean USE_TEXT_TO_SPEECH = false;
