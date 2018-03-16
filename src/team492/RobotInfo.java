@@ -79,8 +79,8 @@ public class RobotInfo
     //
     // Analog Input ports.
     //
-    public static final int AIN_LEFT_SONAR_SENSOR               = 0;
-    public static final int AIN_RIGHT_SONAR_SENSOR              = 1;
+    public static final int AIN_LEFT_SONAR_SENSOR               = 1;//0;
+    public static final int AIN_RIGHT_SONAR_SENSOR              = 0;//1;
     public static final int AIN_FRONT_SONAR_SENSOR              = 2;
     public static final int AIN_PRESSURE_SENSOR                 = 3;
 
@@ -270,9 +270,10 @@ public class RobotInfo
     //
     public static final double SWITCH_TO_WALL_DISTANCE = 85.25;
     public static final double SCALE_TO_WALL_DISTANCE = 71.57;
+    public static final double ROBOT_TO_SCALE_DISTANCE = 30.0;
     public static final double ALLIANCE_WALL_TO_LANE_3_DISTANCE = 228.735;
     public static final double ALLIANCE_WALL_TO_SCALE_DISTANCE = 324.0;
-    public static final double CUBE_PICKUP_DROP_POWER = 0.5; // TODO: tune this
+    public static final double CUBE_PICKUP_DROP_POWER = 1.0; // TODO: tune this
     public static final double DROP_CUBE_TIMEOUT = 1.0;
 
     //

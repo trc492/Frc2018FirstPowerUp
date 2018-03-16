@@ -110,7 +110,10 @@ public class CmdAutoScale implements TrcRobot.RobotCommand
         robot.tracer.traceInfo(moduleName, "setSonarTriggerEnabled(%b)", enabled);
         sonarTrigger.setTaskEnabled(enabled);
         if (enabled) sonarEvent.clear();
-
+    }
+    
+    public void setRangingEnabled(boolean enabled)
+    {
         if (startRight && enabled)
         {
             robot.leftSonarArray.startRanging(true);
@@ -171,6 +174,7 @@ public class CmdAutoScale implements TrcRobot.RobotCommand
 
                 case DRIVE_TO_SWITCH:
                     setSonarTriggerEnabled(true);
+                    setRangingEnabled(true);
                     if (scaleRight && startRight || !scaleRight && !startRight)
                     {
                         // Same side, no need to go across.
@@ -182,7 +186,7 @@ public class CmdAutoScale implements TrcRobot.RobotCommand
                         // CodeReview: Why fix yourself to lane 3 only? Should let the drive choose.
                         nextState = State.DRIVE_TO_LANE_3;
                     }
-                    robot.pidDrive.setTarget(0.0, RobotInfo.AUTO_DISTANCE_TO_SWITCH, robot.targetHeading, false, event);
+                    robot.pidDrive.setTarget(0.0, RobotInfo.AUTO_DISTANCE_TO_SWITCH + 24.0, robot.targetHeading, false, event);
                     sm.addEvent(event);
                     sm.addEvent(sonarEvent);
                     sm.waitForEvents(nextState); // TODO: Add a timeout to this                        
@@ -232,12 +236,12 @@ public class CmdAutoScale implements TrcRobot.RobotCommand
                     robot.pidDrive.cancel();
                     sonarDistance = startRight?robot.getLeftSonarDistance():robot.getRightSonarDistance();
                     distanceFromWall = RobotInfo.SWITCH_TO_WALL_DISTANCE - sonarDistance - RobotInfo.ROBOT_WIDTH/2.0;
-                    xDistance = distanceFromWall - RobotInfo.SCALE_TO_WALL_DISTANCE;
+                    xDistance = -(RobotInfo.SCALE_TO_WALL_DISTANCE - RobotInfo.ROBOT_TO_SCALE_DISTANCE - distanceFromWall);
                     robot.tracer.traceInfo(moduleName, "sonarDistance=%.1f, distanceFromWall=%.1f,xDistance=%.1f",
                         sonarDistance, distanceFromWall, xDistance);
                     if(!startRight) xDistance *= -1;
                     // CodeReview: startY is always 0!!!
-                    yDistance = RobotInfo.FIELD_LENGTH/2.0 - robot.driveBase.getYPosition() - RobotInfo.ROBOT_LENGTH/2.0;
+                    yDistance = RobotInfo.FIELD_LENGTH/2.0 - robot.driveBase.getYPosition() - RobotInfo.ROBOT_LENGTH/2.0 - 12.0;
                     robot.pidDrive.setTarget(xDistance, yDistance, robot.targetHeading, false, event);
                     sm.waitForSingleEvent(event, State.TURN_TO_FACE_SCALE);
                     break;
@@ -250,18 +254,20 @@ public class CmdAutoScale implements TrcRobot.RobotCommand
 
                 case RAISE_ELEVATOR:
                     // CodeReview: may want to raise elevator earlier, we'll see how this goes.
-                    robot.elevator.setPosition(RobotInfo.ELEVATOR_SCALE_HIGH, event, 0.0);
+                    robot.elevator.setPosition(RobotInfo.ELEVATOR_SCALE_HIGH - 18.0, event, 2.5);
                     sm.waitForSingleEvent(event, State.THROW_CUBE);
                     break;
 
                 case THROW_CUBE:
                     // CodeReview: you may want to spit the cube with full power since you are pointing upward.
+                    robot.cubePickup.deployPickup();
                     robot.cubePickup.dropCube(RobotInfo.CUBE_PICKUP_DROP_POWER);
                     timer.set(RobotInfo.DROP_CUBE_TIMEOUT, event);
                     sm.waitForSingleEvent(event, State.LOWER_ELEVATOR);
                     break;
 
                 case LOWER_ELEVATOR:
+                    robot.cubePickup.stopPickup();
                     robot.elevator.setPosition(RobotInfo.ELEVATOR_MIN_HEIGHT, event, 0.0);
                     sm.waitForSingleEvent(event, State.DONE);
                     break;
@@ -269,6 +275,7 @@ public class CmdAutoScale implements TrcRobot.RobotCommand
                 case DONE:
                     done = true;
                     setSonarTriggerEnabled(false);
+                    setRangingEnabled(false);
                     sm.stop();
                     break;
             }
