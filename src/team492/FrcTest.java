@@ -156,9 +156,6 @@ public class FrcTest extends FrcTeleOp
             case LIVE_WINDOW:
                 liveWindowEnabled = true;
                 break;
-
-            default:
-                break;
         }
 
         if (Robot.USE_TRACELOG && useTraceLog)
@@ -457,7 +454,6 @@ public class FrcTest extends FrcTeleOp
                     break;
 
                 case DONE:
-                default:
                     //
                     // We are done, stop all wheels.
                     //

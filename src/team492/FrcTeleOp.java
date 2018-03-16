@@ -116,7 +116,6 @@ public class FrcTeleOp implements TrcRobot.RobotMode
                     robot.driveBase.arcadeDrive(drivePower, turnPower, driveInverted);
                     break;
 
-                default:
                 case MECANUM_MODE:
                     double x = robot.leftDriveStick.getXWithDeadband(true);
                     double y = robot.rightDriveStick.getYWithDeadband(true);

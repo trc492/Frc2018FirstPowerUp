@@ -125,7 +125,6 @@ public class CmdCubePickup implements TrcRobot.RobotCommand
                         break;
 
                     case DONE:
-                    default:
                         stop();
                         done = true;
                         break;

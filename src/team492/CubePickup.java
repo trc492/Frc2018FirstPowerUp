@@ -310,7 +310,6 @@ public class CubePickup
                     break;
 
                 case DONE:
-                default:
                     // We have the cube, we can stop now.
                     setPickupPower(0.0, false);
                     robot.ledStrip.setPattern(RobotInfo.LED_CUBE_IN_POSSESSION);

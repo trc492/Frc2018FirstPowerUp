@@ -93,7 +93,6 @@ public class FrcAuto implements TrcRobot.RobotMode
     private boolean flipInFlight;
 
     private double forwardDriveDistance;
-    private boolean sideApproach;
     private double robotStartPosition;
 
     private TrcRobot.RobotCommand autoCommand;
@@ -165,7 +164,6 @@ public class FrcAuto implements TrcRobot.RobotMode
         switch (forwardDistance)
         {
             case FWD_DISTANCE_1:
-            default:
                 forwardDriveDistance = RobotInfo.FWD_DISTANCE_1;
                 break;
 
@@ -181,8 +179,6 @@ public class FrcAuto implements TrcRobot.RobotMode
                 forwardDriveDistance = -1.0;
                 break;
         }
-
-        sideApproach = approachMenu.getCurrentChoiceObject() == Approach.SIDE;
 
         startPosition = startPositionMenu.getCurrentChoiceObject();
         switch (startPosition)
@@ -239,7 +235,6 @@ public class FrcAuto implements TrcRobot.RobotMode
                     delay, 0.0, 0.0, robot.turnDegrees, robot.drivePowerLimit, false);
                 break;
 
-            default:
             case DO_NOTHING:
                 autoCommand = null;
                 break;

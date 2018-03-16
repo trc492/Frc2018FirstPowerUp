@@ -513,7 +513,6 @@ class CmdAutoSwitch implements TrcRobot.RobotCommand
                         break;
 
                     case DONE:
-                    default:
                         //
                         // We are done.
                         //
