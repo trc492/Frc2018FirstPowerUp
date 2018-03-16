@@ -37,7 +37,7 @@ public class CmdAutoScale implements TrcRobot.RobotCommand
     private static final double DRIVE_HEADING_NORTH = 0.0;
     private static final double DRIVE_HEADING_EAST = 90.0;
     private static final double DRIVE_HEADING_WEST = -90.0;
-    private static final double[] distances = new double[] { 10.0, 60.0 };
+    private static final double[] distances = new double[] { 10.0, 50.0 };
 
     private enum State
     {
@@ -242,7 +242,7 @@ public class CmdAutoScale implements TrcRobot.RobotCommand
                     // 4: turn to opposite side, drive across, turn north, drive to DISTANCE_TO_SCALE - DISTANCE_TO_LANE3 then goto 5
                     // 5: raise elevator, deposit cube, done.
                     yDistance = RobotInfo.AUTO_DISTANCE_TO_SWITCH + 24.0 - forwardDriveDistance;
-                    if (yDistance <= 0) yDistance = RobotInfo.AUTO_DISTANCE_TO_SWITCH + 24.0;
+                    if (sameSide || yDistance <= 0) yDistance = RobotInfo.AUTO_DISTANCE_TO_SWITCH + 24.0;
                     robot.pidDrive.setTarget(0.0, yDistance, robot.targetHeading, false, event);
                     sm.addEvent(event);
                     sm.addEvent(sonarEvent);
