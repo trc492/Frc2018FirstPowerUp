@@ -210,7 +210,7 @@ public class FrcAuto implements TrcRobot.RobotMode
                 break;
 
             case AUTO_SCALE:
-            	autoCommand = new CmdAutoScale(robot, delay, robotStartPosition);
+            	autoCommand = new CmdAutoScale(robot, delay, robotStartPosition, forwardDriveDistance);
             	break;
 
             case X_TIMED_DRIVE:
