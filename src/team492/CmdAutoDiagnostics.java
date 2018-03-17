@@ -234,7 +234,8 @@ public class CmdAutoDiagnostics implements TrcRobot.RobotCommand
                     robot.tracer.traceInfo(moduleName, "Elevator working fine!, Target: %.2f, Actual: %.2f, Error: %.2f",
                         RobotInfo.ELEVATOR_MAX_HEIGHT, elevatorHeight, error);
                 }
-                sm.setState(State.TOGGLE_GRABBER);
+                robot.elevator.setPosition(RobotInfo.ELEVATOR_MIN_HEIGHT, event, 0.0);
+                sm.waitForSingleEvent(event, State.TOGGLE_GRABBER);
                 break;
 
             case TOGGLE_GRABBER:
