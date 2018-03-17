@@ -68,8 +68,8 @@ public class CmdAutoScale implements TrcRobot.RobotCommand
     private Position startPosition;
     private double forwardDriveDistance;
     private TrcEvent event, sonarEvent, elevatorEvent;
-    private TrcStateMachine<State> sm;
     private TrcTimer timer;
+    private TrcStateMachine<State> sm;
     private double startY;
     private boolean startRight;
     private boolean scaleRight;
@@ -101,8 +101,9 @@ public class CmdAutoScale implements TrcRobot.RobotCommand
         event = new TrcEvent(moduleName);
         sonarEvent = new TrcEvent(moduleName + ".sonarEvent");
         elevatorEvent = new TrcEvent(moduleName + ".elevatorEvent");
-        sm = new TrcStateMachine<>(moduleName);
         timer = new TrcTimer(moduleName);
+        sm = new TrcStateMachine<>(moduleName);
+        sm.start(State.START);
 
         startRight = this.startPosition == Position.RIGHT;
         scaleRight = robot.gameSpecificMessage.charAt(1) == 'R';
@@ -128,7 +129,6 @@ public class CmdAutoScale implements TrcRobot.RobotCommand
             0, TrcAnalogInput.DataType.INPUT_DATA, distances, this::sonarTriggerEvent);
 
         robot.gyroTurnPidCtrl.setNoOscillation(true);
-        sm.start(State.START);
 
         robot.tracer.traceInfo(moduleName,
             "alliance=%s, gameSpecificMsg=%s, delay=%.3f, startPosition=%.1f, fwdDistance=%.0f",
@@ -171,7 +171,7 @@ public class CmdAutoScale implements TrcRobot.RobotCommand
                 case DRIVE_TO_LANE:
                     // forwardDriveDistance is set to lane 1 or lane 2.
                     // We are going across in front of the switch.
-                    robot.pidDrive.setTarget(0.0, forwardDriveDistance, robot.targetHeading, false, event);
+                    robot.pidDrive.setTarget(0.0, forwardDriveDistance, robot.targetHeading, false, event, 0.0);
                     sm.waitForSingleEvent(event, State.TURN_TO_DRIVE_ACROSS_FIELD);
                     break;
 
@@ -182,7 +182,8 @@ public class CmdAutoScale implements TrcRobot.RobotCommand
                     break;
 
                 case DRIVE_ACROSS_FIELD:
-                    robot.pidDrive.setTarget(0.0, RobotInfo.DRIVE_ACROSS_FIELD_DISTANCE, robot.targetHeading, false, event);
+                    robot.pidDrive.setTarget(
+                        0.0, RobotInfo.DRIVE_ACROSS_FIELD_DISTANCE, robot.targetHeading, false, event, 0.0);
                     sm.waitForSingleEvent(event, State.TURN_NORTH);
                     break;
 
@@ -203,7 +204,7 @@ public class CmdAutoScale implements TrcRobot.RobotCommand
                     // We came from the other side in lane 1 or lane 2 so need to subtract forwardDriveDistance.
                     if (!sameSide && !lane3) yDistance -= forwardDriveDistance;
 
-                    robot.pidDrive.setTarget(0.0, yDistance, robot.targetHeading, false, event);
+                    robot.pidDrive.setTarget(0.0, yDistance, robot.targetHeading, false, event, 0.0);
                     sm.addEvent(event);
                     sm.addEvent(sonarEvent);
                     sm.waitForEvents(State.CHECK_SONAR_DISTANCE);
@@ -238,7 +239,7 @@ public class CmdAutoScale implements TrcRobot.RobotCommand
 
                     robot.tracer.traceInfo(moduleName, "sonarDistance=%.1f, distanceFromWall=%.1f, xDistance=%.1f, yDistance=%.1f",
                         sonarDistance, distanceFromWall, xDistance, yDistance);
-                    robot.pidDrive.setTarget(xDistance, yDistance, robot.targetHeading, false, event);
+                    robot.pidDrive.setTarget(xDistance, yDistance, robot.targetHeading, false, event, 0.0);
                     sm.waitForSingleEvent(event, nextState);
                     break;
 
@@ -250,7 +251,7 @@ public class CmdAutoScale implements TrcRobot.RobotCommand
 
                 case DRIVE_TO_OPPOSITE_SCALE:
                     yDistance = RobotInfo.DRIVE_ACROSS_FIELD_DISTANCE;
-                    robot.pidDrive.setTarget(0.0, yDistance, robot.targetHeading, false, event);
+                    robot.pidDrive.setTarget(0.0, yDistance, robot.targetHeading, false, event, 0.0);
                     sm.waitForSingleEvent(event, State.TURN_TO_SCALE);
                     break;
 
@@ -262,7 +263,7 @@ public class CmdAutoScale implements TrcRobot.RobotCommand
 
                 case FINISH_DRIVE_TO_SCALE:
                     yDistance = RobotInfo.ALLIANCE_WALL_TO_SCALE_DISTANCE - RobotInfo.ALLIANCE_WALL_TO_LANE_3_DISTANCE;
-                    robot.pidDrive.setTarget(0.0, yDistance, robot.targetHeading, false, event);
+                    robot.pidDrive.setTarget(0.0, yDistance, robot.targetHeading, false, event, 0.0);
                     // Start raising elevator
                     robot.elevator.setPosition(RobotInfo.ELEVATOR_CRUISE_HEIGHT);
                     sm.waitForSingleEvent(event, State.TURN_TO_FACE_SCALE);
