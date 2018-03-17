@@ -67,6 +67,7 @@ class CmdAutoSwitch implements TrcRobot.RobotCommand
         RAISE_ELEVATOR,
         APPROACH_FINAL_TARGET,
         DEPOSIT_CUBE,
+        BACK_UP_A_BIT,
         DONE
     } // enum State
 
@@ -312,8 +313,16 @@ class CmdAutoSwitch implements TrcRobot.RobotCommand
                         if(forwardDistance != RobotInfo.FWD_DISTANCE_3)sm.addEvent(sonarEvent);
                         yDistance = 0.0;
                         // questionable strafe calculation, needs fixing
-                        xDistance = (RobotInfo.AUTO_DISTANCE_TO_SWITCH - forwardDistance) - 36.0;
+                        if(forwardDistance > RobotInfo.AUTO_DISTANCE_TO_SWITCH)
+                        {
+                            xDistance = -(forwardDistance - RobotInfo.AUTO_DISTANCE_TO_SWITCH - RobotInfo.CUBE_WIDTH-53.0);
+                        } else
+                        {
+                            xDistance = (RobotInfo.AUTO_DISTANCE_TO_SWITCH - forwardDistance) - 36.0;                            
+                        }
                         if (rightSwitch) xDistance = -xDistance;
+                        robot.tracer.traceInfo(moduleName, "Strafe to switch, forwardDistance=%.1f,xDistance=%.2f",
+                            forwardDistance, xDistance);
                         robot.pidDrive.setTarget(xDistance, yDistance, robot.targetHeading, false, event, 0.0);
                         sm.addEvent(event);
                         sm.waitForEvents(State.FLIP_CUBE);
@@ -340,7 +349,7 @@ class CmdAutoSwitch implements TrcRobot.RobotCommand
 
                     case STRAFE_FROM_SWITCH:
                         yDistance = 0.0;
-                        xDistance = RobotInfo.STRAFE_FROM_SWITCH_DISTANCE;
+                        xDistance = -RobotInfo.STRAFE_FROM_SWITCH_DISTANCE;
                         if (!rightSwitch) xDistance = -xDistance;
                         robot.pidDrive.setTarget(xDistance, yDistance, robot.targetHeading, false, event, 0.0);
                         sm.waitForSingleEvent(event, State.TURN_SOUTH);
@@ -502,14 +511,21 @@ class CmdAutoSwitch implements TrcRobot.RobotCommand
                         robot.encoderYPidCtrl.setOutputLimit(yPowerLimit);
                         robot.cubePickup.dropCube(1.0);
                         timer.set(0.3, event);
-                        sm.waitForSingleEvent(event, State.DONE);
+                        sm.waitForSingleEvent(event, State.BACK_UP_A_BIT);
                         break;
-
+                        
+                    case BACK_UP_A_BIT:
+                        xDistance = 0.0;
+                        yDistance = -15.0;
+                        robot.cubePickup.stopPickup();
+                        robot.pidDrive.setTarget(xDistance, yDistance, robot.targetHeading, false, event, 0.0);
+                        sm.waitForSingleEvent(event, State.DONE);
+                        
+                       
                     case DONE:
                         //
                         // We are done.
                         //
-                        robot.cubePickup.stopPickup();
                         robot.elevator.setPosition(RobotInfo.ELEVATOR_MIN_HEIGHT);
                         done = true;
                         sm.stop();
