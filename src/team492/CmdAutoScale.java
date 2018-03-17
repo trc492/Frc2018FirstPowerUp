@@ -47,16 +47,14 @@ public class CmdAutoScale implements TrcRobot.RobotCommand
         DRIVE_ACROSS_FIELD,
         TURN_NORTH,
         DRIVE_TO_SWITCH,
-        DRIVE_TO_LANE_3,
+        CHECK_SONAR_DISTANCE,
         TURN_TO_OPPOSITE_SCALE,
         DRIVE_TO_OPPOSITE_SCALE,
         TURN_TO_SCALE,
         FINISH_DRIVE_TO_SCALE,
-        DRIVE_TO_SCALE,
         TURN_TO_FACE_SCALE,
         RAISE_ELEVATOR,
         THROW_CUBE,
-        LOWER_ELEVATOR,
         DONE
     }
 
@@ -105,8 +103,6 @@ public class CmdAutoScale implements TrcRobot.RobotCommand
         elevatorEvent = new TrcEvent(moduleName + ".elevatorEvent");
         sm = new TrcStateMachine<>(moduleName);
         timer = new TrcTimer(moduleName);
-        
-        robot.gyroTurnPidCtrl.setNoOscillation(true);
 
         startRight = this.startPosition == Position.RIGHT;
         scaleRight = robot.gameSpecificMessage.charAt(1) == 'R';
@@ -131,6 +127,7 @@ public class CmdAutoScale implements TrcRobot.RobotCommand
             "SwitchDistanceTrigger", sonarSensor,
             0, TrcAnalogInput.DataType.INPUT_DATA, distances, this::sonarTriggerEvent);
 
+        robot.gyroTurnPidCtrl.setNoOscillation(true);
         sm.start(State.START);
 
         robot.tracer.traceInfo(moduleName,
@@ -138,14 +135,181 @@ public class CmdAutoScale implements TrcRobot.RobotCommand
              robot.alliance, robot.gameSpecificMessage, delay, startPosition, forwardDriveDistance);
     }
 
-    public void setSonarTriggerEnabled(boolean enabled)
+    @Override
+    public boolean cmdPeriodic(double elapsedTime)
+    {
+        boolean done = !sm.isEnabled();
+        if (done || startPosition == Position.MIDDLE) return true;
+
+        State state = sm.checkReadyAndGetState();
+
+        //
+        // Print debug info.
+        //
+        robot.dashboard.displayPrintf(1, "State: %s", state != null? state: sm.getState());
+
+        if (state != null)
+        {
+            double xDistance, yDistance;
+            State nextState;
+
+            switch(state)
+            {
+                case START:
+                    nextState = (sameSide || lane3)? State.DRIVE_TO_SWITCH: State.DRIVE_TO_LANE;
+                    if (delay == 0.0)
+                    {
+                        sm.setState(nextState);
+                    }
+                    else
+                    {
+                        timer.set(delay, event);
+                        sm.waitForSingleEvent(event, nextState);
+                    }
+                    break;
+
+                case DRIVE_TO_LANE:
+                    // forwardDriveDistance is set to lane 1 or lane 2.
+                    // We are going across in front of the switch.
+                    robot.pidDrive.setTarget(0.0, forwardDriveDistance, robot.targetHeading, false, event);
+                    sm.waitForSingleEvent(event, State.TURN_TO_DRIVE_ACROSS_FIELD);
+                    break;
+
+                case TURN_TO_DRIVE_ACROSS_FIELD:
+                    robot.targetHeading = startRight?DRIVE_HEADING_WEST:DRIVE_HEADING_EAST;
+                    robot.pidDrive.setTarget(0.0, 0.0, robot.targetHeading, false, event);
+                    sm.waitForSingleEvent(event, State.DRIVE_ACROSS_FIELD);
+                    break;
+
+                case DRIVE_ACROSS_FIELD:
+                    robot.pidDrive.setTarget(0.0, RobotInfo.DRIVE_ACROSS_FIELD_DISTANCE, robot.targetHeading, false, event);
+                    sm.waitForSingleEvent(event, State.TURN_NORTH);
+                    break;
+
+                case TURN_NORTH:
+                    robot.targetHeading = DRIVE_HEADING_NORTH;
+                    robot.pidDrive.setTarget(0.0, 0.0, robot.targetHeading, false, event);
+                    sm.waitForSingleEvent(event, State.DRIVE_TO_SWITCH);
+                    break;
+
+                case DRIVE_TO_SWITCH:
+                    // We come here either we started on the same side or we are crossing to the other side in lane 3.
+                    // Or, we crossed from the other side in front of the switch to here.
+                    setRangingEnabled(true);
+                    setSonarTriggerEnabled(true);
+
+                    startY = robot.driveBase.getYPosition();
+                    yDistance = RobotInfo.AUTO_DISTANCE_TO_SWITCH + 24.0;
+                    // We came from the other side in lane 1 or lane 2 so need to subtract forwardDriveDistance.
+                    if (!sameSide && !lane3) yDistance -= forwardDriveDistance;
+
+                    robot.pidDrive.setTarget(0.0, yDistance, robot.targetHeading, false, event);
+                    sm.addEvent(event);
+                    sm.addEvent(sonarEvent);
+                    sm.waitForEvents(State.CHECK_SONAR_DISTANCE);
+                    break;
+
+                case CHECK_SONAR_DISTANCE:
+                    // We are going to range the switch to center ourselves in the corridor moving forward.
+                    setSonarTriggerEnabled(false);
+                    robot.pidDrive.cancel();
+                    sonarDistance = sonarArray.getDistance(0).value;
+                    distanceFromWall = RobotInfo.SWITCH_TO_WALL_DISTANCE - sonarDistance - RobotInfo.ROBOT_WIDTH/2.0;
+
+                    xDistance = RobotInfo.SCALE_TO_WALL_DISTANCE - RobotInfo.ROBOT_TO_SCALE_DISTANCE - distanceFromWall;
+                    if (scaleRight) xDistance *= -1;
+
+                    double currY = robot.driveBase.getYPosition();
+                    if (!sameSide && !lane3) currY = currY - startY + forwardDriveDistance;
+                    if (sameSide || !lane3)
+                    {
+                        // Start raising elevator
+                        robot.elevator.setPosition(RobotInfo.ELEVATOR_CRUISE_HEIGHT);
+                        // The target scale is ahead of us, go to it.
+                        yDistance = RobotInfo.FIELD_LENGTH/2.0 - currY - RobotInfo.ROBOT_LENGTH/2.0 - 12.0;
+                        nextState = State.TURN_TO_FACE_SCALE;
+                    }
+                    else
+                    {
+                        // The target scale is on the other side, go to lane 3 to cross over.
+                        yDistance = RobotInfo.ALLIANCE_WALL_TO_LANE_3_DISTANCE - currY;
+                        nextState = State.TURN_TO_OPPOSITE_SCALE;
+                    }
+
+                    robot.tracer.traceInfo(moduleName, "sonarDistance=%.1f, distanceFromWall=%.1f, xDistance=%.1f, yDistance=%.1f",
+                        sonarDistance, distanceFromWall, xDistance, yDistance);
+                    robot.pidDrive.setTarget(xDistance, yDistance, robot.targetHeading, false, event);
+                    sm.waitForSingleEvent(event, nextState);
+                    break;
+
+                case TURN_TO_OPPOSITE_SCALE:
+                    robot.targetHeading = startRight?DRIVE_HEADING_WEST:DRIVE_HEADING_EAST;
+                    robot.pidDrive.setTarget(0.0, 0.0, robot.targetHeading, false, event);
+                    sm.waitForSingleEvent(event, State.DRIVE_TO_OPPOSITE_SCALE);
+                    break;
+
+                case DRIVE_TO_OPPOSITE_SCALE:
+                    yDistance = RobotInfo.DRIVE_ACROSS_FIELD_DISTANCE;
+                    robot.pidDrive.setTarget(0.0, yDistance, robot.targetHeading, false, event);
+                    sm.waitForSingleEvent(event, State.TURN_TO_SCALE);
+                    break;
+
+                case TURN_TO_SCALE:
+                    robot.targetHeading = DRIVE_HEADING_NORTH;
+                    robot.pidDrive.setTarget(0.0, 0.0, robot.targetHeading, false, event);
+                    sm.waitForSingleEvent(event, State.FINISH_DRIVE_TO_SCALE);
+                    break;
+
+                case FINISH_DRIVE_TO_SCALE:
+                    yDistance = RobotInfo.ALLIANCE_WALL_TO_SCALE_DISTANCE - RobotInfo.ALLIANCE_WALL_TO_LANE_3_DISTANCE;
+                    robot.pidDrive.setTarget(0.0, yDistance, robot.targetHeading, false, event);
+                    // Start raising elevator
+                    robot.elevator.setPosition(RobotInfo.ELEVATOR_CRUISE_HEIGHT);
+                    sm.waitForSingleEvent(event, State.TURN_TO_FACE_SCALE);
+                    break;
+
+                case TURN_TO_FACE_SCALE:
+                    robot.targetHeading = scaleRight?DRIVE_HEADING_WEST:DRIVE_HEADING_EAST;
+                    robot.pidDrive.setTarget(0.0, 0.0, robot.targetHeading, false, event);
+                    sm.waitForSingleEvent(event, State.RAISE_ELEVATOR);
+                    break;
+
+                case RAISE_ELEVATOR:
+                    // Already started to raise elevator, so wait for it to complete
+                    robot.elevator.setPosition(RobotInfo.ELEVATOR_SCALE_HIGH - 18.0, elevatorEvent, 2.0);
+                    sm.waitForSingleEvent(elevatorEvent, State.THROW_CUBE);
+                    break;
+
+                case THROW_CUBE:
+                    robot.cubePickup.deployPickup();
+                    robot.cubePickup.dropCube(RobotInfo.CUBE_PICKUP_DROP_POWER);
+                    timer.set(RobotInfo.DROP_CUBE_TIMEOUT, event);
+                    sm.waitForSingleEvent(event, State.DONE);
+                    break;
+
+                case DONE:
+                    robot.cubePickup.stopPickup();
+                    robot.elevator.setPosition(RobotInfo.ELEVATOR_MIN_HEIGHT);
+                    done = true;
+                    setSonarTriggerEnabled(false);
+                    setRangingEnabled(false);
+                    sm.stop();
+                    robot.gyroTurnPidCtrl.setNoOscillation(false);
+                    break;
+            }
+            robot.traceStateInfo(elapsedTime, state.toString());
+        }
+        return done;
+    }
+
+    private void setSonarTriggerEnabled(boolean enabled)
     {
         robot.tracer.traceInfo(moduleName, "setSonarTriggerEnabled(%b)", enabled);
         sonarTrigger.setTaskEnabled(enabled);
         if (enabled) sonarEvent.clear();
     }
 
-    public void setRangingEnabled(boolean enabled)
+    private void setRangingEnabled(boolean enabled)
     {
         robot.tracer.traceInfo(moduleName, "setRangingEnabled(%b)", enabled);
         if(enabled)
@@ -169,183 +333,4 @@ public class CmdAutoScale implements TrcRobot.RobotCommand
         }
     }
 
-    @Override
-    public boolean cmdPeriodic(double elapsedTime)
-    {
-        boolean done = !sm.isEnabled();
-        if (done || startPosition == Position.MIDDLE) return true;
-
-        State state = sm.checkReadyAndGetState();
-
-        //
-        // Print debug info.
-        //
-        robot.dashboard.displayPrintf(1, "State: %s", state != null? state: sm.getState());
-
-        if (state != null)
-        {
-            double xDistance, yDistance;
-            double currY;
-            State nextState;
-
-            switch(state)
-            {
-                case START:
-                    nextState = sameSide || lane3? State.DRIVE_TO_SWITCH: State.DRIVE_TO_LANE;
-                    if (delay == 0.0)
-                    {
-                        sm.setState(nextState);
-                    }
-                    else
-                    {
-                        timer.set(delay, event);
-                        sm.waitForSingleEvent(event, nextState);
-                    }
-                    break;
-
-                case DRIVE_TO_LANE:
-                    robot.pidDrive.setTarget(0.0, forwardDriveDistance, robot.targetHeading, false, event);
-                    sm.waitForSingleEvent(event, State.TURN_TO_DRIVE_ACROSS_FIELD);
-                    break;
-
-                case TURN_TO_DRIVE_ACROSS_FIELD:
-                    robot.targetHeading = startRight?DRIVE_HEADING_WEST:DRIVE_HEADING_EAST;
-                    robot.pidDrive.setTarget(0.0, 0.0, robot.targetHeading, false, event);
-                    sm.waitForSingleEvent(event, State.DRIVE_ACROSS_FIELD);
-                    break;
-
-                case DRIVE_ACROSS_FIELD:
-                    // CodeReview: DRIVE_ACROSS_FIELD_DISTANCE calculation seems wrong. You are going way too far.
-                    // Please explain.
-                    robot.pidDrive.setTarget(0.0, RobotInfo.DRIVE_ACROSS_FIELD_DISTANCE, robot.targetHeading, false, event);
-                    sm.waitForSingleEvent(event, State.TURN_NORTH);
-                    break;
-
-                case TURN_NORTH:
-                    robot.targetHeading = DRIVE_HEADING_NORTH;
-                    robot.pidDrive.setTarget(0.0, 0.0, robot.targetHeading, false, event);
-                    sm.waitForSingleEvent(event, State.DRIVE_TO_SWITCH);
-                    break;
-
-                case DRIVE_TO_SWITCH:
-                    setRangingEnabled(true);
-                    setSonarTriggerEnabled(true);
-                    // If same side, no need to go across. Otherwise, go to lane 3 to cross field.
-                    nextState = (sameSide || !lane3) ? State.DRIVE_TO_SCALE : State.DRIVE_TO_LANE_3;
-
-                    // CodeReview: this logic is wrong. DRIVE_TO_SWITCH should just drive
-                    // AUTO_DISTANCE_TO_SWITCH + 24.0 only.
-                    // You only come to this state if sameSide || lane3 and forwardDriveDistance is only
-                    // applicable for !sameSide && lane3. But in that case, you still want to only drive
-                    // AUTO_DISTANCE_TO_SWITCH so you can range the switch.
-                    //
-                    // Ok, I don't quite understand what you are trying to do. Here is what I am expecting:
-                    // 1: if sameSide || lane3 drive to DISTANCE_TO_SWTICH + 24.0 and goto 3 else drive to forwardDistance and goto 2
-                    // 2: turn to opposite side, drive across, turn north, drive DISTANCE_TO_SWITCH + 24.0 - forwardDistance, goto 3
-                    // 3: range the switch, calculate the xDistance, calculate the yDistance either to lane 3 then goto 4 or to the scale then goto 5.
-                    // 4: turn to opposite side, drive across, turn north, drive to DISTANCE_TO_SCALE - DISTANCE_TO_LANE3 then goto 5
-                    // 5: raise elevator, deposit cube, done.
-                    startY = robot.driveBase.getYPosition();
-                    yDistance = RobotInfo.AUTO_DISTANCE_TO_SWITCH + 24.0 - forwardDriveDistance;
-                    if (sameSide || yDistance <= 0) yDistance = RobotInfo.AUTO_DISTANCE_TO_SWITCH + 24.0;
-                    robot.pidDrive.setTarget(0.0, yDistance, robot.targetHeading, false, event);
-                    sm.addEvent(event);
-                    sm.addEvent(sonarEvent);
-                    sm.waitForEvents(nextState);
-                    break;
-
-                case DRIVE_TO_LANE_3:
-                    setSonarTriggerEnabled(false);
-                    sonarDistance = sonarArray.getDistance(0).value;
-                    // Note: distanceFromWall is the distance of the sonar sensor from the field wall.
-                    distanceFromWall = RobotInfo.SWITCH_TO_WALL_DISTANCE - sonarDistance - RobotInfo.ROBOT_WIDTH/2.0;
-                    robot.tracer.traceInfo(moduleName, "sonarDistance=%.1f, distanceFromWall=%.1f",
-                        sonarDistance, distanceFromWall);
-                    currY = robot.driveBase.getYPosition() - startY;
-                    robot.pidDrive.setTarget(0.0, RobotInfo.ALLIANCE_WALL_TO_LANE_3_DISTANCE - currY, 
-                        robot.targetHeading, false, event);
-                    sm.waitForSingleEvent(event, State.DRIVE_TO_OPPOSITE_SCALE);
-                    break;
-
-                case TURN_TO_OPPOSITE_SCALE:
-                    robot.targetHeading = startRight?DRIVE_HEADING_WEST:DRIVE_HEADING_EAST;
-                    robot.pidDrive.setTarget(0.0, 0.0, robot.targetHeading, false, event);
-                    sm.waitForSingleEvent(event, State.DRIVE_TO_OPPOSITE_SCALE);
-                    break;
-
-                case DRIVE_TO_OPPOSITE_SCALE:
-                    yDistance = RobotInfo.FIELD_WIDTH - 2.0*distanceFromWall;
-                    robot.pidDrive.setTarget(0.0, yDistance, robot.targetHeading, false, event);
-                    sm.waitForSingleEvent(event, State.TURN_TO_SCALE);
-                    break;
-
-                case TURN_TO_SCALE:
-                    robot.targetHeading = DRIVE_HEADING_NORTH;
-                    robot.pidDrive.setTarget(0.0, 0.0, robot.targetHeading, false, event);
-                    sm.waitForSingleEvent(event, State.FINISH_DRIVE_TO_SCALE);
-                    break;
-
-                case FINISH_DRIVE_TO_SCALE:
-                    robot.pidDrive.setTarget(0.0, RobotInfo.ALLIANCE_WALL_TO_SCALE_DISTANCE - RobotInfo.ALLIANCE_WALL_TO_LANE_3_DISTANCE,
-                        robot.targetHeading, false, event);
-                    // Start raising elevator
-                    robot.elevator.setPosition(RobotInfo.ELEVATOR_CRUISE_HEIGHT, elevatorEvent, 3.0);
-                    sm.waitForSingleEvent(event, State.TURN_TO_FACE_SCALE);
-                    break;
-
-                case DRIVE_TO_SCALE:
-                    setSonarTriggerEnabled(false);
-                    robot.pidDrive.cancel();
-                    sonarDistance = sonarArray.getDistance(0).value;
-                    distanceFromWall = RobotInfo.SWITCH_TO_WALL_DISTANCE - sonarDistance - RobotInfo.ROBOT_WIDTH/2.0;
-                    xDistance = -(RobotInfo.SCALE_TO_WALL_DISTANCE - RobotInfo.ROBOT_TO_SCALE_DISTANCE - distanceFromWall);
-                    robot.tracer.traceInfo(moduleName, "sonarDistance=%.1f, distanceFromWall=%.1f,xDistance=%.1f",
-                        sonarDistance, distanceFromWall, xDistance);
-                    if(!scaleRight) xDistance *= -1;
-                    currY = (robot.driveBase.getYPosition() - startY) + forwardDriveDistance;
-                    yDistance = RobotInfo.FIELD_LENGTH/2.0 - currY - RobotInfo.ROBOT_LENGTH/2.0 - 12.0;
-                    robot.pidDrive.setTarget(xDistance, yDistance, robot.targetHeading, false, event);
-                    // Start raising elevator
-                    robot.elevator.setPosition(RobotInfo.ELEVATOR_CRUISE_HEIGHT, elevatorEvent, 3.0);
-                    sm.waitForSingleEvent(event, State.TURN_TO_FACE_SCALE);
-                    break;
-
-                case TURN_TO_FACE_SCALE:
-                    robot.targetHeading = scaleRight?DRIVE_HEADING_WEST:DRIVE_HEADING_EAST;
-                    robot.pidDrive.setTarget(0.0, 0.0, robot.targetHeading, false, event);
-                    sm.waitForSingleEvent(event, State.RAISE_ELEVATOR);
-                    break;
-
-                case RAISE_ELEVATOR:
-                    // Already started to raise elevator, so wait for it to complete
-                    robot.elevator.setPosition(RobotInfo.ELEVATOR_SCALE_HIGH - 18.0, elevatorEvent, 0.0);
-                    sm.waitForSingleEvent(elevatorEvent, State.THROW_CUBE, 2.0);
-//                    sm.waitForSingleEvent(elevatorEvent, State.THROW_CUBE, 0.3);
-                    break;
-
-                case THROW_CUBE:
-                    robot.cubePickup.deployPickup();
-                    robot.cubePickup.dropCube(RobotInfo.CUBE_PICKUP_DROP_POWER);
-                    timer.set(RobotInfo.DROP_CUBE_TIMEOUT, event);
-                    sm.waitForSingleEvent(event, State.LOWER_ELEVATOR);
-                    break;
-
-                case LOWER_ELEVATOR:
-                    robot.cubePickup.stopPickup();
-                    robot.elevator.setPosition(RobotInfo.ELEVATOR_MIN_HEIGHT, event, 0.0);
-                    sm.waitForSingleEvent(event, State.DONE);
-                    break;
-
-                case DONE:
-                    done = true;
-                    setSonarTriggerEnabled(false);
-                    setRangingEnabled(false);
-                    sm.stop();
-                    robot.gyroTurnPidCtrl.setNoOscillation(false);
-                    break;
-            }
-            robot.traceStateInfo(elapsedTime, state.toString());
-        }
-        return done;
-    }
 }
