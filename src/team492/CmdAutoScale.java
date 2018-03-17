@@ -320,6 +320,7 @@ public class CmdAutoScale implements TrcRobot.RobotCommand
                     // Already started to raise elevator, so wait for it to complete
                     robot.elevator.setPosition(RobotInfo.ELEVATOR_SCALE_HIGH - 18.0, elevatorEvent, 0.0);
                     sm.waitForSingleEvent(elevatorEvent, State.THROW_CUBE, 2.0);
+//                    sm.waitForSingleEvent(elevatorEvent, State.THROW_CUBE, 0.3);
                     break;
 
                 case THROW_CUBE:
