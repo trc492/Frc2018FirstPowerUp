@@ -336,8 +336,6 @@ public class Robot extends FrcRobotBase
             ringLightsPower = new Relay(RobotInfo.RELAY_RINGLIGHT_POWER);
             ringLightsPower.setDirection(Direction.kForward);
         }
-        
-        diagnostics = new OnBoardDiagnostics(this);
 
         //
         // DriveBase subsystem.
@@ -438,6 +436,8 @@ public class Robot extends FrcRobotBase
             new FrcAuto(this),
             new FrcTest(this),
             tts != null? new FrcDisabled(this): null);
+        
+        diagnostics = new OnBoardDiagnostics(this);
     }   //robotInit
 
     public void robotStartMode(RunMode runMode)
