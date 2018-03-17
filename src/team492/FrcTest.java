@@ -41,6 +41,7 @@ public class FrcTest extends FrcTeleOp
     {
         SENSORS_TEST,
         DRIVE_MOTORS_TEST,
+        AUTO_DIAGNOSTICS,
         X_TIMED_DRIVE,
         Y_TIMED_DRIVE,
         X_DISTANCE_DRIVE,
@@ -68,6 +69,7 @@ public class FrcTest extends FrcTeleOp
 
     private CmdTimedDrive timedDriveCommand = null;
     private CmdPidDrive pidDriveCommand = null;
+    private CmdAutoDiagnostics autoDiagnostics = null;
 
     private int motorIndex = 0;
     private boolean pickupOverride = false;
@@ -88,6 +90,7 @@ public class FrcTest extends FrcTeleOp
         testMenu = new FrcChoiceMenu<>("Test/Tests");
         testMenu.addChoice("Sensors Test", FrcTest.Test.SENSORS_TEST, true, false);
         testMenu.addChoice("Drive Motors Test", FrcTest.Test.DRIVE_MOTORS_TEST, false, false);
+        testMenu.addChoice("Diagnostics", FrcTest.Test.AUTO_DIAGNOSTICS, false, false);
         testMenu.addChoice("X Timed Drive", FrcTest.Test.X_TIMED_DRIVE, false, false);
         testMenu.addChoice("Y Timed Drive", FrcTest.Test.Y_TIMED_DRIVE, false, false);
         testMenu.addChoice("X Distance Drive", FrcTest.Test.X_DISTANCE_DRIVE, false, false);
@@ -125,6 +128,10 @@ public class FrcTest extends FrcTeleOp
 
             case DRIVE_MOTORS_TEST:
                 motorIndex = 0;
+                break;
+
+            case AUTO_DIAGNOSTICS:
+                autoDiagnostics = new CmdAutoDiagnostics(robot);
                 break;
 
             case X_TIMED_DRIVE:
@@ -212,6 +219,10 @@ public class FrcTest extends FrcTeleOp
         {
             case SENSORS_TEST:
                 super.runContinuous(elapsedTime);
+                break;
+
+            case AUTO_DIAGNOSTICS:
+                autoDiagnostics.cmdPeriodic(elapsedTime);
                 break;
 
             case X_TIMED_DRIVE:
