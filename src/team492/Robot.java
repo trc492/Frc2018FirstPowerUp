@@ -50,6 +50,7 @@ import frclib.FrcRobotBase;
 import frclib.FrcRobotBattery;
 import hallib.HalDashboard;
 import team492.PixyVision.TargetInfo;
+import team492.diagnostics.OnBoardDiagnostics;
 import trclib.TrcDbgTrace;
 import trclib.TrcDriveBase;
 import trclib.TrcEmic2TextToSpeech.Voice;
