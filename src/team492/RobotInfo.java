@@ -188,7 +188,8 @@ public class RobotInfo
     //2-24-2018: 0.017, 0.0, 0.0017  - practice robot constants
     //2-27-2018: 0.015, 0.0, 0.0    -- practice robot
     //3-16-2018: 0.016, 0.0, 0.001    -- practice robot
-    public static final double GYRO_TURN_KP                     = 0.016;
+    //3-17-2018: 0.012, 0.0, 0.001    -- practice robot
+    public static final double GYRO_TURN_KP                     = 0.012;
     public static final double GYRO_TURN_KI                     = 0.0;
     public static final double GYRO_TURN_KD                     = 0.001;
     public static final double GYRO_TURN_KF                     = 0.0;
@@ -258,7 +259,7 @@ public class RobotInfo
     // CmdPowerUpAuto variables.
     //
     public static final double AUTO_DISTANCE_TO_SWITCH          = 145.0;
-    public static final double FINAL_FRONT_SCALE_APPROACH_DISTANCE= 32.0;    // TODO: need to tune this
+    public static final double FINAL_FRONT_SCALE_APPROACH_DISTANCE= 38.0;    // TODO: need to tune this
     public static final double FINAL_SIDE_SCALE_APPROACH_DISTANCE= 0.0;
     public static final double RIGHT_SWITCH_LOCATION            = 102.0;
     public static final double LEFT_SWITCH_LOCATION             = -102.0;
@@ -271,9 +272,9 @@ public class RobotInfo
     public static final double SWITCH_STRAFE_DISTANCE           = 26.0;
     public static final double MAX_CUBE_DISTANCE                = 20.0;
     public static final double SWITCH_SONAR_DISTANCE_THRESHOLD  = 16.0;
-    public static final double OPPOSITE_SWITCH_OVERSHOOT = 48.0;
-    public static final double STRAFE_FROM_SWITCH_DISTANCE = 12.0;
-    public static final double POSITION_TO_STRAFE_DISTANCE = 62.0;
+    public static final double OPPOSITE_SWITCH_OVERSHOOT = 35.0;
+    public static final double STRAFE_FROM_SWITCH_DISTANCE = 24.0;
+    public static final double POSITION_TO_STRAFE_DISTANCE = 108.0;
     
     //
     // CmdScaleAuto constants.
@@ -292,7 +293,7 @@ public class RobotInfo
     //
     public static final double FWD_DISTANCE_1                   = 10.0;
     public static final double FWD_DISTANCE_2                   = 60.0;
-    public static final double FWD_DISTANCE_3                   = 208.0;
+    public static final double FWD_DISTANCE_3                   = 220.0;
     public static final double LEFT_START_POS                      = LEFT_SWITCH_LOCATION;   //CodeReview: should this be slightly different from LEFT_SWITCH_LOCATION???
     public static final double MID_START_POS                      = 0.0;
     public static final double RIGHT_START_POS                      = RIGHT_SWITCH_LOCATION;    //CodeReview: should this be slightly different from RIGHT_SWITCH_LOCATION???

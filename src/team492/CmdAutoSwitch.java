@@ -309,8 +309,9 @@ class CmdAutoSwitch implements TrcRobot.RobotCommand
                         // Changing the first trigger point to zero so the threshold is about 16-inch.
                         sonarTriggerPoints[0] = 0.0;
                         sonarTrigger.setTaskEnabled(true);
-                        sm.addEvent(sonarEvent);
+                        if(forwardDistance != RobotInfo.FWD_DISTANCE_3)sm.addEvent(sonarEvent);
                         yDistance = 0.0;
+                        // questionable strafe calculation, needs fixing
                         xDistance = (RobotInfo.AUTO_DISTANCE_TO_SWITCH - forwardDistance) - 36.0;
                         if (rightSwitch) xDistance = -xDistance;
                         robot.pidDrive.setTarget(xDistance, yDistance, robot.targetHeading, false, event, 0.0);
@@ -347,7 +348,7 @@ class CmdAutoSwitch implements TrcRobot.RobotCommand
 
                     case DRIVE_PAST_SWITCH:
                         xDistance = 0.0;
-                        yDistance = RobotInfo.OPPOSITE_SWITCH_OVERSHOOT;
+                        yDistance = RobotInfo.OPPOSITE_SWITCH_OVERSHOOT + 21.0;
                         robot.pidDrive.setTarget(xDistance, yDistance, robot.targetHeading, false, event, 0.0);
                         sm.waitForSingleEvent(event, State.TURN_SOUTH);
                         break;
@@ -466,6 +467,7 @@ class CmdAutoSwitch implements TrcRobot.RobotCommand
                         xDistance = 0;
                         yDistance =
                             RobotInfo.SCALE_FRONT_POSITION + (RobotInfo.RIGHT_START_POS - cubeStrafeDistance);
+                        robot.tracer.traceInfo(funcName, "cubeStrafeDistance=%.1f driveAcrossFieldDistance=%.1f",cubeStrafeDistance, yDistance);
                         robot.pidDrive.setTarget(xDistance, yDistance, robot.targetHeading, false, event, 0.0);
                         sm.waitForSingleEvent(event, State.TURN_ROBOT);
                         break;
