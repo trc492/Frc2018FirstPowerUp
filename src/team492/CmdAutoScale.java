@@ -72,6 +72,7 @@ public class CmdAutoScale implements TrcRobot.RobotCommand
     private TrcEvent event, sonarEvent, elevatorEvent;
     private TrcStateMachine<State> sm;
     private TrcTimer timer;
+    private double startY;
     private boolean startRight;
     private boolean scaleRight;
     private boolean sameSide;
@@ -104,6 +105,8 @@ public class CmdAutoScale implements TrcRobot.RobotCommand
         elevatorEvent = new TrcEvent(moduleName + ".elevatorEvent");
         sm = new TrcStateMachine<>(moduleName);
         timer = new TrcTimer(moduleName);
+        
+        robot.gyroTurnPidCtrl.setNoOscillation(true);
 
         startRight = this.startPosition == Position.RIGHT;
         scaleRight = robot.gameSpecificMessage.charAt(1) == 'R';
@@ -182,6 +185,7 @@ public class CmdAutoScale implements TrcRobot.RobotCommand
         if (state != null)
         {
             double xDistance, yDistance;
+            double currY;
             State nextState;
 
             switch(state)
@@ -227,7 +231,7 @@ public class CmdAutoScale implements TrcRobot.RobotCommand
                     setRangingEnabled(true);
                     setSonarTriggerEnabled(true);
                     // If same side, no need to go across. Otherwise, go to lane 3 to cross field.
-                    nextState = sameSide ? State.DRIVE_TO_SCALE : State.DRIVE_TO_LANE_3;
+                    nextState = (sameSide || !lane3) ? State.DRIVE_TO_SCALE : State.DRIVE_TO_LANE_3;
 
                     // CodeReview: this logic is wrong. DRIVE_TO_SWITCH should just drive
                     // AUTO_DISTANCE_TO_SWITCH + 24.0 only.
@@ -241,6 +245,7 @@ public class CmdAutoScale implements TrcRobot.RobotCommand
                     // 3: range the switch, calculate the xDistance, calculate the yDistance either to lane 3 then goto 4 or to the scale then goto 5.
                     // 4: turn to opposite side, drive across, turn north, drive to DISTANCE_TO_SCALE - DISTANCE_TO_LANE3 then goto 5
                     // 5: raise elevator, deposit cube, done.
+                    startY = robot.driveBase.getYPosition();
                     yDistance = RobotInfo.AUTO_DISTANCE_TO_SWITCH + 24.0 - forwardDriveDistance;
                     if (sameSide || yDistance <= 0) yDistance = RobotInfo.AUTO_DISTANCE_TO_SWITCH + 24.0;
                     robot.pidDrive.setTarget(0.0, yDistance, robot.targetHeading, false, event);
@@ -256,7 +261,8 @@ public class CmdAutoScale implements TrcRobot.RobotCommand
                     distanceFromWall = RobotInfo.SWITCH_TO_WALL_DISTANCE - sonarDistance - RobotInfo.ROBOT_WIDTH/2.0;
                     robot.tracer.traceInfo(moduleName, "sonarDistance=%.1f, distanceFromWall=%.1f",
                         sonarDistance, distanceFromWall);
-                    robot.pidDrive.setTarget(0.0, RobotInfo.ALLIANCE_WALL_TO_LANE_3_DISTANCE - robot.driveBase.getYPosition(), 
+                    currY = robot.driveBase.getYPosition() - startY;
+                    robot.pidDrive.setTarget(0.0, RobotInfo.ALLIANCE_WALL_TO_LANE_3_DISTANCE - currY, 
                         robot.targetHeading, false, event);
                     sm.waitForSingleEvent(event, State.DRIVE_TO_OPPOSITE_SCALE);
                     break;
@@ -283,7 +289,7 @@ public class CmdAutoScale implements TrcRobot.RobotCommand
                     robot.pidDrive.setTarget(0.0, RobotInfo.ALLIANCE_WALL_TO_SCALE_DISTANCE - RobotInfo.ALLIANCE_WALL_TO_LANE_3_DISTANCE,
                         robot.targetHeading, false, event);
                     // Start raising elevator
-                    robot.elevator.setPosition(RobotInfo.ELEVATOR_SCALE_HIGH - 18.0, elevatorEvent, 2.5);
+                    robot.elevator.setPosition(RobotInfo.ELEVATOR_CRUISE_HEIGHT, elevatorEvent, 3.0);
                     sm.waitForSingleEvent(event, State.TURN_TO_FACE_SCALE);
                     break;
 
@@ -295,23 +301,25 @@ public class CmdAutoScale implements TrcRobot.RobotCommand
                     xDistance = -(RobotInfo.SCALE_TO_WALL_DISTANCE - RobotInfo.ROBOT_TO_SCALE_DISTANCE - distanceFromWall);
                     robot.tracer.traceInfo(moduleName, "sonarDistance=%.1f, distanceFromWall=%.1f,xDistance=%.1f",
                         sonarDistance, distanceFromWall, xDistance);
-                    if(!startRight) xDistance *= -1;
-                    yDistance = RobotInfo.FIELD_LENGTH/2.0 - robot.driveBase.getYPosition() - RobotInfo.ROBOT_LENGTH/2.0 - 12.0;
+                    if(!scaleRight) xDistance *= -1;
+                    currY = (robot.driveBase.getYPosition() - startY) + forwardDriveDistance;
+                    yDistance = RobotInfo.FIELD_LENGTH/2.0 - currY - RobotInfo.ROBOT_LENGTH/2.0 - 12.0;
                     robot.pidDrive.setTarget(xDistance, yDistance, robot.targetHeading, false, event);
                     // Start raising elevator
-                    robot.elevator.setPosition(RobotInfo.ELEVATOR_SCALE_HIGH - 18.0, elevatorEvent, 3.0);
+                    robot.elevator.setPosition(RobotInfo.ELEVATOR_CRUISE_HEIGHT, elevatorEvent, 3.0);
                     sm.waitForSingleEvent(event, State.TURN_TO_FACE_SCALE);
                     break;
 
                 case TURN_TO_FACE_SCALE:
-                    robot.targetHeading = startRight?DRIVE_HEADING_WEST:DRIVE_HEADING_EAST;
+                    robot.targetHeading = scaleRight?DRIVE_HEADING_WEST:DRIVE_HEADING_EAST;
                     robot.pidDrive.setTarget(0.0, 0.0, robot.targetHeading, false, event);
                     sm.waitForSingleEvent(event, State.RAISE_ELEVATOR);
                     break;
 
                 case RAISE_ELEVATOR:
                     // Already started to raise elevator, so wait for it to complete
-                    sm.waitForSingleEvent(elevatorEvent, State.THROW_CUBE, 1.0);
+                    robot.elevator.setPosition(RobotInfo.ELEVATOR_SCALE_HIGH - 18.0, elevatorEvent, 0.0);
+                    sm.waitForSingleEvent(elevatorEvent, State.THROW_CUBE, 2.0);
                     break;
 
                 case THROW_CUBE:
@@ -332,6 +340,7 @@ public class CmdAutoScale implements TrcRobot.RobotCommand
                     setSonarTriggerEnabled(false);
                     setRangingEnabled(false);
                     sm.stop();
+                    robot.gyroTurnPidCtrl.setNoOscillation(false);
                     break;
             }
             robot.traceStateInfo(elapsedTime, state.toString());

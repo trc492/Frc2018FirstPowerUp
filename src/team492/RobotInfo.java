@@ -174,10 +174,11 @@ public class RobotInfo
     // 2-20-2018: 0.0171099037270041, 0.04, 0.0, 0.0077 -- competition robot
     // 2-24-2018: 0.0172358143438125, 0.02, 0.0, 0.004 --practice robot
     
+    // 3-16-2018: 0.0172358143438125; 0.03, 0.0, 0.001 -- practice robot
     public static final double ENCODER_Y_INCHES_PER_COUNT       = 0.0172358143438125;
-    public static final double ENCODER_Y_KP                     = 0.028;
+    public static final double ENCODER_Y_KP                     = 0.03;
     public static final double ENCODER_Y_KI                     = 0.0;
-    public static final double ENCODER_Y_KD                     = 0.004;
+    public static final double ENCODER_Y_KD                     = 0.001;
     public static final double ENCODER_Y_KF                     = 0.0;
     public static final double ENCODER_Y_TOLERANCE              = 2.0;
 
@@ -186,9 +187,10 @@ public class RobotInfo
     // 2-20-2018: 0.015, 0.0, 0.0012 -- competition robot
     //2-24-2018: 0.017, 0.0, 0.0017  - practice robot constants
     //2-27-2018: 0.015, 0.0, 0.0    -- practice robot
-    public static final double GYRO_TURN_KP                     = 0.015;
+    //3-16-2018: 0.016, 0.0, 0.001    -- practice robot
+    public static final double GYRO_TURN_KP                     = 0.016;
     public static final double GYRO_TURN_KI                     = 0.0;
-    public static final double GYRO_TURN_KD                     = 0.0;
+    public static final double GYRO_TURN_KD                     = 0.001;
     public static final double GYRO_TURN_KF                     = 0.0;
     public static final double GYRO_TURN_TOLERANCE              = 2.0;
 
@@ -206,6 +208,8 @@ public class RobotInfo
     public static final double ELEVATOR_POSITION_OFFSET         = 8.0;
     public static final double ELEVATOR_MIN_HEIGHT              = 8.0;
     public static final double ELEVATOR_MAX_HEIGHT              = 82.0;     //need calibration
+    
+    public static final double ELEVATOR_CRUISE_HEIGHT           = 35.0;
 
     public static final double ELEVATOR_FLOOR_PICKUP_HEIGHT     = ELEVATOR_MIN_HEIGHT;  // Lowest point on elevator
     public static final double ELEVATOR_OFF_GROUND              = ELEVATOR_MIN_HEIGHT + 8.0; // 16 in
@@ -279,7 +283,7 @@ public class RobotInfo
     public static final double ROBOT_TO_SCALE_DISTANCE = 30.0;
     public static final double ALLIANCE_WALL_TO_LANE_3_DISTANCE = 228.735;
     public static final double ALLIANCE_WALL_TO_SCALE_DISTANCE = 324.0;
-    public static final double DRIVE_ACROSS_FIELD_DISTANCE = SWITCH_FENCE_WIDTH + SWITCH_TO_WALL_DISTANCE;
+    public static final double DRIVE_ACROSS_FIELD_DISTANCE = 220.0;//SWITCH_FENCE_WIDTH + SWITCH_TO_WALL_DISTANCE;
     public static final double CUBE_PICKUP_DROP_POWER = 1.0;
     public static final double DROP_CUBE_TIMEOUT = 0.5;
 
