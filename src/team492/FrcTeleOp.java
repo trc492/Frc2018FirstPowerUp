@@ -75,6 +75,7 @@ public class FrcTeleOp implements TrcRobot.RobotMode
     @Override
     public void stopMode()
     {
+    	robot.diagnostics.printDiagnostics();
         robot.setVisionEnabled(false);
     } // stopMode
 

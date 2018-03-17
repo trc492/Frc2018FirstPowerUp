@@ -150,6 +150,7 @@ public class Robot extends FrcRobotBase
     private double nextTimeToSpeakInSeconds = 0.0;  //0 means disabled, no need to speak;
     public FrcI2cLEDPanel messageBoard = null;
     public Relay ringLightsPower = null;
+    public OnBoardDiagnostics diagnostics;
 
     //
     // DriveBase subsystem.
@@ -334,6 +335,8 @@ public class Robot extends FrcRobotBase
             ringLightsPower = new Relay(RobotInfo.RELAY_RINGLIGHT_POWER);
             ringLightsPower.setDirection(Direction.kForward);
         }
+        
+        diagnostics = new OnBoardDiagnostics(this);
 
         //
         // DriveBase subsystem.
