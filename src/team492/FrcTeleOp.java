@@ -380,40 +380,40 @@ public class FrcTeleOp implements TrcRobot.RobotMode
 
             case FrcJoystick.LOGITECH_BUTTON8:
                 // Go up to next elevator preset
-                currHeight = robot.elevator.getPosition();
-                if(pressed && currHeight < RobotInfo.ELEVATOR_HEIGHTS[RobotInfo.ELEVATOR_HEIGHTS.length-1])
-                {
-                    
-                    for(int i = 0; i < RobotInfo.ELEVATOR_HEIGHTS.length; i++)
-                    {
-                        if(RobotInfo.ELEVATOR_HEIGHTS[i] > currHeight)
-                        {
-                            double targetHeight = RobotInfo.ELEVATOR_HEIGHTS[i];
-                            robot.elevator.setPosition(targetHeight);
-                            break;
-                        }
-                    }
-                    
-                }
+//                currHeight = robot.elevator.getPosition();
+//                if(pressed && currHeight < RobotInfo.ELEVATOR_HEIGHTS[RobotInfo.ELEVATOR_HEIGHTS.length-1])
+//                {
+//                    
+//                    for(int i = 0; i < RobotInfo.ELEVATOR_HEIGHTS.length; i++)
+//                    {
+//                        if(RobotInfo.ELEVATOR_HEIGHTS[i] > currHeight)
+//                        {
+//                            double targetHeight = RobotInfo.ELEVATOR_HEIGHTS[i];
+//                            robot.elevator.setPosition(targetHeight);
+//                            break;
+//                        }
+//                    }
+//                    
+//                }
                 break;
 
             case FrcJoystick.LOGITECH_BUTTON9:
                 // Go down to next elevator preset
-                currHeight = robot.elevator.getPosition();
-                if(pressed && currHeight > RobotInfo.ELEVATOR_HEIGHTS[0])
-                {
-                    
-                    for(int i = RobotInfo.ELEVATOR_HEIGHTS.length-1; i >= 0; i--)
-                    {
-                        if(RobotInfo.ELEVATOR_HEIGHTS[i] < currHeight)
-                        {
-                            double targetHeight = RobotInfo.ELEVATOR_HEIGHTS[i];
-                            robot.elevator.setPosition(targetHeight);
-                            break;
-                        }
-                    }
-                    
-                }
+//                currHeight = robot.elevator.getPosition();
+//                if(pressed && currHeight > RobotInfo.ELEVATOR_HEIGHTS[0])
+//                {
+//                    
+//                    for(int i = RobotInfo.ELEVATOR_HEIGHTS.length-1; i >= 0; i--)
+//                    {
+//                        if(RobotInfo.ELEVATOR_HEIGHTS[i] < currHeight)
+//                        {
+//                            double targetHeight = RobotInfo.ELEVATOR_HEIGHTS[i];
+//                            robot.elevator.setPosition(targetHeight);
+//                            break;
+//                        }
+//                    }
+//                    
+//                }
                 break;
 
             case FrcJoystick.LOGITECH_BUTTON10:

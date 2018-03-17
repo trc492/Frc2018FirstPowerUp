@@ -200,10 +200,10 @@ public class RobotInfo
     //
     //2-20-2018: 0.0071644803229062, 0.08, 0.0, 0.001
     public static final double ELEVATOR_INCHES_PER_COUNT        = 0.0071644803229062;//0.00577778;   // 39 inches in 6750 ticks
-    public static final double ELEVATOR_KP                      = 0.1;      // this too
-    public static final double ELEVATOR_KI                      = 0.0;      // hopefully not this
+    public static final double ELEVATOR_KP                      = 0.2;      // this too
+    public static final double ELEVATOR_KI                      = 0.001;      // hopefully not this
     public static final double ELEVATOR_KD                      = 0.0;      // this too
-    public static final double ELEVATOR_TOLERANCE               = 0.5;      // this too
+    public static final double ELEVATOR_TOLERANCE               = 1.0;      // this too
     public static final double ELEVATOR_GRAVITY_COMPENSATION    = 0.08;     // Tuned during testing
     public static final double ELEVATOR_CAL_POWER               = 0.3;      // this too
     public static final double ELEVATOR_POSITION_OFFSET         = 8.0;

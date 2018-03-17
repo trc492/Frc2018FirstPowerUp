@@ -217,13 +217,13 @@ public class CmdAutoScale implements TrcRobot.RobotCommand
                     sonarDistance = sonarArray.getDistance(0).value;
                     distanceFromWall = RobotInfo.SWITCH_TO_WALL_DISTANCE - sonarDistance - RobotInfo.ROBOT_WIDTH/2.0;
 
-                    xDistance = RobotInfo.SCALE_TO_WALL_DISTANCE - RobotInfo.ROBOT_TO_SCALE_DISTANCE - distanceFromWall;
-                    if (scaleRight) xDistance *= -1;
 
                     double currY = robot.driveBase.getYPosition();
                     if (!sameSide && !lane3) currY = currY - startY + forwardDriveDistance;
                     if (sameSide || !lane3)
                     {
+                        xDistance = RobotInfo.SCALE_TO_WALL_DISTANCE - RobotInfo.ROBOT_TO_SCALE_DISTANCE - distanceFromWall;
+                        if (scaleRight) xDistance *= -1;
                         // Start raising elevator
                         robot.elevator.setPosition(RobotInfo.ELEVATOR_CRUISE_HEIGHT);
                         // The target scale is ahead of us, go to it.
@@ -233,6 +233,7 @@ public class CmdAutoScale implements TrcRobot.RobotCommand
                     else
                     {
                         // The target scale is on the other side, go to lane 3 to cross over.
+                        xDistance = 0.0;
                         yDistance = RobotInfo.ALLIANCE_WALL_TO_LANE_3_DISTANCE - currY;
                         nextState = State.TURN_TO_OPPOSITE_SCALE;
                     }
@@ -250,7 +251,7 @@ public class CmdAutoScale implements TrcRobot.RobotCommand
                     break;
 
                 case DRIVE_TO_OPPOSITE_SCALE:
-                    yDistance = RobotInfo.DRIVE_ACROSS_FIELD_DISTANCE;
+                    yDistance = RobotInfo.FIELD_WIDTH - distanceFromWall - RobotInfo.SCALE_TO_WALL_DISTANCE + RobotInfo.ROBOT_TO_SCALE_DISTANCE - 20.0;
                     robot.pidDrive.setTarget(0.0, yDistance, robot.targetHeading, false, event, 0.0);
                     sm.waitForSingleEvent(event, State.TURN_TO_SCALE);
                     break;
@@ -262,7 +263,7 @@ public class CmdAutoScale implements TrcRobot.RobotCommand
                     break;
 
                 case FINISH_DRIVE_TO_SCALE:
-                    yDistance = RobotInfo.ALLIANCE_WALL_TO_SCALE_DISTANCE - RobotInfo.ALLIANCE_WALL_TO_LANE_3_DISTANCE;
+                    yDistance = RobotInfo.ALLIANCE_WALL_TO_SCALE_DISTANCE - RobotInfo.ALLIANCE_WALL_TO_LANE_3_DISTANCE - 26.0;
                     robot.pidDrive.setTarget(0.0, yDistance, robot.targetHeading, false, event, 0.0);
                     // Start raising elevator
                     robot.elevator.setPosition(RobotInfo.ELEVATOR_CRUISE_HEIGHT);
@@ -277,7 +278,7 @@ public class CmdAutoScale implements TrcRobot.RobotCommand
 
                 case RAISE_ELEVATOR:
                     // Already started to raise elevator, so wait for it to complete
-                    robot.elevator.setPosition(RobotInfo.ELEVATOR_SCALE_HIGH - 18.0, elevatorEvent, 2.0);
+                    robot.elevator.setPosition(RobotInfo.ELEVATOR_SCALE_HIGH - 18.0, elevatorEvent, 0.0);
                     sm.waitForSingleEvent(elevatorEvent, State.THROW_CUBE);
                     break;
 

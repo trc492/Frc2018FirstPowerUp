@@ -323,12 +323,18 @@ public class FrcTest extends FrcTeleOp
                 break;
 
             case FrcJoystick.LOGITECH_BUTTON8:
-                robot.elevator.setManualOverride(pressed);
+                if(pressed)
+                {
+                    robot.elevator.setPosition(RobotInfo.ELEVATOR_CRUISE_HEIGHT);
+                }
                 processedInput = true;
                 break;
 
             case FrcJoystick.LOGITECH_BUTTON9:
-                pickupOverride = pressed;
+                if(pressed)
+                {
+                    robot.elevator.setPosition(RobotInfo.ELEVATOR_SCALE_HIGH - 18.0);
+                }
                 processedInput = true;
                 break;
 

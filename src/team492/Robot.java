@@ -577,8 +577,9 @@ public class Robot extends FrcRobotBase
 
             if (DEBUG_SUBSYSTEMS)
             {
-                dashboard.displayPrintf(8, "Elevator: power=%.1f, position=%.1f(%.1f), limitSw=%b/%b",
+                dashboard.displayPrintf(8, "Elevator: power=%.1f, position=%.1f(%.1f), error=%.1f, limitSw=%b/%b",
                     elevator.getPower(), elevator.getPosition(), elevator.elevatorMotor.getPosition(),
+                    elevator.elevatorPidCtrl.getError(),
                     elevator.elevatorMotor.isLowerLimitSwitchActive(),
                     elevator.elevatorMotor.isUpperLimitSwitchActive());
                 dashboard.displayPrintf(9, "Winch: power=%.1f", winch.getPower());
