@@ -281,6 +281,8 @@ public class CmdAutoScale implements TrcRobot.RobotCommand
                     break;
 
                 case THROW_CUBE:
+                    // Do another setPosition without event so it will hold position.
+                    robot.elevator.setPosition(RobotInfo.ELEVATOR_SCALE_HIGH - 18.0);
                     robot.cubePickup.deployPickup();
                     robot.cubePickup.dropCube(RobotInfo.CUBE_PICKUP_DROP_POWER);
                     timer.set(RobotInfo.DROP_CUBE_TIMEOUT, event);

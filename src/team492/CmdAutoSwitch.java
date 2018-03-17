@@ -67,7 +67,6 @@ class CmdAutoSwitch implements TrcRobot.RobotCommand
         RAISE_ELEVATOR,
         APPROACH_FINAL_TARGET,
         DEPOSIT_CUBE,
-        LOWER_ELEVATOR,
         DONE
     } // enum State
 
@@ -441,7 +440,7 @@ class CmdAutoSwitch implements TrcRobot.RobotCommand
                         xDistance = 0.0;
                         yDistance = robot.driveBase.getYPosition() - yStart;
                         robot.pidDrive.setTarget(xDistance, -yDistance, robot.targetHeading, false, event);
-                        robot.elevator.setPosition(RobotInfo.ELEVATOR_OFF_GROUND, event, 0.0);
+                        robot.elevator.setPosition(RobotInfo.ELEVATOR_CRUISE_HEIGHT);
                         sm.waitForSingleEvent(event, State.REPOSITION_TURN, 1.5);
                         break;
 
@@ -478,11 +477,13 @@ class CmdAutoSwitch implements TrcRobot.RobotCommand
 
                     case RAISE_ELEVATOR:
                         robot.tracer.traceInfo(funcName, "ElevatorStartHeight=%.1f", robot.elevator.getPosition());
-                        robot.elevator.setPosition(RobotInfo.ELEVATOR_SCALE_HIGH, event, 0.0);
-                        sm.waitForSingleEvent(event, State.APPROACH_FINAL_TARGET, 5.0);
+                        robot.elevator.setPosition(RobotInfo.ELEVATOR_SCALE_HIGH, event, 5.0);
+                        sm.waitForSingleEvent(event, State.APPROACH_FINAL_TARGET);
                         break;
 
                     case APPROACH_FINAL_TARGET:
+                        // Do another setPosition without event so it will hold position.
+                        robot.elevator.setPosition(RobotInfo.ELEVATOR_SCALE_HIGH);
                         robot.tracer.traceInfo(funcName, "ElevatorStopHeight=%.1f", robot.elevator.getPosition());
                         xDistance = 0.0;
                         // left this side approach distance just in case we need it again
@@ -497,12 +498,6 @@ class CmdAutoSwitch implements TrcRobot.RobotCommand
                         robot.encoderYPidCtrl.setOutputLimit(yPowerLimit);
                         robot.cubePickup.dropCube(1.0);
                         timer.set(0.3, event);
-                        sm.waitForSingleEvent(event, State.LOWER_ELEVATOR);
-                        break;
-
-                    case LOWER_ELEVATOR:
-                        robot.cubePickup.stopPickup();
-                        robot.elevator.setPosition(RobotInfo.ELEVATOR_MIN_HEIGHT, event, 0.0);
                         sm.waitForSingleEvent(event, State.DONE);
                         break;
 
@@ -510,6 +505,8 @@ class CmdAutoSwitch implements TrcRobot.RobotCommand
                         //
                         // We are done.
                         //
+                        robot.cubePickup.stopPickup();
+                        robot.elevator.setPosition(RobotInfo.ELEVATOR_MIN_HEIGHT);
                         done = true;
                         sm.stop();
                         break;

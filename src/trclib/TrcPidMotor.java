@@ -419,7 +419,7 @@ public class TrcPidMotor
      *                timeout, the operation will be canceled and the event will be signaled. If no timeout is
      *                specified, it should be set to zero.
      */
-    public void setTarget(double target, boolean holdTarget, TrcEvent event, double timeout)
+    private void setTarget(double target, boolean holdTarget, TrcEvent event, double timeout)
     {
         final String funcName = "setTarget";
 
@@ -960,6 +960,7 @@ public class TrcPidMotor
             if (!holdTarget && (pidCtrl.isOnTarget() || stalled) ||
                 expiredTime != 0.0 && TrcUtil.getCurrentTime() >= expiredTime)
             {
+                stop(true);
                 if (notifyEvent != null)
                 {
                     notifyEvent.set(true);

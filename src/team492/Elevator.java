@@ -82,7 +82,7 @@ public class Elevator
     public void setPosition(double pos, TrcEvent event, double timeout)
     {
         pos = TrcUtil.clipRange(pos, RobotInfo.ELEVATOR_MIN_HEIGHT, RobotInfo.ELEVATOR_MAX_HEIGHT);
-        elevator.setTarget(pos, true, event, timeout);
+        elevator.setTarget(pos, event, timeout);
     }
 
     public void setPower(double power)
