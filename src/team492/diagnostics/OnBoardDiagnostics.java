@@ -3,6 +3,7 @@ package team492.diagnostics;
 import java.util.ArrayList;
 import java.util.List;
 
+import edu.wpi.first.wpilibj.DriverStation;
 import team492.Robot;
 import team492.diagnostics.DiagnosticsTest.TestResult;
 
@@ -37,13 +38,13 @@ public class OnBoardDiagnostics {
 			if(result.faultDetected())
 			{
 				faults = true;
-				System.out.println(result.errorMessage());
+				DriverStation.reportError(result.errorMessage(), false);
 			}
 		}
 		
 		if(!faults)
 		{
-			System.out.println("no faults");
+			DriverStation.reportError("no faults", false);
 		}
 	}
 
