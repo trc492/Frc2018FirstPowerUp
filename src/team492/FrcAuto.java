@@ -245,6 +245,7 @@ public class FrcAuto implements TrcRobot.RobotMode
     {
         robot.updateDashboard();
         robot.announceSafety();
+        robot.diagnostics.doPeriodicTests();
     } // runPeriodic
 
     @Override

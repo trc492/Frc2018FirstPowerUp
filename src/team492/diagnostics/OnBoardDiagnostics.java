@@ -2,7 +2,6 @@ package team492.diagnostics;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import team492.Robot;
 import team492.diagnostics.DiagnosticsTest.TestResult;
@@ -14,10 +13,18 @@ public class OnBoardDiagnostics {
 	public OnBoardDiagnostics(Robot robot)
 	{
 		tests = new ArrayList<>();
-		tests.add(new EncoderUnplugged(robot.leftFrontWheel, "left front encoder"));
-		tests.add(new EncoderUnplugged(robot.rightFrontWheel, "right front encoder"));
-		tests.add(new EncoderUnplugged(robot.leftRearWheel, "left rear encoder"));
-		tests.add(new EncoderUnplugged(robot.rightRearWheel, "right rear encoder"));
+		tests.add(new EncoderUnpluggedTest(robot.leftFrontWheel, "left front encoder"));
+		tests.add(new EncoderUnpluggedTest(robot.rightFrontWheel, "right front encoder"));
+		tests.add(new EncoderUnpluggedTest(robot.leftRearWheel, "left rear encoder"));
+		tests.add(new EncoderUnpluggedTest(robot.rightRearWheel, "right rear encoder"));
+		
+		tests.add(new UltrasonicUnpluggedTest(robot::getLeftSonarDistance, "left sonar"));
+		tests.add(new UltrasonicUnpluggedTest(robot::getRightSonarDistance, "right sonar"));
+	}
+	
+	public void doPeriodicTests()
+	{
+		tests.forEach(DiagnosticsTest::test);
 	}
 	
 	public void printDiagnostics()
@@ -25,7 +32,7 @@ public class OnBoardDiagnostics {
 		boolean faults = false;
 		
 		for(DiagnosticsTest test : tests) {
-			TestResult result = test.test();
+			TestResult result = test.getResult();
 			
 			if(result.faultDetected())
 			{

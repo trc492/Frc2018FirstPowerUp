@@ -1,14 +1,15 @@
 package team492.diagnostics;
 
 public interface DiagnosticsTest {
-	public TestResult test();
+	public void test();
+	public TestResult getResult();
 	
 	public static class TestResult {
 		private boolean fault;
 		private String errorMessage;
 		
-		public TestResult(boolean fault, String errorMessage) {
-			this.fault = fault;
+		public TestResult(boolean isFaulty, String errorMessage) {
+			this.fault = isFaulty;
 			this.errorMessage = errorMessage;
 		}
 		
