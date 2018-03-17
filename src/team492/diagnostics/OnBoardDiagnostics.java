@@ -38,13 +38,13 @@ public class OnBoardDiagnostics {
 			if(result.faultDetected())
 			{
 				faults = true;
-				DriverStation.reportError(result.errorMessage(), false);
+				DriverStation.reportError("### Diagnostics: " + result.errorMessage(), false);
 			}
 		}
 		
 		if(!faults)
 		{
-			DriverStation.reportError("no faults", false);
+			DriverStation.reportError("### Diagnostics: No faults", false);
 		}
 	}
 
