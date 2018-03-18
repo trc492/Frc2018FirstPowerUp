@@ -6,6 +6,10 @@ import java.util.List;
 import edu.wpi.first.wpilibj.DriverStation;
 import team492.Robot;
 import team492.diagnostics.DiagnosticsTest.TestResult;
+import team492.diagnostics.tests.DigitalSensorUnchangedTest;
+import team492.diagnostics.tests.ElevatorPositionUnchangedTest;
+import team492.diagnostics.tests.EncoderUnpluggedTest;
+import team492.diagnostics.tests.UltrasonicUnpluggedTest;
 
 public class OnBoardDiagnostics {
 	
@@ -21,6 +25,16 @@ public class OnBoardDiagnostics {
 		
 		tests.add(new UltrasonicUnpluggedTest(robot::getLeftSonarDistance, "left sonar"));
 		tests.add(new UltrasonicUnpluggedTest(robot::getRightSonarDistance, "right sonar"));
+		
+		tests.add(new DigitalSensorUnchangedTest(
+				robot.elevator.elevatorMotor::isLowerLimitSwitchActive, 
+				"elevator lower limit switch"));
+		
+		tests.add(new DigitalSensorUnchangedTest(
+				robot.cubePickup::cubeInProximity, 
+				"grabber cube proximity sensor"));
+
+		tests.add(new ElevatorPositionUnchangedTest(robot.elevator));
 	}
 	
 	public void doPeriodicTests()
@@ -38,14 +52,13 @@ public class OnBoardDiagnostics {
 			if(result.faultDetected())
 			{
 				faults = true;
-				DriverStation.reportError(result.errorMessage(), false);
+				DriverStation.reportError("### Diagnostics: " + result.errorMessage(), false);
 			}
 		}
 		
 		if(!faults)
 		{
-			DriverStation.reportError("no faults", false);
+			DriverStation.reportError("### Diagnostics: No faults", false);
 		}
 	}
-
 }
