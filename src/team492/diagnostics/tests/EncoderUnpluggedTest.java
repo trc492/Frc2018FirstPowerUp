@@ -1,6 +1,8 @@
-package team492.diagnostics;
+package team492.diagnostics.tests;
 
 import frclib.FrcCANTalon;
+import team492.diagnostics.DiagnosticsTest;
+import team492.diagnostics.DiagnosticsTest.TestResult;
 
 public class EncoderUnpluggedTest implements DiagnosticsTest{
 

@@ -6,6 +6,9 @@ import java.util.List;
 import edu.wpi.first.wpilibj.DriverStation;
 import team492.Robot;
 import team492.diagnostics.DiagnosticsTest.TestResult;
+import team492.diagnostics.tests.DigitalSensorUnchangedTest;
+import team492.diagnostics.tests.EncoderUnpluggedTest;
+import team492.diagnostics.tests.UltrasonicUnpluggedTest;
 
 public class OnBoardDiagnostics {
 	
