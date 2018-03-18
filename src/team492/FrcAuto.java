@@ -76,13 +76,13 @@ public class FrcAuto implements TrcRobot.RobotMode
     private FrcChoiceMenu<AutoStrategy> autoStrategyMenu;
     private FrcChoiceMenu<ForwardDistance> forwardDistanceMenu;
     private FrcChoiceMenu<StartPosition> startPositionMenu;
-    private FrcChoiceMenu<YesOrNo> flipInFlightMenu;
+    private FrcChoiceMenu<YesOrNo> fastDeliveryMenu;
 
     private AutoStrategy autoStrategy;
     private ForwardDistance forwardDistance;
     private StartPosition startPosition;
     private double delay;
-    private boolean flipInFlight;
+    private boolean fastDelivery;
 
     private double forwardDriveDistance;
     private double robotStartPosition;
@@ -98,7 +98,7 @@ public class FrcAuto implements TrcRobot.RobotMode
         autoStrategyMenu = new FrcChoiceMenu<>("Auto/Autonomous Strategies");
         forwardDistanceMenu = new FrcChoiceMenu<>("Auto/Forward Distances");
         startPositionMenu = new FrcChoiceMenu<>("Auto/Start Positions");
-        flipInFlightMenu = new FrcChoiceMenu<>("Auto/FlipInFlight");
+        fastDeliveryMenu = new FrcChoiceMenu<>("Auto/FastDelivery");
 
         //
         // Populate Autonomous Mode menus.
@@ -121,8 +121,8 @@ public class FrcAuto implements TrcRobot.RobotMode
         startPositionMenu.addChoice("Middle Start", StartPosition.MID_START_POS, false, false);
         startPositionMenu.addChoice("Right Side Start", StartPosition.RIGHT_START_POS, false, true);
 
-        flipInFlightMenu.addChoice("Yes", YesOrNo.YES, true, false);
-        flipInFlightMenu.addChoice("No", YesOrNo.NO, false, true);
+        fastDeliveryMenu.addChoice("Yes", YesOrNo.YES, true, false);
+        fastDeliveryMenu.addChoice("No", YesOrNo.NO, false, true);
     } // FrcAuto
 
     //
@@ -184,13 +184,13 @@ public class FrcAuto implements TrcRobot.RobotMode
 
         autoStrategy = autoStrategyMenu.getCurrentChoiceObject();
         delay = HalDashboard.getNumber("Auto/Delay", 0.0);
-        flipInFlight = flipInFlightMenu.getCurrentChoiceObject() == YesOrNo.YES;
+        fastDelivery = fastDeliveryMenu.getCurrentChoiceObject() == YesOrNo.YES;
 
         switch (autoStrategy)
         {
             case AUTO_SWITCH:
                 autoCommand = new CmdAutoSwitch(
-                    robot, delay, forwardDriveDistance, robotStartPosition, flipInFlight);
+                    robot, delay, forwardDriveDistance, robotStartPosition, fastDelivery);
                 break;
 
             case AUTO_SCALE:

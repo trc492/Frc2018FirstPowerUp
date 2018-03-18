@@ -33,15 +33,28 @@ import trclib.TrcTimer;
 class CmdAutoSwitch implements TrcRobot.RobotCommand
 {
     private static final String moduleName = "CmdAutoSwitch";
+    
+    //headings for starting backwards
     private static final double DRIVE_HEADING_NORTH = 180.0;
-    private static final double DRIVE_HEADING_EAST = -90.0;
-    private static final double DRIVE_HEADING_WEST = 90.0;
+    private static final double DRIVE_HEADING_EAST  = -90.0;
+    private static final double DRIVE_HEADING_WEST  = 90.0;
     private static final double DRIVE_HEADING_SOUTH = 0.0;
+    
+    //headings for starting forwards
+    private static final double SWITCH_HEADING    = 30.0;
+    
+    //TODO: move these to RobotInfo
+    private static final double SHORTEST_DISTANCE_TO_SWITCH = 162.0;
+    private static final double FAST_DELIVERY_DRIVE_PAST_SWITCH_DISTANCE = 54.0;
     private double[] sonarTriggerPoints = {8.0, 32.0};
 
     private static enum State
     {
         DO_DELAY,
+        DRIVE_DIAGONAL_TO_SWITCH,
+        THROW_CUBE,
+        TURN_TO_END_OF_SWITCH,
+        FAST_DELIVERY_DRIVE_PAST_SWITCH,
         DRIVE_FORWARD_DISTANCE,
         CHECK_SONAR_DISTANCE,
         SONAR_STRAFE_TO_SWITCH,
@@ -76,6 +89,7 @@ class CmdAutoSwitch implements TrcRobot.RobotCommand
     private double forwardDistance;
     private double startPosition;
     private boolean flipInFlight;
+    private boolean fastDelivery;
 
     private boolean rightSwitch;
     private boolean rightScale;
@@ -93,7 +107,7 @@ class CmdAutoSwitch implements TrcRobot.RobotCommand
     private Double visionTarget;
     private double sonarDistance;
 
-    CmdAutoSwitch(Robot robot, double delay, double forwardDistance, double startPosition, boolean flipInFlight)
+    CmdAutoSwitch(Robot robot, double delay, double forwardDistance, double startPosition, boolean fastDelivery)
     {
         this.robot = robot;
         this.delay = delay;
@@ -101,7 +115,12 @@ class CmdAutoSwitch implements TrcRobot.RobotCommand
         this.forwardDistance = forwardDistance != -1.0?
             forwardDistance: HalDashboard.getNumber("Auto/Forward Distance", 10.0);
         this.startPosition = startPosition;
-        this.flipInFlight = flipInFlight;
+        
+        //flipInFlight is fastDelivery for side start positions
+        this.flipInFlight = fastDelivery;
+        
+        // only uses fast delivery if the robot starts in the center
+        this.fastDelivery = fastDelivery && startPosition == 0.0;
 
         this.rightSwitch = robot.gameSpecificMessage.charAt(0) == 'R';
         this.rightScale = robot.gameSpecificMessage.charAt(1) == 'R';
@@ -158,16 +177,47 @@ class CmdAutoSwitch implements TrcRobot.RobotCommand
                         //
                         // Do delay if any.
                         //
+                    	nextState = fastDelivery? State.DRIVE_DIAGONAL_TO_SWITCH: State.DRIVE_FORWARD_DISTANCE;
                         if (delay == 0.0)
                         {
-                            sm.setState(State.DRIVE_FORWARD_DISTANCE);
+                            sm.setState(nextState);
                         }
                         else
                         {
                             timer.set(delay, event);
-                            sm.waitForSingleEvent(event, State.DRIVE_FORWARD_DISTANCE);
+                            sm.waitForSingleEvent(event, nextState);
                         }
                         break;
+                        
+                    case DRIVE_DIAGONAL_TO_SWITCH:
+                    	xDistance = 0.0;
+                    	yDistance = SHORTEST_DISTANCE_TO_SWITCH;
+                    	robot.targetHeading = rightSwitch? SWITCH_HEADING: -SWITCH_HEADING;
+                    	robot.pidDrive.setTarget(xDistance, yDistance, robot.targetHeading, false, event, 0.0);
+                    	robot.elevator.setPosition(RobotInfo.ELEVATOR_SWITCH_HEIGHT);
+                    	sm.waitForSingleEvent(event, State.THROW_CUBE);
+                    	break;
+                    	
+                    case THROW_CUBE:
+                    	robot.cubePickup.dropCube(1.0);
+                    	timer.set(0.3, event);
+                    	sm.waitForSingleEvent(event, State.TURN_TO_END_OF_SWITCH);
+                    	break;
+                    	
+                    case TURN_TO_END_OF_SWITCH:
+                    	xDistance = yDistance = 0.0;
+                    	//turn direction is inverted because the robot started facing forwards
+                    	robot.targetHeading = rightSwitch? DRIVE_HEADING_WEST: DRIVE_HEADING_EAST;
+                    	robot.pidDrive.setTarget(xDistance, yDistance, robot.targetHeading, false, event, 0.0);
+                    	sm.waitForSingleEvent(event, State.FAST_DELIVERY_DRIVE_PAST_SWITCH);
+                    	break;
+                    	
+                    case FAST_DELIVERY_DRIVE_PAST_SWITCH:
+                    	xDistance = 0.0;
+                    	yDistance = FAST_DELIVERY_DRIVE_PAST_SWITCH_DISTANCE;
+                    	robot.pidDrive.setTarget(xDistance, yDistance, robot.targetHeading, false, event, 0.0);
+                    	sm.waitForSingleEvent(event, State.TURN_SOUTH);
+                    	break;
 
                     case DRIVE_FORWARD_DISTANCE:
                         xDistance = 0.0;
@@ -365,8 +415,9 @@ class CmdAutoSwitch implements TrcRobot.RobotCommand
                     case TURN_SOUTH:
                         xDistance = yDistance = 0.0;
                         robot.targetHeading = DRIVE_HEADING_SOUTH;
+                        if(fastDelivery) robot.targetHeading += 180.0;
                         robot.pidDrive.setTarget(xDistance, yDistance, robot.targetHeading, false, event);
-                        nextState = forwardDistance == RobotInfo.FWD_DISTANCE_3?
+                        nextState = (forwardDistance == RobotInfo.FWD_DISTANCE_3 && !fastDelivery)?
                             State.PRECISION_STRAFE: State.POSITION_TO_STRAFE;
                         sm.waitForSingleEvent(event, nextState);
                         break;
@@ -468,6 +519,7 @@ class CmdAutoSwitch implements TrcRobot.RobotCommand
                             robot.targetHeading = rightScale? DRIVE_HEADING_EAST: DRIVE_HEADING_WEST;
                             nextState = State.DRIVE_TO_SECOND_TARGET;
                         }
+                        if(fastDelivery) robot.targetHeading += 180;
                         robot.pidDrive.setTarget(xDistance, yDistance, robot.targetHeading, false, event);
                         sm.waitForSingleEvent(event, nextState);
                         break;
@@ -484,6 +536,7 @@ class CmdAutoSwitch implements TrcRobot.RobotCommand
                     case TURN_ROBOT:
                         xDistance = yDistance = 0.0;
                         robot.targetHeading = DRIVE_HEADING_NORTH;
+                        if(fastDelivery) robot.targetHeading += 180;
                         robot.pidDrive.setTarget(xDistance, yDistance, robot.targetHeading, false, event);
                         sm.waitForSingleEvent(event, State.RAISE_ELEVATOR);
                         break;
