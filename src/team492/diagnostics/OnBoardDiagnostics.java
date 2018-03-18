@@ -21,6 +21,7 @@ public class OnBoardDiagnostics {
 		tests.add(new EncoderUnpluggedTest(robot.rightFrontWheel, "right front encoder"));
 		tests.add(new EncoderUnpluggedTest(robot.leftRearWheel, "left rear encoder"));
 		tests.add(new EncoderUnpluggedTest(robot.rightRearWheel, "right rear encoder"));
+		tests.add(new EncoderUnpluggedTest(robot.elevator.elevatorMotor, "elevator encoder"));
 		
 		tests.add(new UltrasonicUnpluggedTest(robot::getLeftSonarDistance, "left sonar"));
 		tests.add(new UltrasonicUnpluggedTest(robot::getRightSonarDistance, "right sonar"));
