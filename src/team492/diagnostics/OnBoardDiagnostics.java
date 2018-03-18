@@ -21,6 +21,14 @@ public class OnBoardDiagnostics {
 		
 		tests.add(new UltrasonicUnpluggedTest(robot::getLeftSonarDistance, "left sonar"));
 		tests.add(new UltrasonicUnpluggedTest(robot::getRightSonarDistance, "right sonar"));
+		
+		tests.add(new DigitalSensorUnchangedTest(
+				robot.elevator.elevatorMotor::isLowerLimitSwitchActive, 
+				"elevator lower limit switch"));
+		
+		tests.add(new DigitalSensorUnchangedTest(
+				robot.cubePickup::cubeInProximity, 
+				"grabber cube proximity sensor"));
 	}
 	
 	public void doPeriodicTests()
@@ -47,5 +55,4 @@ public class OnBoardDiagnostics {
 			DriverStation.reportError("### Diagnostics: No faults", false);
 		}
 	}
-
 }

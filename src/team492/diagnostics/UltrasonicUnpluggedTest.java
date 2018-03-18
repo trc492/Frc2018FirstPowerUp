@@ -2,32 +2,19 @@ package team492.diagnostics;
 
 import java.util.function.Supplier;
 
-public class UltrasonicUnpluggedTest implements DiagnosticsTest{
+public class UltrasonicUnpluggedTest extends ExpectSensorChangeTest {
 
-	boolean sensorWorking = false;
-	double firstSonarReading;
-	Supplier<Double> sonarSensor;
-	String sensorName;
+	private static final double EXPECTED_CHANGE_INCHES = 1.0;
+	private final String sensorName;
 	
 	public UltrasonicUnpluggedTest(Supplier<Double> sonarSensor, String sensorName) 
 	{
-		this.sonarSensor = sonarSensor;
-		firstSonarReading = sonarSensor.get();
+		super(sonarSensor, EXPECTED_CHANGE_INCHES);
 		this.sensorName = sensorName;
 	}
 
 	@Override
-	public void test() {
-		double currentSonarReading = sonarSensor.get();
-		if(Math.abs(currentSonarReading - firstSonarReading) < 1.0)
-		{
-			sensorWorking = true;
-		}
+	public String getErrorMessage() {
+		return sensorName + " did not change enough and might be unplugged";
 	}
-
-	@Override
-	public TestResult getResult() {
-		return new TestResult(!sensorWorking, this.sensorName + " might be unplugged");
-	}
-
 }
