@@ -3,7 +3,6 @@ package team492.diagnostics.tests;
 import java.util.function.Supplier;
 
 import team492.diagnostics.DiagnosticsTest;
-import team492.diagnostics.DiagnosticsTest.TestResult;
 
 public abstract class ExpectSensorChangeTest implements DiagnosticsTest {
 	

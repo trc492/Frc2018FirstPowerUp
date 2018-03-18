@@ -300,8 +300,7 @@ public class FrcTeleOp implements TrcRobot.RobotMode
     {
         robot.dashboard.displayPrintf(8, "  OperatorStick: button=0x%04x %s", button, pressed? "pressed": "released");
 
-        double currHeight;
-        //CodeReview: add a pair of buttons to go up/down preset elevator heights.
+//        double currHeight;
         switch (button)
         {
             case FrcJoystick.LOGITECH_TRIGGER:
