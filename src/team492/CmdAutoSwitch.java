@@ -379,8 +379,6 @@ class CmdAutoSwitch implements TrcRobot.RobotCommand
                         break;
 
                     case START_STRAFE:
-                        robot.leftFlipper.retract();
-                        robot.rightFlipper.retract();
                         robot.cubePickup.openClaw();
                         xStart = robot.driveBase.getXPosition();
                         xDistance = rightSwitch?
@@ -400,6 +398,8 @@ class CmdAutoSwitch implements TrcRobot.RobotCommand
                         break;
 
                     case PRECISION_STRAFE:
+                        robot.leftFlipper.retract();
+                        robot.rightFlipper.retract();
                         visionTarget = robot.getPixyTargetX();
                         xStart = robot.driveBase.getXPosition();
                         if (visionTarget != null && visionTarget > RobotInfo.FIND_CUBE_X_TOLERANCE)

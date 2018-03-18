@@ -61,6 +61,7 @@ public class CmdAutoDiagnostics implements TrcRobot.RobotCommand
         this.robot = robot;
         event = new TrcEvent(moduleName);
         sm = new TrcStateMachine<>(moduleName);
+        timer = new TrcTimer(moduleName);
         
         sm.start(State.START);
     }
@@ -151,138 +152,141 @@ public class CmdAutoDiagnostics implements TrcRobot.RobotCommand
         robot.dashboard.displayPrintf(1, "State: %s", state != null? state: sm.getState());
         
         double yPosition;
-        switch(state)
+        if(state != null)
         {
-            case START:
-                robot.ledStrip.setPattern(LEDPattern.FixedStrobeRed);
-                timedDrive = null;
-                sm.setState(State.SPIN_MOTORS_FORWARD);
-                break;
-
-            case SPIN_MOTORS_FORWARD:
-                if(timedDrive == null)
-                {
-                    robot.driveBase.resetPosition();
-                    timedDrive = createTimedDrive(0.0,0.7);
-                }
-                
-                if(timedDrive.cmdPeriodic(elapsedTime))
-                {
-                    checkMotorEncoders();
-                    yPosition = robot.driveBase.getYPosition();
-                    if(yPosition > 0)
+            switch(state)
+            {
+                case START:
+                    robot.ledStrip.setPattern(LEDPattern.FixedStrobeRed);
+                    timedDrive = null;
+                    sm.setState(State.SPIN_MOTORS_FORWARD);
+                    break;
+                    
+                case SPIN_MOTORS_FORWARD:
+                    if(timedDrive == null)
                     {
-                        robot.tracer.traceInfo(moduleName, "Spun forward! Motors working okay! yPosition=%.2f", yPosition);
-                    }
-                    else
-                    {
-                        robot.tracer.traceInfo(moduleName, "Tried to spin forward! Motors are not okay! yPosition=%.2f", yPosition);
+                        robot.driveBase.resetPosition();
+                        timedDrive = createTimedDrive(0.0,0.7);
                     }
                     
-                    timedDrive = null;
-                    sm.setState(State.SPIN_MOTORS_BACKWARD);
-                }
-                break;
-
-            case SPIN_MOTORS_BACKWARD:
-                if(timedDrive == null)
-                {
-                    robot.driveBase.resetPosition();
-                    timedDrive = createTimedDrive(0.0,-0.7);
-                }
-                
-                if(timedDrive.cmdPeriodic(elapsedTime))
-                {
-                    checkMotorEncoders();
-                    yPosition = robot.driveBase.getYPosition();
-                    if(yPosition < 0)
+                    if(timedDrive.cmdPeriodic(elapsedTime))
                     {
-                        robot.tracer.traceInfo(moduleName, "Spun backward! Motors working okay, probably! yPosition=%.2f", yPosition);
+                        checkMotorEncoders();
+                        yPosition = robot.driveBase.getYPosition();
+                        if(yPosition > 0)
+                        {
+                            robot.tracer.traceInfo(moduleName, "Spun forward! Motors working okay! yPosition=%.2f", yPosition);
+                        }
+                        else
+                        {
+                            robot.tracer.traceInfo(moduleName, "Tried to spin forward! Motors are not okay! yPosition=%.2f", yPosition);
+                        }
+                        
+                        timedDrive = null;
+                        sm.setState(State.SPIN_MOTORS_BACKWARD);
                     }
-                    else
+                    break;
+                    
+                case SPIN_MOTORS_BACKWARD:
+                    if(timedDrive == null)
                     {
-                        robot.tracer.traceInfo(moduleName, "Tried to spin backward! Motors are not okay, probably! yPosition=%.2f", yPosition);
+                        robot.driveBase.resetPosition();
+                        timedDrive = createTimedDrive(0.0,-0.7);
                     }
-                    sm.setState(State.TEST_FLIPPERS);
-                }
-                break;
-
-            case TEST_FLIPPERS:
-                robot.tracer.traceInfo(moduleName, "Attempting to extend flippers for %.1f seconds!", FLIPPER_EXTEND_DELAY);
-                robot.leftFlipper.timedExtend(FLIPPER_EXTEND_DELAY);
-                robot.rightFlipper.timedExtend(FLIPPER_EXTEND_DELAY);
-                timer.set(FLIPPER_EXTEND_DELAY, event);
-                sm.waitForSingleEvent(event, State.RAISE_ELEVATOR);
-                break;
-
-            case RAISE_ELEVATOR:
-                robot.tracer.traceInfo(moduleName, "Attempting to raise elevator to %.1f inches!", RobotInfo.ELEVATOR_MAX_HEIGHT);
-                robot.elevator.setPosition(RobotInfo.ELEVATOR_MAX_HEIGHT, event, 0.0);
-                sm.waitForSingleEvent(event, State.DONE);
-                break;
-
-            case CHECK_ELEVATOR:
-                double elevatorHeight = robot.elevator.getPosition();
-                double error = RobotInfo.ELEVATOR_MAX_HEIGHT - elevatorHeight;
-                if(error >= ELEVATOR_ERROR_THRESHOLD)
-                {
-                    robot.tracer.traceWarn(moduleName,
-                        "Elevator innacurate! Target: %.2f, Actual: %.2f, Error: %.2f",
-                        RobotInfo.ELEVATOR_MAX_HEIGHT, elevatorHeight, error);
-                } else
-                {
-                    robot.tracer.traceInfo(moduleName, "Elevator working fine!, Target: %.2f, Actual: %.2f, Error: %.2f",
-                        RobotInfo.ELEVATOR_MAX_HEIGHT, elevatorHeight, error);
-                }
-                robot.elevator.setPosition(RobotInfo.ELEVATOR_MIN_HEIGHT, event, 0.0);
-                sm.waitForSingleEvent(event, State.TOGGLE_GRABBER);
-                break;
-
-            case TOGGLE_GRABBER:
-                if(robot.cubePickup.isClawOpen())
-                {
-                    robot.cubePickup.closeClaw();
-                } else
-                {
-                    robot.cubePickup.openClaw();
-                }
-                
-                if(robot.cubePickup.isPickupDeployed())
-                {
-                    robot.cubePickup.raisePickup();
-                } else
-                {
-                    robot.cubePickup.deployPickup();
-                }
-                robot.cubePickup.setPickupPower(1.0);
-                timer.set(GRABBER_DELAY, event);
-                sm.waitForSingleEvent(event, State.TOGGLE_GRABBER_AGAIN);
-                break;
-
-            case TOGGLE_GRABBER_AGAIN:
-                if(robot.cubePickup.isClawOpen())
-                {
-                    robot.cubePickup.closeClaw();
-                } else
-                {
-                    robot.cubePickup.openClaw();
-                }
-
-                if(robot.cubePickup.isPickupDeployed())
-                {
-                    robot.cubePickup.raisePickup();
-                } else
-                {
-                    robot.cubePickup.deployPickup();
-                }
-                robot.cubePickup.dropCube(1.0);
-                timer.set(GRABBER_DELAY, event);
-                sm.waitForSingleEvent(event, State.DONE);
-                break;
-
-            case DONE:
-                done = true;
-                break;
+                    
+                    if(timedDrive.cmdPeriodic(elapsedTime))
+                    {
+                        checkMotorEncoders();
+                        yPosition = robot.driveBase.getYPosition();
+                        if(yPosition < 0)
+                        {
+                            robot.tracer.traceInfo(moduleName, "Spun backward! Motors working okay, probably! yPosition=%.2f", yPosition);
+                        }
+                        else
+                        {
+                            robot.tracer.traceInfo(moduleName, "Tried to spin backward! Motors are not okay, probably! yPosition=%.2f", yPosition);
+                        }
+                        sm.setState(State.TEST_FLIPPERS);
+                    }
+                    break;
+                    
+                case TEST_FLIPPERS:
+                    robot.tracer.traceInfo(moduleName, "Attempting to extend flippers for %.1f seconds!", FLIPPER_EXTEND_DELAY);
+                    robot.leftFlipper.timedExtend(FLIPPER_EXTEND_DELAY);
+                    robot.rightFlipper.timedExtend(FLIPPER_EXTEND_DELAY);
+                    timer.set(FLIPPER_EXTEND_DELAY, event);
+                    sm.waitForSingleEvent(event, State.RAISE_ELEVATOR);
+                    break;
+                    
+                case RAISE_ELEVATOR:
+                    robot.tracer.traceInfo(moduleName, "Attempting to raise elevator to %.1f inches!", RobotInfo.ELEVATOR_MAX_HEIGHT);
+                    robot.elevator.setPosition(RobotInfo.ELEVATOR_MAX_HEIGHT, event, 0.0);
+                    sm.waitForSingleEvent(event, State.DONE);
+                    break;
+                    
+                case CHECK_ELEVATOR:
+                    double elevatorHeight = robot.elevator.getPosition();
+                    double error = RobotInfo.ELEVATOR_MAX_HEIGHT - elevatorHeight;
+                    if(error >= ELEVATOR_ERROR_THRESHOLD)
+                    {
+                        robot.tracer.traceWarn(moduleName,
+                            "Elevator innacurate! Target: %.2f, Actual: %.2f, Error: %.2f",
+                            RobotInfo.ELEVATOR_MAX_HEIGHT, elevatorHeight, error);
+                    } else
+                    {
+                        robot.tracer.traceInfo(moduleName, "Elevator working fine!, Target: %.2f, Actual: %.2f, Error: %.2f",
+                            RobotInfo.ELEVATOR_MAX_HEIGHT, elevatorHeight, error);
+                    }
+                    robot.elevator.setPosition(RobotInfo.ELEVATOR_MIN_HEIGHT, event, 0.0);
+                    sm.waitForSingleEvent(event, State.TOGGLE_GRABBER);
+                    break;
+                    
+                case TOGGLE_GRABBER:
+                    if(robot.cubePickup.isClawOpen())
+                    {
+                        robot.cubePickup.closeClaw();
+                    } else
+                    {
+                        robot.cubePickup.openClaw();
+                    }
+                    
+                    if(robot.cubePickup.isPickupDeployed())
+                    {
+                        robot.cubePickup.raisePickup();
+                    } else
+                    {
+                        robot.cubePickup.deployPickup();
+                    }
+                    robot.cubePickup.setPickupPower(1.0);
+                    timer.set(GRABBER_DELAY, event);
+                    sm.waitForSingleEvent(event, State.TOGGLE_GRABBER_AGAIN);
+                    break;
+                    
+                case TOGGLE_GRABBER_AGAIN:
+                    if(robot.cubePickup.isClawOpen())
+                    {
+                        robot.cubePickup.closeClaw();
+                    } else
+                    {
+                        robot.cubePickup.openClaw();
+                    }
+                    
+                    if(robot.cubePickup.isPickupDeployed())
+                    {
+                        robot.cubePickup.raisePickup();
+                    } else
+                    {
+                        robot.cubePickup.deployPickup();
+                    }
+                    robot.cubePickup.dropCube(1.0);
+                    timer.set(GRABBER_DELAY, event);
+                    sm.waitForSingleEvent(event, State.DONE);
+                    break;
+                    
+                case DONE:
+                    done = true;
+                    break;
+            }
         }
         
         return done;

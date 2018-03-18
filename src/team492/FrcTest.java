@@ -268,6 +268,16 @@ public class FrcTest extends FrcTeleOp
             default:
                 break;
         }
+        if (robot.pidDrive.isActive())
+        {
+            robot.encoderXPidCtrl.printPidInfo(robot.tracer, elapsedTime, robot.battery);
+            robot.encoderYPidCtrl.printPidInfo(robot.tracer, elapsedTime, robot.battery);
+            robot.gyroTurnPidCtrl.printPidInfo(robot.tracer, elapsedTime, robot.battery);
+        }
+        if(robot.elevator.elevator.isActive())
+        {
+            robot.elevator.elevatorPidCtrl.printPidInfo(robot.tracer, elapsedTime, robot.battery);
+        }
     } // runContinuous
 
     @Override

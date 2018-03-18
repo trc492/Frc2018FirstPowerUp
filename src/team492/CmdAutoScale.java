@@ -251,7 +251,7 @@ public class CmdAutoScale implements TrcRobot.RobotCommand
                     break;
 
                 case DRIVE_TO_OPPOSITE_SCALE:
-                    yDistance = RobotInfo.FIELD_WIDTH - distanceFromWall - RobotInfo.SCALE_TO_WALL_DISTANCE + RobotInfo.ROBOT_TO_SCALE_DISTANCE - 20.0;
+                    yDistance = RobotInfo.FIELD_WIDTH - distanceFromWall - RobotInfo.SCALE_TO_WALL_DISTANCE + RobotInfo.ROBOT_TO_SCALE_DISTANCE;
                     robot.pidDrive.setTarget(0.0, yDistance, robot.targetHeading, false, event, 0.0);
                     sm.waitForSingleEvent(event, State.TURN_TO_SCALE);
                     break;
@@ -271,6 +271,7 @@ public class CmdAutoScale implements TrcRobot.RobotCommand
                     break;
 
                 case TURN_TO_FACE_SCALE:
+                    robot.gyroTurnPidCtrl.setNoOscillation(false);
                     robot.targetHeading = scaleRight?DRIVE_HEADING_WEST:DRIVE_HEADING_EAST;
                     robot.pidDrive.setTarget(0.0, 0.0, robot.targetHeading, false, event);
                     sm.waitForSingleEvent(event, State.RAISE_ELEVATOR);
