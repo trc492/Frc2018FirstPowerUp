@@ -109,6 +109,10 @@ public class PixyVision
         return pixyCamera.isEnabled();
     }   //isEnabled
 
+    public boolean isTaskTerminatedAbnormally() {
+        return pixyCamera.isTaskTerminatedAbnormally();
+    } //isTaskTerminatedAbnormally
+
     /**
      * This method analyzes all the detected object rectangles and attempts to find a pair that are the likely targets.
      * It then returns the rectangle enclosing the two object rectangles.
