@@ -115,7 +115,7 @@ public class FrcCANTalon extends TrcMotor
     }   //configFwdLimitSwitchNormallyOpen
 
     private void recordResponseCode(ErrorCode errorCode) {
-        if (!errorCode.equals(ErrorCode.OK)) {
+        if (errorCode != null && !errorCode.equals(ErrorCode.OK)) {
             errorCount++;
         }
     } //recordResponseCode
