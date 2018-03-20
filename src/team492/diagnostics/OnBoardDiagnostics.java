@@ -10,6 +10,7 @@ import team492.diagnostics.tests.DigitalSensorUnchangedTest;
 import team492.diagnostics.tests.ElevatorPositionUnchangedTest;
 import team492.diagnostics.tests.EncoderUnpluggedTest;
 import team492.diagnostics.tests.UltrasonicUnpluggedTest;
+import team492.diagnostics.tests.PixyVisionTaskTerminatedTest;
 
 public class OnBoardDiagnostics {
 	
@@ -35,6 +36,10 @@ public class OnBoardDiagnostics {
 				"grabber cube proximity sensor"));
 
 		tests.add(new ElevatorPositionUnchangedTest(robot.elevator));
+
+		if (robot.pixy != null) {
+			tests.add(new PixyVisionTaskTerminatedTest(robot.pixy));
+		}
 	}
 	
 	public void doPeriodicTests()

@@ -150,6 +150,7 @@ public abstract class TrcSerialBusDevice implements Runnable
     private Thread deviceTask;
     private volatile long processingInterval = 0;    // in msec
     private volatile boolean taskEnabled = false;
+    private volatile boolean taskTerminatedAbnormally = false;
 
     /**
      * Constructor: Creates an instance of the object.
@@ -168,6 +169,13 @@ public abstract class TrcSerialBusDevice implements Runnable
         this.instanceName = instanceName;
         requestQueue = new ConcurrentLinkedQueue<>();
         deviceTask = new Thread(this, instanceName);
+        deviceTask.setUncaughtExceptionHandler((thread, throwable) -> {
+            if (!(throwable.getClass().equals(InterruptedException.class))) {
+                taskTerminatedAbnormally = true;
+                System.err.println(String.format("Thread %s for %s had uncaught exception: %s",
+                        thread, instanceName, throwable));
+            }
+        });
         deviceTask.start();
     }   //TrcSerialBusDevice
 
@@ -190,6 +198,16 @@ public abstract class TrcSerialBusDevice implements Runnable
     {
         return !deviceTask.isAlive();
     }   //isTaskTerminated
+
+    /**
+     * This method checks if the device task has been terminated.
+     *
+     * @return true if task has been terminated, false otherwise.
+     */
+    public synchronized boolean isTaskTerminatedAbnormally()
+    {
+        return taskTerminatedAbnormally;
+    }   //isTaskTerminatedAbnormally
 
     /**
      * This method is called to terminate the device task.
