@@ -41,10 +41,10 @@ class CmdAutoSwitch implements TrcRobot.RobotCommand
     private static double DRIVE_HEADING_SOUTH = 0.0;
 
     //headings for starting forwards
-    private static final double SWITCH_HEADING = 22.35;
+    private static final double SWITCH_HEADING = 30.0;
 
     //TODO: move these to RobotInfo
-    private static final double SHORTEST_DISTANCE_TO_SWITCH = 151.37;
+    private static final double SHORTEST_DISTANCE_TO_SWITCH = 121.24;
     private static final double FAST_DELIVERY_DRIVE_PAST_SWITCH_DISTANCE = 54.0;
     private double[] sonarTriggerPoints = {8.0, 32.0};
 
