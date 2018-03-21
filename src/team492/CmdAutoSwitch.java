@@ -46,6 +46,7 @@ class CmdAutoSwitch implements TrcRobot.RobotCommand
     //TODO: move these to RobotInfo
     private static final double SHORTEST_DISTANCE_TO_SWITCH = 121.24;
     private static final double FAST_DELIVERY_DRIVE_PAST_SWITCH_DISTANCE = 54.0;
+    private static final double FAST_DELIVERY_Y_TOLERANCE = 5.0;
     private double[] sonarTriggerPoints = {8.0, 32.0};
 
     private static enum State
@@ -203,6 +204,9 @@ class CmdAutoSwitch implements TrcRobot.RobotCommand
                         break;
 
                     case DRIVE_DIAGONAL_TO_SWITCH:
+                        robot.driveBase.setBrakeMode(false);
+                        robot.encoderYPidCtrl.setNoOscillation(true);
+                        robot.encoderYPidCtrl.setTargetTolerance(FAST_DELIVERY_Y_TOLERANCE);
                         xDistance = 0.0;
                         yDistance = SHORTEST_DISTANCE_TO_SWITCH;
                         robot.targetHeading = rightSwitch? SWITCH_HEADING: -SWITCH_HEADING;
@@ -212,6 +216,9 @@ class CmdAutoSwitch implements TrcRobot.RobotCommand
                         break;
 
                     case THROW_CUBE:
+                        robot.driveBase.setBrakeMode(true);
+                        robot.encoderYPidCtrl.setNoOscillation(false);
+                        robot.encoderYPidCtrl.setTargetTolerance(RobotInfo.ENCODER_Y_TOLERANCE);
                         robot.cubePickup.dropCube(1.0);
                         timer.set(0.3, event);
                         sm.waitForSingleEvent(event, State.TURN_TO_END_OF_SWITCH);
