@@ -449,7 +449,7 @@ class CmdAutoSwitch implements TrcRobot.RobotCommand
                     	robot.rightSonarArray.stopRanging();
                     	sonarTrigger.setTaskEnabled(false);
                     	robot.driveBase.setBrakeMode(true);
-                    	robot.encoderYPidCtrl.setNoOscillation(false);;;
+                    	robot.encoderYPidCtrl.setNoOscillation(false);
                         robot.encoderYPidCtrl.setTargetTolerance(RobotInfo.ENCODER_Y_TOLERANCE);
                         xDistance = yDistance = 0.0;
                         robot.targetHeading = DRIVE_HEADING_SOUTH;
