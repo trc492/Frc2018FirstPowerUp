@@ -101,6 +101,7 @@ class CmdAutoSwitch implements TrcRobot.RobotCommand
     private TrcStateMachine<State> sm;
     private TrcAnalogTrigger<TrcAnalogInput.DataType> sonarTrigger = null;
     private TrcEvent sonarEvent;
+    private TrcEvent inverseSonarEvent;
     private double xPowerLimit, yPowerLimit;
 
     private double xStart, yStart;
@@ -148,6 +149,7 @@ class CmdAutoSwitch implements TrcRobot.RobotCommand
             "SonarTrigger", rightSwitch? robot.rightSonarSensor: robot.leftSonarSensor,
             0, TrcAnalogInput.DataType.INPUT_DATA, sonarTriggerPoints, this::sonarTriggerEvent);
         sonarEvent = new TrcEvent("SonarEvent");
+        inverseSonarEvent = new TrcEvent("InverseSonarEvent");
 
         xPowerLimit = robot.encoderXPidCtrl.getOutputLimit();
         yPowerLimit = robot.encoderYPidCtrl.getOutputLimit();
@@ -232,10 +234,21 @@ class CmdAutoSwitch implements TrcRobot.RobotCommand
                         break;
 
                     case FAST_DELIVERY_DRIVE_PAST_SWITCH:
+                    	if(rightSwitch)
+                    	{
+                    		robot.leftSonarArray.startRanging(true);
+                    	}
+                    	else
+                    	{
+                    		robot.rightSonarArray.startRanging(true);
+                    	}
+                        sonarTrigger.setTaskEnabled(true);
+                        sm.addEvent(inverseSonarEvent);
                         xDistance = 0.0;
                         yDistance = FAST_DELIVERY_DRIVE_PAST_SWITCH_DISTANCE;
                         robot.pidDrive.setTarget(xDistance, yDistance, robot.targetHeading, false, event, 0.0);
-                        sm.waitForSingleEvent(event, State.TURN_SOUTH);
+                        sm.addEvent(event);
+                        sm.waitForEvents(State.TURN_SOUTH);
                         break;
 
                     case DRIVE_FORWARD_DISTANCE:
@@ -432,6 +445,12 @@ class CmdAutoSwitch implements TrcRobot.RobotCommand
                         break;
 
                     case TURN_SOUTH:
+                    	robot.leftSonarArray.stopRanging();
+                    	robot.rightSonarArray.stopRanging();
+                    	sonarTrigger.setTaskEnabled(false);
+                    	robot.driveBase.setBrakeMode(true);
+                    	robot.encoderYPidCtrl.setNoOscillation(false);;;
+                        robot.encoderYPidCtrl.setTargetTolerance(RobotInfo.ENCODER_Y_TOLERANCE);
                         xDistance = yDistance = 0.0;
                         robot.targetHeading = DRIVE_HEADING_SOUTH;
                         nextState = (forwardDistance == RobotInfo.FWD_DISTANCE_3 && !fastDeliveryFromCenter)?
@@ -590,7 +609,6 @@ class CmdAutoSwitch implements TrcRobot.RobotCommand
                         robot.pidDrive.setTarget(xDistance, yDistance, robot.targetHeading, false, event, 0.0);
                         sm.waitForSingleEvent(event, State.DONE);
                         
-                       
                     case DONE:
                         //
                         // We are done.
@@ -619,6 +637,16 @@ class CmdAutoSwitch implements TrcRobot.RobotCommand
         {
             // Detected the switch fence.
             sonarEvent.set(true);
+            if (robot.pidDrive.isActive())
+            {
+                robot.pidDrive.cancel();
+            }
+        }
+        
+        if (prevZone == 0 && currZone == 1)
+        {
+            // Passed the switch fence.
+            inverseSonarEvent.set(true);
             if (robot.pidDrive.isActive())
             {
                 robot.pidDrive.cancel();
