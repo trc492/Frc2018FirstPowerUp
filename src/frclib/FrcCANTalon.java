@@ -22,6 +22,7 @@
 
 package frclib;
 
+import com.ctre.phoenix.ErrorCode;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.LimitSwitchNormal;
@@ -48,6 +49,11 @@ public class FrcCANTalon extends TrcMotor
     private boolean softUpperLimitEnabled = false;
     private double softLowerLimit = 0.0;
     private double softUpperLimit = 0.0;
+
+    /**
+     * The number of non-success error codes reported by the device after sending a command.
+     */
+    private int errorCount = 0;
 
     /**
      * Constructor: Create an instance of the object.
@@ -101,12 +107,26 @@ public class FrcCANTalon extends TrcMotor
             dbgTrace.traceExit(funcName, TrcDbgTrace.TraceLevel.API);
         }
 
-        motor.configForwardLimitSwitchSource(
+        recordResponseCode(motor.configForwardLimitSwitchSource(
             LimitSwitchSource.FeedbackConnector,
             normalOpen? LimitSwitchNormal.NormallyOpen: LimitSwitchNormal.NormallyClosed,
-            0);
+            0));
         fwdLimitSwitchNormalOpen = normalOpen;
     }   //configFwdLimitSwitchNormallyOpen
+
+    private void recordResponseCode(ErrorCode errorCode) {
+        if (errorCode != null && !errorCode.equals(ErrorCode.OK)) {
+            errorCount++;
+        }
+    } //recordResponseCode
+
+    /**
+     * @return The number of non-OK error code responses seen from the motor
+     * after sending a command.
+     */
+    public int getErrorCount() {
+        return errorCount;
+    } //getErrorCount
 
     /**
      * This method configures the reverse limit switch to be normally open (i.e. active when close).
@@ -123,10 +143,10 @@ public class FrcCANTalon extends TrcMotor
             dbgTrace.traceExit(funcName, TrcDbgTrace.TraceLevel.API);
         }
 
-        motor.configReverseLimitSwitchSource(
+        recordResponseCode(motor.configReverseLimitSwitchSource(
             LimitSwitchSource.FeedbackConnector,
             normalOpen? LimitSwitchNormal.NormallyOpen: LimitSwitchNormal.NormallyClosed,
-            0);
+            0));
         revLimitSwitchNormalOpen = normalOpen;
     }   //configRevLimitSwitchNormallyOpen
 
@@ -145,7 +165,7 @@ public class FrcCANTalon extends TrcMotor
             dbgTrace.traceExit(funcName, TrcDbgTrace.TraceLevel.API);
         }
 
-        motor.configSelectedFeedbackSensor(devType, 0, 0);
+        recordResponseCode(motor.configSelectedFeedbackSensor(devType, 0, 0));
         feedbackDeviceIsPot = devType == FeedbackDevice.Analog;
     }   //setFeedbackDevice
 
@@ -184,6 +204,7 @@ public class FrcCANTalon extends TrcMotor
     {
         final String funcName = "getPosition";
         double pos = motor.getSelectedSensorPosition(0);
+        recordResponseCode(motor.getLastError());
 
         pos -= zeroPosition;
 
@@ -206,6 +227,7 @@ public class FrcCANTalon extends TrcMotor
     {
         final String funcName = "getPower";
         double power = motor.getMotorOutputPercent();
+        recordResponseCode(motor.getLastError());
 
         if (debugEnabled)
         {
@@ -230,6 +252,7 @@ public class FrcCANTalon extends TrcMotor
 //                StatusFrameEnhanced.Status_3_Quadrature, 0)/1000.0);
         // The sensor velocity is in the raw sensor unit per 100 msec.
         double speed = motor.getSelectedSensorVelocity(0)/0.1;
+        recordResponseCode(motor.getLastError());
 
         if (debugEnabled)
         {
@@ -307,10 +330,11 @@ public class FrcCANTalon extends TrcMotor
             // Potentiometer has no hardware position to reset. So clear the software one.
             //
             zeroPosition = motor.getSelectedSensorPosition(0);
+            recordResponseCode(motor.getLastError());
         }
         else if (hardware)
         {
-            motor.setSelectedSensorPosition(0, 0, 0);
+            recordResponseCode(motor.setSelectedSensorPosition(0, 0, 0));
             while (motor.getSelectedSensorPosition(0) != 0)
             {
                 Thread.yield();
@@ -348,6 +372,7 @@ public class FrcCANTalon extends TrcMotor
         }
 
         motor.setNeutralMode(enabled? NeutralMode.Brake: NeutralMode.Coast);
+        recordResponseCode(motor.getLastError());
     }   //setBrakeModeEnabled
 
     /**
@@ -367,6 +392,7 @@ public class FrcCANTalon extends TrcMotor
         }
 
         motor.setInverted(inverted);
+        recordResponseCode(motor.getLastError());
     }   //setInverted
 
     /**
@@ -391,6 +417,7 @@ public class FrcCANTalon extends TrcMotor
         }
 
         motor.set(ControlMode.PercentOutput, power);
+        recordResponseCode(motor.getLastError());
 
         if (debugEnabled)
         {
@@ -418,6 +445,7 @@ public class FrcCANTalon extends TrcMotor
         }
 
         motor.setSensorPhase(inverted);
+        recordResponseCode(motor.getLastError());
     }   //setPositionSensorInverted
 
     /**

@@ -11,6 +11,7 @@ import team492.diagnostics.tests.ElevatorPositionUnchangedTest;
 import team492.diagnostics.tests.EncoderUnpluggedTest;
 import team492.diagnostics.tests.UltrasonicUnpluggedTest;
 import team492.diagnostics.tests.PixyVisionTaskTerminatedTest;
+import team492.diagnostics.tests.HighTalonErrorRateTest;
 
 public class OnBoardDiagnostics {
 	
@@ -23,6 +24,12 @@ public class OnBoardDiagnostics {
 		tests.add(new EncoderUnpluggedTest(robot.rightFrontWheel, "right front encoder"));
 		tests.add(new EncoderUnpluggedTest(robot.leftRearWheel, "left rear encoder"));
 		tests.add(new EncoderUnpluggedTest(robot.rightRearWheel, "right rear encoder"));
+
+		tests.add(new HighTalonErrorRateTest(robot.leftFrontWheel, "left front wheel motor"));
+		tests.add(new HighTalonErrorRateTest(robot.rightFrontWheel, "right front wheel motor"));
+		tests.add(new HighTalonErrorRateTest(robot.leftRearWheel, "left rear wheel motor"));
+		tests.add(new HighTalonErrorRateTest(robot.rightRearWheel, "right rear wheel motor"));
+		tests.add(new HighTalonErrorRateTest(robot.elevator.elevatorMotor, "elevator motor"));
 		
 		tests.add(new UltrasonicUnpluggedTest(robot::getLeftSonarDistance, "left sonar"));
 		tests.add(new UltrasonicUnpluggedTest(robot::getRightSonarDistance, "right sonar"));
