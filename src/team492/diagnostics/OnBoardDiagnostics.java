@@ -9,6 +9,7 @@ import team492.diagnostics.DiagnosticsTest.TestResult;
 import team492.diagnostics.tests.DigitalSensorUnchangedTest;
 import team492.diagnostics.tests.ElevatorPositionUnchangedTest;
 import team492.diagnostics.tests.EncoderUnpluggedTest;
+import team492.diagnostics.tests.GyroNotConnectedTest;
 import team492.diagnostics.tests.UltrasonicUnpluggedTest;
 import team492.diagnostics.tests.PixyVisionTaskTerminatedTest;
 import team492.diagnostics.tests.HighTalonErrorRateTest;
@@ -46,6 +47,10 @@ public class OnBoardDiagnostics {
 
 		if (robot.pixy != null) {
 			tests.add(new PixyVisionTaskTerminatedTest(robot.pixy));
+		}
+		
+		if(robot.gyro != null) {
+		    tests.add(new GyroNotConnectedTest(robot.gyro));
 		}
 	}
 	

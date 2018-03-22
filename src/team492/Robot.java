@@ -126,7 +126,7 @@ public class Robot extends FrcRobotBase
     //
     public PowerDistributionPanel pdp = null;
     public TrcRobotBattery battery = null;
-    public TrcGyro gyro = null;
+    public FrcAHRSGyro gyro = null;
     public AnalogInput pressureSensor = null;
     public FrcAnalogInput leftSonarSensor = null;
     public FrcAnalogInput rightSonarSensor = null;
