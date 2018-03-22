@@ -32,8 +32,13 @@ public class OnBoardDiagnostics {
 		tests.add(new HighTalonErrorRateTest(robot.rightRearWheel, "right rear wheel motor"));
 		tests.add(new HighTalonErrorRateTest(robot.elevator.elevatorMotor, "elevator motor"));
 		
-		tests.add(new UltrasonicUnpluggedTest(robot::getLeftSonarDistance, "left sonar"));
-		tests.add(new UltrasonicUnpluggedTest(robot::getRightSonarDistance, "right sonar"));
+		if(robot.leftSonarArray != null || robot.leftSonarSensor != null) {
+		    tests.add(new UltrasonicUnpluggedTest(robot::getLeftSonarDistance, "left sonar"));
+		}
+		
+		if(robot.rightSonarArray != null || robot.rightSonarSensor != null) {
+		    tests.add(new UltrasonicUnpluggedTest(robot::getRightSonarDistance, "right sonar"));
+		}
 		
 		tests.add(new DigitalSensorUnchangedTest(
 				robot.elevator.elevatorMotor::isLowerLimitSwitchActive, 
