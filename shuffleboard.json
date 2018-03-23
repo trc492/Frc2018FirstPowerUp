@@ -1,5 +1,5 @@
 {
-  "dividerPosition": 0.1327893175074184,
+  "dividerPosition": 0.13301787592008413,
   "tabPane": [
     {
       "title": "FMSInfo",
@@ -194,7 +194,7 @@
           "12,2": {
             "size": [
               11,
-              3
+              2
             ],
             "content": {
               "_type": "Text View",
@@ -281,28 +281,6 @@
         "hgap": 16.0,
         "vgap": 16.0,
         "tiles": {
-          "0,0": {
-            "size": [
-              4,
-              2
-            ],
-            "content": {
-              "_type": "ComboBox Chooser",
-              "_source0": "network_table:///SmartDashboard/Auto/Autonomous Strategies",
-              "_title": "Autonomous Strategies"
-            }
-          },
-          "0,2": {
-            "size": [
-              4,
-              2
-            ],
-            "content": {
-              "_type": "ComboBox Chooser",
-              "_source0": "network_table:///SmartDashboard/Auto/Forward Distances",
-              "_title": "Forward Distances"
-            }
-          },
           "8,0": {
             "size": [
               4,
@@ -310,8 +288,19 @@
             ],
             "content": {
               "_type": "ComboBox Chooser",
-              "_source0": "network_table:///SmartDashboard/Auto/Approaches",
-              "_title": "Approaches"
+              "_source0": "network_table:///SmartDashboard/Auto/FastDelivery",
+              "_title": "FastDelivery"
+            }
+          },
+          "12,0": {
+            "size": [
+              4,
+              2
+            ],
+            "content": {
+              "_type": "ComboBox Chooser",
+              "_source0": "network_table:///SmartDashboard/Auto/Lanes",
+              "_title": "Lanes"
             }
           },
           "4,0": {
@@ -321,11 +310,22 @@
             ],
             "content": {
               "_type": "ComboBox Chooser",
-              "_source0": "network_table:///SmartDashboard/Auto/Start Positions",
-              "_title": "Start Positions"
+              "_source0": "network_table:///SmartDashboard/Auto/StartPos",
+              "_title": "StartPos"
             }
           },
-          "4,2": {
+          "0,0": {
+            "size": [
+              4,
+              2
+            ],
+            "content": {
+              "_type": "ComboBox Chooser",
+              "_source0": "network_table:///SmartDashboard/Auto/AutoStrategies",
+              "_title": "AutoStrategies"
+            }
+          },
+          "0,2": {
             "size": [
               4,
               2
@@ -335,24 +335,13 @@
               "_source0": "network_table:///SmartDashboard/Auto/Delay",
               "_title": "Delay"
             }
-          },
-          "8,2": {
-            "size": [
-              4,
-              2
-            ],
-            "content": {
-              "_type": "ComboBox Chooser",
-              "_source0": "network_table:///SmartDashboard/Auto/FlipInFlight",
-              "_title": "FlipInFlight"
-            }
           }
         }
       }
     },
     {
       "title": "Tests",
-      "autoPopulate": false,
+      "autoPopulate": true,
       "autoPopulatePrefix": "SmartDashboard/Test",
       "widgetPane": {
         "gridSize": 32.0,

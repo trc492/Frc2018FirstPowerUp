@@ -272,21 +272,21 @@ public class RobotInfo
     public static final double SWITCH_STRAFE_DISTANCE           = 26.0;
     public static final double MAX_CUBE_DISTANCE                = 20.0;
     public static final double SWITCH_SONAR_DISTANCE_THRESHOLD  = 16.0;
-    public static final double OPPOSITE_SWITCH_OVERSHOOT = 35.0;
-    public static final double STRAFE_FROM_SWITCH_DISTANCE = 24.0;
-    public static final double POSITION_TO_STRAFE_DISTANCE = 108.0;
+    public static final double OPPOSITE_SWITCH_OVERSHOOT        = 35.0;
+    public static final double STRAFE_FROM_SWITCH_DISTANCE      = 24.0;
+    public static final double POSITION_TO_STRAFE_DISTANCE      = 108.0;
     
     //
     // CmdScaleAuto constants.
     //
-    public static final double SWITCH_TO_WALL_DISTANCE = 85.25;
-    public static final double SCALE_TO_WALL_DISTANCE = 71.57;
-    public static final double ROBOT_TO_SCALE_DISTANCE = 30.0;
+    public static final double SWITCH_TO_WALL_DISTANCE          = 85.25;
+    public static final double SCALE_TO_WALL_DISTANCE           = 71.57;
+    public static final double ROBOT_TO_SCALE_DISTANCE          = 30.0;
     public static final double ALLIANCE_WALL_TO_LANE_3_DISTANCE = 228.735;
-    public static final double ALLIANCE_WALL_TO_SCALE_DISTANCE = 324.0;
-    public static final double DRIVE_ACROSS_FIELD_DISTANCE = 220.0;//SWITCH_FENCE_WIDTH + SWITCH_TO_WALL_DISTANCE;
-    public static final double CUBE_PICKUP_DROP_POWER = 1.0;
-    public static final double DROP_CUBE_TIMEOUT = 0.5;
+    public static final double ALLIANCE_WALL_TO_SCALE_DISTANCE  = 324.0;
+    public static final double DRIVE_ACROSS_FIELD_DISTANCE      = 220.0;//SWITCH_FENCE_WIDTH + SWITCH_TO_WALL_DISTANCE;
+    public static final double CUBE_PICKUP_DROP_POWER           = 1.0;
+    public static final double DROP_CUBE_TIMEOUT                = 0.5;
 
     //
     // FrcAuto constants.
@@ -294,9 +294,9 @@ public class RobotInfo
     public static final double FWD_DISTANCE_1                   = 10.0;
     public static final double FWD_DISTANCE_2                   = 60.0;
     public static final double FWD_DISTANCE_3                   = 220.0;
-    public static final double LEFT_START_POS                      = LEFT_SWITCH_LOCATION;   //CodeReview: should this be slightly different from LEFT_SWITCH_LOCATION???
-    public static final double MID_START_POS                      = 0.0;
-    public static final double RIGHT_START_POS                      = RIGHT_SWITCH_LOCATION;    //CodeReview: should this be slightly different from RIGHT_SWITCH_LOCATION???
+    public static final double LEFT_START_POS                   = LEFT_SWITCH_LOCATION;   //CodeReview: should this be slightly different from LEFT_SWITCH_LOCATION???
+    public static final double MID_START_POS                    = 0.0;
+    public static final double RIGHT_START_POS                  = RIGHT_SWITCH_LOCATION;    //CodeReview: should this be slightly different from RIGHT_SWITCH_LOCATION???
 
     //
     // LED strip pattern constants.
