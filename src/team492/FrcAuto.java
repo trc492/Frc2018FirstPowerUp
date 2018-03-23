@@ -45,15 +45,6 @@ public class FrcAuto implements TrcRobot.RobotMode
         DO_NOTHING
     } // enum AutoStrategy
 
-    public static enum ForwardDistance
-    {
-        // Different choices for forward distances
-        FWD_DISTANCE_1,
-        FWD_DISTANCE_2,
-        FWD_DISTANCE_3,
-        CUSTOM
-    } // enum ForwardDistance
-
     public static enum StartPosition
     {
         // Different choices for start positions
@@ -68,24 +59,33 @@ public class FrcAuto implements TrcRobot.RobotMode
         NO
     } // enum YesOrNo
 
+    public static enum Lane
+    {
+        // Different choices for crossing lanes
+        LANE1,
+        LANE2,
+        LANE3,
+        CUSTOM
+    } // enum Lane
+
     private Robot robot;
 
     //
     // Menus.
     //
     private FrcChoiceMenu<AutoStrategy> autoStrategyMenu;
-    private FrcChoiceMenu<ForwardDistance> forwardDistanceMenu;
     private FrcChoiceMenu<StartPosition> startPositionMenu;
     private FrcChoiceMenu<YesOrNo> fastDeliveryMenu;
+    private FrcChoiceMenu<Lane> laneMenu;
 
     private AutoStrategy autoStrategy;
-    private ForwardDistance forwardDistance;
     private StartPosition startPosition;
-    private double delay;
     private boolean fastDelivery;
+    private Lane lane;
+    private double delay;
 
-    private double forwardDriveDistance;
     private double robotStartPosition;
+    private double forwardDriveDistance;
 
     private TrcRobot.RobotCommand autoCommand;
 
@@ -95,10 +95,10 @@ public class FrcAuto implements TrcRobot.RobotMode
         //
         // Create Autonomous Mode specific menus.
         //
-        autoStrategyMenu = new FrcChoiceMenu<>("Auto/Autonomous Strategies");
-        forwardDistanceMenu = new FrcChoiceMenu<>("Auto/Forward Distances");
-        startPositionMenu = new FrcChoiceMenu<>("Auto/Start Positions");
+        autoStrategyMenu = new FrcChoiceMenu<>("Auto/AutoStrategies");
+        startPositionMenu = new FrcChoiceMenu<>("Auto/StartPos");
         fastDeliveryMenu = new FrcChoiceMenu<>("Auto/FastDelivery");
+        laneMenu = new FrcChoiceMenu<>("Auto/Lanes");
 
         //
         // Populate Autonomous Mode menus.
@@ -112,17 +112,17 @@ public class FrcAuto implements TrcRobot.RobotMode
         autoStrategyMenu.addChoice("Turn Degrees", AutoStrategy.TURN_DEGREES, false, false);
         autoStrategyMenu.addChoice("Do Nothing", AutoStrategy.DO_NOTHING, false, true);
 
-        forwardDistanceMenu.addChoice("Distance 1", ForwardDistance.FWD_DISTANCE_1, false, false);
-        forwardDistanceMenu.addChoice("Distance 2", ForwardDistance.FWD_DISTANCE_2, true, false);
-        forwardDistanceMenu.addChoice("Distance 3", ForwardDistance.FWD_DISTANCE_3, false, false);
-        forwardDistanceMenu.addChoice("Custom Distance", ForwardDistance.CUSTOM, false, true);
-
         startPositionMenu.addChoice("Left Side Start", StartPosition.LEFT_START_POS, true, false);
         startPositionMenu.addChoice("Middle Start", StartPosition.MID_START_POS, false, false);
         startPositionMenu.addChoice("Right Side Start", StartPosition.RIGHT_START_POS, false, true);
 
         fastDeliveryMenu.addChoice("Yes", YesOrNo.YES, true, false);
         fastDeliveryMenu.addChoice("No", YesOrNo.NO, false, true);
+
+        laneMenu.addChoice("Lane 1", Lane.LANE1, false, false);
+        laneMenu.addChoice("Lane 2", Lane.LANE2, true, false);
+        laneMenu.addChoice("Lane 3", Lane.LANE3, false, false);
+        laneMenu.addChoice("Custom Distance", Lane.CUSTOM, false, true);
     } // FrcAuto
 
     //
@@ -132,11 +132,6 @@ public class FrcAuto implements TrcRobot.RobotMode
     @Override
     public void startMode()
     {
-        robot.encoderYPidCtrl.setOutputLimit(0.6);
-        robot.encoderXPidCtrl.setOutputLimit(RobotInfo.DRIVE_MAX_XPID_POWER);
-        
-        robot.dashboard.clearDisplay();
-
         if (Robot.USE_TRACELOG)
             robot.startTraceLog(null);
 
@@ -145,28 +140,16 @@ public class FrcAuto implements TrcRobot.RobotMode
         robot.tracer.traceInfo(Robot.programName, "%s_%s_%3d (%s%d) [FMSConnected=%b]", robot.eventName,
             robot.matchType.toString(), robot.matchNumber, robot.alliance.toString(), robot.location,
             robot.ds.isFMSAttached());
+
+        robot.dashboard.clearDisplay();
+
+        robot.encoderYPidCtrl.setOutputLimit(0.6);
+        robot.encoderXPidCtrl.setOutputLimit(RobotInfo.DRIVE_MAX_XPID_POWER);
+
         //
         // Retrieve menu choice values.
         //
-        forwardDistance = forwardDistanceMenu.getCurrentChoiceObject();
-        switch (forwardDistance)
-        {
-            case FWD_DISTANCE_1:
-                forwardDriveDistance = RobotInfo.FWD_DISTANCE_1;
-                break;
-
-            case FWD_DISTANCE_2:
-                forwardDriveDistance = RobotInfo.FWD_DISTANCE_2;
-                break;
-
-            case FWD_DISTANCE_3:
-                forwardDriveDistance = RobotInfo.FWD_DISTANCE_3;
-                break;
-
-            case CUSTOM:
-                forwardDriveDistance = -1.0;
-                break;
-        }
+        autoStrategy = autoStrategyMenu.getCurrentChoiceObject();
 
         startPosition = startPositionMenu.getCurrentChoiceObject();
         switch (startPosition)
@@ -182,9 +165,29 @@ public class FrcAuto implements TrcRobot.RobotMode
                 break;
         }
 
-        autoStrategy = autoStrategyMenu.getCurrentChoiceObject();
-        delay = HalDashboard.getNumber("Auto/Delay", 0.0);
         fastDelivery = fastDeliveryMenu.getCurrentChoiceObject() == YesOrNo.YES;
+
+        lane = laneMenu.getCurrentChoiceObject();
+        switch (lane)
+        {
+            case LANE1:
+                forwardDriveDistance = RobotInfo.FWD_DISTANCE_1;
+                break;
+
+            case LANE2:
+                forwardDriveDistance = RobotInfo.FWD_DISTANCE_2;
+                break;
+
+            case LANE3:
+                forwardDriveDistance = RobotInfo.FWD_DISTANCE_3;
+                break;
+
+            case CUSTOM:
+                forwardDriveDistance = -1.0;
+                break;
+        }
+
+        delay = HalDashboard.getNumber("Auto/Delay", 0.0);
 
         switch (autoStrategy)
         {
@@ -194,8 +197,8 @@ public class FrcAuto implements TrcRobot.RobotMode
                 break;
 
             case AUTO_SCALE:
-            	autoCommand = new CmdAutoScale(robot, delay, robotStartPosition, forwardDriveDistance);
-            	break;
+                autoCommand = new CmdAutoScale(robot, delay, robotStartPosition, forwardDriveDistance);
+                break;
 
             case X_TIMED_DRIVE:
                 autoCommand = new CmdTimedDrive(robot, delay, robot.driveTime, robot.drivePower, 0.0, 0.0);

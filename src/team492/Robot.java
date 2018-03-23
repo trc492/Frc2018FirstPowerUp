@@ -54,7 +54,7 @@ import team492.diagnostics.OnBoardDiagnostics;
 import trclib.TrcDbgTrace;
 import trclib.TrcDriveBase;
 import trclib.TrcEmic2TextToSpeech.Voice;
-import trclib.TrcGyro;
+//import trclib.TrcGyro;
 //import trclib.TrcLidarLite;
 import trclib.TrcMaxbotixSonarArray;
 import trclib.TrcPidController;
