@@ -99,7 +99,8 @@ class CmdAutoSwitch implements TrcRobot.RobotCommand
     private TrcEvent event;
     private TrcTimer timer;
     private TrcStateMachine<State> sm;
-    private TrcAnalogTrigger<TrcAnalogInput.DataType> sonarTrigger = null;
+    private TrcAnalogTrigger<TrcAnalogInput.DataType> leftSonarTrigger = null;
+    private TrcAnalogTrigger<TrcAnalogInput.DataType> rightSonarTrigger = null;
     private TrcEvent sonarEvent;
     private TrcEvent inverseSonarEvent;
     private double xPowerLimit, yPowerLimit;
@@ -115,7 +116,7 @@ class CmdAutoSwitch implements TrcRobot.RobotCommand
         this.delay = delay;
         // if forwardDistance is -1, it means the driver picked "custom".
         this.forwardDistance = forwardDistance != -1.0?
-            forwardDistance: HalDashboard.getNumber("Auto/Forward Distance", 10.0);
+            forwardDistance: HalDashboard.getNumber("Auto/FwdDistance", 10.0);
         this.startPosition = startPosition;
 
         if (startPosition == 0.0)
@@ -145,9 +146,12 @@ class CmdAutoSwitch implements TrcRobot.RobotCommand
         sm = new TrcStateMachine<>(moduleName);
         sm.start(State.DO_DELAY);
 
-        sonarTrigger = new TrcAnalogTrigger<>(
-            "SonarTrigger", rightSwitch? robot.rightSonarSensor: robot.leftSonarSensor,
-            0, TrcAnalogInput.DataType.INPUT_DATA, sonarTriggerPoints, this::sonarTriggerEvent);
+        leftSonarTrigger = new TrcAnalogTrigger<>(
+            "LeftSonarTrigger", robot.leftSonarSensor, 0, TrcAnalogInput.DataType.INPUT_DATA,
+            sonarTriggerPoints, this::sonarTriggerEvent);
+        rightSonarTrigger = new TrcAnalogTrigger<>(
+            "RightSonarTrigger", robot.rightSonarSensor, 0, TrcAnalogInput.DataType.INPUT_DATA,
+            sonarTriggerPoints, this::sonarTriggerEvent);
         sonarEvent = new TrcEvent("SonarEvent");
         inverseSonarEvent = new TrcEvent("InverseSonarEvent");
 
@@ -221,6 +225,7 @@ class CmdAutoSwitch implements TrcRobot.RobotCommand
                         robot.driveBase.setBrakeMode(true);
                         robot.encoderYPidCtrl.setNoOscillation(false);
                         robot.encoderYPidCtrl.setTargetTolerance(RobotInfo.ENCODER_Y_TOLERANCE);
+                        robot.cubePickup.openClaw();
                         robot.cubePickup.dropCube(1.0);
                         timer.set(0.3, event);
                         sm.waitForSingleEvent(event, State.TURN_TO_END_OF_SWITCH);
@@ -234,15 +239,17 @@ class CmdAutoSwitch implements TrcRobot.RobotCommand
                         break;
 
                     case FAST_DELIVERY_DRIVE_PAST_SWITCH:
-                    	if(rightSwitch)
-                    	{
-                    		robot.leftSonarArray.startRanging(true);
-                    	}
-                    	else
-                    	{
-                    		robot.rightSonarArray.startRanging(true);
-                    	}
-                        sonarTrigger.setTaskEnabled(true);
+                        robot.elevator.setPosition(RobotInfo.ELEVATOR_FLOOR_PICKUP_HEIGHT);
+                        if (rightSwitch)
+                        {
+                            robot.leftSonarArray.startRanging(true);
+                            leftSonarTrigger.setTaskEnabled(true);
+                        }
+                        else
+                        {
+                            robot.rightSonarArray.startRanging(true);
+                            rightSonarTrigger.setTaskEnabled(true);
+                        }
                         sm.addEvent(inverseSonarEvent);
                         xDistance = 0.0;
                         yDistance = FAST_DELIVERY_DRIVE_PAST_SWITCH_DISTANCE;
@@ -271,7 +278,14 @@ class CmdAutoSwitch implements TrcRobot.RobotCommand
                             if (flipInFlight)
                             {
                                 // Need to slow down sooner so the cube doesn't fly over the switch.
-                                sonarTrigger.setTaskEnabled(true);
+                                if (rightSwitch)
+                                {
+                                    rightSonarTrigger.setTaskEnabled(true);
+                                }
+                                else
+                                {
+                                    leftSonarTrigger.setTaskEnabled(true);
+                                }
                                 sm.addEvent(sonarEvent);
                                 yDistance -= 16.0;
                             }
@@ -301,7 +315,8 @@ class CmdAutoSwitch implements TrcRobot.RobotCommand
 
                         if (flipInFlight)
                         {
-                            sonarTrigger.setTaskEnabled(false);
+                            leftSonarTrigger.setTaskEnabled(false);
+                            rightSonarTrigger.setTaskEnabled(false);
                         }
 
                         if (sonarDistance < RobotInfo.SWITCH_SONAR_DISTANCE_THRESHOLD)
@@ -339,7 +354,7 @@ class CmdAutoSwitch implements TrcRobot.RobotCommand
                     case SONAR_FLIP_CUBE:
                         // Restoring xPowerLimit if it has changed.
                         robot.encoderXPidCtrl.setOutputLimit(xPowerLimit);
-                        if(rightSwitch)
+                        if (rightSwitch)
                         {
                             robot.rightFlipper.extend();
                             robot.rightSonarArray.stopRanging();
@@ -391,14 +406,23 @@ class CmdAutoSwitch implements TrcRobot.RobotCommand
                     case STRAFE_TO_SWITCH:
                         // Changing the first trigger point to zero so the threshold is about 16-inch.
                         sonarTriggerPoints[0] = 0.0;
-                        sonarTrigger.setTaskEnabled(true);
-                        if(forwardDistance != RobotInfo.FWD_DISTANCE_3)sm.addEvent(sonarEvent);
+                        if ((rightSwitch && forwardDistance == RobotInfo.FWD_DISTANCE_3) ||
+                            (!rightSwitch && forwardDistance != RobotInfo.FWD_DISTANCE_3))
+                        {
+                            rightSonarTrigger.setTaskEnabled(true);
+                        }
+                        else
+                        {
+                            leftSonarTrigger.setTaskEnabled(true);
+                        }
+                        if (forwardDistance != RobotInfo.FWD_DISTANCE_3) sm.addEvent(sonarEvent);
                         yDistance = 0.0;
                         // questionable strafe calculation, needs fixing
-                        if(forwardDistance > RobotInfo.AUTO_DISTANCE_TO_SWITCH)
+                        if (forwardDistance > RobotInfo.AUTO_DISTANCE_TO_SWITCH)
                         {
-                            xDistance = -(forwardDistance - RobotInfo.AUTO_DISTANCE_TO_SWITCH - RobotInfo.CUBE_WIDTH-53.0);
-                        } else
+                            xDistance = -(forwardDistance - RobotInfo.AUTO_DISTANCE_TO_SWITCH - RobotInfo.CUBE_WIDTH - 53.0);
+                        }
+                        else
                         {
                             xDistance = (RobotInfo.AUTO_DISTANCE_TO_SWITCH - forwardDistance) - 36.0;
                         }
@@ -413,7 +437,8 @@ class CmdAutoSwitch implements TrcRobot.RobotCommand
                     case FLIP_CUBE:
                         robot.rightSonarArray.stopRanging();
                         robot.leftSonarArray.stopRanging();
-                        sonarTrigger.setTaskEnabled(false);
+                        leftSonarTrigger.setTaskEnabled(false);
+                        rightSonarTrigger.setTaskEnabled(false);
                         if ((rightSwitch && forwardDistance == RobotInfo.FWD_DISTANCE_3) ||
                             (!rightSwitch && forwardDistance != RobotInfo.FWD_DISTANCE_3))
                         {
@@ -445,11 +470,12 @@ class CmdAutoSwitch implements TrcRobot.RobotCommand
                         break;
 
                     case TURN_SOUTH:
-                    	robot.leftSonarArray.stopRanging();
-                    	robot.rightSonarArray.stopRanging();
-                    	sonarTrigger.setTaskEnabled(false);
-                    	robot.driveBase.setBrakeMode(true);
-                    	robot.encoderYPidCtrl.setNoOscillation(false);
+                        robot.leftSonarArray.stopRanging();
+                        robot.rightSonarArray.stopRanging();
+                        leftSonarTrigger.setTaskEnabled(false);
+                        rightSonarTrigger.setTaskEnabled(false);
+                        robot.driveBase.setBrakeMode(true);
+                        robot.encoderYPidCtrl.setNoOscillation(false);
                         robot.encoderYPidCtrl.setTargetTolerance(RobotInfo.ENCODER_Y_TOLERANCE);
                         xDistance = yDistance = 0.0;
                         robot.targetHeading = DRIVE_HEADING_SOUTH;
@@ -527,7 +553,7 @@ class CmdAutoSwitch implements TrcRobot.RobotCommand
                         break;
 
                     case PICKUP_SECOND_CUBE:
-                        if(robot.cmdAutoCubePickup.cmdPeriodic(elapsedTime))
+                        if (robot.cmdAutoCubePickup.cmdPeriodic(elapsedTime))
                         {
                             sm.setState(State.BACKUP_WITH_SECOND_CUBE);
                         }
@@ -546,7 +572,7 @@ class CmdAutoSwitch implements TrcRobot.RobotCommand
 
                     case REPOSITION_TURN:
                         xDistance = yDistance = 0.0;
-                        if(rightScale == rightSwitch)
+                        if (rightScale == rightSwitch)
                         {
                             robot.targetHeading = DRIVE_HEADING_NORTH;
                             nextState = State.RAISE_ELEVATOR;
@@ -633,6 +659,7 @@ class CmdAutoSwitch implements TrcRobot.RobotCommand
     {
         robot.tracer.traceInfo("SonarTrigger", "[%.3f] prevZone=%d, currZone=%d, distance=%.2f",
             Robot.getModeElapsedTime(), prevZone, currZone, zoneValue);
+
         if (prevZone == 1 && currZone == 0)
         {
             // Detected the switch fence.
@@ -642,8 +669,7 @@ class CmdAutoSwitch implements TrcRobot.RobotCommand
                 robot.pidDrive.cancel();
             }
         }
-        
-        if (prevZone == 0 && currZone == 1)
+        else if (prevZone == 0 && currZone == 1)
         {
             // Passed the switch fence.
             inverseSonarEvent.set(true);
