@@ -23,7 +23,7 @@
 package team492;
 
 import frclib.FrcJoystick;
-import hallib.HalDashboard;
+//import hallib.HalDashboard;
 import trclib.TrcRobot;
 
 public class FrcTeleOp implements TrcRobot.RobotMode
@@ -127,11 +127,11 @@ public class FrcTeleOp implements TrcRobot.RobotMode
                         y /= RobotInfo.DRIVE_SLOW_YSCALE;
                         rot /= RobotInfo.DRIVE_SLOW_TURNSCALE;
                     }
-                    double xForceOz = x * RobotInfo.MAX_WHEEL_FORCE_OZ;
-                    double yForceOz = y * RobotInfo.MAX_WHEEL_FORCE_OZ;
+//                    double xForceOz = x * RobotInfo.MAX_WHEEL_FORCE_OZ;
+//                    double yForceOz = y * RobotInfo.MAX_WHEEL_FORCE_OZ;
                     robot.driveBase.mecanumDrive_Cartesian(x, y, rot, driveInverted);
-                    HalDashboard.putNumber("xForceOz", xForceOz);
-                    HalDashboard.putNumber("yForceOz", yForceOz);
+//                    HalDashboard.putNumber("xForceOz", xForceOz);
+//                    HalDashboard.putNumber("yForceOz", yForceOz);
                     break;
             }
 

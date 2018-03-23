@@ -93,7 +93,7 @@ public class Robot extends FrcRobotBase
     public static final boolean USE_LIDAR = false;
     public static final boolean USE_RINGLIGHT = false;
 
-    private static final boolean DEBUG_POWER_CONSUMPTION = true;
+    private static final boolean DEBUG_POWER_CONSUMPTION = false;
     private static final boolean DEBUG_DRIVE_BASE = false;
     private static final boolean DEBUG_PID_DRIVE = false;
     private static final boolean DEBUG_SUBSYSTEMS = true;
@@ -540,10 +540,6 @@ public class Robot extends FrcRobotBase
             double yPos = driveBase.getYPosition();
             double heading = driveBase.getHeading();
 
-            HalDashboard.putNumber("DriveBase/xPos", xPos);
-            HalDashboard.putNumber("DriveBase/yPos", yPos);
-            HalDashboard.putNumber("DriveBase/heading", heading);
-
             if (DEBUG_POWER_CONSUMPTION)
             {
                 HalDashboard.putNumber("Power/pdpTotalCurrent", pdp.getTotalCurrent());
@@ -555,6 +551,9 @@ public class Robot extends FrcRobotBase
 
             if (DEBUG_DRIVE_BASE)
             {
+                HalDashboard.putNumber("DriveBase/xPos", xPos);
+                HalDashboard.putNumber("DriveBase/yPos", yPos);
+                HalDashboard.putNumber("DriveBase/heading", heading);
                 //
                 // DriveBase debug info.
                 //
