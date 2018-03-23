@@ -264,6 +264,7 @@ public class FrcAuto implements TrcRobot.RobotMode
                 robot.encoderYPidCtrl.printPidInfo(robot.tracer, elapsedTime, robot.battery);
                 robot.gyroTurnPidCtrl.printPidInfo(robot.tracer, elapsedTime, robot.battery);
             }
+
             if(robot.elevator.elevator.isActive())
             {
                 robot.elevator.elevatorPidCtrl.printPidInfo(robot.tracer, elapsedTime, robot.battery);
