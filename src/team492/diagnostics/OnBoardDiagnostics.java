@@ -13,6 +13,7 @@ import team492.diagnostics.tests.GyroNotConnectedTest;
 import team492.diagnostics.tests.UltrasonicUnpluggedTest;
 import team492.diagnostics.tests.PixyVisionTaskTerminatedTest;
 import team492.diagnostics.tests.HighTalonErrorRateTest;
+import team492.diagnostics.tests.PneumaticsNotPressurizingTest;
 
 public class OnBoardDiagnostics {
 	
@@ -49,6 +50,8 @@ public class OnBoardDiagnostics {
 				"grabber cube proximity sensor"));
 
 		tests.add(new ElevatorPositionUnchangedTest(robot.elevator));
+
+		tests.add(new PneumaticsNotPressurizingTest(robot));
 
 		if (robot.pixy != null) {
 			tests.add(new PixyVisionTaskTerminatedTest(robot.pixy));
