@@ -106,7 +106,7 @@ public class CubePickup
      */
     public void openClaw()
     {
-        claw.extend();
+        claw.retract();
     }
 
     /**
@@ -114,7 +114,7 @@ public class CubePickup
      */
     public void closeClaw()
     {
-        claw.retract();
+        claw.extend();
     }
 
     /**
