@@ -14,6 +14,7 @@ import team492.diagnostics.tests.UltrasonicUnpluggedTest;
 import team492.diagnostics.tests.PixyVisionTaskTerminatedTest;
 import team492.diagnostics.tests.HighTalonErrorRateTest;
 import team492.diagnostics.tests.PneumaticsNotPressurizingTest;
+import team492.diagnostics.tests.ElevatorLimitSwitchStuckTest;
 
 public class OnBoardDiagnostics {
 	
@@ -32,6 +33,11 @@ public class OnBoardDiagnostics {
 		tests.add(new HighTalonErrorRateTest(robot.leftRearWheel, "left rear wheel motor"));
 		tests.add(new HighTalonErrorRateTest(robot.rightRearWheel, "right rear wheel motor"));
 		tests.add(new HighTalonErrorRateTest(robot.elevator.elevatorMotor, "elevator motor"));
+
+		tests.add(new ElevatorLimitSwitchStuckTest(robot.elevator,
+				ElevatorLimitSwitchStuckTest.ElevatorLimitSwitch.LOWER));
+		tests.add(new ElevatorLimitSwitchStuckTest(robot.elevator,
+				ElevatorLimitSwitchStuckTest.ElevatorLimitSwitch.UPPER));
 		
 		if(robot.leftSonarArray != null || robot.leftSonarSensor != null) {
 		    tests.add(new UltrasonicUnpluggedTest(robot::getLeftSonarDistance, "left sonar"));
