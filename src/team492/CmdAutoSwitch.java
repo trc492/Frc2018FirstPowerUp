@@ -41,18 +41,20 @@ class CmdAutoSwitch implements TrcRobot.RobotCommand
     private static double DRIVE_HEADING_SOUTH = 0.0;
 
     //headings for starting forwards
-    private static final double SWITCH_HEADING = 30.0;
+    private static final double SWITCH_HEADING = 25.0;
 
     //TODO: move these to RobotInfo
     private static final double SHORTEST_DISTANCE_TO_SWITCH = 121.24;
     private static final double FAST_DELIVERY_DRIVE_PAST_SWITCH_DISTANCE = 54.0;
     private static final double FAST_DELIVERY_Y_TOLERANCE = 5.0;
+    private static final double FAST_DELIVERY_GYRO_TOLERANCE = 5.0;
     private double[] sonarTriggerPoints = {8.0, 32.0};
 
     private static enum State
     {
         DO_DELAY,
         DRIVE_DIAGONAL_TO_SWITCH,
+        TURN_BACK_NORTH,
         THROW_CUBE,
         TURN_TO_END_OF_SWITCH,
         FAST_DELIVERY_DRIVE_PAST_SWITCH,
@@ -91,6 +93,7 @@ class CmdAutoSwitch implements TrcRobot.RobotCommand
     private double startPosition;
     private boolean flipInFlight = false;
     private boolean fastDeliveryFromCenter = false;
+    private boolean getSecondCube;
 
     private boolean rightSwitch;
     private boolean rightScale;
@@ -110,15 +113,17 @@ class CmdAutoSwitch implements TrcRobot.RobotCommand
     private Double visionTarget;
     private double sonarDistance;
 
-    CmdAutoSwitch(Robot robot, double delay, double forwardDistance, double startPosition, boolean fastDelivery)
+    CmdAutoSwitch(Robot robot, double delay, double forwardDistance, double startPosition, boolean fastDelivery, boolean getSecondCube)
     {
         this.robot = robot;
         this.delay = delay;
         // if forwardDistance is -1, it means the driver picked "custom".
         this.forwardDistance = forwardDistance != -1.0?
             forwardDistance: HalDashboard.getNumber("Auto/FwdDistance", 10.0);
+        this.getSecondCube = getSecondCube;
         this.startPosition = startPosition;
-
+        robot.gyroTurnPidCtrl.setTargetTolerance(4.0);
+        robot.encoderYPidCtrl.setTargetTolerance(3.0);
         if (startPosition == 0.0)
         {
             // when starting in the center with fast delivery, the robot is facing north.
@@ -215,9 +220,16 @@ class CmdAutoSwitch implements TrcRobot.RobotCommand
                         robot.encoderYPidCtrl.setTargetTolerance(FAST_DELIVERY_Y_TOLERANCE);
                         xDistance = 0.0;
                         yDistance = SHORTEST_DISTANCE_TO_SWITCH;
-                        robot.targetHeading = rightSwitch? SWITCH_HEADING: -SWITCH_HEADING;
+                        robot.targetHeading = rightSwitch? (SWITCH_HEADING): (-SWITCH_HEADING-5.0);
                         robot.pidDrive.setTarget(xDistance, yDistance, robot.targetHeading, false, event, 0.0);
                         robot.elevator.setPosition(RobotInfo.ELEVATOR_SWITCH_HEIGHT);
+                        sm.waitForSingleEvent(event, State.TURN_BACK_NORTH);
+                        break;
+
+                    case TURN_BACK_NORTH:
+                        robot.gyroTurnPidCtrl.setTargetTolerance(FAST_DELIVERY_GYRO_TOLERANCE);
+                        robot.targetHeading = DRIVE_HEADING_NORTH;
+                        robot.pidDrive.setTarget(0.0, 0.0, robot.targetHeading, false, event, 0.5);
                         sm.waitForSingleEvent(event, State.THROW_CUBE);
                         break;
 
@@ -225,10 +237,18 @@ class CmdAutoSwitch implements TrcRobot.RobotCommand
                         robot.driveBase.setBrakeMode(true);
                         robot.encoderYPidCtrl.setNoOscillation(false);
                         robot.encoderYPidCtrl.setTargetTolerance(RobotInfo.ENCODER_Y_TOLERANCE);
+                        robot.gyroTurnPidCtrl.setTargetTolerance(RobotInfo.GYRO_TURN_TOLERANCE);
                         robot.cubePickup.openClaw();
-                        robot.cubePickup.dropCube(1.0);
-                        timer.set(0.3, event);
-                        sm.waitForSingleEvent(event, State.TURN_TO_END_OF_SWITCH);
+                        robot.cubePickup.dropCube(0.6);
+                        if (getSecondCube)
+                        {
+                            timer.set(0.3, event);
+                            sm.waitForSingleEvent(event, State.TURN_TO_END_OF_SWITCH);
+                        }
+                        else
+                        {
+                            sm.setState(State.DONE);
+                        }
                         break;
 
                     case TURN_TO_END_OF_SWITCH:
@@ -364,9 +384,17 @@ class CmdAutoSwitch implements TrcRobot.RobotCommand
                             robot.leftFlipper.extend();
                             robot.leftSonarArray.stopRanging();
                         }
-                        // CodeReview: Can we not wait???
-                        timer.set(0.5, event);
-                        sm.waitForSingleEvent(event, State.SONAR_POSITION_TO_STRAFE);
+
+                        if (getSecondCube)
+                        {
+                            // CodeReview: Can we not wait???
+                            timer.set(0.5, event);
+                            sm.waitForSingleEvent(event, State.SONAR_POSITION_TO_STRAFE);
+                        }
+                        else
+                        {
+                            sm.setState(State.DONE);
+                        }
                         break;
 
                     case SONAR_POSITION_TO_STRAFE:
@@ -448,10 +476,18 @@ class CmdAutoSwitch implements TrcRobot.RobotCommand
                         {
                             robot.leftFlipper.extend();
                         }
-                        timer.set(0.3, event);
-                        nextState = forwardDistance == RobotInfo.FWD_DISTANCE_3?
-                            State.STRAFE_FROM_SWITCH: State.DRIVE_PAST_SWITCH;
-                        sm.waitForSingleEvent(event, nextState);
+
+                        if (getSecondCube)
+                        {
+                            timer.set(0.3, event);
+                            nextState = forwardDistance == RobotInfo.FWD_DISTANCE_3?
+                                State.STRAFE_FROM_SWITCH: State.DRIVE_PAST_SWITCH;
+                            sm.waitForSingleEvent(event, nextState);
+                        }
+                        else
+                        {
+                            sm.setState(State.DONE);
+                        }
                         break;
 
                     case STRAFE_FROM_SWITCH:
@@ -642,6 +678,7 @@ class CmdAutoSwitch implements TrcRobot.RobotCommand
                         robot.elevator.setPosition(RobotInfo.ELEVATOR_MIN_HEIGHT);
                         done = true;
                         sm.stop();
+                        robot.encoderYPidCtrl.setTargetTolerance(RobotInfo.ENCODER_Y_TOLERANCE);
                         break;
                 }
 
@@ -659,6 +696,8 @@ class CmdAutoSwitch implements TrcRobot.RobotCommand
     {
         robot.tracer.traceInfo("SonarTrigger", "[%.3f] prevZone=%d, currZone=%d, distance=%.2f",
             Robot.getModeElapsedTime(), prevZone, currZone, zoneValue);
+
+        if (Robot.getModeElapsedTime() <= 1.0) return;
 
         if (prevZone == 1 && currZone == 0)
         {

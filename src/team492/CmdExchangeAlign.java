@@ -38,7 +38,7 @@ public class CmdExchangeAlign implements TrcRobot.RobotCommand
     }
 
     private Robot robot;
-    private FrcDigitalInput proximitySensor;
+    public FrcDigitalInput proximitySensor;
     private TrcDigitalTrigger proximityTrigger;
     private TrcEvent proximityEvent, pidEvent;
     private TrcEvent onFinishedEvent = null;

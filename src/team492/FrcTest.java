@@ -65,7 +65,7 @@ public class FrcTest extends FrcTeleOp
     //
     private FrcChoiceMenu<Test> testMenu;
     private Test test;
-    private boolean useTraceLog = false;
+//    private boolean useTraceLog = false;
 
     private CmdTimedDrive timedDriveCommand = null;
     private CmdPidDrive pidDriveCommand = null;
@@ -116,6 +116,9 @@ public class FrcTest extends FrcTeleOp
         //
         test = testMenu.getCurrentChoiceObject();
 
+        robot.gyroTurnPidCtrl.setNoOscillation(false);
+        robot.gyroTurnPidCtrl.setTargetTolerance(RobotInfo.GYRO_TURN_TOLERANCE);
+
         boolean liveWindowEnabled = false;
         switch (test)
         {
@@ -123,7 +126,7 @@ public class FrcTest extends FrcTeleOp
                 if (robot.leftSonarArray != null) robot.leftSonarArray.startRanging(true);
                 if (robot.rightSonarArray != null) robot.rightSonarArray.startRanging(true);
                 if (robot.frontSonarArray != null) robot.frontSonarArray.startRanging(true);
-                useTraceLog = true;
+//                useTraceLog = true;
                 break;
 
             case DRIVE_MOTORS_TEST:
@@ -143,19 +146,19 @@ public class FrcTest extends FrcTeleOp
                 break;
 
             case X_DISTANCE_DRIVE:
-                useTraceLog = true;
+//                useTraceLog = true;
                 pidDriveCommand = new CmdPidDrive(robot, robot.pidDrive, robot.encoderXPidCtrl, robot.encoderYPidCtrl,
                     robot.gyroTurnPidCtrl, 0.0, robot.driveDistance, 0.0, 0.0, robot.drivePowerLimit, true);
                 break;
 
             case Y_DISTANCE_DRIVE:
-                useTraceLog = true;
+//                useTraceLog = true;
                 pidDriveCommand = new CmdPidDrive(robot, robot.pidDrive, robot.encoderXPidCtrl, robot.encoderYPidCtrl,
                     robot.gyroTurnPidCtrl, 0.0, 0.0, robot.driveDistance, 0.0, robot.drivePowerLimit, true);
                 break;
 
             case TURN_DEGREES:
-                useTraceLog = true;
+//                useTraceLog = true;
                 pidDriveCommand = new CmdPidDrive(robot, robot.pidDrive, robot.encoderXPidCtrl, robot.encoderYPidCtrl,
                     robot.gyroTurnPidCtrl, 0.0, 0.0, 0.0, robot.turnDegrees, robot.drivePowerLimit, true);
                 break;
@@ -165,8 +168,8 @@ public class FrcTest extends FrcTeleOp
                 break;
         }
 
-        if (Robot.USE_TRACELOG && useTraceLog)
-            robot.startTraceLog("Test");
+//        if (Robot.USE_TRACELOG && useTraceLog)
+//            robot.startTraceLog("Test");
 
 //        robot.lidar = new Lidar("Lidar", I2C.Port.kMXP, (byte)0x62);
         LiveWindow.setEnabled(liveWindowEnabled);

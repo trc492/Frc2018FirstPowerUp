@@ -23,7 +23,6 @@
 package team492;
 
 import frclib.FrcJoystick;
-//import hallib.HalDashboard;
 import trclib.TrcRobot;
 
 public class FrcTeleOp implements TrcRobot.RobotMode
@@ -53,6 +52,8 @@ public class FrcTeleOp implements TrcRobot.RobotMode
     @Override
     public void startMode()
     {
+        if (Robot.USE_TRACELOG) robot.startTraceLog(null);
+
         robot.dashboard.clearDisplay();
         robot.setVisionEnabled(true);
 

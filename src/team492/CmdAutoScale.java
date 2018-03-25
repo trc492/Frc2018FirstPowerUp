@@ -97,6 +97,8 @@ public class CmdAutoScale implements TrcRobot.RobotCommand
         else if (startPosition == RobotInfo.RIGHT_START_POS) this.startPosition = Position.RIGHT;
         else this.startPosition = Position.MIDDLE;
 
+        robot.gyroTurnPidCtrl.setTargetTolerance(3.0);
+
         this.forwardDriveDistance = forwardDriveDistance;
         event = new TrcEvent(moduleName);
         sonarEvent = new TrcEvent(moduleName + ".sonarEvent");

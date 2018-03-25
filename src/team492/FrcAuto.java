@@ -76,11 +76,13 @@ public class FrcAuto implements TrcRobot.RobotMode
     private FrcChoiceMenu<AutoStrategy> autoStrategyMenu;
     private FrcChoiceMenu<StartPosition> startPositionMenu;
     private FrcChoiceMenu<YesOrNo> fastDeliveryMenu;
+    private FrcChoiceMenu<YesOrNo> getSecondCubeMenu;
     private FrcChoiceMenu<Lane> laneMenu;
 
     private AutoStrategy autoStrategy;
     private StartPosition startPosition;
     private boolean fastDelivery;
+    private boolean getSecondCube;
     private Lane lane;
     private double delay;
 
@@ -98,6 +100,7 @@ public class FrcAuto implements TrcRobot.RobotMode
         autoStrategyMenu = new FrcChoiceMenu<>("Auto/AutoStrategies");
         startPositionMenu = new FrcChoiceMenu<>("Auto/StartPos");
         fastDeliveryMenu = new FrcChoiceMenu<>("Auto/FastDelivery");
+        getSecondCubeMenu = new FrcChoiceMenu<>("Auto/GetSecondCube");
         laneMenu = new FrcChoiceMenu<>("Auto/Lanes");
 
         //
@@ -112,12 +115,15 @@ public class FrcAuto implements TrcRobot.RobotMode
         autoStrategyMenu.addChoice("Turn Degrees", AutoStrategy.TURN_DEGREES, false, false);
         autoStrategyMenu.addChoice("Do Nothing", AutoStrategy.DO_NOTHING, false, true);
 
-        startPositionMenu.addChoice("Left Side Start", StartPosition.LEFT_START_POS, true, false);
-        startPositionMenu.addChoice("Middle Start", StartPosition.MID_START_POS, false, false);
+        startPositionMenu.addChoice("Left Side Start", StartPosition.LEFT_START_POS, false, false);
+        startPositionMenu.addChoice("Middle Start", StartPosition.MID_START_POS, true, false);
         startPositionMenu.addChoice("Right Side Start", StartPosition.RIGHT_START_POS, false, true);
 
         fastDeliveryMenu.addChoice("Yes", YesOrNo.YES, true, false);
         fastDeliveryMenu.addChoice("No", YesOrNo.NO, false, true);
+
+        getSecondCubeMenu.addChoice("Yes", YesOrNo.YES, true, false);
+        getSecondCubeMenu.addChoice("No", YesOrNo.NO, false, true);
 
         laneMenu.addChoice("Lane 1", Lane.LANE1, false, false);
         laneMenu.addChoice("Lane 2", Lane.LANE2, true, false);
@@ -166,6 +172,7 @@ public class FrcAuto implements TrcRobot.RobotMode
         }
 
         fastDelivery = fastDeliveryMenu.getCurrentChoiceObject() == YesOrNo.YES;
+        getSecondCube = (getSecondCubeMenu.getCurrentChoiceObject() == YesOrNo.YES);
 
         lane = laneMenu.getCurrentChoiceObject();
         switch (lane)
@@ -193,7 +200,7 @@ public class FrcAuto implements TrcRobot.RobotMode
         {
             case AUTO_SWITCH:
                 autoCommand = new CmdAutoSwitch(
-                    robot, delay, forwardDriveDistance, robotStartPosition, fastDelivery);
+                    robot, delay, forwardDriveDistance, robotStartPosition, fastDelivery, getSecondCube);
                 break;
 
             case AUTO_SCALE:

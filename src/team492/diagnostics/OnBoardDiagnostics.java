@@ -14,73 +14,84 @@ import team492.diagnostics.tests.UltrasonicUnpluggedTest;
 import team492.diagnostics.tests.PixyVisionTaskTerminatedTest;
 import team492.diagnostics.tests.HighTalonErrorRateTest;
 
-public class OnBoardDiagnostics {
-	
-	private List<DiagnosticsTest> tests;
-	
-	public OnBoardDiagnostics(Robot robot)
-	{
-		tests = new ArrayList<>();
-		tests.add(new EncoderUnpluggedTest(robot.leftFrontWheel, "left front encoder"));
-		tests.add(new EncoderUnpluggedTest(robot.rightFrontWheel, "right front encoder"));
-		tests.add(new EncoderUnpluggedTest(robot.leftRearWheel, "left rear encoder"));
-		tests.add(new EncoderUnpluggedTest(robot.rightRearWheel, "right rear encoder"));
+public class OnBoardDiagnostics
+{
 
-		tests.add(new HighTalonErrorRateTest(robot.leftFrontWheel, "left front wheel motor"));
-		tests.add(new HighTalonErrorRateTest(robot.rightFrontWheel, "right front wheel motor"));
-		tests.add(new HighTalonErrorRateTest(robot.leftRearWheel, "left rear wheel motor"));
-		tests.add(new HighTalonErrorRateTest(robot.rightRearWheel, "right rear wheel motor"));
-		tests.add(new HighTalonErrorRateTest(robot.elevator.elevatorMotor, "elevator motor"));
-		
-		if(robot.leftSonarArray != null || robot.leftSonarSensor != null) {
-		    tests.add(new UltrasonicUnpluggedTest(robot::getLeftSonarDistance, "left sonar"));
-		}
-		
-		if(robot.rightSonarArray != null || robot.rightSonarSensor != null) {
-		    tests.add(new UltrasonicUnpluggedTest(robot::getRightSonarDistance, "right sonar"));
-		}
-		
-		tests.add(new DigitalSensorUnchangedTest(
-				robot.elevator.elevatorMotor::isLowerLimitSwitchActive, 
-				"elevator lower limit switch"));
-		
-		tests.add(new DigitalSensorUnchangedTest(
-				robot.cubePickup::cubeInProximity, 
-				"grabber cube proximity sensor"));
+    private List<DiagnosticsTest> tests;
+    private final Robot robot;
 
-		tests.add(new ElevatorPositionUnchangedTest(robot.elevator));
+    public OnBoardDiagnostics(Robot robot)
+    {
+        this.robot = robot;
 
-		if (robot.pixy != null) {
-			tests.add(new PixyVisionTaskTerminatedTest(robot.pixy));
-		}
-		
-		if(robot.gyro != null) {
-		    tests.add(new GyroNotConnectedTest(robot.gyro));
-		}
-	}
-	
-	public void doPeriodicTests()
-	{
-		tests.forEach(DiagnosticsTest::test);
-	}
-	
-	public void printDiagnostics()
-	{
-		boolean faults = false;
-		
-		for(DiagnosticsTest test : tests) {
-			TestResult result = test.getResult();
-			
-			if(result.faultDetected())
-			{
-				faults = true;
-				DriverStation.reportError("### Diagnostics: " + result.errorMessage(), false);
-			}
-		}
-		
-		if(!faults)
-		{
-			DriverStation.reportError("### Diagnostics: No faults", false);
-		}
-	}
+        tests = new ArrayList<>();
+        tests.add(new EncoderUnpluggedTest(robot.leftFrontWheel, "left front encoder"));
+        tests.add(new EncoderUnpluggedTest(robot.rightFrontWheel, "right front encoder"));
+        tests.add(new EncoderUnpluggedTest(robot.leftRearWheel, "left rear encoder"));
+        tests.add(new EncoderUnpluggedTest(robot.rightRearWheel, "right rear encoder"));
+
+        tests.add(new HighTalonErrorRateTest(robot.leftFrontWheel, "left front wheel motor"));
+        tests.add(new HighTalonErrorRateTest(robot.rightFrontWheel, "right front wheel motor"));
+        tests.add(new HighTalonErrorRateTest(robot.leftRearWheel, "left rear wheel motor"));
+        tests.add(new HighTalonErrorRateTest(robot.rightRearWheel, "right rear wheel motor"));
+        tests.add(new HighTalonErrorRateTest(robot.elevator.elevatorMotor, "elevator motor"));
+
+        if (robot.leftSonarArray != null || robot.leftSonarSensor != null)
+        {
+            tests.add(new UltrasonicUnpluggedTest(robot::getLeftSonarDistance, "left sonar"));
+        }
+
+        if (robot.rightSonarArray != null || robot.rightSonarSensor != null)
+        {
+            tests.add(new UltrasonicUnpluggedTest(robot::getRightSonarDistance, "right sonar"));
+        }
+
+        tests.add(new DigitalSensorUnchangedTest(robot.elevator.elevatorMotor::isLowerLimitSwitchActive,
+            "elevator lower limit switch"));
+
+        tests.add(new DigitalSensorUnchangedTest(robot.cubePickup::cubeInProximity, "grabber cube proximity sensor"));
+
+        tests.add(new ElevatorPositionUnchangedTest(robot.elevator));
+
+        if (robot.pixy != null)
+        {
+            tests.add(new PixyVisionTaskTerminatedTest(robot.pixy));
+        }
+
+        if (robot.gyro != null)
+        {
+            tests.add(new GyroNotConnectedTest(robot.gyro));
+        }
+    }
+
+    public void doPeriodicTests()
+    {
+        tests.forEach(DiagnosticsTest::test);
+    }
+
+    public void printDiagnostics()
+    {
+        boolean faults = false;
+
+        for (DiagnosticsTest test : tests)
+        {
+            TestResult result = test.getResult();
+
+            if (result.faultDetected())
+            {
+                faults = true;
+                final String message = "### Diagnostics: " + result.errorMessage();
+
+                DriverStation.reportError(message, false);
+                robot.tracer.traceInfo("Diagnostics", message);
+            }
+        }
+
+        if (!faults)
+        {
+            final String message = "### Diagnostics: No faults";
+            DriverStation.reportError("### Diagnostics: No faults", false);
+            robot.tracer.traceInfo("Diagnostics", message);
+        }
+    }
 }

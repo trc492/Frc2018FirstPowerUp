@@ -1,5 +1,5 @@
 {
-  "dividerPosition": 0.13301787592008413,
+  "dividerPosition": 0.13224368499257058,
   "tabPane": [
     {
       "title": "FMSInfo",
@@ -335,6 +335,17 @@
               "_source0": "network_table:///SmartDashboard/Auto/Delay",
               "_title": "Delay"
             }
+          },
+          "4,2": {
+            "size": [
+              4,
+              2
+            ],
+            "content": {
+              "_type": "ComboBox Chooser",
+              "_source0": "network_table:///SmartDashboard/Auto/GetSecondCube",
+              "_title": "GetSecondCube"
+            }
           }
         }
       }
@@ -491,7 +502,7 @@
             "content": {
               "_type": "Graph",
               "_source0": "network_table:///SmartDashboard/Power/winchCurrent",
-              "_title": "SmartDashboard/Power/winchCurrent",
+              "_title": "/SmartDashboard/Power/winchCurrent",
               "Visible time": 30.0,
               "SmartDashboard/Power/winchCurrent visible": true
             }
@@ -504,7 +515,7 @@
             "content": {
               "_type": "Graph",
               "_source0": "network_table:///SmartDashboard/Power/pickupCurrent",
-              "_title": "SmartDashboard/Power/pickupCurrent",
+              "_title": "/SmartDashboard/Power/pickupCurrent",
               "Visible time": 30.0,
               "SmartDashboard/Power/pickupCurrent visible": true
             }
@@ -517,7 +528,7 @@
             "content": {
               "_type": "Graph",
               "_source0": "network_table:///SmartDashboard/Power/elevatorCurrent",
-              "_title": "SmartDashboard/Power/elevatorCurrent",
+              "_title": "/SmartDashboard/Power/elevatorCurrent",
               "Visible time": 30.0,
               "SmartDashboard/Power/elevatorCurrent visible": true
             }
@@ -530,7 +541,7 @@
             "content": {
               "_type": "Graph",
               "_source0": "network_table:///SmartDashboard/Power/pdpTotalCurrent",
-              "_title": "SmartDashboard/Power/pdpTotalCurrent",
+              "_title": "/SmartDashboard/Power/pdpTotalCurrent",
               "Visible time": 30.0,
               "SmartDashboard/Power/pdpTotalCurrent visible": true
             }
@@ -602,7 +613,14 @@
             "content": {
               "_type": "Camera Stream",
               "_source0": "camera_server://cam0",
-              "_title": "cam0"
+              "_title": "cam0",
+              "showControls": true,
+              "showCrosshair": true,
+              "crosshairColor": "#FFFFFFFF",
+              "compression": 0.0,
+              "fps": -1,
+              "imageWidth": -1,
+              "imageHeight": -1
             }
           }
         }

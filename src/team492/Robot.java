@@ -80,7 +80,7 @@ public class Robot extends FrcRobotBase
 
     public static final boolean USE_TRACELOG = true;
     public static final boolean USE_NAV_X = true;
-    public static final boolean USE_USB_CAM = false;
+    public static final boolean USE_USB_CAM = true;
     public static final boolean USE_PIXY_SPI = false;
     public static final boolean USE_PIXY_I2C = true;
     public static final boolean USE_TEXT_TO_SPEECH = false;
@@ -93,7 +93,7 @@ public class Robot extends FrcRobotBase
     public static final boolean USE_LIDAR = false;
     public static final boolean USE_RINGLIGHT = false;
 
-    private static final boolean DEBUG_POWER_CONSUMPTION = false;
+    private static final boolean DEBUG_POWER_CONSUMPTION = true;
     private static final boolean DEBUG_DRIVE_BASE = false;
     private static final boolean DEBUG_PID_DRIVE = false;
     private static final boolean DEBUG_SUBSYSTEMS = true;
@@ -547,6 +547,14 @@ public class Robot extends FrcRobotBase
                 HalDashboard.putNumber("Power/winchCurrent", winch.getCurrent());
                 HalDashboard.putNumber("Power/pickupCurrent", cubePickup.getPickupCurrent());
                 HalDashboard.putNumber("Power/totalEnergy", battery.getTotalEnergy());
+                tracer.traceInfo("PowerUse", "Battery - currVoltage: %.2f, lowestVoltage: %.2f",
+                    battery.getVoltage(), battery.getLowestVoltage());
+                tracer.traceInfo("PowerUse", "Power: pdpTotalCurrent: %.2f elev: %.2f winch: %.2f, pickup: %.2f, total: %.2f",
+                    pdp.getTotalCurrent(),
+                    elevator.elevatorMotor.motor.getOutputCurrent(),
+                    winch.getCurrent(),
+                    cubePickup.getPickupCurrent(),
+                    battery.getTotalEnergy());
             }
 
             if (DEBUG_DRIVE_BASE)
@@ -582,8 +590,9 @@ public class Robot extends FrcRobotBase
                     elevator.elevatorMotor.isLowerLimitSwitchActive(),
                     elevator.elevatorMotor.isUpperLimitSwitchActive());
                 dashboard.displayPrintf(9, "Winch: power=%.1f", winch.getPower());
-                dashboard.displayPrintf(10, "CubePickup: power=%.1f, current=%.1f, cubeDetected=%b",
-                    cubePickup.getPickupPower(), cubePickup.getPickupCurrent(), cubePickup.cubeInProximity());
+                dashboard.displayPrintf(10, "CubePickup: power=%.1f, current=%.1f, cubeDetected=%b, exchangeAlign=%b",
+                    cubePickup.getPickupPower(), cubePickup.getPickupCurrent(), cubePickup.cubeInProximity(),
+                    cmdExchangeAlign.proximitySensor.isActive());
 
                 if (DEBUG_PIXY)
                 {
