@@ -271,13 +271,14 @@ public class FrcTeleOp implements TrcRobot.RobotMode
                     gyroAssist = !gyroAssist;
                     if (gyroAssist)
                     {
-                        robot.ledStrip.setPattern(RobotInfo.LED_GYRO_ASSIST_ON);
+                        // TODO: maybe put patterns?
+                        //robot.ledStrip.setPattern(RobotInfo.LED_GYRO_ASSIST_ON);
                         robot.driveBase.enableGyroAssist(
                             RobotInfo.DRIVE_MAX_ROTATION_RATE, RobotInfo.DRIVE_GYRO_ASSIST_KP);
                     }
                     else
                     {
-                        robot.ledStrip.setPattern(RobotInfo.LED_GYRO_ASSIST_OFF);
+                        //robot.ledIndicator.setPattern(RobotInfo.LED_GYRO_ASSIST_OFF);
                         robot.driveBase.disableGyroAssist();
                     }
                 }
@@ -307,6 +308,10 @@ public class FrcTeleOp implements TrcRobot.RobotMode
             case FrcJoystick.LOGITECH_TRIGGER:
                 if (pressed)
                 {
+                    if(!robot.cubePickup.cubeInProximity())
+                    {
+                        robot.cubePickup.prepareForPickup();
+                    }
                     robot.cubePickup.grabCube(RobotInfo.PICKUP_TELEOP_POWER, null);
                 }
                 else
@@ -379,49 +384,33 @@ public class FrcTeleOp implements TrcRobot.RobotMode
                 break;
 
             case FrcJoystick.LOGITECH_BUTTON8:
-                // Go up to next elevator preset
-//                currHeight = robot.elevator.getPosition();
-//                if(pressed && currHeight < RobotInfo.ELEVATOR_HEIGHTS[RobotInfo.ELEVATOR_HEIGHTS.length-1])
-//                {
-//                    
-//                    for(int i = 0; i < RobotInfo.ELEVATOR_HEIGHTS.length; i++)
-//                    {
-//                        if(RobotInfo.ELEVATOR_HEIGHTS[i] > currHeight)
-//                        {
-//                            double targetHeight = RobotInfo.ELEVATOR_HEIGHTS[i];
-//                            robot.elevator.setPosition(targetHeight);
-//                            break;
-//                        }
-//                    }
-//                    
-//                }
+                if(pressed)
+                {
+                    robot.cubePickup.turtle();
+                }
                 break;
 
             case FrcJoystick.LOGITECH_BUTTON9:
-                // Go down to next elevator preset
-//                currHeight = robot.elevator.getPosition();
-//                if(pressed && currHeight > RobotInfo.ELEVATOR_HEIGHTS[0])
-//                {
-//                    
-//                    for(int i = RobotInfo.ELEVATOR_HEIGHTS.length-1; i >= 0; i--)
-//                    {
-//                        if(RobotInfo.ELEVATOR_HEIGHTS[i] < currHeight)
-//                        {
-//                            double targetHeight = RobotInfo.ELEVATOR_HEIGHTS[i];
-//                            robot.elevator.setPosition(targetHeight);
-//                            break;
-//                        }
-//                    }
-//                    
-//                }
+                if(pressed)
+                {
+                    robot.cubePickup.prepareForPickup();
+                }
                 break;
 
             case FrcJoystick.LOGITECH_BUTTON10:
                 winchDirection = pressed? -1: 0;
+                if(pressed)
+                {
+                    robot.cubePickup.turtle();
+                }
                 break;
 
             case FrcJoystick.LOGITECH_BUTTON11:
                 winchDirection = pressed? 1: 0;
+                if(pressed)
+                {
+                    robot.cubePickup.turtle();
+                }
                 break;
 
             case FrcJoystick.LOGITECH_BUTTON12:

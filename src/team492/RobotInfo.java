@@ -23,7 +23,6 @@
 package team492;
 
 import frclib.FrcPixyCam;
-import trclib.TrcRevBlinkin.LEDPattern;;
 
 public class RobotInfo
 {
@@ -282,8 +281,9 @@ public class RobotInfo
     //
     public static final double SWITCH_TO_WALL_DISTANCE          = 85.25;
     public static final double SCALE_TO_WALL_DISTANCE           = 71.57;
-    public static final double ROBOT_TO_SCALE_DISTANCE          = 30.0;
-    public static final double ALLIANCE_WALL_TO_LANE_3_DISTANCE = 235;
+    public static final double ROBOT_TO_SCALE_DISTANCE          = 36.0; //30.0
+    // CodeReview: This is duplicating FWD_DISTANCE_3, please use one or the other or alias them.
+    public static final double ALLIANCE_WALL_TO_LANE_3_DISTANCE = 240;
     public static final double ALLIANCE_WALL_TO_SCALE_DISTANCE  = 324.0;
     public static final double DRIVE_ACROSS_FIELD_DISTANCE      = 220.0;//SWITCH_FENCE_WIDTH + SWITCH_TO_WALL_DISTANCE;
     public static final double CUBE_PICKUP_DROP_POWER           = 1.0;
@@ -294,21 +294,9 @@ public class RobotInfo
     //
     public static final double FWD_DISTANCE_1                   = 10.0;
     public static final double FWD_DISTANCE_2                   = 60.0;
-    public static final double FWD_DISTANCE_3                   = 232.0;
+    public static final double FWD_DISTANCE_3                   = 236.0;
     public static final double LEFT_START_POS                   = LEFT_SWITCH_LOCATION;   //CodeReview: should this be slightly different from LEFT_SWITCH_LOCATION???
     public static final double MID_START_POS                    = 0.0;
     public static final double RIGHT_START_POS                  = RIGHT_SWITCH_LOCATION;    //CodeReview: should this be slightly different from RIGHT_SWITCH_LOCATION???
-
-    //
-    // LED strip pattern constants.
-    //
-    public static final LEDPattern LED_CUBE_NONE                = LEDPattern.SolidBlack;
-    public static final LEDPattern LED_CUBE_SEEKING             = LEDPattern.SolidAqua;
-    public static final LEDPattern LED_CUBE_IN_POSSESSION       = LEDPattern.SolidGreen;
-    public static final LEDPattern LED_CUBE_IN_PROXIMITY        = LEDPattern.SolidYellow;
-    public static final LEDPattern LED_GYRO_ASSIST_OFF          = LEDPattern.SolidBlack;
-    public static final LEDPattern LED_GYRO_ASSIST_ON           = LEDPattern.SolidRed;
-    public static final LEDPattern LED_CUBE_IN_VIEW             = LEDPattern.SolidBlue;
-    public static final LEDPattern LED_CUBE_ALIGNED             = LEDPattern.SolidViolet;
 
 }   // class RobotInfo

@@ -22,6 +22,8 @@
 
 package trclib;
 
+import java.util.Arrays;
+
 /**
  * This class implements a platform independent REV Blinkin device. This class is intended to be extended by a
  * platform dependent device class which provides the abstract methods required by this class.
@@ -239,7 +241,7 @@ public abstract class TrcRevBlinkin
     /**
      * This method sets the color pattern of the LED strip.
      *
-     * @param pattern specifies the color pattern.
+     * @param pattern specifies the color pattern to be set.
      */
     public void setPattern(LEDPattern pattern)
     {
@@ -257,5 +259,76 @@ public abstract class TrcRevBlinkin
             dbgTrace.traceExit(funcName, TrcDbgTrace.TraceLevel.API);
         }
     }   //setPattern
+
+    /**
+     * This method sets the color pattern of the LED strip only if the pattern has a priority higher or equal
+     * to the priority of the current color pattern in the given priority list. If the color pattern is not in
+     * the priority list, it is considered the lowest priority.
+     *
+     * @param pattern specifies the color pattern to be set.
+     * @param patternPriorities specifies the pattern priority list.
+     */
+    public void setPatternWithPriority(LEDPattern pattern, LEDPattern[] patternPriorities)
+    {
+        final String funcName = "setPatternWithPriority";
+        LEDPattern currPattern = getPattern();
+        int currPriority = findPatternPriority(currPattern, patternPriorities);
+        int patternPriority = findPatternPriority(pattern, patternPriorities);
+
+        if (debugEnabled)
+        {
+            dbgTrace.traceEnter(funcName, TrcDbgTrace.TraceLevel.API, "pattern=%s,priorities=%s",
+                pattern, Arrays.toString(patternPriorities));
+            dbgTrace.traceInfo(funcName, "currPattern=%s(%d), pattern=%s(%d)",
+                currPattern, currPriority, pattern, patternPriority);
+        }
+
+        if (patternPriority > currPriority)
+        {
+            set(pattern.value);
+        }
+
+        if (debugEnabled)
+        {
+            dbgTrace.traceExit(funcName, TrcDbgTrace.TraceLevel.API);
+        }
+    }   //setPatternWithPriority
+
+    /**
+     * This method searches the given pattern priorities array for the given pattern. If found, its index is
+     * the priority and will be returned. If the pattern is not found in the array, -1 will be return which also
+     * means the lowest priority.
+     *
+     * @param pattern specifies the LED pattern to be searched in the pattern priorities array.
+     * @param patternPriorities specifies the pattern priority list.
+     * @return the pattern priority if found, -1 if not found.
+     */
+    private int findPatternPriority(LEDPattern pattern, LEDPattern[] patternPriorities)
+    {
+        final String funcName = "findPatternPriority";
+        int priority = -1;
+
+        if (debugEnabled)
+        {
+            dbgTrace.traceEnter(funcName, TrcDbgTrace.TraceLevel.FUNC, "pattern=%s,priorities=%s",
+                pattern, Arrays.toString(patternPriorities));
+        }
+
+        for (int i = 0; i < patternPriorities.length; i++)
+        {
+            if (pattern == patternPriorities[i])
+            {
+                priority = i;
+                break;
+            }
+        }
+
+        if (debugEnabled)
+        {
+            dbgTrace.traceExit(funcName, TrcDbgTrace.TraceLevel.FUNC, "=%d", priority);
+        }
+
+        return priority;
+    }   //findPatternPriority
 
 }   //class TrcRevBlinkin
