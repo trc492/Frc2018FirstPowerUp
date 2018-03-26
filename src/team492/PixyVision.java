@@ -74,6 +74,7 @@ public class PixyVision
     private Robot robot;
     private int signature;
     private Orientation orientation;
+    private Rect lastTargetRect = null;
 
     private void commonInit(Robot robot, int signature, int brightness, Orientation orientation)
     {
@@ -129,11 +130,19 @@ public class PixyVision
             robot.tracer.traceInfo(moduleName, "%s object(s) found",
                 detectedObjects != null? "" + detectedObjects.length: "null");
         }
-        //
-        // Make sure the camera detected at least one objects.
-        //
-        if (detectedObjects != null && detectedObjects.length >= 1)
+
+        if (detectedObjects == null)
         {
+            //
+            // Pixy is not ready for another frame, use old cached data.
+            //
+            targetRect = lastTargetRect;
+        }
+        else if (detectedObjects.length >= 1)
+        {
+            //
+            // Make sure the camera detected at least one objects.
+            //
             ArrayList<Rect> objectList = new ArrayList<>();
             //
             // Filter out objects that don't have the correct signature.
@@ -188,7 +197,7 @@ public class PixyVision
                 }
             }
 
-            if (targetRect == null && objectList.size() >= 1)
+            if (objectList.size() >= 1)
             {
                 //
                 // Find the largest target rect in the list.
@@ -211,6 +220,8 @@ public class PixyVision
                         targetRect.x, targetRect.y, targetRect.width, targetRect.height);
                 }
             }
+
+            lastTargetRect = targetRect;
         }
 
         return targetRect;
@@ -257,12 +268,23 @@ public class PixyVision
             }
         }
 
-        if (targetInfo != null && robot.ledStrip != null)
+        if (robot.ledIndicator != null)
         {
-            robot.ledStrip.setPattern(RobotInfo.LED_CUBE_IN_VIEW);
-            if(Math.abs(targetInfo.xDistance) <= 2.0)
+            if (targetInfo != null)
             {
-                robot.ledStrip.setPattern(RobotInfo.LED_CUBE_ALIGNED);
+                if(Math.abs(targetInfo.xDistance) <= 2.0)
+                {
+                    robot.ledIndicator.indicateAlignedToCube();
+                }
+                else
+                {
+                    robot.ledIndicator.indicateSeesCube();
+                }
+            }
+            else
+            {
+                robot.ledIndicator.indicateSeesNoCube();
+                robot.ledIndicator.indicateNotAlignedToCube();
             }
         }
 

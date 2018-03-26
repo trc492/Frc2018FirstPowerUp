@@ -44,7 +44,7 @@ class CmdAutoSwitch implements TrcRobot.RobotCommand
     private static final double SWITCH_HEADING = 25.0;
 
     //TODO: move these to RobotInfo
-    private static final double SHORTEST_DISTANCE_TO_SWITCH = 121.24;
+    private static final double SHORTEST_DISTANCE_TO_SWITCH = 110.0;
     private static final double FAST_DELIVERY_DRIVE_PAST_SWITCH_DISTANCE = 54.0;
     private static final double FAST_DELIVERY_Y_TOLERANCE = 5.0;
     private static final double FAST_DELIVERY_GYRO_TOLERANCE = 5.0;
@@ -220,7 +220,7 @@ class CmdAutoSwitch implements TrcRobot.RobotCommand
                         robot.encoderYPidCtrl.setTargetTolerance(FAST_DELIVERY_Y_TOLERANCE);
                         xDistance = 0.0;
                         yDistance = SHORTEST_DISTANCE_TO_SWITCH;
-                        robot.targetHeading = rightSwitch? (SWITCH_HEADING): (-SWITCH_HEADING-5.0);
+                        robot.targetHeading = rightSwitch? (SWITCH_HEADING): (-SWITCH_HEADING-2.5);
                         robot.pidDrive.setTarget(xDistance, yDistance, robot.targetHeading, false, event, 0.0);
                         robot.elevator.setPosition(RobotInfo.ELEVATOR_SWITCH_HEIGHT);
                         sm.waitForSingleEvent(event, State.TURN_BACK_NORTH);

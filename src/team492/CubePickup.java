@@ -101,11 +101,24 @@ public class CubePickup
         currentEvent = new TrcEvent("CurrentUpEvent");
     }
 
+    public void turtle()
+    {
+        raisePickup();
+        closeClaw();
+    }
+
+    public void prepareForPickup()
+    {
+        deployPickup();
+        openClaw();
+    }
+
     /**
      * Open the claw.
      */
     public void openClaw()
     {
+        robot.ledIndicator.indicateHasNoCube();
         claw.retract();
     }
 
@@ -222,7 +235,6 @@ public class CubePickup
     public void stopPickup()
     {
         setPickupPower(0.0);
-        robot.ledStrip.setPattern(RobotInfo.LED_CUBE_NONE);
     }
 
     /**
@@ -231,7 +243,7 @@ public class CubePickup
     public void dropCube(double power)
     {
         setPickupPower(-power);
-        robot.ledStrip.setPattern(RobotInfo.LED_CUBE_NONE);
+        robot.ledIndicator.indicateHasNoCube();
     }
 
     /**
@@ -280,7 +292,6 @@ public class CubePickup
                     // Proximity trigger will automatically close the claws.
                     // Current trigger will detect the current spike so we can start monitoring the current value
                     // to determine if it is a startup spike or stalled in cube possession.
-                    robot.ledStrip.setPattern(RobotInfo.LED_CUBE_SEEKING);
                     cubeProximityTrigger.setTaskEnabled(true);
                     currentTrigger.setTaskEnabled(true);
                     sm.waitForSingleEvent(currentEvent, State.DELAY_SAMPLING);
@@ -312,11 +323,13 @@ public class CubePickup
                 case DONE:
                     // We have the cube, we can stop now.
                     setPickupPower(0.0, false);
-                    robot.ledStrip.setPattern(RobotInfo.LED_CUBE_IN_POSSESSION);
+                    robot.ledIndicator.indicateHasCube();
                     if (cubeInPossessionEvent != null)
                     {
                         cubeInPossessionEvent.set(true);
                     }
+                    setPickupTaskEnabled(false);
+                    cubeProximityTrigger.setTaskEnabled(false);
                     break;
             }
 
@@ -335,7 +348,6 @@ public class CubePickup
             {
                 cubeInProximityEvent.set(true);
             }
-            robot.ledStrip.setPattern(RobotInfo.LED_CUBE_IN_PROXIMITY);
         }
     }
 

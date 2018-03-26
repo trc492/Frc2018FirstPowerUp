@@ -45,7 +45,6 @@ import frclib.FrcI2cDevice;
 import frclib.FrcI2cLEDPanel;
 import frclib.FrcJoystick;
 import frclib.FrcPneumatic;
-import frclib.FrcRevBlinkin;
 import frclib.FrcRobotBase;
 import frclib.FrcRobotBattery;
 import hallib.HalDashboard;
@@ -60,8 +59,6 @@ import trclib.TrcMaxbotixSonarArray;
 import trclib.TrcPidController;
 import trclib.TrcPidController.PidCoefficients;
 import trclib.TrcPidDrive;
-import trclib.TrcRevBlinkin;
-import trclib.TrcRevBlinkin.LEDPattern;
 import trclib.TrcRobot.RunMode;
 import trclib.TrcRobotBattery;
 import trclib.TrcUtil;
@@ -146,7 +143,7 @@ public class Robot extends FrcRobotBase
     //
     // Miscellaneous subsystem.
     //
-    public TrcRevBlinkin ledStrip = null;
+    public LEDIndicator ledIndicator = null;
     public FrcEmic2TextToSpeech tts = null;
     private double nextTimeToSpeakInSeconds = 0.0;  //0 means disabled, no need to speak;
     public FrcI2cLEDPanel messageBoard = null;
@@ -315,8 +312,7 @@ public class Robot extends FrcRobotBase
         //
         // Miscellaneous subsystems.
         //
-        ledStrip = new FrcRevBlinkin("LEDStrip", RobotInfo.PWM_REV_BLINKIN);
-        ledStrip.setPattern(LEDPattern.SolidBlack);
+        ledIndicator = new LEDIndicator();
 
         if (USE_TEXT_TO_SPEECH)
         {
@@ -547,9 +543,10 @@ public class Robot extends FrcRobotBase
                 HalDashboard.putNumber("Power/winchCurrent", winch.getCurrent());
                 HalDashboard.putNumber("Power/pickupCurrent", cubePickup.getPickupCurrent());
                 HalDashboard.putNumber("Power/totalEnergy", battery.getTotalEnergy());
-                tracer.traceInfo("PowerUse", "Battery - currVoltage: %.2f, lowestVoltage: %.2f",
-                    battery.getVoltage(), battery.getLowestVoltage());
-                tracer.traceInfo("PowerUse", "Power: pdpTotalCurrent: %.2f elev: %.2f winch: %.2f, pickup: %.2f, total: %.2f",
+                tracer.traceInfo("PowerUse", "[%.3f] Battery - currVoltage: %.2f, lowestVoltage: %.2f",
+                    currTime, battery.getVoltage(), battery.getLowestVoltage());
+                tracer.traceInfo("PowerUse", "[%.3f] Power: pdpTotalCurrent: %.2f elev: %.2f winch: %.2f, pickup: %.2f, total: %.2f",
+                    currTime,
                     pdp.getTotalCurrent(),
                     elevator.elevatorMotor.motor.getOutputCurrent(),
                     winch.getCurrent(),

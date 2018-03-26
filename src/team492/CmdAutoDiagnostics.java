@@ -24,7 +24,6 @@ package team492;
 
 import common.CmdTimedDrive;
 import trclib.TrcEvent;
-import trclib.TrcRevBlinkin.LEDPattern;
 import trclib.TrcRobot;
 import trclib.TrcStateMachine;
 import trclib.TrcTimer;
@@ -157,7 +156,6 @@ public class CmdAutoDiagnostics implements TrcRobot.RobotCommand
             switch(state)
             {
                 case START:
-                    robot.ledStrip.setPattern(LEDPattern.FixedStrobeRed);
                     timedDrive = null;
                     sm.setState(State.SPIN_MOTORS_FORWARD);
                     break;
