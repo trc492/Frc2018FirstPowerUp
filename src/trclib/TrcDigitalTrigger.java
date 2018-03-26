@@ -54,7 +54,7 @@ public class TrcDigitalTrigger
     private final TrcDigitalInput digitalInput;
     private final TriggerHandler eventHandler;
     private final TrcTaskMgr.TaskObject preContinuousTaskObj;
-    private boolean prevState = false;
+    private Boolean prevState = null;
 
     /**
      * Constructor: Create an instance of the object.
@@ -101,6 +101,7 @@ public class TrcDigitalTrigger
 
         if (enabled)
         {
+            prevState = null;
             preContinuousTaskObj.registerTask(TrcTaskMgr.TaskType.PRECONTINUOUS_TASK);
         }
         else
@@ -134,7 +135,7 @@ public class TrcDigitalTrigger
             dbgTrace.traceEnter(funcName, TrcDbgTrace.TraceLevel.TASK, "taskType=%s,runMode=%s", taskType, runMode);
         }
 
-        if (currState != prevState)
+        if (prevState == null || currState != prevState)
         {
             if (eventHandler != null)
             {
