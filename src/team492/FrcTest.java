@@ -40,6 +40,7 @@ public class FrcTest extends FrcTeleOp
     public enum Test
     {
         SENSORS_TEST,
+        SUBSYSTEMS_TEST,
         DRIVE_MOTORS_TEST,
         AUTO_DIAGNOSTICS,
         X_TIMED_DRIVE,
@@ -89,6 +90,7 @@ public class FrcTest extends FrcTeleOp
         //
         testMenu = new FrcChoiceMenu<>("Test/Tests");
         testMenu.addChoice("Sensors Test", FrcTest.Test.SENSORS_TEST, true, false);
+        testMenu.addChoice("Subsystems Test", FrcTest.Test.SUBSYSTEMS_TEST, false, false);
         testMenu.addChoice("Drive Motors Test", FrcTest.Test.DRIVE_MOTORS_TEST, false, false);
         testMenu.addChoice("Diagnostics", FrcTest.Test.AUTO_DIAGNOSTICS, false, false);
         testMenu.addChoice("X Timed Drive", FrcTest.Test.X_TIMED_DRIVE, false, false);
@@ -123,6 +125,17 @@ public class FrcTest extends FrcTeleOp
         switch (test)
         {
             case SENSORS_TEST:
+                //
+                // Make sure no joystick controls on sensors test.
+                //
+                robot.leftDriveStick.setButtonHandler(null);
+                robot.rightDriveStick.setButtonHandler(null);
+                robot.operatorStick.setButtonHandler(null);
+                //
+                // Sensors Test is the same as Subsystems Test without joystick control.
+                // So let it flow to the next case.
+                //
+            case SUBSYSTEMS_TEST:
                 if (robot.leftSonarArray != null) robot.leftSonarArray.startRanging(true);
                 if (robot.rightSonarArray != null) robot.rightSonarArray.startRanging(true);
                 if (robot.frontSonarArray != null) robot.frontSonarArray.startRanging(true);
@@ -198,6 +211,10 @@ public class FrcTest extends FrcTeleOp
         switch (test)
         {
             case SENSORS_TEST:
+                doSensorsTest();
+                break;
+
+            case SUBSYSTEMS_TEST:
                 //
                 // Allow TeleOp to run so we can control the robot in sensors
                 // test mode.
@@ -271,12 +288,14 @@ public class FrcTest extends FrcTeleOp
             default:
                 break;
         }
+
         if (robot.pidDrive.isActive())
         {
             robot.encoderXPidCtrl.printPidInfo(robot.tracer, elapsedTime, robot.battery);
             robot.encoderYPidCtrl.printPidInfo(robot.tracer, elapsedTime, robot.battery);
             robot.gyroTurnPidCtrl.printPidInfo(robot.tracer, elapsedTime, robot.battery);
         }
+
         if(robot.elevator.elevator.isActive())
         {
             robot.elevator.elevatorPidCtrl.printPidInfo(robot.tracer, elapsedTime, robot.battery);
@@ -454,7 +473,7 @@ public class FrcTest extends FrcTeleOp
                             robot.rightFrontWheel.setPower(0.0);
                             robot.leftRearWheel.setPower(0.0);
                             robot.rightRearWheel.setPower(0.0);
-                            robot.ledStrip.setPattern(LEDPattern.SolidRed);
+                            robot.ledIndicator.setPattern(LEDPattern.SolidRed);
                             break;
 
                         case 1:
@@ -465,7 +484,7 @@ public class FrcTest extends FrcTeleOp
                             robot.rightFrontWheel.setPower(robot.drivePower);
                             robot.leftRearWheel.setPower(0.0);
                             robot.rightRearWheel.setPower(0.0);
-                            robot.ledStrip.setPattern(LEDPattern.SolidGreen);
+                            robot.ledIndicator.setPattern(LEDPattern.SolidHotPink);
                             break;
 
                         case 2:
@@ -476,7 +495,7 @@ public class FrcTest extends FrcTeleOp
                             robot.rightFrontWheel.setPower(0.0);
                             robot.leftRearWheel.setPower(robot.drivePower);
                             robot.rightRearWheel.setPower(0.0);
-                            robot.ledStrip.setPattern(LEDPattern.SolidBlue);
+                            robot.ledIndicator.setPattern(LEDPattern.SolidBlue);
                             break;
 
                         case 3:
@@ -487,7 +506,7 @@ public class FrcTest extends FrcTeleOp
                             robot.rightFrontWheel.setPower(0.0);
                             robot.leftRearWheel.setPower(0.0);
                             robot.rightRearWheel.setPower(robot.drivePower);
-                            robot.ledStrip.setPattern(LEDPattern.SolidWhite);
+                            robot.ledIndicator.setPattern(LEDPattern.SolidWhite);
                             break;
                     }
                     motorIndex = motorIndex + 1;
