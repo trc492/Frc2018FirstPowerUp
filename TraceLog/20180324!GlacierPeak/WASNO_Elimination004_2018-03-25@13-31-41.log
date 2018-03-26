@@ -1,0 +1,631 @@
+GlobalTracer.FirstPowerUp_Info: Sun Mar 25 13:31:41 PDT 2018: ***** Starting autonomous *****
+GlobalTracer.FirstPowerUp_Info: WASNO_Elimination_  4 (Blue1) [FMSConnected=true]
+GlobalTracer.CmdAutoScale_Info: alliance=Blue, gameSpecificMsg=RRR, delay=0.000, startPosition=102.0, fwdDistance=236
+GlobalTracer.Vision_Info: Pixy is enabled!
+GlobalTracer.Robot_Info: [0.843]      START: xPos=  0.00,yPos=  0.00,heading=   0.0/   0.0,volts=12.8(12.6)
+GlobalTracer.PowerUse_Info: Battery - currVoltage: 12.80, lowestVoltage: 12.60
+GlobalTracer.PowerUse_Info: Power: pdpTotalCurrent: 0.00 elev: 0.13 winch: 0.00, pickup: 0.00, total: 0.00
+GlobalTracer.startCompetition_Warn: AUTO_MODE takes too long (0.946s)
+
+GlobalTracer.CmdAutoScale_Info: setRangingEnabled(true)
+GlobalTracer.CmdAutoScale_Info: setSonarTriggerEnabled(true)
+GlobalTracer.Robot_Info: [0.942] DRIVE_TO_SWITCH: xPos=  0.00,yPos=  0.00,heading=   0.0/   0.0,volts=12.8(12.6)
+GlobalTracer.printPidInfo_Info: [0.942] encoderXPidCtrl: Target=   0.0, Input=   0.0, Error=   0.0, PIDTerms= 0.000/ 0.000/ 0.000/ 0.000, Output= 0.000(-0.700/0.700), Volt=12.8(12.6)
+GlobalTracer.printPidInfo_Info: [0.942] encoderYPidCtrl: Target= 169.0, Input=   0.0, Error= 169.0, PIDTerms= 0.000/ 0.000/ 0.000/ 0.000, Output= 0.000(-0.600/0.600), Volt=12.8(12.6)
+GlobalTracer.printPidInfo_Info: [0.942] gyroTurnPidCtrl: Target=   0.0, Input=   0.0, Error=   0.0, PIDTerms= 0.000/ 0.000/ 0.000/ 0.000, Output= 0.000(-0.700/0.700), Volt=12.8(12.6)
+GlobalTracer.PowerUse_Info: Battery - currVoltage: 12.75, lowestVoltage: 12.60
+GlobalTracer.PowerUse_Info: Power: pdpTotalCurrent: 0.00 elev: 0.13 winch: 0.00, pickup: 0.00, total: 0.00
+GlobalTracer.startCompetition_Warn: AUTO_MODE takes too long (0.134s)
+
+GlobalTracer.CmdAutoScale_Info: SonarTriggerEvent: prevZone=-1, currZone=0, value:18.2
+GlobalTracer.printPidInfo_Info: [1.078] encoderXPidCtrl: Target=   0.0, Input=   0.0, Error=   0.0, PIDTerms= 0.000/ 0.000/ 0.000/ 0.000, Output= 0.000(-0.700/0.700), Volt=10.9(11.3)
+GlobalTracer.printPidInfo_Info: [1.078] encoderYPidCtrl: Target= 169.0, Input=   0.0, Error= 169.0, PIDTerms= 3.380/ 0.000/ 0.000/ 0.000, Output= 0.600(-0.600/0.600), Volt=10.9(11.3)
+GlobalTracer.printPidInfo_Info: [1.078] gyroTurnPidCtrl: Target=   0.0, Input=   0.0, Error=   0.0, PIDTerms= 0.000/ 0.000/ 0.000/ 0.000, Output= 0.000(-0.700/0.700), Volt=10.9(11.3)
+GlobalTracer.PowerUse_Info: Battery - currVoltage: 10.95, lowestVoltage: 11.30
+GlobalTracer.PowerUse_Info: Power: pdpTotalCurrent: 88.00 elev: 0.13 winch: 0.00, pickup: 0.00, total: 0.00
+GlobalTracer.startCompetition_Warn: AUTO_MODE takes too long (0.128s)
+
+GlobalTracer.CmdAutoScale_Info: SonarTriggerEvent: prevZone=0, currZone=1, value:189.2
+GlobalTracer.printPidInfo_Info: [1.209] encoderXPidCtrl: Target=   0.0, Input=  -0.0, Error=   0.0, PIDTerms= 0.007/ 0.000/ 0.005/ 0.000, Output= 0.012(-0.700/0.700), Volt=11.5(11.3)
+GlobalTracer.printPidInfo_Info: [1.209] encoderYPidCtrl: Target= 169.0, Input=   0.4, Error= 168.6, PIDTerms= 3.372/ 0.000/-0.003/ 0.000, Output= 0.600(-0.600/0.600), Volt=11.5(11.3)
+GlobalTracer.printPidInfo_Info: [1.209] gyroTurnPidCtrl: Target=   0.0, Input=   0.1, Error=  -0.1, PIDTerms=-0.001/ 0.000/-0.001/ 0.000, Output=-0.002(-0.700/0.700), Volt=11.5(11.3)
+GlobalTracer.PowerUse_Info: Battery - currVoltage: 11.30, lowestVoltage: 11.30
+GlobalTracer.PowerUse_Info: Power: pdpTotalCurrent: 75.63 elev: 0.13 winch: 0.00, pickup: 0.00, total: 0.04
+GlobalTracer.startCompetition_Warn: AUTO_MODE takes too long (0.155s)
+
+GlobalTracer.printPidInfo_Info: [1.394] encoderXPidCtrl: Target=   0.0, Input=   0.7, Error=  -0.7, PIDTerms=-0.103/ 0.000/-0.071/ 0.000, Output=-0.174(-0.700/0.700), Volt=11.3(11.3)
+GlobalTracer.printPidInfo_Info: [1.394] encoderYPidCtrl: Target= 169.0, Input=   4.5, Error= 164.5, PIDTerms= 3.291/ 0.000/-0.026/ 0.000, Output= 0.600(-0.600/0.600), Volt=11.3(11.3)
+GlobalTracer.printPidInfo_Info: [1.394] gyroTurnPidCtrl: Target=   0.0, Input=  -0.4, Error=   0.4, PIDTerms= 0.008/ 0.000/ 0.005/ 0.000, Output= 0.013(-0.700/0.700), Volt=11.3(11.3)
+GlobalTracer.PowerUse_Info: Battery - currVoltage: 11.30, lowestVoltage: 11.30
+GlobalTracer.PowerUse_Info: Power: pdpTotalCurrent: 83.00 elev: 0.13 winch: 0.00, pickup: 0.00, total: 0.09
+GlobalTracer.startCompetition_Warn: AUTO_MODE takes too long (0.128s)
+
+GlobalTracer.printPidInfo_Info: [1.523] encoderXPidCtrl: Target=   0.0, Input=   1.4, Error=  -1.4, PIDTerms=-0.205/ 0.000/-0.064/ 0.000, Output=-0.270(-0.700/0.700), Volt=11.2(11.2)
+GlobalTracer.printPidInfo_Info: [1.523] encoderYPidCtrl: Target= 169.0, Input=  12.6, Error= 156.4, PIDTerms= 3.127/ 0.000/-0.051/ 0.000, Output= 0.600(-0.600/0.600), Volt=11.2(11.2)
+GlobalTracer.printPidInfo_Info: [1.523] gyroTurnPidCtrl: Target=   0.0, Input=  -2.3, Error=   2.3, PIDTerms= 0.041/ 0.000/ 0.018/ 0.000, Output= 0.059(-0.700/0.700), Volt=11.2(11.2)
+GlobalTracer.PowerUse_Info: Battery - currVoltage: 11.20, lowestVoltage: 11.15
+GlobalTracer.PowerUse_Info: Power: pdpTotalCurrent: 81.88 elev: 0.13 winch: 0.00, pickup: 0.00, total: 0.12
+GlobalTracer.startCompetition_Warn: AUTO_MODE takes too long (0.144s)
+
+GlobalTracer.printPidInfo_Info: [1.669] encoderXPidCtrl: Target=   0.0, Input=   0.8, Error=  -0.8, PIDTerms=-0.117/ 0.000/ 0.061/ 0.000, Output=-0.056(-0.700/0.700), Volt=11.8(11.2)
+GlobalTracer.printPidInfo_Info: [1.669] encoderYPidCtrl: Target= 169.0, Input=  20.2, Error= 148.8, PIDTerms= 2.976/ 0.000/-0.053/ 0.000, Output= 0.600(-0.600/0.600), Volt=11.8(11.2)
+GlobalTracer.printPidInfo_Info: [1.669] gyroTurnPidCtrl: Target=   0.0, Input=  -2.6, Error=   2.6, PIDTerms= 0.046/ 0.000/ 0.003/ 0.000, Output= 0.049(-0.700/0.700), Volt=11.8(11.2)
+GlobalTracer.PowerUse_Info: Battery - currVoltage: 11.75, lowestVoltage: 11.15
+GlobalTracer.PowerUse_Info: Power: pdpTotalCurrent: 49.63 elev: 0.13 winch: 0.00, pickup: 0.00, total: 0.15
+GlobalTracer.startCompetition_Warn: AUTO_MODE takes too long (0.195s)
+
+GlobalTracer.printPidInfo_Info: [1.865] encoderXPidCtrl: Target=   0.0, Input=   0.0, Error=  -0.0, PIDTerms=-0.006/ 0.000/ 0.063/ 0.000, Output= 0.057(-0.700/0.700), Volt=12.0(11.2)
+GlobalTracer.printPidInfo_Info: [1.865] encoderYPidCtrl: Target= 169.0, Input=  30.5, Error= 138.5, PIDTerms= 2.771/ 0.000/-0.058/ 0.000, Output= 0.600(-0.600/0.600), Volt=12.0(11.2)
+GlobalTracer.printPidInfo_Info: [1.865] gyroTurnPidCtrl: Target=   0.0, Input=  -1.5, Error=   1.5, PIDTerms= 0.028/ 0.000/-0.009/ 0.000, Output= 0.019(-0.700/0.700), Volt=12.0(11.2)
+GlobalTracer.PowerUse_Info: Battery - currVoltage: 11.90, lowestVoltage: 11.15
+GlobalTracer.PowerUse_Info: Power: pdpTotalCurrent: 36.88 elev: 0.13 winch: 0.00, pickup: 0.00, total: 0.18
+GlobalTracer.startCompetition_Warn: AUTO_MODE takes too long (0.163s)
+
+GlobalTracer.printPidInfo_Info: [2.031] encoderXPidCtrl: Target=   0.0, Input=  -0.2, Error=   0.2, PIDTerms= 0.024/ 0.000/ 0.016/ 0.000, Output= 0.041(-0.700/0.700), Volt=12.0(11.2)
+GlobalTracer.printPidInfo_Info: [2.031] encoderYPidCtrl: Target= 169.0, Input=  46.1, Error= 122.9, PIDTerms= 2.457/ 0.000/-0.084/ 0.000, Output= 0.600(-0.600/0.600), Volt=12.0(11.2)
+GlobalTracer.printPidInfo_Info: [2.031] gyroTurnPidCtrl: Target=   0.0, Input=   0.5, Error=  -0.5, PIDTerms=-0.009/ 0.000/-0.017/ 0.000, Output=-0.027(-0.700/0.700), Volt=12.0(11.2)
+GlobalTracer.PowerUse_Info: Battery - currVoltage: 11.95, lowestVoltage: 11.15
+GlobalTracer.PowerUse_Info: Power: pdpTotalCurrent: 32.13 elev: 0.13 winch: 0.00, pickup: 0.00, total: 0.20
+GlobalTracer.startCompetition_Warn: AUTO_MODE takes too long (0.138s)
+
+GlobalTracer.printPidInfo_Info: [2.170] encoderXPidCtrl: Target=   0.0, Input=   0.1, Error=  -0.1, PIDTerms=-0.019/ 0.000/-0.028/ 0.000, Output=-0.047(-0.700/0.700), Volt=12.0(11.2)
+GlobalTracer.printPidInfo_Info: [2.170] encoderYPidCtrl: Target= 169.0, Input=  59.7, Error= 109.3, PIDTerms= 2.185/ 0.000/-0.090/ 0.000, Output= 0.600(-0.600/0.600), Volt=12.0(11.2)
+GlobalTracer.printPidInfo_Info: [2.170] gyroTurnPidCtrl: Target=   0.0, Input=   2.0, Error=  -2.0, PIDTerms=-0.035/ 0.000/-0.016/ 0.000, Output=-0.051(-0.700/0.700), Volt=12.0(11.2)
+GlobalTracer.PowerUse_Info: Battery - currVoltage: 11.90, lowestVoltage: 11.15
+GlobalTracer.PowerUse_Info: Power: pdpTotalCurrent: 31.75 elev: 0.13 winch: 0.00, pickup: 0.00, total: 0.21
+GlobalTracer.startCompetition_Warn: AUTO_MODE takes too long (0.127s)
+
+GlobalTracer.printPidInfo_Info: [2.300] encoderXPidCtrl: Target=   0.0, Input=   0.4, Error=  -0.4, PIDTerms=-0.054/ 0.000/-0.030/ 0.000, Output=-0.084(-0.700/0.700), Volt=12.0(11.2)
+GlobalTracer.printPidInfo_Info: [2.300] encoderYPidCtrl: Target= 169.0, Input=  72.4, Error=  96.6, PIDTerms= 1.932/ 0.000/-0.108/ 0.000, Output= 0.600(-0.600/0.600), Volt=11.9(11.2)
+GlobalTracer.printPidInfo_Info: [2.300] gyroTurnPidCtrl: Target=   0.0, Input=   2.2, Error=  -2.2, PIDTerms=-0.039/ 0.000/-0.002/ 0.000, Output=-0.041(-0.700/0.700), Volt=11.9(11.2)
+GlobalTracer.PowerUse_Info: Battery - currVoltage: 11.90, lowestVoltage: 11.15
+GlobalTracer.PowerUse_Info: Power: pdpTotalCurrent: 32.13 elev: 0.13 winch: 0.00, pickup: 0.00, total: 0.23
+GlobalTracer.startCompetition_Warn: AUTO_MODE takes too long (0.161s)
+
+GlobalTracer.printPidInfo_Info: [2.463] encoderXPidCtrl: Target=   0.0, Input=   0.4, Error=  -0.4, PIDTerms=-0.056/ 0.000/-0.001/ 0.000, Output=-0.057(-0.700/0.700), Volt=12.0(11.2)
+GlobalTracer.printPidInfo_Info: [2.463] encoderYPidCtrl: Target= 169.0, Input=  83.3, Error=  85.7, PIDTerms= 1.715/ 0.000/-0.075/ 0.000, Output= 0.600(-0.600/0.600), Volt=12.0(11.2)
+GlobalTracer.printPidInfo_Info: [2.463] gyroTurnPidCtrl: Target=   0.0, Input=   1.5, Error=  -1.5, PIDTerms=-0.027/ 0.000/ 0.007/ 0.000, Output=-0.020(-0.700/0.700), Volt=12.0(11.2)
+GlobalTracer.PowerUse_Info: Battery - currVoltage: 12.05, lowestVoltage: 11.15
+GlobalTracer.PowerUse_Info: Power: pdpTotalCurrent: 28.63 elev: 0.13 winch: 0.00, pickup: 0.00, total: 0.24
+GlobalTracer.startCompetition_Warn: AUTO_MODE takes too long (0.150s)
+
+GlobalTracer.printPidInfo_Info: [2.618] encoderXPidCtrl: Target=   0.0, Input=  -0.2, Error=   0.2, PIDTerms= 0.024/ 0.000/ 0.049/ 0.000, Output= 0.073(-0.700/0.700), Volt=12.1(11.2)
+GlobalTracer.printPidInfo_Info: [2.618] encoderYPidCtrl: Target= 169.0, Input= 100.0, Error=  69.0, PIDTerms= 1.380/ 0.000/-0.102/ 0.000, Output= 0.600(-0.600/0.600), Volt=12.1(11.2)
+GlobalTracer.printPidInfo_Info: [2.618] gyroTurnPidCtrl: Target=   0.0, Input=  -0.2, Error=   0.2, PIDTerms= 0.003/ 0.000/ 0.016/ 0.000, Output= 0.019(-0.700/0.700), Volt=12.1(11.2)
+GlobalTracer.PowerUse_Info: Battery - currVoltage: 12.10, lowestVoltage: 11.15
+GlobalTracer.PowerUse_Info: Power: pdpTotalCurrent: 21.88 elev: 0.13 winch: 0.00, pickup: 0.00, total: 0.26
+GlobalTracer.startCompetition_Warn: AUTO_MODE takes too long (0.145s)
+
+GlobalTracer.printPidInfo_Info: [2.766] encoderXPidCtrl: Target=   0.0, Input=   0.7, Error=  -0.7, PIDTerms=-0.103/ 0.000/-0.082/ 0.000, Output=-0.185(-0.700/0.700), Volt=11.9(11.2)
+GlobalTracer.printPidInfo_Info: [2.766] encoderYPidCtrl: Target= 169.0, Input= 114.7, Error=  54.3, PIDTerms= 1.086/ 0.000/-0.095/ 0.000, Output= 0.600(-0.600/0.600), Volt=11.9(11.2)
+GlobalTracer.printPidInfo_Info: [2.766] gyroTurnPidCtrl: Target=   0.0, Input=  -1.3, Error=   1.3, PIDTerms= 0.024/ 0.000/ 0.012/ 0.000, Output= 0.035(-0.700/0.700), Volt=11.9(11.2)
+GlobalTracer.PowerUse_Info: Battery - currVoltage: 11.85, lowestVoltage: 11.15
+GlobalTracer.PowerUse_Info: Power: pdpTotalCurrent: 38.13 elev: 0.13 winch: 0.00, pickup: 0.00, total: 0.27
+GlobalTracer.startCompetition_Warn: AUTO_MODE takes too long (0.127s)
+
+GlobalTracer.CmdAutoScale_Info: SonarTriggerEvent: prevZone=1, currZone=0, value:17.5
+GlobalTracer.CmdAutoScale_Info: setSonarTriggerEnabled(false)
+GlobalTracer.CmdAutoScale_Info: sonarDistance=16.6, distanceFromWall=49.2, xDistance=7.6, yDistance=193.2
+GlobalTracer.Robot_Info: [2.894] CHECK_SONAR_DISTANCE: xPos= -0.06,yPos=143.29,heading=  -0.6/   0.0,volts=12.0(11.2)
+GlobalTracer.printPidInfo_Info: [2.894] encoderXPidCtrl: Target=   7.5, Input=   0.9, Error=   7.6, PIDTerms=-0.141/ 0.000/-0.031/ 0.000, Output= 0.000(-0.700/0.700), Volt=12.5(11.2)
+GlobalTracer.printPidInfo_Info: [2.894] encoderYPidCtrl: Target= 336.5, Input= 129.7, Error= 193.2, PIDTerms= 0.785/ 0.000/-0.124/ 0.000, Output= 0.000(-0.600/0.600), Volt=12.5(11.2)
+GlobalTracer.printPidInfo_Info: [2.894] gyroTurnPidCtrl: Target=   0.0, Input=  -1.4, Error=   0.6, PIDTerms= 0.025/ 0.000/ 0.001/ 0.000, Output= 0.000(-0.700/0.700), Volt=12.5(11.2)
+GlobalTracer.printPidInfo_Info: [2.894] elevatorPidController: Target=  35.0, Input=   0.0, Error=  26.9, PIDTerms= 0.000/ 0.000/ 0.000/ 0.000, Output= 0.000(-1.000/1.000), Volt=12.5(11.2)
+GlobalTracer.PowerUse_Info: Battery - currVoltage: 12.45, lowestVoltage: 11.15
+GlobalTracer.PowerUse_Info: Power: pdpTotalCurrent: 21.38 elev: 0.13 winch: 0.00, pickup: 0.00, total: 0.28
+GlobalTracer.startCompetition_Warn: AUTO_MODE takes too long (0.201s)
+
+GlobalTracer.printPidInfo_Info: [3.095] encoderXPidCtrl: Target=   7.5, Input=  -0.1, Error=   7.6, PIDTerms= 1.139/ 0.000/ 0.000/ 0.000, Output= 0.700(-0.700/0.700), Volt=10.7(10.7)
+GlobalTracer.printPidInfo_Info: [3.095] encoderYPidCtrl: Target= 336.5, Input= 143.3, Error= 193.2, PIDTerms= 3.864/ 0.000/ 0.000/ 0.000, Output= 0.600(-0.600/0.600), Volt=10.7(10.7)
+GlobalTracer.printPidInfo_Info: [3.095] gyroTurnPidCtrl: Target=   0.0, Input=  -0.6, Error=   0.6, PIDTerms= 0.010/ 0.000/ 0.000/ 0.000, Output= 0.010(-0.700/0.700), Volt=10.7(10.7)
+GlobalTracer.printPidInfo_Info: [3.095] elevatorPidController: Target=  35.0, Input=   8.1, Error=  26.9, PIDTerms= 5.380/ 0.003/-0.000/ 0.000, Output= 1.000(-1.000/1.000), Volt=11.1(10.7)
+GlobalTracer.PowerUse_Info: Battery - currVoltage: 10.90, lowestVoltage: 10.70
+GlobalTracer.PowerUse_Info: Power: pdpTotalCurrent: 108.13 elev: 32.75 winch: 0.00, pickup: 0.00, total: 0.34
+GlobalTracer.startCompetition_Warn: AUTO_MODE takes too long (0.198s)
+
+GlobalTracer.printPidInfo_Info: [3.294] encoderXPidCtrl: Target=   7.5, Input=   0.5, Error=   7.0, PIDTerms= 1.051/ 0.000/-0.049/ 0.000, Output= 0.700(-0.700/0.700), Volt=10.9(10.7)
+GlobalTracer.printPidInfo_Info: [3.294] encoderYPidCtrl: Target= 336.5, Input= 159.4, Error= 177.1, PIDTerms= 3.541/ 0.000/-0.089/ 0.000, Output= 0.600(-0.600/0.600), Volt=10.8(10.7)
+GlobalTracer.printPidInfo_Info: [3.294] gyroTurnPidCtrl: Target=   0.0, Input=   0.5, Error=  -0.5, PIDTerms=-0.009/ 0.000/-0.009/ 0.000, Output=-0.018(-0.700/0.700), Volt=10.8(10.7)
+GlobalTracer.printPidInfo_Info: [3.294] elevatorPidController: Target=  35.0, Input=  11.1, Error=  23.9, PIDTerms= 4.778/ 0.007/-0.000/ 0.000, Output= 1.000(-1.000/1.000), Volt=10.8(10.7)
+GlobalTracer.PowerUse_Info: Battery - currVoltage: 10.95, lowestVoltage: 10.70
+GlobalTracer.PowerUse_Info: Power: pdpTotalCurrent: 102.13 elev: 27.00 winch: 0.00, pickup: 0.00, total: 0.40
+GlobalTracer.startCompetition_Warn: AUTO_MODE takes too long (0.189s)
+
+GlobalTracer.printPidInfo_Info: [3.484] encoderXPidCtrl: Target=   7.5, Input=   3.7, Error=   3.8, PIDTerms= 0.571/ 0.000/-0.263/ 0.000, Output= 0.308(-0.700/0.700), Volt=11.1(10.7)
+GlobalTracer.printPidInfo_Info: [3.484] encoderYPidCtrl: Target= 336.5, Input= 174.8, Error= 161.7, PIDTerms= 3.234/ 0.000/-0.084/ 0.000, Output= 0.600(-0.600/0.600), Volt=11.1(10.7)
+GlobalTracer.printPidInfo_Info: [3.484] gyroTurnPidCtrl: Target=   0.0, Input=   1.2, Error=  -1.2, PIDTerms=-0.022/ 0.000/-0.006/ 0.000, Output=-0.028(-0.700/0.700), Volt=11.3(10.7)
+GlobalTracer.printPidInfo_Info: [3.484] elevatorPidController: Target=  35.0, Input=  19.1, Error=  15.9, PIDTerms= 3.175/ 0.010/-0.000/ 0.000, Output= 1.000(-1.000/1.000), Volt=11.3(10.7)
+GlobalTracer.PowerUse_Info: Battery - currVoltage: 11.15, lowestVoltage: 10.70
+GlobalTracer.PowerUse_Info: Power: pdpTotalCurrent: 83.25 elev: 28.50 winch: 0.00, pickup: 0.00, total: 0.45
+GlobalTracer.startCompetition_Warn: AUTO_MODE takes too long (0.168s)
+
+GlobalTracer.printPidInfo_Info: [3.657] encoderXPidCtrl: Target=   7.5, Input=   7.2, Error=   0.4, PIDTerms= 0.053/ 0.000/-0.246/ 0.000, Output=-0.193(-0.700/0.700), Volt=11.1(10.7)
+GlobalTracer.printPidInfo_Info: [3.657] encoderYPidCtrl: Target= 336.5, Input= 189.9, Error= 146.6, PIDTerms= 2.932/ 0.000/-0.072/ 0.000, Output= 0.600(-0.600/0.600), Volt=11.1(10.7)
+GlobalTracer.printPidInfo_Info: [3.657] gyroTurnPidCtrl: Target=   0.0, Input=   1.4, Error=  -1.4, PIDTerms=-0.024/ 0.000/-0.001/ 0.000, Output=-0.025(-0.700/0.700), Volt=11.1(10.7)
+GlobalTracer.printPidInfo_Info: [3.657] elevatorPidController: Target=  35.0, Input=  27.4, Error=   7.6, PIDTerms= 1.521/ 0.012/-0.000/ 0.000, Output= 1.000(-1.000/1.000), Volt=11.1(10.7)
+GlobalTracer.PowerUse_Info: Battery - currVoltage: 11.15, lowestVoltage: 10.70
+GlobalTracer.PowerUse_Info: Power: pdpTotalCurrent: 78.25 elev: 29.63 winch: 0.00, pickup: 0.00, total: 0.49
+GlobalTracer.startCompetition_Warn: AUTO_MODE takes too long (0.203s)
+
+GlobalTracer.printPidInfo_Info: [3.862] encoderXPidCtrl: Target=   7.5, Input=   8.7, Error=  -1.2, PIDTerms=-0.180/ 0.000/-0.139/ 0.000, Output=-0.320(-0.700/0.700), Volt=11.5(10.7)
+GlobalTracer.printPidInfo_Info: [3.862] encoderYPidCtrl: Target= 336.5, Input= 205.6, Error= 130.9, PIDTerms= 2.619/ 0.000/-0.094/ 0.000, Output= 0.600(-0.600/0.600), Volt=11.5(10.7)
+GlobalTracer.printPidInfo_Info: [3.862] gyroTurnPidCtrl: Target=   0.0, Input=   0.8, Error=  -0.8, PIDTerms=-0.014/ 0.000/ 0.005/ 0.000, Output=-0.009(-0.700/0.700), Volt=11.5(10.7)
+GlobalTracer.printPidInfo_Info: [3.862] elevatorPidController: Target=  35.0, Input=  34.7, Error=   0.3, PIDTerms= 0.070/ 0.012/-0.000/ 0.000, Output= 0.081(-1.000/1.000), Volt=11.5(10.7)
+GlobalTracer.PowerUse_Info: Battery - currVoltage: 11.50, lowestVoltage: 10.70
+GlobalTracer.PowerUse_Info: Power: pdpTotalCurrent: 61.00 elev: 0.13 winch: 0.00, pickup: 0.00, total: 0.53
+GlobalTracer.startCompetition_Warn: AUTO_MODE takes too long (0.220s)
+
+GlobalTracer.printPidInfo_Info: [4.083] encoderXPidCtrl: Target=   7.5, Input=   8.4, Error=  -0.9, PIDTerms=-0.133/ 0.000/ 0.022/ 0.000, Output=-0.111(-0.700/0.700), Volt=11.9(10.7)
+GlobalTracer.printPidInfo_Info: [4.083] encoderYPidCtrl: Target= 336.5, Input= 221.5, Error= 115.0, PIDTerms= 2.299/ 0.000/-0.074/ 0.000, Output= 0.600(-0.600/0.600), Volt=11.9(10.7)
+GlobalTracer.printPidInfo_Info: [4.083] gyroTurnPidCtrl: Target=   0.0, Input=   0.7, Error=  -0.7, PIDTerms=-0.012/ 0.000/ 0.001/ 0.000, Output=-0.011(-0.700/0.700), Volt=11.9(10.7)
+GlobalTracer.printPidInfo_Info: [4.083] elevatorPidController: Target=  35.0, Input=  36.3, Error=  -1.3, PIDTerms=-0.256/ 0.011/-0.000/ 0.000, Output=-0.244(-1.000/1.000), Volt=12.0(10.7)
+GlobalTracer.PowerUse_Info: Battery - currVoltage: 11.95, lowestVoltage: 10.70
+GlobalTracer.PowerUse_Info: Power: pdpTotalCurrent: 25.88 elev: 1.25 winch: 0.00, pickup: 0.00, total: 0.56
+GlobalTracer.startCompetition_Warn: AUTO_MODE takes too long (0.181s)
+
+GlobalTracer.printPidInfo_Info: [4.269] encoderXPidCtrl: Target=   7.5, Input=   5.6, Error=   1.9, PIDTerms= 0.288/ 0.000/ 0.192/ 0.000, Output= 0.480(-0.700/0.700), Volt=11.3(10.7)
+GlobalTracer.printPidInfo_Info: [4.269] encoderYPidCtrl: Target= 336.5, Input= 243.1, Error=  93.4, PIDTerms= 1.868/ 0.000/-0.099/ 0.000, Output= 0.600(-0.600/0.600), Volt=11.2(10.7)
+GlobalTracer.printPidInfo_Info: [4.269] gyroTurnPidCtrl: Target=   0.0, Input=   0.2, Error=  -0.2, PIDTerms=-0.004/ 0.000/ 0.003/ 0.000, Output=-0.001(-0.700/0.700), Volt=11.2(10.7)
+GlobalTracer.printPidInfo_Info: [4.269] elevatorPidController: Target=  35.0, Input=  33.2, Error=   1.8, PIDTerms= 0.352/ 0.012/ 0.000/ 0.000, Output= 0.364(-1.000/1.000), Volt=11.2(10.7)
+GlobalTracer.PowerUse_Info: Battery - currVoltage: 11.20, lowestVoltage: 10.70
+GlobalTracer.PowerUse_Info: Power: pdpTotalCurrent: 77.00 elev: 11.50 winch: 0.00, pickup: 0.00, total: 0.59
+GlobalTracer.startCompetition_Warn: AUTO_MODE takes too long (0.164s)
+
+GlobalTracer.printPidInfo_Info: [4.438] encoderXPidCtrl: Target=   7.5, Input=   6.1, Error=   1.4, PIDTerms= 0.214/ 0.000/-0.047/ 0.000, Output= 0.167(-0.700/0.700), Volt=11.8(10.7)
+GlobalTracer.printPidInfo_Info: [4.438] encoderYPidCtrl: Target= 336.5, Input= 261.2, Error=  75.3, PIDTerms= 1.506/ 0.000/-0.115/ 0.000, Output= 0.600(-0.600/0.600), Volt=11.8(10.7)
+GlobalTracer.printPidInfo_Info: [4.438] gyroTurnPidCtrl: Target=   0.0, Input=  -0.9, Error=   0.9, PIDTerms= 0.017/ 0.000/ 0.012/ 0.000, Output= 0.028(-0.700/0.700), Volt=11.8(10.7)
+GlobalTracer.printPidInfo_Info: [4.438] elevatorPidController: Target=  35.0, Input=  33.1, Error=   1.9, PIDTerms= 0.371/ 0.012/ 0.000/ 0.000, Output= 0.383(-1.000/1.000), Volt=11.8(10.7)
+GlobalTracer.PowerUse_Info: Battery - currVoltage: 11.80, lowestVoltage: 10.70
+GlobalTracer.PowerUse_Info: Power: pdpTotalCurrent: 37.00 elev: 10.13 winch: 0.00, pickup: 0.00, total: 0.61
+GlobalTracer.startCompetition_Warn: AUTO_MODE takes too long (0.187s)
+
+GlobalTracer.printPidInfo_Info: [4.628] encoderXPidCtrl: Target=   7.5, Input=   8.3, Error=  -0.8, PIDTerms=-0.115/ 0.000/-0.173/ 0.000, Output=-0.288(-0.700/0.700), Volt=11.6(10.7)
+GlobalTracer.printPidInfo_Info: [4.628] encoderYPidCtrl: Target= 336.5, Input= 278.2, Error=  58.3, PIDTerms= 1.167/ 0.000/-0.089/ 0.000, Output= 0.600(-0.600/0.600), Volt=11.6(10.7)
+GlobalTracer.printPidInfo_Info: [4.628] gyroTurnPidCtrl: Target=   0.0, Input=  -1.2, Error=   1.2, PIDTerms= 0.021/ 0.000/ 0.002/ 0.000, Output= 0.024(-0.700/0.700), Volt=11.6(10.7)
+GlobalTracer.printPidInfo_Info: [4.628] elevatorPidController: Target=  35.0, Input=  34.7, Error=   0.3, PIDTerms= 0.052/ 0.012/-0.000/ 0.000, Output= 0.065(-1.000/1.000), Volt=11.7(10.7)
+GlobalTracer.PowerUse_Info: Battery - currVoltage: 11.65, lowestVoltage: 10.70
+GlobalTracer.PowerUse_Info: Power: pdpTotalCurrent: 54.50 elev: 0.25 winch: 0.00, pickup: 0.00, total: 0.63
+GlobalTracer.startCompetition_Warn: AUTO_MODE takes too long (0.221s)
+
+GlobalTracer.printPidInfo_Info: [4.852] encoderXPidCtrl: Target=   7.5, Input=   9.1, Error=  -1.6, PIDTerms=-0.241/ 0.000/-0.060/ 0.000, Output=-0.302(-0.700/0.700), Volt=11.6(10.7)
+GlobalTracer.printPidInfo_Info: [4.852] encoderYPidCtrl: Target= 336.5, Input= 297.2, Error=  39.3, PIDTerms= 0.786/ 0.000/-0.091/ 0.000, Output= 0.600(-0.600/0.600), Volt=11.6(10.7)
+GlobalTracer.printPidInfo_Info: [4.852] gyroTurnPidCtrl: Target=   0.0, Input=  -0.3, Error=   0.3, PIDTerms= 0.005/ 0.000/-0.007/ 0.000, Output=-0.002(-0.700/0.700), Volt=11.7(10.7)
+GlobalTracer.printPidInfo_Info: [4.852] elevatorPidController: Target=  35.0, Input=  34.9, Error=   0.1, PIDTerms= 0.011/ 0.012/-0.000/ 0.000, Output= 0.023(-1.000/1.000), Volt=11.7(10.7)
+GlobalTracer.PowerUse_Info: Battery - currVoltage: 11.65, lowestVoltage: 10.70
+GlobalTracer.PowerUse_Info: Power: pdpTotalCurrent: 52.50 elev: 0.13 winch: 0.00, pickup: 0.00, total: 0.67
+GlobalTracer.startCompetition_Warn: AUTO_MODE takes too long (0.212s)
+
+GlobalTracer.printPidInfo_Info: [5.066] encoderXPidCtrl: Target=   7.5, Input=   7.5, Error=   0.0, PIDTerms= 0.002/ 0.000/ 0.106/ 0.000, Output= 0.108(-0.700/0.700), Volt=12.6(10.7)
+GlobalTracer.printPidInfo_Info: [5.066] encoderYPidCtrl: Target= 336.5, Input= 319.4, Error=  17.1, PIDTerms= 0.341/ 0.000/-0.097/ 0.000, Output= 0.245(-0.600/0.600), Volt=12.6(10.7)
+GlobalTracer.printPidInfo_Info: [5.066] gyroTurnPidCtrl: Target=   0.0, Input=   1.5, Error=  -1.5, PIDTerms=-0.026/ 0.000/-0.012/ 0.000, Output=-0.039(-0.700/0.700), Volt=12.6(10.7)
+GlobalTracer.printPidInfo_Info: [5.066] elevatorPidController: Target=  35.0, Input=  34.5, Error=   0.5, PIDTerms= 0.108/ 0.012/ 0.000/ 0.000, Output= 0.121(-1.000/1.000), Volt=12.5(10.7)
+GlobalTracer.PowerUse_Info: Battery - currVoltage: 12.50, lowestVoltage: 10.70
+GlobalTracer.PowerUse_Info: Power: pdpTotalCurrent: 2.25 elev: 1.38 winch: 0.00, pickup: 0.00, total: 0.70
+GlobalTracer.startCompetition_Warn: AUTO_MODE takes too long (0.156s)
+
+GlobalTracer.printPidInfo_Info: [5.225] encoderXPidCtrl: Target=   7.5, Input=   5.4, Error=   2.1, PIDTerms= 0.320/ 0.000/ 0.202/ 0.000, Output= 0.523(-0.700/0.700), Volt=10.1(10.7)
+GlobalTracer.printPidInfo_Info: [5.225] encoderYPidCtrl: Target= 336.5, Input= 340.9, Error=  -4.4, PIDTerms=-0.087/ 0.000/-0.136/ 0.000, Output=-0.223(-0.600/0.600), Volt=10.1(10.7)
+GlobalTracer.printPidInfo_Info: [5.225] gyroTurnPidCtrl: Target=   0.0, Input=   1.5, Error=  -1.5, PIDTerms=-0.027/ 0.000/-0.001/ 0.000, Output=-0.028(-0.700/0.700), Volt=10.1(10.7)
+GlobalTracer.printPidInfo_Info: [5.225] elevatorPidController: Target=  35.0, Input=  34.6, Error=   0.4, PIDTerms= 0.075/ 0.012/-0.000/ 0.000, Output= 0.088(-1.000/1.000), Volt=10.1(10.7)
+GlobalTracer.PowerUse_Info: Battery - currVoltage: 10.10, lowestVoltage: 10.70
+GlobalTracer.PowerUse_Info: Power: pdpTotalCurrent: 127.63 elev: 0.50 winch: 0.00, pickup: 0.00, total: 0.75
+GlobalTracer.startCompetition_Warn: AUTO_MODE takes too long (0.180s)
+
+GlobalTracer.printPidInfo_Info: [5.406] encoderXPidCtrl: Target=   7.5, Input=   7.3, Error=   0.3, PIDTerms= 0.039/ 0.000/-0.143/ 0.000, Output=-0.105(-0.700/0.700), Volt=11.7(10.7)
+GlobalTracer.printPidInfo_Info: [5.406] encoderYPidCtrl: Target= 336.5, Input= 351.0, Error= -14.5, PIDTerms=-0.290/ 0.000/-0.052/ 0.000, Output=-0.342(-0.600/0.600), Volt=11.7(10.7)
+GlobalTracer.printPidInfo_Info: [5.406] gyroTurnPidCtrl: Target=   0.0, Input=   1.2, Error=  -1.2, PIDTerms=-0.021/ 0.000/ 0.003/ 0.000, Output=-0.018(-0.700/0.700), Volt=11.7(10.7)
+GlobalTracer.printPidInfo_Info: [5.406] elevatorPidController: Target=  35.0, Input=  34.5, Error=   0.5, PIDTerms= 0.100/ 0.012/ 0.000/ 0.000, Output= 0.112(-1.000/1.000), Volt=11.7(10.7)
+GlobalTracer.PowerUse_Info: Battery - currVoltage: 11.70, lowestVoltage: 10.70
+GlobalTracer.PowerUse_Info: Power: pdpTotalCurrent: 66.25 elev: 1.13 winch: 0.00, pickup: 0.00, total: 0.79
+GlobalTracer.printPidInfo_Info: [5.497] encoderXPidCtrl: Target=   7.5, Input=  11.0, Error=  -3.5, PIDTerms=-0.525/ 0.000/-0.458/ 0.000, Output=-0.700(-0.700/0.700), Volt=10.3(10.1)
+GlobalTracer.printPidInfo_Info: [5.497] encoderYPidCtrl: Target= 336.5, Input= 352.9, Error= -16.4, PIDTerms=-0.328/ 0.000/-0.016/ 0.000, Output=-0.344(-0.600/0.600), Volt=10.3(10.1)
+GlobalTracer.printPidInfo_Info: [5.497] gyroTurnPidCtrl: Target=   0.0, Input=   1.7, Error=  -1.7, PIDTerms=-0.030/ 0.000/-0.007/ 0.000, Output=-0.036(-0.700/0.700), Volt=10.3(10.1)
+GlobalTracer.printPidInfo_Info: [5.497] elevatorPidController: Target=  35.0, Input=  34.5, Error=   0.5, PIDTerms= 0.100/ 0.012/ 0.000/ 0.000, Output= 0.112(-1.000/1.000), Volt=10.3(10.1)
+GlobalTracer.startCompetition_Warn: AUTO_MODE takes too long (0.108s)
+
+GlobalTracer.printPidInfo_Info: [5.606] encoderXPidCtrl: Target=   7.5, Input=  10.4, Error=  -2.9, PIDTerms=-0.432/ 0.000/ 0.132/ 0.000, Output=-0.300(-0.700/0.700), Volt=11.7(10.1)
+GlobalTracer.printPidInfo_Info: [5.606] encoderYPidCtrl: Target= 336.5, Input= 350.6, Error= -14.1, PIDTerms=-0.282/ 0.000/ 0.033/ 0.000, Output=-0.249(-0.600/0.600), Volt=11.7(10.1)
+GlobalTracer.printPidInfo_Info: [5.606] gyroTurnPidCtrl: Target=   0.0, Input=   1.9, Error=  -1.9, PIDTerms=-0.033/ 0.000/-0.005/ 0.000, Output=-0.038(-0.700/0.700), Volt=11.7(10.1)
+GlobalTracer.printPidInfo_Info: [5.606] elevatorPidController: Target=  35.0, Input=  34.5, Error=   0.5, PIDTerms= 0.100/ 0.012/ 0.000/ 0.000, Output= 0.112(-1.000/1.000), Volt=11.8(10.1)
+GlobalTracer.PowerUse_Info: Battery - currVoltage: 11.80, lowestVoltage: 10.10
+GlobalTracer.PowerUse_Info: Power: pdpTotalCurrent: 44.13 elev: 1.13 winch: 0.00, pickup: 0.00, total: 0.82
+GlobalTracer.startCompetition_Warn: AUTO_MODE takes too long (0.170s)
+
+GlobalTracer.printPidInfo_Info: [5.776] encoderXPidCtrl: Target=   7.5, Input=   7.1, Error=   0.4, PIDTerms= 0.058/ 0.000/ 0.306/ 0.000, Output= 0.364(-0.700/0.700), Volt=12.0(10.1)
+GlobalTracer.printPidInfo_Info: [5.776] encoderYPidCtrl: Target= 336.5, Input= 348.1, Error= -11.6, PIDTerms=-0.232/ 0.000/ 0.015/ 0.000, Output=-0.217(-0.600/0.600), Volt=12.0(10.1)
+GlobalTracer.printPidInfo_Info: [5.776] gyroTurnPidCtrl: Target=   0.0, Input=  -0.0, Error=   0.0, PIDTerms= 0.001/ 0.000/ 0.019/ 0.000, Output= 0.020(-0.700/0.700), Volt=12.0(10.1)
+GlobalTracer.printPidInfo_Info: [5.776] elevatorPidController: Target=  35.0, Input=  34.5, Error=   0.5, PIDTerms= 0.097/ 0.013/-0.000/ 0.000, Output= 0.109(-1.000/1.000), Volt=12.0(10.1)
+GlobalTracer.PowerUse_Info: Battery - currVoltage: 11.90, lowestVoltage: 10.10
+GlobalTracer.PowerUse_Info: Power: pdpTotalCurrent: 36.13 elev: 1.13 winch: 0.00, pickup: 0.00, total: 0.84
+GlobalTracer.startCompetition_Warn: AUTO_MODE takes too long (0.166s)
+
+GlobalTracer.printPidInfo_Info: [5.945] encoderXPidCtrl: Target=   7.5, Input=   6.0, Error=   1.5, PIDTerms= 0.228/ 0.000/ 0.092/ 0.000, Output= 0.320(-0.700/0.700), Volt=11.9(10.1)
+GlobalTracer.printPidInfo_Info: [5.945] encoderYPidCtrl: Target= 336.5, Input= 343.2, Error=  -6.7, PIDTerms=-0.133/ 0.000/ 0.027/ 0.000, Output=-0.107(-0.600/0.600), Volt=11.9(10.1)
+GlobalTracer.printPidInfo_Info: [5.945] gyroTurnPidCtrl: Target=   0.0, Input=  -0.6, Error=   0.6, PIDTerms= 0.010/ 0.000/ 0.005/ 0.000, Output= 0.015(-0.700/0.700), Volt=11.9(10.1)
+GlobalTracer.printPidInfo_Info: [5.945] elevatorPidController: Target=  35.0, Input=  34.5, Error=   0.5, PIDTerms= 0.097/ 0.013/ 0.000/ 0.000, Output= 0.110(-1.000/1.000), Volt=11.9(10.1)
+GlobalTracer.PowerUse_Info: Battery - currVoltage: 11.85, lowestVoltage: 10.10
+GlobalTracer.PowerUse_Info: Power: pdpTotalCurrent: 28.00 elev: 1.13 winch: 0.00, pickup: 0.00, total: 0.87
+GlobalTracer.startCompetition_Warn: AUTO_MODE takes too long (0.122s)
+
+GlobalTracer.printPidInfo_Info: [6.069] encoderXPidCtrl: Target=   7.5, Input=   9.8, Error=  -2.2, PIDTerms=-0.337/ 0.000/-0.383/ 0.000, Output=-0.700(-0.700/0.700), Volt=10.2(10.1)
+GlobalTracer.printPidInfo_Info: [6.069] encoderYPidCtrl: Target= 336.5, Input= 339.2, Error=  -2.7, PIDTerms=-0.053/ 0.000/ 0.027/ 0.000, Output=-0.026(-0.600/0.600), Volt=10.2(10.1)
+GlobalTracer.printPidInfo_Info: [6.069] gyroTurnPidCtrl: Target=   0.0, Input=   1.4, Error=  -1.4, PIDTerms=-0.026/ 0.000/-0.022/ 0.000, Output=-0.047(-0.700/0.700), Volt=10.2(10.1)
+GlobalTracer.printPidInfo_Info: [6.069] elevatorPidController: Target=  35.0, Input=  34.5, Error=   0.5, PIDTerms= 0.097/ 0.013/ 0.000/ 0.000, Output= 0.110(-1.000/1.000), Volt=10.5(10.1)
+GlobalTracer.PowerUse_Info: Battery - currVoltage: 10.50, lowestVoltage: 10.10
+GlobalTracer.PowerUse_Info: Power: pdpTotalCurrent: 132.63 elev: 1.00 winch: 0.00, pickup: 0.00, total: 0.88
+GlobalTracer.startCompetition_Warn: AUTO_MODE takes too long (0.135s)
+
+GlobalTracer.printPidInfo_Info: [6.207] encoderXPidCtrl: Target=   7.5, Input=  12.2, Error=  -4.7, PIDTerms=-0.699/ 0.000/-0.272/ 0.000, Output=-0.700(-0.700/0.700), Volt=10.0(10.0)
+GlobalTracer.printPidInfo_Info: [6.207] encoderYPidCtrl: Target= 336.5, Input= 337.5, Error=  -1.0, PIDTerms=-0.021/ 0.000/ 0.012/ 0.000, Output=-0.009(-0.600/0.600), Volt=10.6(10.0)
+GlobalTracer.printPidInfo_Info: [6.207] gyroTurnPidCtrl: Target=   0.0, Input=   2.9, Error=  -2.9, PIDTerms=-0.053/ 0.000/-0.018/ 0.000, Output=-0.071(-0.700/0.700), Volt=10.6(10.0)
+GlobalTracer.printPidInfo_Info: [6.207] elevatorPidController: Target=  35.0, Input=  34.5, Error=   0.5, PIDTerms= 0.097/ 0.013/ 0.000/ 0.000, Output= 0.110(-1.000/1.000), Volt=10.6(10.0)
+GlobalTracer.PowerUse_Info: Battery - currVoltage: 10.55, lowestVoltage: 9.95
+GlobalTracer.PowerUse_Info: Power: pdpTotalCurrent: 138.50 elev: 0.88 winch: 0.00, pickup: 0.00, total: 0.93
+GlobalTracer.printPidInfo_Info: [6.304] encoderXPidCtrl: Target=   7.5, Input=   8.7, Error=  -1.2, PIDTerms=-0.180/ 0.000/ 0.502/ 0.000, Output= 0.322(-0.700/0.700), Volt=11.2(10.0)
+GlobalTracer.printPidInfo_Info: [6.304] encoderYPidCtrl: Target= 336.5, Input= 337.4, Error=  -0.9, PIDTerms=-0.018/ 0.000/ 0.002/ 0.000, Output=-0.016(-0.600/0.600), Volt=11.6(10.0)
+GlobalTracer.printPidInfo_Info: [6.304] gyroTurnPidCtrl: Target=   0.0, Input=  -0.0, Error=   0.0, PIDTerms= 0.000/ 0.000/ 0.046/ 0.000, Output= 0.046(-0.700/0.700), Volt=11.6(10.0)
+GlobalTracer.printPidInfo_Info: [6.304] elevatorPidController: Target=  35.0, Input=  34.5, Error=   0.5, PIDTerms= 0.103/ 0.013/ 0.000/ 0.000, Output= 0.115(-1.000/1.000), Volt=11.6(10.0)
+GlobalTracer.PowerUse_Info: Battery - currVoltage: 11.90, lowestVoltage: 9.95
+GlobalTracer.PowerUse_Info: Power: pdpTotalCurrent: 86.63 elev: 1.00 winch: 0.00, pickup: 0.00, total: 0.95
+GlobalTracer.startCompetition_Warn: AUTO_MODE takes too long (0.129s)
+
+GlobalTracer.printPidInfo_Info: [6.435] encoderXPidCtrl: Target=   7.5, Input=   4.8, Error=   2.7, PIDTerms= 0.408/ 0.000/ 0.489/ 0.000, Output= 0.700(-0.700/0.700), Volt=10.7(10.0)
+GlobalTracer.printPidInfo_Info: [6.435] encoderYPidCtrl: Target= 336.5, Input= 336.5, Error=   0.0, PIDTerms= 0.000/ 0.000/ 0.007/ 0.000, Output= 0.008(-0.600/0.600), Volt=10.7(10.0)
+GlobalTracer.printPidInfo_Info: [6.435] gyroTurnPidCtrl: Target=   0.0, Input=   1.3, Error=  -1.3, PIDTerms=-0.023/ 0.000/-0.017/ 0.000, Output=-0.041(-0.700/0.700), Volt=10.7(10.0)
+GlobalTracer.printPidInfo_Info: [6.435] elevatorPidController: Target=  35.0, Input=  34.5, Error=   0.5, PIDTerms= 0.093/ 0.013/-0.000/ 0.000, Output= 0.105(-1.000/1.000), Volt=10.9(10.0)
+GlobalTracer.PowerUse_Info: Battery - currVoltage: 10.80, lowestVoltage: 9.95
+GlobalTracer.PowerUse_Info: Power: pdpTotalCurrent: 107.50 elev: 0.75 winch: 0.00, pickup: 0.00, total: 0.97
+GlobalTracer.startCompetition_Warn: AUTO_MODE takes too long (0.130s)
+
+GlobalTracer.printPidInfo_Info: [6.568] encoderXPidCtrl: Target=   7.5, Input=   7.4, Error=   0.1, PIDTerms= 0.014/ 0.000/-0.267/ 0.000, Output=-0.254(-0.700/0.700), Volt=11.0(10.0)
+GlobalTracer.printPidInfo_Info: [6.568] encoderYPidCtrl: Target= 336.5, Input= 335.8, Error=   0.7, PIDTerms= 0.014/ 0.000/ 0.005/ 0.000, Output= 0.018(-0.600/0.600), Volt=11.0(10.0)
+GlobalTracer.printPidInfo_Info: [6.568] gyroTurnPidCtrl: Target=   0.0, Input=   1.7, Error=  -1.7, PIDTerms=-0.031/ 0.000/-0.005/ 0.000, Output=-0.035(-0.700/0.700), Volt=11.0(10.0)
+GlobalTracer.printPidInfo_Info: [6.568] elevatorPidController: Target=  35.0, Input=  34.6, Error=   0.4, PIDTerms= 0.090/ 0.013/-0.000/ 0.000, Output= 0.103(-1.000/1.000), Volt=12.0(10.0)
+GlobalTracer.PowerUse_Info: Battery - currVoltage: 11.95, lowestVoltage: 9.95
+GlobalTracer.PowerUse_Info: Power: pdpTotalCurrent: 97.25 elev: 0.88 winch: 0.00, pickup: 0.00, total: 1.02
+GlobalTracer.startCompetition_Warn: AUTO_MODE takes too long (0.130s)
+
+GlobalTracer.printPidInfo_Info: [6.700] encoderXPidCtrl: Target=   7.5, Input=  14.2, Error=  -6.7, PIDTerms=-0.998/ 0.000/-0.824/ 0.000, Output=-0.700(-0.700/0.700), Volt=9.8(9.8)
+GlobalTracer.printPidInfo_Info: [6.700] encoderYPidCtrl: Target= 336.5, Input= 335.4, Error=   1.1, PIDTerms= 0.023/ 0.000/ 0.004/ 0.000, Output= 0.026(-0.600/0.600), Volt=9.5(9.8)
+GlobalTracer.printPidInfo_Info: [6.700] gyroTurnPidCtrl: Target=   0.0, Input=  -7.1, Error=   7.1, PIDTerms= 0.128/ 0.000/ 0.115/ 0.000, Output= 0.242(-0.700/0.700), Volt=9.5(9.8)
+GlobalTracer.printPidInfo_Info: [6.700] elevatorPidController: Target=  35.0, Input=  34.6, Error=   0.4, PIDTerms= 0.080/ 0.013/-0.000/ 0.000, Output= 0.093(-1.000/1.000), Volt=9.5(9.8)
+GlobalTracer.PowerUse_Info: Battery - currVoltage: 9.45, lowestVoltage: 9.75
+GlobalTracer.PowerUse_Info: Power: pdpTotalCurrent: 95.00 elev: 0.63 winch: 0.00, pickup: 0.00, total: 1.03
+GlobalTracer.startCompetition_Warn: AUTO_MODE takes too long (0.142s)
+
+GlobalTracer.printPidInfo_Info: [6.846] encoderXPidCtrl: Target=   7.5, Input=  12.9, Error=  -5.3, PIDTerms=-0.801/ 0.000/ 0.138/ 0.000, Output=-0.664(-0.700/0.700), Volt=11.4(9.8)
+GlobalTracer.printPidInfo_Info: [6.846] encoderYPidCtrl: Target= 336.5, Input= 334.7, Error=   1.8, PIDTerms= 0.036/ 0.000/ 0.005/ 0.000, Output= 0.040(-0.600/0.600), Volt=11.4(9.8)
+GlobalTracer.printPidInfo_Info: [6.846] gyroTurnPidCtrl: Target=   0.0, Input= -14.1, Error=  14.1, PIDTerms= 0.253/ 0.000/ 0.078/ 0.000, Output= 0.331(-0.700/0.700), Volt=11.4(9.8)
+GlobalTracer.printPidInfo_Info: [6.846] elevatorPidController: Target=  35.0, Input=  34.5, Error=   0.5, PIDTerms= 0.103/ 0.013/ 0.000/ 0.000, Output= 0.116(-1.000/1.000), Volt=11.4(9.8)
+GlobalTracer.PowerUse_Info: Battery - currVoltage: 11.60, lowestVoltage: 9.75
+GlobalTracer.PowerUse_Info: Power: pdpTotalCurrent: 110.88 elev: 1.13 winch: 0.00, pickup: 0.00, total: 1.08
+GlobalTracer.startCompetition_Warn: AUTO_MODE takes too long (0.125s)
+
+GlobalTracer.printPidInfo_Info: [6.972] encoderXPidCtrl: Target=   7.5, Input=   9.0, Error=  -1.5, PIDTerms=-0.223/ 0.000/ 0.432/ 0.000, Output= 0.208(-0.700/0.700), Volt=11.9(9.8)
+GlobalTracer.printPidInfo_Info: [6.972] encoderYPidCtrl: Target= 336.5, Input= 332.8, Error=   3.7, PIDTerms= 0.075/ 0.000/ 0.015/ 0.000, Output= 0.089(-0.600/0.600), Volt=11.9(9.8)
+GlobalTracer.printPidInfo_Info: [6.972] gyroTurnPidCtrl: Target=   0.0, Input= -13.3, Error=  13.3, PIDTerms= 0.239/ 0.000/-0.010/ 0.000, Output= 0.229(-0.700/0.700), Volt=12.1(9.8)
+GlobalTracer.printPidInfo_Info: [6.972] elevatorPidController: Target=  35.0, Input=  34.5, Error=   0.5, PIDTerms= 0.101/ 0.013/-0.000/ 0.000, Output= 0.114(-1.000/1.000), Volt=12.1(9.8)
+GlobalTracer.PowerUse_Info: Battery - currVoltage: 12.05, lowestVoltage: 9.75
+GlobalTracer.PowerUse_Info: Power: pdpTotalCurrent: 51.38 elev: 1.13 winch: 0.00, pickup: 0.00, total: 1.10
+GlobalTracer.startCompetition_Warn: AUTO_MODE takes too long (0.118s)
+
+GlobalTracer.printPidInfo_Info: [7.091] encoderXPidCtrl: Target=   7.5, Input=   2.5, Error=   5.0, PIDTerms= 0.755/ 0.000/ 0.790/ 0.000, Output= 0.700(-0.700/0.700), Volt=10.0(9.8)
+GlobalTracer.printPidInfo_Info: [7.091] encoderYPidCtrl: Target= 336.5, Input= 333.6, Error=   2.9, PIDTerms= 0.057/ 0.000/-0.007/ 0.000, Output= 0.050(-0.600/0.600), Volt=10.0(9.8)
+GlobalTracer.printPidInfo_Info: [7.091] gyroTurnPidCtrl: Target=   0.0, Input= -13.0, Error=  13.0, PIDTerms= 0.235/ 0.000/-0.003/ 0.000, Output= 0.232(-0.700/0.700), Volt=10.0(9.8)
+GlobalTracer.printPidInfo_Info: [7.091] elevatorPidController: Target=  35.0, Input=  34.5, Error=   0.5, PIDTerms= 0.101/ 0.013/ 0.000/ 0.000, Output= 0.114(-1.000/1.000), Volt=9.9(9.8)
+GlobalTracer.PowerUse_Info: Battery - currVoltage: 9.85, lowestVoltage: 9.75
+GlobalTracer.PowerUse_Info: Power: pdpTotalCurrent: 72.25 elev: 0.88 winch: 0.00, pickup: 0.00, total: 1.12
+GlobalTracer.startCompetition_Warn: AUTO_MODE takes too long (0.125s)
+
+GlobalTracer.printPidInfo_Info: [7.221] encoderXPidCtrl: Target=   7.5, Input=   3.7, Error=   3.8, PIDTerms= 0.569/ 0.000/-0.156/ 0.000, Output= 0.413(-0.700/0.700), Volt=11.3(9.8)
+GlobalTracer.printPidInfo_Info: [7.221] encoderYPidCtrl: Target= 336.5, Input= 334.8, Error=   1.7, PIDTerms= 0.034/ 0.000/-0.010/ 0.000, Output= 0.024(-0.600/0.600), Volt=11.3(9.8)
+GlobalTracer.printPidInfo_Info: [7.221] gyroTurnPidCtrl: Target=   0.0, Input= -10.3, Error=  10.3, PIDTerms= 0.186/ 0.000/-0.036/ 0.000, Output= 0.149(-0.700/0.700), Volt=11.3(9.8)
+GlobalTracer.printPidInfo_Info: [7.221] elevatorPidController: Target=  35.0, Input=  34.5, Error=   0.5, PIDTerms= 0.104/ 0.013/ 0.000/ 0.000, Output= 0.117(-1.000/1.000), Volt=11.4(9.8)
+GlobalTracer.PowerUse_Info: Battery - currVoltage: 11.35, lowestVoltage: 9.75
+GlobalTracer.PowerUse_Info: Power: pdpTotalCurrent: 115.88 elev: 1.13 winch: 0.00, pickup: 0.00, total: 1.18
+GlobalTracer.startCompetition_Warn: AUTO_MODE takes too long (0.123s)
+
+GlobalTracer.printPidInfo_Info: [7.344] encoderXPidCtrl: Target=   7.5, Input=   6.1, Error=   1.5, PIDTerms= 0.220/ 0.000/-0.310/ 0.000, Output=-0.091(-0.700/0.700), Volt=12.3(9.8)
+GlobalTracer.printPidInfo_Info: [7.344] encoderYPidCtrl: Target= 336.5, Input= 335.7, Error=   0.8, PIDTerms= 0.017/ 0.000/-0.008/ 0.000, Output= 0.009(-0.600/0.600), Volt=12.4(9.8)
+GlobalTracer.printPidInfo_Info: [7.344] gyroTurnPidCtrl: Target=   0.0, Input=  -6.7, Error=   6.7, PIDTerms= 0.121/ 0.000/-0.051/ 0.000, Output= 0.069(-0.700/0.700), Volt=12.4(9.8)
+GlobalTracer.printPidInfo_Info: [7.344] elevatorPidController: Target=  35.0, Input=  34.5, Error=   0.5, PIDTerms= 0.104/ 0.013/ 0.000/ 0.000, Output= 0.117(-1.000/1.000), Volt=12.4(9.8)
+GlobalTracer.PowerUse_Info: Battery - currVoltage: 12.35, lowestVoltage: 9.75
+GlobalTracer.PowerUse_Info: Power: pdpTotalCurrent: 25.25 elev: 1.13 winch: 0.00, pickup: 0.00, total: 1.21
+GlobalTracer.printPidInfo_Info: [7.433] encoderXPidCtrl: Target=   7.5, Input=   6.8, Error=   0.8, PIDTerms= 0.114/ 0.000/-0.110/ 0.000, Output= 0.003(-0.700/0.700), Volt=12.4(9.8)
+GlobalTracer.printPidInfo_Info: [7.433] encoderYPidCtrl: Target= 336.5, Input= 335.7, Error=   0.8, PIDTerms= 0.016/ 0.000/-0.000/ 0.000, Output= 0.016(-0.600/0.600), Volt=12.4(9.8)
+GlobalTracer.printPidInfo_Info: [7.433] gyroTurnPidCtrl: Target=   0.0, Input=  -3.2, Error=   3.2, PIDTerms= 0.057/ 0.000/-0.059/ 0.000, Output=-0.002(-0.700/0.700), Volt=12.4(9.8)
+GlobalTracer.printPidInfo_Info: [7.433] elevatorPidController: Target=  35.0, Input=  34.5, Error=   0.5, PIDTerms= 0.104/ 0.013/ 0.000/ 0.000, Output= 0.117(-1.000/1.000), Volt=12.4(9.8)
+GlobalTracer.PowerUse_Info: Battery - currVoltage: 12.50, lowestVoltage: 9.75
+GlobalTracer.PowerUse_Info: Power: pdpTotalCurrent: 0.00 elev: 1.13 winch: 0.00, pickup: 0.00, total: 1.21
+GlobalTracer.startCompetition_Warn: AUTO_MODE takes too long (0.177s)
+
+GlobalTracer.Robot_Info: [7.614] TURN_TO_FACE_SCALE: xPos=  6.74,yPos=335.80,heading=  -2.6/ -90.0,volts=12.4(9.8)
+GlobalTracer.printPidInfo_Info: [7.614] encoderXPidCtrl: Target=   6.7, Input=   6.7, Error=   0.0, PIDTerms= 0.124/ 0.000/ 0.006/ 0.000, Output= 0.000(-0.700/0.700), Volt=12.4(9.8)
+GlobalTracer.printPidInfo_Info: [7.614] encoderYPidCtrl: Target= 335.8, Input= 335.7, Error=   0.0, PIDTerms= 0.015/ 0.000/-0.000/ 0.000, Output= 0.000(-0.600/0.600), Volt=12.4(9.8)
+GlobalTracer.printPidInfo_Info: [7.614] gyroTurnPidCtrl: Target= -90.0, Input=  -1.9, Error= -87.4, PIDTerms= 0.034/ 0.000/-0.012/ 0.000, Output= 0.000(-0.700/0.700), Volt=12.5(9.8)
+GlobalTracer.printPidInfo_Info: [7.614] elevatorPidController: Target=  35.0, Input=  34.5, Error=   0.5, PIDTerms= 0.103/ 0.013/-0.000/ 0.000, Output= 0.116(-1.000/1.000), Volt=12.5(9.8)
+GlobalTracer.PowerUse_Info: Battery - currVoltage: 12.50, lowestVoltage: 9.75
+GlobalTracer.PowerUse_Info: Power: pdpTotalCurrent: 2.13 elev: 1.38 winch: 0.00, pickup: 0.00, total: 1.21
+GlobalTracer.startCompetition_Warn: AUTO_MODE takes too long (0.191s)
+
+GlobalTracer.printPidInfo_Info: [7.809] encoderXPidCtrl: Target=   6.7, Input=   6.7, Error=   0.0, PIDTerms= 0.124/ 0.000/ 0.006/ 0.000, Output= 0.000(-0.700/0.700), Volt=10.4(9.8)
+GlobalTracer.printPidInfo_Info: [7.809] encoderYPidCtrl: Target= 335.8, Input= 335.7, Error=   0.0, PIDTerms= 0.015/ 0.000/-0.000/ 0.000, Output= 0.000(-0.600/0.600), Volt=10.4(9.8)
+GlobalTracer.printPidInfo_Info: [7.809] gyroTurnPidCtrl: Target= -90.0, Input=  -2.6, Error= -87.4, PIDTerms=-1.574/ 0.000/ 0.000/-0.000, Output=-0.700(-0.700/0.700), Volt=10.4(9.8)
+GlobalTracer.printPidInfo_Info: [7.809] elevatorPidController: Target=  35.0, Input=  34.5, Error=   0.5, PIDTerms= 0.101/ 0.014/-0.000/ 0.000, Output= 0.115(-1.000/1.000), Volt=10.4(9.8)
+GlobalTracer.PowerUse_Info: Battery - currVoltage: 10.70, lowestVoltage: 9.75
+GlobalTracer.PowerUse_Info: Power: pdpTotalCurrent: 122.50 elev: 1.00 winch: 0.00, pickup: 0.00, total: 1.27
+GlobalTracer.startCompetition_Warn: AUTO_MODE takes too long (0.169s)
+
+GlobalTracer.printPidInfo_Info: [7.981] encoderXPidCtrl: Target=   6.7, Input=   6.7, Error=   0.0, PIDTerms= 0.124/ 0.000/ 0.006/ 0.000, Output= 0.000(-0.700/0.700), Volt=11.1(9.8)
+GlobalTracer.printPidInfo_Info: [7.981] encoderYPidCtrl: Target= 335.8, Input= 335.7, Error=   0.0, PIDTerms= 0.015/ 0.000/-0.000/ 0.000, Output= 0.000(-0.600/0.600), Volt=11.1(9.8)
+GlobalTracer.printPidInfo_Info: [7.981] gyroTurnPidCtrl: Target= -90.0, Input=  -3.5, Error= -86.5, PIDTerms=-1.557/ 0.000/ 0.008/-0.000, Output=-0.700(-0.700/0.700), Volt=11.1(9.8)
+GlobalTracer.printPidInfo_Info: [7.981] elevatorPidController: Target=  35.0, Input=  34.5, Error=   0.5, PIDTerms= 0.103/ 0.014/ 0.000/ 0.000, Output= 0.116(-1.000/1.000), Volt=11.1(9.8)
+GlobalTracer.PowerUse_Info: Battery - currVoltage: 11.20, lowestVoltage: 9.75
+GlobalTracer.PowerUse_Info: Power: pdpTotalCurrent: 75.63 elev: 1.13 winch: 0.00, pickup: 0.00, total: 1.32
+GlobalTracer.startCompetition_Warn: AUTO_MODE takes too long (0.164s)
+
+GlobalTracer.printPidInfo_Info: [8.147] encoderXPidCtrl: Target=   6.7, Input=   6.7, Error=   0.0, PIDTerms= 0.124/ 0.000/ 0.006/ 0.000, Output= 0.000(-0.700/0.700), Volt=11.4(9.8)
+GlobalTracer.printPidInfo_Info: [8.147] encoderYPidCtrl: Target= 335.8, Input= 335.7, Error=   0.0, PIDTerms= 0.015/ 0.000/-0.000/ 0.000, Output= 0.000(-0.600/0.600), Volt=11.3(9.8)
+GlobalTracer.printPidInfo_Info: [8.147] gyroTurnPidCtrl: Target= -90.0, Input= -20.9, Error= -69.1, PIDTerms=-1.243/ 0.000/ 0.163/-0.000, Output=-0.700(-0.700/0.700), Volt=11.3(9.8)
+GlobalTracer.printPidInfo_Info: [8.147] elevatorPidController: Target=  35.0, Input=  34.5, Error=   0.5, PIDTerms= 0.103/ 0.014/ 0.000/ 0.000, Output= 0.116(-1.000/1.000), Volt=11.3(9.8)
+GlobalTracer.PowerUse_Info: Battery - currVoltage: 11.20, lowestVoltage: 9.75
+GlobalTracer.PowerUse_Info: Power: pdpTotalCurrent: 62.38 elev: 1.13 winch: 0.00, pickup: 0.00, total: 1.36
+GlobalTracer.startCompetition_Warn: AUTO_MODE takes too long (0.179s)
+
+GlobalTracer.printPidInfo_Info: [8.330] encoderXPidCtrl: Target=   6.7, Input=   6.7, Error=   0.0, PIDTerms= 0.124/ 0.000/ 0.006/ 0.000, Output= 0.000(-0.700/0.700), Volt=12.0(9.8)
+GlobalTracer.printPidInfo_Info: [8.330] encoderYPidCtrl: Target= 335.8, Input= 335.7, Error=   0.0, PIDTerms= 0.015/ 0.000/-0.000/ 0.000, Output= 0.000(-0.600/0.600), Volt=12.0(9.8)
+GlobalTracer.printPidInfo_Info: [8.330] gyroTurnPidCtrl: Target= -90.0, Input= -47.8, Error= -42.2, PIDTerms=-0.759/ 0.000/ 0.244/-0.000, Output=-0.515(-0.700/0.700), Volt=12.0(9.8)
+GlobalTracer.printPidInfo_Info: [8.330] elevatorPidController: Target=  35.0, Input=  34.5, Error=   0.5, PIDTerms= 0.103/ 0.014/ 0.000/ 0.000, Output= 0.116(-1.000/1.000), Volt=12.0(9.8)
+GlobalTracer.PowerUse_Info: Battery - currVoltage: 11.90, lowestVoltage: 9.75
+GlobalTracer.PowerUse_Info: Power: pdpTotalCurrent: 26.38 elev: 1.25 winch: 0.00, pickup: 0.00, total: 1.38
+GlobalTracer.startCompetition_Warn: AUTO_MODE takes too long (0.185s)
+
+GlobalTracer.printPidInfo_Info: [8.521] encoderXPidCtrl: Target=   6.7, Input=   6.7, Error=   0.0, PIDTerms= 0.124/ 0.000/ 0.006/ 0.000, Output= 0.000(-0.700/0.700), Volt=12.3(9.8)
+GlobalTracer.printPidInfo_Info: [8.521] encoderYPidCtrl: Target= 335.8, Input= 335.7, Error=   0.0, PIDTerms= 0.015/ 0.000/-0.000/ 0.000, Output= 0.000(-0.600/0.600), Volt=12.3(9.8)
+GlobalTracer.printPidInfo_Info: [8.521] gyroTurnPidCtrl: Target= -90.0, Input= -80.9, Error=  -9.1, PIDTerms=-0.165/ 0.000/ 0.294/-0.000, Output= 0.129(-0.700/0.700), Volt=12.3(9.8)
+GlobalTracer.printPidInfo_Info: [8.521] elevatorPidController: Target=  35.0, Input=  34.5, Error=   0.5, PIDTerms= 0.100/ 0.014/-0.000/ 0.000, Output= 0.114(-1.000/1.000), Volt=12.3(9.8)
+GlobalTracer.PowerUse_Info: Battery - currVoltage: 12.30, lowestVoltage: 9.75
+GlobalTracer.PowerUse_Info: Power: pdpTotalCurrent: 8.88 elev: 1.25 winch: 0.00, pickup: 0.00, total: 1.39
+GlobalTracer.startCompetition_Warn: AUTO_MODE takes too long (0.163s)
+
+GlobalTracer.printPidInfo_Info: [8.687] encoderXPidCtrl: Target=   6.7, Input=   6.7, Error=   0.0, PIDTerms= 0.124/ 0.000/ 0.006/ 0.000, Output= 0.000(-0.700/0.700), Volt=10.8(9.8)
+GlobalTracer.printPidInfo_Info: [8.687] encoderYPidCtrl: Target= 335.8, Input= 335.7, Error=   0.0, PIDTerms= 0.015/ 0.000/-0.000/ 0.000, Output= 0.000(-0.600/0.600), Volt=10.8(9.8)
+GlobalTracer.printPidInfo_Info: [8.687] gyroTurnPidCtrl: Target= -90.0, Input=-111.8, Error=  21.8, PIDTerms= 0.392/ 0.000/ 0.274/-0.000, Output= 0.667(-0.700/0.700), Volt=10.8(9.8)
+GlobalTracer.printPidInfo_Info: [8.687] elevatorPidController: Target=  35.0, Input=  34.5, Error=   0.5, PIDTerms= 0.100/ 0.014/ 0.000/ 0.000, Output= 0.114(-1.000/1.000), Volt=10.8(9.8)
+GlobalTracer.PowerUse_Info: Battery - currVoltage: 10.75, lowestVoltage: 9.75
+GlobalTracer.PowerUse_Info: Power: pdpTotalCurrent: 100.75 elev: 1.13 winch: 0.00, pickup: 0.00, total: 1.44
+GlobalTracer.startCompetition_Warn: AUTO_MODE takes too long (0.154s)
+
+GlobalTracer.printPidInfo_Info: [8.845] encoderXPidCtrl: Target=   6.7, Input=   6.7, Error=   0.0, PIDTerms= 0.124/ 0.000/ 0.006/ 0.000, Output= 0.000(-0.700/0.700), Volt=12.2(9.8)
+GlobalTracer.printPidInfo_Info: [8.845] encoderYPidCtrl: Target= 335.8, Input= 335.7, Error=   0.0, PIDTerms= 0.015/ 0.000/-0.000/ 0.000, Output= 0.000(-0.600/0.600), Volt=12.2(9.8)
+GlobalTracer.printPidInfo_Info: [8.845] gyroTurnPidCtrl: Target= -90.0, Input=-111.0, Error=  21.0, PIDTerms= 0.378/ 0.000/-0.008/-0.000, Output= 0.371(-0.700/0.700), Volt=12.1(9.8)
+GlobalTracer.printPidInfo_Info: [8.845] elevatorPidController: Target=  35.0, Input=  34.5, Error=   0.5, PIDTerms= 0.098/ 0.014/-0.000/ 0.000, Output= 0.112(-1.000/1.000), Volt=12.1(9.8)
+GlobalTracer.PowerUse_Info: Battery - currVoltage: 12.10, lowestVoltage: 9.75
+GlobalTracer.PowerUse_Info: Power: pdpTotalCurrent: 20.38 elev: 1.13 winch: 0.00, pickup: 0.00, total: 1.48
+GlobalTracer.startCompetition_Warn: AUTO_MODE takes too long (0.159s)
+
+GlobalTracer.printPidInfo_Info: [9.006] encoderXPidCtrl: Target=   6.7, Input=   6.7, Error=   0.0, PIDTerms= 0.124/ 0.000/ 0.006/ 0.000, Output= 0.000(-0.700/0.700), Volt=12.4(9.8)
+GlobalTracer.printPidInfo_Info: [9.006] encoderYPidCtrl: Target= 335.8, Input= 335.7, Error=   0.0, PIDTerms= 0.015/ 0.000/-0.000/ 0.000, Output= 0.000(-0.600/0.600), Volt=12.4(9.8)
+GlobalTracer.printPidInfo_Info: [9.006] gyroTurnPidCtrl: Target= -90.0, Input= -95.7, Error=   5.7, PIDTerms= 0.102/ 0.000/-0.155/-0.000, Output=-0.054(-0.700/0.700), Volt=12.4(9.8)
+GlobalTracer.printPidInfo_Info: [9.006] elevatorPidController: Target=  35.0, Input=  34.5, Error=   0.5, PIDTerms= 0.098/ 0.014/ 0.000/ 0.000, Output= 0.112(-1.000/1.000), Volt=12.4(9.8)
+GlobalTracer.PowerUse_Info: Battery - currVoltage: 12.40, lowestVoltage: 9.75
+GlobalTracer.PowerUse_Info: Power: pdpTotalCurrent: 6.00 elev: 1.25 winch: 0.00, pickup: 0.00, total: 1.48
+GlobalTracer.startCompetition_Warn: AUTO_MODE takes too long (0.159s)
+
+GlobalTracer.printPidInfo_Info: [9.168] encoderXPidCtrl: Target=   6.7, Input=   6.7, Error=   0.0, PIDTerms= 0.124/ 0.000/ 0.006/ 0.000, Output= 0.000(-0.700/0.700), Volt=11.7(9.8)
+GlobalTracer.printPidInfo_Info: [9.168] encoderYPidCtrl: Target= 335.8, Input= 335.7, Error=   0.0, PIDTerms= 0.015/ 0.000/-0.000/ 0.000, Output= 0.000(-0.600/0.600), Volt=11.7(9.8)
+GlobalTracer.printPidInfo_Info: [9.168] gyroTurnPidCtrl: Target= -90.0, Input= -77.8, Error= -12.3, PIDTerms=-0.220/ 0.000/-0.179/-0.000, Output=-0.400(-0.700/0.700), Volt=11.7(9.8)
+GlobalTracer.printPidInfo_Info: [9.168] elevatorPidController: Target=  35.0, Input=  34.5, Error=   0.5, PIDTerms= 0.098/ 0.014/ 0.000/ 0.000, Output= 0.113(-1.000/1.000), Volt=11.7(9.8)
+GlobalTracer.PowerUse_Info: Battery - currVoltage: 11.80, lowestVoltage: 9.75
+GlobalTracer.PowerUse_Info: Power: pdpTotalCurrent: 47.63 elev: 1.13 winch: 0.00, pickup: 0.00, total: 1.49
+GlobalTracer.startCompetition_Warn: AUTO_MODE takes too long (0.171s)
+
+GlobalTracer.printPidInfo_Info: [9.341] encoderXPidCtrl: Target=   6.7, Input=   6.7, Error=   0.0, PIDTerms= 0.124/ 0.000/ 0.006/ 0.000, Output= 0.000(-0.700/0.700), Volt=12.2(9.8)
+GlobalTracer.printPidInfo_Info: [9.341] encoderYPidCtrl: Target= 335.8, Input= 335.7, Error=   0.0, PIDTerms= 0.015/ 0.000/-0.000/ 0.000, Output= 0.000(-0.600/0.600), Volt=12.2(9.8)
+GlobalTracer.printPidInfo_Info: [9.341] gyroTurnPidCtrl: Target= -90.0, Input= -75.7, Error= -14.3, PIDTerms=-0.258/ 0.000/-0.019/-0.000, Output=-0.278(-0.700/0.700), Volt=12.2(9.8)
+GlobalTracer.printPidInfo_Info: [9.341] elevatorPidController: Target=  35.0, Input=  34.5, Error=   0.5, PIDTerms= 0.098/ 0.014/ 0.000/ 0.000, Output= 0.113(-1.000/1.000), Volt=12.2(9.8)
+GlobalTracer.PowerUse_Info: Battery - currVoltage: 12.20, lowestVoltage: 9.75
+GlobalTracer.PowerUse_Info: Power: pdpTotalCurrent: 18.38 elev: 1.25 winch: 0.00, pickup: 0.00, total: 1.51
+GlobalTracer.startCompetition_Warn: AUTO_MODE takes too long (0.186s)
+
+GlobalTracer.printPidInfo_Info: [9.530] encoderXPidCtrl: Target=   6.7, Input=   6.7, Error=   0.0, PIDTerms= 0.124/ 0.000/ 0.006/ 0.000, Output= 0.000(-0.700/0.700), Volt=12.5(9.8)
+GlobalTracer.printPidInfo_Info: [9.530] encoderYPidCtrl: Target= 335.8, Input= 335.7, Error=   0.0, PIDTerms= 0.015/ 0.000/-0.000/ 0.000, Output= 0.000(-0.600/0.600), Volt=12.5(9.8)
+GlobalTracer.printPidInfo_Info: [9.530] gyroTurnPidCtrl: Target= -90.0, Input= -85.4, Error=  -4.6, PIDTerms=-0.083/ 0.000/ 0.091/-0.000, Output= 0.008(-0.700/0.700), Volt=12.5(9.8)
+GlobalTracer.printPidInfo_Info: [9.530] elevatorPidController: Target=  35.0, Input=  34.5, Error=   0.5, PIDTerms= 0.098/ 0.014/ 0.000/ 0.000, Output= 0.113(-1.000/1.000), Volt=12.5(9.8)
+GlobalTracer.PowerUse_Info: Battery - currVoltage: 12.50, lowestVoltage: 9.75
+GlobalTracer.PowerUse_Info: Power: pdpTotalCurrent: 2.13 elev: 1.25 winch: 0.00, pickup: 0.00, total: 1.51
+GlobalTracer.startCompetition_Warn: AUTO_MODE takes too long (0.122s)
+
+GlobalTracer.printPidInfo_Info: [9.654] encoderXPidCtrl: Target=   6.7, Input=   6.7, Error=   0.0, PIDTerms= 0.124/ 0.000/ 0.006/ 0.000, Output= 0.000(-0.700/0.700), Volt=12.3(9.8)
+GlobalTracer.printPidInfo_Info: [9.654] encoderYPidCtrl: Target= 335.8, Input= 335.7, Error=   0.0, PIDTerms= 0.015/ 0.000/-0.000/ 0.000, Output= 0.000(-0.600/0.600), Volt=12.3(9.8)
+GlobalTracer.printPidInfo_Info: [9.654] gyroTurnPidCtrl: Target= -90.0, Input= -96.0, Error=   6.0, PIDTerms= 0.108/ 0.000/ 0.104/-0.000, Output= 0.211(-0.700/0.700), Volt=12.3(9.8)
+GlobalTracer.printPidInfo_Info: [9.654] elevatorPidController: Target=  35.0, Input=  34.5, Error=   0.5, PIDTerms= 0.098/ 0.015/ 0.000/ 0.000, Output= 0.113(-1.000/1.000), Volt=12.3(9.8)
+GlobalTracer.PowerUse_Info: Battery - currVoltage: 12.25, lowestVoltage: 9.75
+GlobalTracer.PowerUse_Info: Power: pdpTotalCurrent: 7.38 elev: 1.25 winch: 0.00, pickup: 0.00, total: 1.51
+GlobalTracer.startCompetition_Warn: AUTO_MODE takes too long (0.117s)
+
+GlobalTracer.printPidInfo_Info: [9.774] encoderXPidCtrl: Target=   6.7, Input=   6.7, Error=   0.0, PIDTerms= 0.124/ 0.000/ 0.006/ 0.000, Output= 0.000(-0.700/0.700), Volt=12.5(9.8)
+GlobalTracer.printPidInfo_Info: [9.774] encoderYPidCtrl: Target= 335.8, Input= 335.7, Error=   0.0, PIDTerms= 0.015/ 0.000/-0.000/ 0.000, Output= 0.000(-0.600/0.600), Volt=12.5(9.8)
+GlobalTracer.printPidInfo_Info: [9.774] gyroTurnPidCtrl: Target= -90.0, Input= -95.4, Error=   5.4, PIDTerms= 0.097/ 0.000/-0.008/-0.000, Output= 0.088(-0.700/0.700), Volt=12.5(9.8)
+GlobalTracer.printPidInfo_Info: [9.774] elevatorPidController: Target=  35.0, Input=  34.5, Error=   0.5, PIDTerms= 0.098/ 0.015/ 0.000/ 0.000, Output= 0.113(-1.000/1.000), Volt=12.5(9.8)
+GlobalTracer.PowerUse_Info: Battery - currVoltage: 12.50, lowestVoltage: 9.75
+GlobalTracer.PowerUse_Info: Power: pdpTotalCurrent: 7.88 elev: 1.25 winch: 0.00, pickup: 0.00, total: 1.52
+GlobalTracer.startCompetition_Warn: AUTO_MODE takes too long (0.104s)
+
+GlobalTracer.printPidInfo_Info: [9.880] encoderXPidCtrl: Target=   6.7, Input=   6.7, Error=   0.0, PIDTerms= 0.124/ 0.000/ 0.006/ 0.000, Output= 0.000(-0.700/0.700), Volt=12.6(9.8)
+GlobalTracer.printPidInfo_Info: [9.880] encoderYPidCtrl: Target= 335.8, Input= 335.7, Error=   0.0, PIDTerms= 0.015/ 0.000/-0.000/ 0.000, Output= 0.000(-0.600/0.600), Volt=12.6(9.8)
+GlobalTracer.printPidInfo_Info: [9.880] gyroTurnPidCtrl: Target= -90.0, Input= -92.8, Error=   2.8, PIDTerms= 0.049/ 0.000/-0.037/-0.000, Output= 0.013(-0.700/0.700), Volt=12.6(9.8)
+GlobalTracer.printPidInfo_Info: [9.880] elevatorPidController: Target=  35.0, Input=  34.5, Error=   0.5, PIDTerms= 0.098/ 0.015/ 0.000/ 0.000, Output= 0.113(-1.000/1.000), Volt=12.6(9.8)
+GlobalTracer.PowerUse_Info: Battery - currVoltage: 12.55, lowestVoltage: 9.75
+GlobalTracer.PowerUse_Info: Power: pdpTotalCurrent: 2.13 elev: 1.25 winch: 0.00, pickup: 0.00, total: 1.52
+GlobalTracer.startCompetition_Warn: AUTO_MODE takes too long (0.102s)
+
+GlobalTracer.Robot_Info: [9.984] RAISE_ELEVATOR: xPos=  3.79,yPos=337.60,heading= -92.2/ -90.0,volts=12.5(9.8)
+GlobalTracer.printPidInfo_Info: [9.984] elevatorPidController: Target=  70.0, Input=  34.5, Error=  35.5, PIDTerms= 0.098/ 0.015/ 0.000/ 0.000, Output= 0.000(-1.000/1.000), Volt=12.5(9.8)
+GlobalTracer.startCompetition_Warn: AUTO_MODE takes too long (0.106s)
+
+GlobalTracer.printPidInfo_Info: [10.096] elevatorPidController: Target=  70.0, Input=  34.5, Error=  35.5, PIDTerms= 7.098/ 0.001/ 0.000/ 0.000, Output= 1.000(-1.000/1.000), Volt=11.1(9.8)
+GlobalTracer.PowerUse_Info: Battery - currVoltage: 11.05, lowestVoltage: 9.75
+GlobalTracer.PowerUse_Info: Power: pdpTotalCurrent: 60.63 elev: 70.38 winch: 0.00, pickup: 0.00, total: 1.52
+GlobalTracer.startCompetition_Warn: AUTO_MODE takes too long (0.166s)
+
+GlobalTracer.printPidInfo_Info: [10.265] elevatorPidController: Target=  70.0, Input=  38.7, Error=  31.3, PIDTerms= 6.253/ 0.006/-0.000/ 0.000, Output= 1.000(-1.000/1.000), Volt=12.0(9.8)
+GlobalTracer.PowerUse_Info: Battery - currVoltage: 11.90, lowestVoltage: 9.75
+GlobalTracer.PowerUse_Info: Power: pdpTotalCurrent: 37.38 elev: 30.50 winch: 0.00, pickup: 0.00, total: 1.54
+GlobalTracer.startCompetition_Warn: AUTO_MODE takes too long (0.197s)
+
+GlobalTracer.printPidInfo_Info: [10.463] elevatorPidController: Target=  70.0, Input=  45.4, Error=  24.6, PIDTerms= 4.919/ 0.011/-0.000/ 0.000, Output= 1.000(-1.000/1.000), Volt=11.7(9.8)
+GlobalTracer.PowerUse_Info: Battery - currVoltage: 11.40, lowestVoltage: 9.75
+GlobalTracer.PowerUse_Info: Power: pdpTotalCurrent: 41.00 elev: 44.38 winch: 0.00, pickup: 0.00, total: 1.57
+GlobalTracer.startCompetition_Warn: AUTO_MODE takes too long (0.171s)
+
+GlobalTracer.printPidInfo_Info: [10.636] elevatorPidController: Target=  70.0, Input=  51.7, Error=  18.3, PIDTerms= 3.656/ 0.014/-0.000/ 0.000, Output= 1.000(-1.000/1.000), Volt=11.5(9.8)
+GlobalTracer.PowerUse_Info: Battery - currVoltage: 11.40, lowestVoltage: 9.75
+GlobalTracer.PowerUse_Info: Power: pdpTotalCurrent: 66.25 elev: 59.38 winch: 0.00, pickup: 0.00, total: 1.61
+GlobalTracer.startCompetition_Warn: AUTO_MODE takes too long (0.173s)
+
+GlobalTracer.printPidInfo_Info: [10.813] elevatorPidController: Target=  70.0, Input=  56.8, Error=  13.2, PIDTerms= 2.641/ 0.016/-0.000/ 0.000, Output= 1.000(-1.000/1.000), Volt=11.7(9.8)
+GlobalTracer.PowerUse_Info: Battery - currVoltage: 11.80, lowestVoltage: 9.75
+GlobalTracer.PowerUse_Info: Power: pdpTotalCurrent: 47.00 elev: 42.13 winch: 0.00, pickup: 0.00, total: 1.64
+GlobalTracer.startCompetition_Warn: AUTO_MODE takes too long (0.200s)
+
+GlobalTracer.printPidInfo_Info: [11.016] elevatorPidController: Target=  70.0, Input=  63.9, Error=   6.1, PIDTerms= 1.216/ 0.017/-0.000/ 0.000, Output= 1.000(-1.000/1.000), Volt=11.4(9.8)
+GlobalTracer.PowerUse_Info: Battery - currVoltage: 11.55, lowestVoltage: 9.75
+GlobalTracer.PowerUse_Info: Power: pdpTotalCurrent: 44.25 elev: 52.38 winch: 0.00, pickup: 0.00, total: 1.67
+GlobalTracer.startCompetition_Warn: AUTO_MODE takes too long (0.135s)
+
+GlobalTracer.printPidInfo_Info: [11.154] elevatorPidController: Target=  70.0, Input=  70.2, Error=  -0.2, PIDTerms=-0.042/ 0.017/-0.000/ 0.000, Output=-0.024(-1.000/1.000), Volt=12.5(9.8)
+GlobalTracer.PowerUse_Info: Battery - currVoltage: 12.50, lowestVoltage: 9.75
+GlobalTracer.PowerUse_Info: Power: pdpTotalCurrent: 47.50 elev: 0.25 winch: 0.00, pickup: 0.00, total: 1.69
+GlobalTracer.printPidInfo_Info: [11.245] elevatorPidController: Target=  70.0, Input=  71.3, Error=  -1.3, PIDTerms=-0.261/ 0.017/-0.000/ 0.000, Output=-0.244(-1.000/1.000), Volt=12.5(9.8)
+GlobalTracer.printPidInfo_Info: [11.295] elevatorPidController: Target=  70.0, Input=  71.0, Error=  -1.0, PIDTerms=-0.192/ 0.017/ 0.000/ 0.000, Output=-0.175(-1.000/1.000), Volt=12.5(9.8)
+GlobalTracer.PowerUse_Info: Battery - currVoltage: 12.45, lowestVoltage: 9.75
+GlobalTracer.PowerUse_Info: Power: pdpTotalCurrent: 2.13 elev: 1.50 winch: 0.00, pickup: 0.00, total: 1.69
+GlobalTracer.printPidInfo_Info: [11.391] elevatorPidController: Target=  70.0, Input=  69.7, Error=   0.3, PIDTerms= 0.054/ 0.017/ 0.000/ 0.000, Output= 0.071(-1.000/1.000), Volt=12.5(9.8)
+GlobalTracer.printPidInfo_Info: [11.467] elevatorPidController: Target=  70.0, Input=  69.2, Error=   0.8, PIDTerms= 0.165/ 0.017/ 0.000/ 0.000, Output= 0.182(-1.000/1.000), Volt=12.5(9.8)
+GlobalTracer.PowerUse_Info: Battery - currVoltage: 12.45, lowestVoltage: 9.75
+GlobalTracer.PowerUse_Info: Power: pdpTotalCurrent: 2.13 elev: 2.63 winch: 0.00, pickup: 0.00, total: 1.69
+GlobalTracer.Robot_Info: [11.551] THROW_CUBE: xPos=  4.14,yPos=334.07,heading= -92.2/ -90.0,volts=12.6(9.8)
+GlobalTracer.printPidInfo_Info: [11.551] elevatorPidController: Target=  70.0, Input=  69.2, Error=   0.9, PIDTerms= 0.165/ 0.017/ 0.000/ 0.000, Output= 0.000(-1.000/1.000), Volt=12.6(9.8)
+GlobalTracer.printPidInfo_Info: [11.610] elevatorPidController: Target=  70.0, Input=  69.1, Error=   0.9, PIDTerms= 0.179/ 0.000/ 0.000/ 0.000, Output= 0.179(-1.000/1.000), Volt=10.3(9.8)
+GlobalTracer.PowerUse_Info: Battery - currVoltage: 10.30, lowestVoltage: 9.75
+GlobalTracer.PowerUse_Info: Power: pdpTotalCurrent: 115.88 elev: 1.63 winch: 0.00, pickup: 139.25, total: 1.70
+GlobalTracer.printPidInfo_Info: [11.694] elevatorPidController: Target=  70.0, Input=  69.2, Error=   0.8, PIDTerms= 0.163/ 0.000/-0.000/ 0.000, Output= 0.163(-1.000/1.000), Volt=10.4(9.8)
+GlobalTracer.printPidInfo_Info: [11.762] elevatorPidController: Target=  70.0, Input=  69.2, Error=   0.8, PIDTerms= 0.163/ 0.000/ 0.000/ 0.000, Output= 0.163(-1.000/1.000), Volt=10.5(9.8)
+GlobalTracer.PowerUse_Info: Battery - currVoltage: 10.75, lowestVoltage: 9.75
+GlobalTracer.PowerUse_Info: Power: pdpTotalCurrent: 118.50 elev: 1.63 winch: 0.00, pickup: 106.50, total: 1.75
+GlobalTracer.startCompetition_Warn: AUTO_MODE takes too long (0.100s)
+
+GlobalTracer.printPidInfo_Info: [11.864] elevatorPidController: Target=  70.0, Input=  69.4, Error=   0.6, PIDTerms= 0.116/ 0.000/-0.000/ 0.000, Output= 0.116(-1.000/1.000), Volt=11.1(9.8)
+GlobalTracer.printPidInfo_Info: [11.927] elevatorPidController: Target=  70.0, Input=  69.1, Error=   0.9, PIDTerms= 0.177/ 0.000/ 0.000/ 0.000, Output= 0.178(-1.000/1.000), Volt=11.4(9.8)
+GlobalTracer.PowerUse_Info: Battery - currVoltage: 11.45, lowestVoltage: 9.75
+GlobalTracer.PowerUse_Info: Power: pdpTotalCurrent: 58.88 elev: 1.63 winch: 0.00, pickup: 57.25, total: 1.79
+GlobalTracer.printPidInfo_Info: [12.023] elevatorPidController: Target=  70.0, Input=  69.3, Error=   0.7, PIDTerms= 0.140/ 0.000/-0.000/ 0.000, Output= 0.140(-1.000/1.000), Volt=11.7(9.8)
+GlobalTracer.CmdAutoScale_Info: setSonarTriggerEnabled(false)
+GlobalTracer.CmdAutoScale_Info: setRangingEnabled(false)
+GlobalTracer.Robot_Info: [12.088]       DONE: xPos=  4.12,yPos=334.13,heading= -92.1/ -90.0,volts=11.9(9.8)
+GlobalTracer.printPidInfo_Info: [12.088] elevatorPidController: Target=   6.0, Input=  69.3, Error= -63.3, PIDTerms= 0.140/ 0.000/ 0.000/ 0.000, Output= 0.000(-1.000/1.000), Volt=11.9(9.8)
+GlobalTracer.PowerUse_Info: Battery - currVoltage: 11.85, lowestVoltage: 9.75
+GlobalTracer.PowerUse_Info: Power: pdpTotalCurrent: 43.63 elev: 2.13 winch: 0.00, pickup: 20.88, total: 1.82
+GlobalTracer.printPidInfo_Info: [12.170] elevatorPidController: Target=   6.0, Input=  69.3, Error= -63.3, PIDTerms=-12.661/-0.003/-0.000/ 0.000, Output=-1.000(-1.000/1.000), Volt=11.5(9.8)
+GlobalTracer.printPidInfo_Info: [12.231] elevatorPidController: Target=   6.0, Input=  68.8, Error= -62.8, PIDTerms=-12.562/-0.006/ 0.000/ 0.000, Output=-1.000(-1.000/1.000), Volt=12.0(9.8)
+GlobalTracer.PowerUse_Info: Battery - currVoltage: 12.15, lowestVoltage: 9.75
+GlobalTracer.PowerUse_Info: Power: pdpTotalCurrent: 42.13 elev: 24.75 winch: 0.00, pickup: 0.00, total: 1.84
+GlobalTracer.printPidInfo_Info: [12.310] elevatorPidController: Target=   6.0, Input=  63.3, Error= -57.3, PIDTerms=-11.469/-0.011/ 0.000/ 0.000, Output=-1.000(-1.000/1.000), Volt=12.2(9.8)
+GlobalTracer.printPidInfo_Info: [12.375] elevatorPidController: Target=   6.0, Input=  59.5, Error= -53.5, PIDTerms=-10.704/-0.014/ 0.000/ 0.000, Output=-1.000(-1.000/1.000), Volt=12.3(9.8)
+GlobalTracer.PowerUse_Info: Battery - currVoltage: 12.20, lowestVoltage: 9.75
+GlobalTracer.PowerUse_Info: Power: pdpTotalCurrent: 12.88 elev: 11.88 winch: 0.00, pickup: 0.00, total: 1.85
+GlobalTracer.printPidInfo_Info: [12.462] elevatorPidController: Target=   6.0, Input=  54.4, Error= -48.4, PIDTerms=-9.679/-0.018/ 0.000/ 0.000, Output=-1.000(-1.000/1.000), Volt=12.4(9.8)
+GlobalTracer.printPidInfo_Info: [12.525] elevatorPidController: Target=   6.0, Input=  50.3, Error= -44.3, PIDTerms=-8.860/-0.021/ 0.000/ 0.000, Output=-1.000(-1.000/1.000), Volt=12.4(9.8)
+GlobalTracer.PowerUse_Info: Battery - currVoltage: 12.40, lowestVoltage: 9.75
+GlobalTracer.PowerUse_Info: Power: pdpTotalCurrent: 9.25 elev: 9.38 winch: 0.00, pickup: 0.00, total: 1.85
+GlobalTracer.printPidInfo_Info: [12.609] elevatorPidController: Target=   6.0, Input=  45.0, Error= -39.0, PIDTerms=-7.802/-0.024/ 0.000/ 0.000, Output=-1.000(-1.000/1.000), Volt=12.3(9.8)
+GlobalTracer.printPidInfo_Info: [12.671] elevatorPidController: Target=   6.0, Input=  39.0, Error= -33.0, PIDTerms=-6.594/-0.027/ 0.000/ 0.000, Output=-1.000(-1.000/1.000), Volt=12.7(9.8)
+GlobalTracer.PowerUse_Info: Battery - currVoltage: 12.65, lowestVoltage: 9.75
+GlobalTracer.PowerUse_Info: Power: pdpTotalCurrent: 3.50 elev: 0.25 winch: 0.00, pickup: 0.00, total: 1.85
+GlobalTracer.printPidInfo_Info: [12.758] elevatorPidController: Target=   6.0, Input=  33.2, Error= -27.2, PIDTerms=-5.437/-0.029/ 0.000/ 0.000, Output=-1.000(-1.000/1.000), Volt=12.5(9.8)
+GlobalTracer.printPidInfo_Info: [12.802] elevatorPidController: Target=   6.0, Input=  28.7, Error= -22.7, PIDTerms=-4.541/-0.030/ 0.000/ 0.000, Output=-1.000(-1.000/1.000), Volt=12.5(9.8)
+GlobalTracer.PowerUse_Info: Battery - currVoltage: 12.50, lowestVoltage: 9.75
+GlobalTracer.PowerUse_Info: Power: pdpTotalCurrent: 4.75 elev: 2.75 winch: 0.00, pickup: 0.00, total: 1.86
+GlobalTracer.printPidInfo_Info: [12.877] elevatorPidController: Target=   6.0, Input=  24.3, Error= -18.3, PIDTerms=-3.664/-0.031/ 0.000/ 0.000, Output=-1.000(-1.000/1.000), Volt=12.6(9.8)
+GlobalTracer.printPidInfo_Info: [12.926] elevatorPidController: Target=   6.0, Input=  19.7, Error= -13.7, PIDTerms=-2.750/-0.032/ 0.000/ 0.000, Output=-1.000(-1.000/1.000), Volt=12.6(9.8)
+GlobalTracer.PowerUse_Info: Battery - currVoltage: 12.60, lowestVoltage: 9.75
+GlobalTracer.PowerUse_Info: Power: pdpTotalCurrent: 0.00 elev: 0.00 winch: 0.00, pickup: 0.00, total: 1.86
+GlobalTracer.printPidInfo_Info: [13.005] elevatorPidController: Target=   6.0, Input=  13.6, Error=  -7.6, PIDTerms=-1.522/-0.033/ 0.000/ 0.000, Output=-1.000(-1.000/1.000), Volt=12.6(9.8)
+GlobalTracer.printPidInfo_Info: [13.069] elevatorPidController: Target=   6.0, Input=  10.6, Error=  -4.6, PIDTerms=-0.920/-0.033/ 0.000/ 0.000, Output=-0.953(-1.000/1.000), Volt=12.6(9.8)
+GlobalTracer.PowerUse_Info: Battery - currVoltage: 12.55, lowestVoltage: 9.75
+GlobalTracer.PowerUse_Info: Power: pdpTotalCurrent: 0.00 elev: 0.00 winch: 0.00, pickup: 0.00, total: 1.86
+GlobalTracer.printPidInfo_Info: [13.136] elevatorPidController: Target=   6.0, Input=   5.5, Error=   0.5, PIDTerms= 0.097/-0.033/ 0.000/ 0.000, Output= 0.064(-1.000/1.000), Volt=12.6(9.8)
+GlobalTracer.printPidInfo_Info: [13.182] elevatorPidController: Target=   6.0, Input=   8.0, Error=  -2.0, PIDTerms=-0.400/-0.033/-0.000/ 0.000, Output=-0.433(-1.000/1.000), Volt=12.6(9.8)
+GlobalTracer.PowerUse_Info: Battery - currVoltage: 12.55, lowestVoltage: 9.75
+GlobalTracer.PowerUse_Info: Power: pdpTotalCurrent: 0.00 elev: 0.13 winch: 0.00, pickup: 0.00, total: 1.86
+GlobalTracer.printPidInfo_Info: [13.262] elevatorPidController: Target=   6.0, Input=   8.2, Error=  -2.2, PIDTerms=-0.447/-0.033/-0.000/ 0.000, Output=-0.480(-1.000/1.000), Volt=12.6(9.8)
+GlobalTracer.printPidInfo_Info: [13.317] elevatorPidController: Target=   6.0, Input=   8.3, Error=  -2.3, PIDTerms=-0.457/-0.033/-0.000/ 0.000, Output=-0.491(-1.000/1.000), Volt=12.6(9.8)
+GlobalTracer.PowerUse_Info: Battery - currVoltage: 12.55, lowestVoltage: 9.75
+GlobalTracer.PowerUse_Info: Power: pdpTotalCurrent: 0.00 elev: 0.13 winch: 0.00, pickup: 0.00, total: 1.86
+GlobalTracer.printPidInfo_Info: [13.393] elevatorPidController: Target=   6.0, Input=   8.3, Error=  -2.3, PIDTerms=-0.462/-0.034/-0.000/ 0.000, Output=-0.495(-1.000/1.000), Volt=12.6(9.8)
+GlobalTracer.printPidInfo_Info: [13.446] elevatorPidController: Target=   6.0, Input=   8.3, Error=  -2.3, PIDTerms=-0.462/-0.034/ 0.000/ 0.000, Output=-0.495(-1.000/1.000), Volt=12.6(9.8)
+GlobalTracer.PowerUse_Info: Battery - currVoltage: 12.60, lowestVoltage: 9.75
+GlobalTracer.PowerUse_Info: Power: pdpTotalCurrent: 0.00 elev: 0.13 winch: 0.00, pickup: 0.00, total: 1.86
+GlobalTracer.printPidInfo_Info: [13.526] elevatorPidController: Target=   6.0, Input=   8.3, Error=  -2.3, PIDTerms=-0.463/-0.034/-0.000/ 0.000, Output=-0.497(-1.000/1.000), Volt=12.6(9.8)
+GlobalTracer.printPidInfo_Info: [13.580] elevatorPidController: Target=   6.0, Input=   8.3, Error=  -2.3, PIDTerms=-0.463/-0.034/ 0.000/ 0.000, Output=-0.497(-1.000/1.000), Volt=12.6(9.8)
+GlobalTracer.PowerUse_Info: Battery - currVoltage: 12.60, lowestVoltage: 9.75
+GlobalTracer.PowerUse_Info: Power: pdpTotalCurrent: 0.00 elev: 0.13 winch: 0.00, pickup: 0.00, total: 1.86
+GlobalTracer.printPidInfo_Info: [13.665] elevatorPidController: Target=   6.0, Input=   8.3, Error=  -2.3, PIDTerms=-0.463/-0.034/ 0.000/ 0.000, Output=-0.497(-1.000/1.000), Volt=12.6(9.8)
+GlobalTracer.printPidInfo_Info: [13.715] elevatorPidController: Target=   6.0, Input=   8.3, Error=  -2.3, PIDTerms=-0.463/-0.034/ 0.000/ 0.000, Output=-0.497(-1.000/1.000), Volt=12.6(9.8)
+GlobalTracer.PowerUse_Info: Battery - currVoltage: 12.60, lowestVoltage: 9.75
+GlobalTracer.PowerUse_Info: Power: pdpTotalCurrent: 0.00 elev: 0.13 winch: 0.00, pickup: 0.00, total: 1.86
+GlobalTracer.printPidInfo_Info: [13.782] elevatorPidController: Target=   6.0, Input=   8.3, Error=  -2.3, PIDTerms=-0.463/-0.034/ 0.000/ 0.000, Output=-0.497(-1.000/1.000), Volt=12.6(9.8)
+GlobalTracer.printPidInfo_Info: [13.835] elevatorPidController: Target=   6.0, Input=   8.3, Error=  -2.3, PIDTerms=-0.463/-0.035/ 0.000/ 0.000, Output=-0.498(-1.000/1.000), Volt=12.7(9.8)
+GlobalTracer.PowerUse_Info: Battery - currVoltage: 12.60, lowestVoltage: 9.75
+GlobalTracer.PowerUse_Info: Power: pdpTotalCurrent: 0.00 elev: 0.13 winch: 0.00, pickup: 0.00, total: 1.86
+GlobalTracer.printPidInfo_Info: [13.920] elevatorPidController: Target=   6.0, Input=   8.3, Error=  -2.3, PIDTerms=-0.463/-0.035/ 0.000/ 0.000, Output=-0.498(-1.000/1.000), Volt=12.6(9.8)
+GlobalTracer.printPidInfo_Info: [13.979] elevatorPidController: Target=   6.0, Input=   8.3, Error=  -2.3, PIDTerms=-0.463/-0.035/ 0.000/ 0.000, Output=-0.498(-1.000/1.000), Volt=12.7(9.8)
+GlobalTracer.PowerUse_Info: Battery - currVoltage: 12.65, lowestVoltage: 9.75
+GlobalTracer.PowerUse_Info: Power: pdpTotalCurrent: 0.00 elev: 0.13 winch: 0.00, pickup: 0.00, total: 1.86
+GlobalTracer.printPidInfo_Info: [14.050] elevatorPidController: Target=   6.0, Input=   8.3, Error=  -2.3, PIDTerms=-0.463/-0.035/ 0.000/ 0.000, Output=-0.498(-1.000/1.000), Volt=12.6(9.8)
+GlobalTracer.printPidInfo_Info: [14.097] elevatorPidController: Target=   6.0, Input=   8.3, Error=  -2.3, PIDTerms=-0.463/-0.035/ 0.000/ 0.000, Output=-0.498(-1.000/1.000), Volt=12.7(9.8)
+GlobalTracer.PowerUse_Info: Battery - currVoltage: 12.60, lowestVoltage: 9.75
+GlobalTracer.PowerUse_Info: Power: pdpTotalCurrent: 0.00 elev: 0.13 winch: 0.00, pickup: 0.00, total: 1.86
+GlobalTracer.printPidInfo_Info: [14.181] elevatorPidController: Target=   6.0, Input=   8.3, Error=  -2.3, PIDTerms=-0.463/-0.035/ 0.000/ 0.000, Output=-0.498(-1.000/1.000), Volt=12.6(9.8)
+GlobalTracer.printPidInfo_Info: [14.245] elevatorPidController: Target=   6.0, Input=   8.3, Error=  -2.3, PIDTerms=-0.463/-0.035/ 0.000/ 0.000, Output=-0.498(-1.000/1.000), Volt=12.6(9.8)
+GlobalTracer.PowerUse_Info: Battery - currVoltage: 12.60, lowestVoltage: 9.75
+GlobalTracer.PowerUse_Info: Power: pdpTotalCurrent: 0.00 elev: 0.13 winch: 0.00, pickup: 0.00, total: 1.86
+GlobalTracer.printPidInfo_Info: [14.323] elevatorPidController: Target=   6.0, Input=   8.3, Error=  -2.3, PIDTerms=-0.463/-0.036/ 0.000/ 0.000, Output=-0.499(-1.000/1.000), Volt=12.6(9.8)
+GlobalTracer.printPidInfo_Info: [14.378] elevatorPidController: Target=   6.0, Input=   8.3, Error=  -2.3, PIDTerms=-0.463/-0.036/ 0.000/ 0.000, Output=-0.499(-1.000/1.000), Volt=12.6(9.8)
+GlobalTracer.PowerUse_Info: Battery - currVoltage: 12.60, lowestVoltage: 9.75
+GlobalTracer.PowerUse_Info: Power: pdpTotalCurrent: 0.00 elev: 0.13 winch: 0.00, pickup: 0.00, total: 1.86
+GlobalTracer.printPidInfo_Info: [14.453] elevatorPidController: Target=   6.0, Input=   8.3, Error=  -2.3, PIDTerms=-0.463/-0.036/ 0.000/ 0.000, Output=-0.499(-1.000/1.000), Volt=12.6(9.8)
+GlobalTracer.printPidInfo_Info: [14.512] elevatorPidController: Target=   6.0, Input=   8.3, Error=  -2.3, PIDTerms=-0.463/-0.036/ 0.000/ 0.000, Output=-0.499(-1.000/1.000), Volt=12.7(9.8)
+GlobalTracer.PowerUse_Info: Battery - currVoltage: 12.65, lowestVoltage: 9.75
+GlobalTracer.PowerUse_Info: Power: pdpTotalCurrent: 0.00 elev: 0.13 winch: 0.00, pickup: 0.00, total: 1.86
+GlobalTracer.printPidInfo_Info: [14.572] elevatorPidController: Target=   6.0, Input=   8.3, Error=  -2.3, PIDTerms=-0.463/-0.036/ 0.000/ 0.000, Output=-0.499(-1.000/1.000), Volt=12.6(9.8)
+GlobalTracer.printPidInfo_Info: [14.625] elevatorPidController: Target=   6.0, Input=   8.3, Error=  -2.3, PIDTerms=-0.463/-0.036/ 0.000/ 0.000, Output=-0.499(-1.000/1.000), Volt=12.6(9.8)
+GlobalTracer.PowerUse_Info: Battery - currVoltage: 12.60, lowestVoltage: 9.75
+GlobalTracer.PowerUse_Info: Power: pdpTotalCurrent: 0.00 elev: 0.13 winch: 0.00, pickup: 0.00, total: 1.86
+GlobalTracer.printPidInfo_Info: [14.701] elevatorPidController: Target=   6.0, Input=   8.3, Error=  -2.3, PIDTerms=-0.463/-0.037/ 0.000/ 0.000, Output=-0.500(-1.000/1.000), Volt=12.7(9.8)
+GlobalTracer.printPidInfo_Info: [14.755] elevatorPidController: Target=   6.0, Input=   8.3, Error=  -2.3, PIDTerms=-0.463/-0.037/ 0.000/ 0.000, Output=-0.500(-1.000/1.000), Volt=12.7(9.8)
+GlobalTracer.PowerUse_Info: Battery - currVoltage: 12.65, lowestVoltage: 9.75
+GlobalTracer.PowerUse_Info: Power: pdpTotalCurrent: 0.00 elev: 0.13 winch: 0.00, pickup: 0.00, total: 1.86
+GlobalTracer.printPidInfo_Info: [14.830] elevatorPidController: Target=   6.0, Input=   8.3, Error=  -2.3, PIDTerms=-0.463/-0.037/ 0.000/ 0.000, Output=-0.500(-1.000/1.000), Volt=12.7(9.8)
+GlobalTracer.printPidInfo_Info: [14.894] elevatorPidController: Target=   6.0, Input=   8.3, Error=  -2.3, PIDTerms=-0.463/-0.037/ 0.000/ 0.000, Output=-0.500(-1.000/1.000), Volt=12.7(9.8)
+GlobalTracer.PowerUse_Info: Battery - currVoltage: 12.65, lowestVoltage: 9.75
+GlobalTracer.PowerUse_Info: Power: pdpTotalCurrent: 0.00 elev: 0.13 winch: 0.00, pickup: 0.00, total: 1.86
+GlobalTracer.printPidInfo_Info: [14.965] elevatorPidController: Target=   6.0, Input=   8.3, Error=  -2.3, PIDTerms=-0.463/-0.037/ 0.000/ 0.000, Output=-0.500(-1.000/1.000), Volt=12.7(9.8)
+GlobalTracer.printPidInfo_Info: [15.020] elevatorPidController: Target=   6.0, Input=   8.3, Error=  -2.3, PIDTerms=-0.463/-0.037/ 0.000/ 0.000, Output=-0.500(-1.000/1.000), Volt=12.7(9.8)
+GlobalTracer.PowerUse_Info: Battery - currVoltage: 12.65, lowestVoltage: 9.75
+GlobalTracer.PowerUse_Info: Power: pdpTotalCurrent: 0.00 elev: 0.13 winch: 0.00, pickup: 0.00, total: 1.86
+GlobalTracer.printPidInfo_Info: [15.100] elevatorPidController: Target=   6.0, Input=   8.3, Error=  -2.3, PIDTerms=-0.463/-0.037/ 0.000/ 0.000, Output=-0.501(-1.000/1.000), Volt=12.7(9.8)
+GlobalTracer.printPidInfo_Info: [15.156] elevatorPidController: Target=   6.0, Input=   8.3, Error=  -2.3, PIDTerms=-0.463/-0.038/ 0.000/ 0.000, Output=-0.501(-1.000/1.000), Volt=12.6(9.8)
+GlobalTracer.PowerUse_Info: Battery - currVoltage: 12.60, lowestVoltage: 9.75
+GlobalTracer.PowerUse_Info: Power: pdpTotalCurrent: 0.00 elev: 0.13 winch: 0.00, pickup: 0.00, total: 1.86
+GlobalTracer.printPidInfo_Info: [15.243] elevatorPidController: Target=   6.0, Input=   8.3, Error=  -2.3, PIDTerms=-0.463/-0.038/ 0.000/ 0.000, Output=-0.501(-1.000/1.000), Volt=12.6(9.8)
+GlobalTracer.printPidInfo_Info: [15.290] elevatorPidController: Target=   6.0, Input=   8.3, Error=  -2.3, PIDTerms=-0.463/-0.038/ 0.000/ 0.000, Output=-0.501(-1.000/1.000), Volt=12.6(9.8)
+GlobalTracer.PowerUse_Info: Battery - currVoltage: 12.55, lowestVoltage: 9.75
+GlobalTracer.PowerUse_Info: Power: pdpTotalCurrent: 0.00 elev: 0.13 winch: 0.00, pickup: 0.00, total: 1.86
+GlobalTracer.printPidInfo_Info: [15.356] elevatorPidController: Target=   6.0, Input=   8.3, Error=  -2.3, PIDTerms=-0.463/-0.038/ 0.000/ 0.000, Output=-0.501(-1.000/1.000), Volt=12.7(9.8)
+GlobalTracer.printPidInfo_Info: [15.404] elevatorPidController: Target=   6.0, Input=   8.3, Error=  -2.3, PIDTerms=-0.463/-0.038/ 0.000/ 0.000, Output=-0.501(-1.000/1.000), Volt=12.6(9.8)
+GlobalTracer.PowerUse_Info: Battery - currVoltage: 12.60, lowestVoltage: 9.75
+GlobalTracer.PowerUse_Info: Power: pdpTotalCurrent: 0.00 elev: 0.13 winch: 0.00, pickup: 0.00, total: 1.86
+GlobalTracer.Vision_Info: Pixy is disabled!
+GlobalTracer.Robot_Info: TotalEnergy=1.858
