@@ -558,7 +558,7 @@ class CmdAutoSwitch implements TrcRobot.RobotCommand
                         robot.rightFlipper.retract();
                         visionTarget = robot.getPixyTargetX();
                         xStart = robot.driveBase.getXPosition();
-                        if (visionTarget != null && visionTarget > RobotInfo.FIND_CUBE_X_TOLERANCE)
+                        if (visionTarget != null && Math.abs(visionTarget) > RobotInfo.FIND_CUBE_X_TOLERANCE)
                         {
                             //robot.encoderXPidCtrl.setOutputLimit(0.5);
                             xDistance = visionTarget;

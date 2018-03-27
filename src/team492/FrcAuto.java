@@ -107,6 +107,7 @@ public class FrcAuto implements TrcRobot.RobotMode
         //
         // Populate Autonomous Mode menus.
         //
+        // CodeReview: I thought AutoSwitch is still the default. We still like center start.
         autoStrategyMenu.addChoice("Auto Side", AutoStrategy.AUTO_SIDE, true, false);
         autoStrategyMenu.addChoice("Auto Switch", AutoStrategy.AUTO_SWITCH, false, false);
         autoStrategyMenu.addChoice("Auto Scale", AutoStrategy.AUTO_SCALE, false, false);
@@ -193,29 +194,31 @@ public class FrcAuto implements TrcRobot.RobotMode
         switch (autoStrategy)
         {
             case AUTO_SIDE:
-                if(startPosition != Position.MID_POS)
+                if (startPosition != Position.MID_POS)
                 {
                     boolean switchRight = robot.gameSpecificMessage.charAt(0) == 'R';
                     boolean scaleRight = robot.gameSpecificMessage.charAt(1) == 'R';
                     boolean startRight = startPosition == Position.RIGHT_POS;
                     ScaleOrSwitch preference = preferenceMenu.getCurrentChoiceObject();
-                    if(startRight == scaleRight && scaleRight == switchRight)
+
+                    if (startRight == scaleRight && scaleRight == switchRight)
                     {
                         switch(preference)
                         {
                             case SWITCH:
                                 autoCommand = new CmdAutoSideSwitch(robot, delay, getSecondCube);
                                 break;
+
                             case SCALE:
                                 autoCommand = new CmdAutoScale(robot, delay, startPosition, forwardDriveDistance);
                                 break;
                         }
                     }
-                    else if(startRight == switchRight)
+                    else if (startRight == switchRight)
                     {
                         autoCommand = new CmdAutoSideSwitch(robot, delay, getSecondCube);
                     }
-                    else if(startRight == scaleRight)
+                    else if (startRight == scaleRight)
                     {
                         autoCommand = new CmdAutoScale(robot, delay, startPosition, forwardDriveDistance);
                     }
@@ -223,7 +226,7 @@ public class FrcAuto implements TrcRobot.RobotMode
                     {
                         autoCommand = new CmdAutoMoveToCrossField(robot, delay, startPosition);
                     }
-                    break;                    
+                    break;
                 }
 
             case AUTO_SWITCH:
@@ -269,6 +272,7 @@ public class FrcAuto implements TrcRobot.RobotMode
         robot.setVisionEnabled(true);
         robot.driveBase.resetPosition();
         robot.targetHeading = 0.0;
+        robot.tracer.traceInfo("FrcAuto.startMode", "[%.3f] startMode done!", Robot.getModeElapsedTime());
     } // startMode
 
     @Override

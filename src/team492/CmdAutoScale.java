@@ -137,6 +137,7 @@ public class CmdAutoScale implements TrcRobot.RobotCommand
     public boolean cmdPeriodic(double elapsedTime)
     {
         boolean done = !sm.isEnabled();
+
         if (done || startPosition == Position.MID_POS) return true;
 
         State state = sm.checkReadyAndGetState();

@@ -31,10 +31,10 @@ import trclib.TrcRobot;
 public class CmdAutoMoveToCrossField implements TrcRobot.RobotCommand
 {
     private static final String moduleName = "CmdAutoMoveToCrossField";
-    
+
     private static final double DRIVE_HEADING_EAST = 90.0;
     private static final double DRIVE_HEADING_WEST = -90.0;
-    
+
     private enum State
     {
         START,
@@ -43,25 +43,31 @@ public class CmdAutoMoveToCrossField implements TrcRobot.RobotCommand
         DRIVE_ACROSS_FIELD,
         DONE
     }
-    
+
     private TrcEvent event;
     private TrcTimer timer;
     private TrcStateMachine<State> sm;
-    
+
     private Robot robot;
     private double delay;
     private Position startPosition;
+
     private boolean startRight;
+
+    // CodeReview: Should we give an option to just cross the line and not to lane 3 and cross the field?
     public CmdAutoMoveToCrossField(Robot robot, double delay, Position startPosition)
     {
+        robot.tracer.traceInfo(moduleName, "[%.3f] delay=%.1f, startPos=%s",
+            Robot.getModeElapsedTime(), delay, startPosition);
+
         this.robot = robot;
         this.delay = delay;
         this.startPosition = startPosition;
-        
+
         event = new TrcEvent(moduleName);
         timer = new TrcTimer(moduleName);
         sm = new TrcStateMachine<>(moduleName);
-        
+
         startRight = startPosition == Position.RIGHT_POS;
     }
 
@@ -69,15 +75,19 @@ public class CmdAutoMoveToCrossField implements TrcRobot.RobotCommand
     public boolean cmdPeriodic(double elapsedTime)
     {
         boolean done = !sm.isEnabled();
-        if(done || startPosition == Position.MID_POS) return true;
-        
+
+        if (done || startPosition == Position.MID_POS) return true;
+
         State state = sm.checkReadyAndGetState();
-        
-        if(state != null)
+        //
+        // Print debug info.
+        //
+        robot.dashboard.displayPrintf(1, "State: %s", state != null? state: sm.getState());
+
+        if (state != null)
         {
             double xDistance, yDistance;
-            robot.dashboard.displayPrintf(1, "State: %s", state != null? state: sm.getState());
-            
+
             switch(state)
             {
                 case START:
