@@ -23,6 +23,7 @@
 package team492;
 
 import frclib.FrcAnalogInput;
+import team492.RobotInfo.Position;
 import trclib.TrcAnalogInput;
 import trclib.TrcAnalogTrigger;
 import trclib.TrcEvent;
@@ -58,11 +59,6 @@ public class CmdAutoScale implements TrcRobot.RobotCommand
         DONE
     }
 
-    private enum Position
-    {
-        LEFT, MIDDLE, RIGHT
-    }
-
     private Robot robot;
     private double delay;
     private Position startPosition;
@@ -88,14 +84,11 @@ public class CmdAutoScale implements TrcRobot.RobotCommand
      * @param startPosition Either RobotInfo.LEFT_START_POS, RobotInfo.MID_START_POS, or RobotInfo.RIGHT_START_POS
      * @param forwardDriveDistance
      */
-    public CmdAutoScale(Robot robot, double delay, double startPosition, double forwardDriveDistance)
+    public CmdAutoScale(Robot robot, double delay, Position startPosition, double forwardDriveDistance)
     {
         this.robot = robot;
         this.delay = delay;
-
-        if (startPosition == RobotInfo.LEFT_START_POS) this.startPosition = Position.LEFT;
-        else if (startPosition == RobotInfo.RIGHT_START_POS) this.startPosition = Position.RIGHT;
-        else this.startPosition = Position.MIDDLE;
+        this.startPosition = startPosition;
 
         robot.gyroTurnPidCtrl.setTargetTolerance(3.0);
 
@@ -107,7 +100,7 @@ public class CmdAutoScale implements TrcRobot.RobotCommand
         sm = new TrcStateMachine<>(moduleName);
         sm.start(State.START);
 
-        startRight = this.startPosition == Position.RIGHT;
+        startRight = this.startPosition == Position.RIGHT_POS;
         scaleRight = robot.gameSpecificMessage.charAt(1) == 'R';
         sameSide = startRight == scaleRight;
         lane3 = forwardDriveDistance > RobotInfo.AUTO_DISTANCE_TO_SWITCH;
@@ -141,7 +134,7 @@ public class CmdAutoScale implements TrcRobot.RobotCommand
     public boolean cmdPeriodic(double elapsedTime)
     {
         boolean done = !sm.isEnabled();
-        if (done || startPosition == Position.MIDDLE) return true;
+        if (done || startPosition == Position.MID_POS) return true;
 
         State state = sm.checkReadyAndGetState();
 
@@ -235,7 +228,7 @@ public class CmdAutoScale implements TrcRobot.RobotCommand
                     {
                         // The target scale is on the other side, go to lane 3 to cross over.
                         xDistance = 0.0;
-                        yDistance = RobotInfo.ALLIANCE_WALL_TO_LANE_3_DISTANCE - currY;
+                        yDistance = forwardDriveDistance - currY;
                         nextState = State.TURN_TO_OPPOSITE_SCALE;
                     }
 
@@ -264,7 +257,7 @@ public class CmdAutoScale implements TrcRobot.RobotCommand
                     break;
 
                 case FINISH_DRIVE_TO_SCALE:
-                    yDistance = RobotInfo.ALLIANCE_WALL_TO_SCALE_DISTANCE - RobotInfo.ALLIANCE_WALL_TO_LANE_3_DISTANCE - RobotInfo.ROBOT_LENGTH/2.0 + 10.0;
+                    yDistance = RobotInfo.ALLIANCE_WALL_TO_SCALE_DISTANCE - forwardDriveDistance - RobotInfo.ROBOT_LENGTH/2.0 + 10.0;
                     robot.pidDrive.setTarget(0.0, yDistance, robot.targetHeading, false, event, 0.0);
                     // Start raising elevator
                     robot.elevator.setPosition(RobotInfo.ELEVATOR_CRUISE_HEIGHT);

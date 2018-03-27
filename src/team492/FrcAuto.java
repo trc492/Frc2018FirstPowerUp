@@ -28,6 +28,7 @@ import common.CmdPidDrive;
 import common.CmdTimedDrive;
 import frclib.FrcChoiceMenu;
 import hallib.HalDashboard;
+import team492.RobotInfo.Position;
 import trclib.TrcRobot;
 
 public class FrcAuto implements TrcRobot.RobotMode
@@ -44,14 +45,6 @@ public class FrcAuto implements TrcRobot.RobotMode
         TURN_DEGREES,
         DO_NOTHING
     } // enum AutoStrategy
-
-    public static enum StartPosition
-    {
-        // Different choices for start positions
-        LEFT_START_POS,
-        MID_START_POS,
-        RIGHT_START_POS
-    } // enum StartPosition
 
     public static enum YesOrNo
     {
@@ -74,19 +67,18 @@ public class FrcAuto implements TrcRobot.RobotMode
     // Menus.
     //
     private FrcChoiceMenu<AutoStrategy> autoStrategyMenu;
-    private FrcChoiceMenu<StartPosition> startPositionMenu;
+    private FrcChoiceMenu<Position> startPositionMenu;
     private FrcChoiceMenu<YesOrNo> fastDeliveryMenu;
     private FrcChoiceMenu<YesOrNo> getSecondCubeMenu;
     private FrcChoiceMenu<Lane> laneMenu;
 
     private AutoStrategy autoStrategy;
-    private StartPosition startPosition;
+    private Position startPosition;
     private boolean fastDelivery;
     private boolean getSecondCube;
     private Lane lane;
     private double delay;
-
-    private double robotStartPosition;
+    
     private double forwardDriveDistance;
 
     private TrcRobot.RobotCommand autoCommand;
@@ -115,9 +107,9 @@ public class FrcAuto implements TrcRobot.RobotMode
         autoStrategyMenu.addChoice("Turn Degrees", AutoStrategy.TURN_DEGREES, false, false);
         autoStrategyMenu.addChoice("Do Nothing", AutoStrategy.DO_NOTHING, false, true);
 
-        startPositionMenu.addChoice("Left Side Start", StartPosition.LEFT_START_POS, false, false);
-        startPositionMenu.addChoice("Middle Start", StartPosition.MID_START_POS, true, false);
-        startPositionMenu.addChoice("Right Side Start", StartPosition.RIGHT_START_POS, false, true);
+        startPositionMenu.addChoice("Left Side Start", Position.LEFT_POS, false, false);
+        startPositionMenu.addChoice("Middle Start", Position.MID_POS, true, false);
+        startPositionMenu.addChoice("Right Side Start", Position.RIGHT_POS, false, true);
 
         fastDeliveryMenu.addChoice("Yes", YesOrNo.YES, true, false);
         fastDeliveryMenu.addChoice("No", YesOrNo.NO, false, true);
@@ -158,18 +150,6 @@ public class FrcAuto implements TrcRobot.RobotMode
         autoStrategy = autoStrategyMenu.getCurrentChoiceObject();
 
         startPosition = startPositionMenu.getCurrentChoiceObject();
-        switch (startPosition)
-        {
-            case LEFT_START_POS:
-                robotStartPosition = RobotInfo.LEFT_START_POS;
-                break;
-            case MID_START_POS:
-                robotStartPosition = RobotInfo.MID_START_POS;
-                break;
-            case RIGHT_START_POS:
-                robotStartPosition = RobotInfo.RIGHT_START_POS;
-                break;
-        }
 
         fastDelivery = fastDeliveryMenu.getCurrentChoiceObject() == YesOrNo.YES;
         getSecondCube = (getSecondCubeMenu.getCurrentChoiceObject() == YesOrNo.YES);
@@ -200,11 +180,11 @@ public class FrcAuto implements TrcRobot.RobotMode
         {
             case AUTO_SWITCH:
                 autoCommand = new CmdAutoSwitch(
-                    robot, delay, forwardDriveDistance, robotStartPosition, fastDelivery, getSecondCube);
+                    robot, delay, forwardDriveDistance, startPosition, fastDelivery, getSecondCube);
                 break;
 
             case AUTO_SCALE:
-                autoCommand = new CmdAutoScale(robot, delay, robotStartPosition, forwardDriveDistance);
+                autoCommand = new CmdAutoScale(robot, delay, startPosition, forwardDriveDistance);
                 break;
 
             case X_TIMED_DRIVE:

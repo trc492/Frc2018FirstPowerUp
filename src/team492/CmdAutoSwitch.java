@@ -23,6 +23,7 @@
 package team492;
 
 import hallib.HalDashboard;
+import team492.RobotInfo.Position;
 import trclib.TrcAnalogInput;
 import trclib.TrcAnalogTrigger;
 import trclib.TrcEvent;
@@ -90,14 +91,14 @@ class CmdAutoSwitch implements TrcRobot.RobotCommand
     private Robot robot;
     private double delay;
     private double forwardDistance;
-    private double startPosition;
+    private Position startPosition;
     private boolean flipInFlight = false;
     private boolean fastDeliveryFromCenter = false;
     private boolean getSecondCube;
 
     private boolean rightSwitch;
     private boolean rightScale;
-    private double switchLocation;
+    private Position switchLocation;
 
     private TrcEvent event;
     private TrcTimer timer;
@@ -113,7 +114,7 @@ class CmdAutoSwitch implements TrcRobot.RobotCommand
     private Double visionTarget;
     private double sonarDistance;
 
-    CmdAutoSwitch(Robot robot, double delay, double forwardDistance, double startPosition, boolean fastDelivery, boolean getSecondCube)
+    CmdAutoSwitch(Robot robot, double delay, double forwardDistance, Position startPosition, boolean fastDelivery, boolean getSecondCube)
     {
         this.robot = robot;
         this.delay = delay;
@@ -124,7 +125,7 @@ class CmdAutoSwitch implements TrcRobot.RobotCommand
         this.startPosition = startPosition;
         robot.gyroTurnPidCtrl.setTargetTolerance(4.0);
         robot.encoderYPidCtrl.setTargetTolerance(3.0);
-        if (startPosition == 0.0)
+        if (startPosition == Position.MID_POS)
         {
             // when starting in the center with fast delivery, the robot is facing north.
             this.fastDeliveryFromCenter = fastDelivery;
@@ -144,7 +145,7 @@ class CmdAutoSwitch implements TrcRobot.RobotCommand
 
         this.rightSwitch = robot.gameSpecificMessage.charAt(0) == 'R';
         this.rightScale = robot.gameSpecificMessage.charAt(1) == 'R';
-        this.switchLocation = rightSwitch? RobotInfo.RIGHT_SWITCH_LOCATION: RobotInfo.LEFT_SWITCH_LOCATION;
+        switchLocation = rightSwitch?Position.RIGHT_POS:Position.LEFT_POS;
 
         event = new TrcEvent(moduleName);
         timer = new TrcTimer(moduleName);
@@ -252,7 +253,7 @@ class CmdAutoSwitch implements TrcRobot.RobotCommand
                         break;
 
                     case TURN_TO_END_OF_SWITCH:
-                    	robot.cubePickup.stopPickup();
+                        robot.cubePickup.stopPickup();
                         xDistance = yDistance = 0.0;
                         robot.targetHeading = rightSwitch? DRIVE_HEADING_EAST: DRIVE_HEADING_WEST;
                         robot.pidDrive.setTarget(xDistance, yDistance, robot.targetHeading, false, event, 0.0);
@@ -427,7 +428,7 @@ class CmdAutoSwitch implements TrcRobot.RobotCommand
                             robot.leftSonarArray.startRanging(true);
                         }
                         xDistance = 0.0;
-                        yDistance = Math.abs(switchLocation - startPosition) - RobotInfo.OPPOSITE_SWITCH_OVERSHOOT;
+                        yDistance = 2.0*RobotInfo.RIGHT_SWITCH_LOCATION - RobotInfo.OPPOSITE_SWITCH_OVERSHOOT;
                         robot.pidDrive.setTarget(xDistance, yDistance, robot.targetHeading, false, event, 0.0);
                         sm.waitForSingleEvent(event, State.STRAFE_TO_SWITCH);
                         break;
@@ -626,7 +627,7 @@ class CmdAutoSwitch implements TrcRobot.RobotCommand
                     case DRIVE_TO_SECOND_TARGET:
                         xDistance = 0;
                         yDistance =
-                            RobotInfo.SCALE_FRONT_POSITION + (RobotInfo.RIGHT_START_POS - cubeStrafeDistance);
+                            RobotInfo.SCALE_FRONT_POSITION + (RobotInfo.RIGHT_SWITCH_LOCATION - cubeStrafeDistance);
                         robot.tracer.traceInfo(funcName, "cubeStrafeDistance=%.1f driveAcrossFieldDistance=%.1f",cubeStrafeDistance, yDistance);
                         robot.pidDrive.setTarget(xDistance, yDistance, robot.targetHeading, false, event, 0.0);
                         sm.waitForSingleEvent(event, State.TURN_ROBOT);

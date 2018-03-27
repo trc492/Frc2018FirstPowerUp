@@ -283,7 +283,6 @@ public class RobotInfo
     public static final double SCALE_TO_WALL_DISTANCE           = 71.57;
     public static final double ROBOT_TO_SCALE_DISTANCE          = 36.0; //30.0
     // CodeReview: This is duplicating FWD_DISTANCE_3, please use one or the other or alias them.
-    public static final double ALLIANCE_WALL_TO_LANE_3_DISTANCE = 240;
     public static final double ALLIANCE_WALL_TO_SCALE_DISTANCE  = 324.0;
     public static final double DRIVE_ACROSS_FIELD_DISTANCE      = 220.0;//SWITCH_FENCE_WIDTH + SWITCH_TO_WALL_DISTANCE;
     public static final double CUBE_PICKUP_DROP_POWER           = 1.0;
@@ -294,9 +293,10 @@ public class RobotInfo
     //
     public static final double FWD_DISTANCE_1                   = 10.0;
     public static final double FWD_DISTANCE_2                   = 60.0;
-    public static final double FWD_DISTANCE_3                   = 236.0;
-    public static final double LEFT_START_POS                   = LEFT_SWITCH_LOCATION;   //CodeReview: should this be slightly different from LEFT_SWITCH_LOCATION???
-    public static final double MID_START_POS                    = 0.0;
-    public static final double RIGHT_START_POS                  = RIGHT_SWITCH_LOCATION;    //CodeReview: should this be slightly different from RIGHT_SWITCH_LOCATION???
+    public static final double FWD_DISTANCE_3                   = 238.0;
+    public static enum Position {LEFT_POS, MID_POS, RIGHT_POS};
+    public static final Position LEFT_START_POS                 = Position.LEFT_POS;
+    public static final Position MID_START_POS                  = Position.MID_POS;
+    public static final Position RIGHT_START_POS                = Position.RIGHT_POS;
 
 }   // class RobotInfo
