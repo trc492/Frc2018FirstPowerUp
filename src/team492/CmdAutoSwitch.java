@@ -252,6 +252,7 @@ class CmdAutoSwitch implements TrcRobot.RobotCommand
                         break;
 
                     case TURN_TO_END_OF_SWITCH:
+                    	robot.cubePickup.stopPickup();
                         xDistance = yDistance = 0.0;
                         robot.targetHeading = rightSwitch? DRIVE_HEADING_EAST: DRIVE_HEADING_WEST;
                         robot.pidDrive.setTarget(xDistance, yDistance, robot.targetHeading, false, event, 0.0);
@@ -675,6 +676,7 @@ class CmdAutoSwitch implements TrcRobot.RobotCommand
                         //
                         // We are done.
                         //
+                    	robot.cubePickup.stopPickup();
                         robot.elevator.setPosition(RobotInfo.ELEVATOR_MIN_HEIGHT);
                         done = true;
                         sm.stop();
