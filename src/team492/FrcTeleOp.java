@@ -23,6 +23,7 @@
 package team492;
 
 import frclib.FrcJoystick;
+import hallib.HalDashboard;
 import trclib.TrcRobot;
 
 public class FrcTeleOp implements TrcRobot.RobotMode
@@ -71,6 +72,9 @@ public class FrcTeleOp implements TrcRobot.RobotMode
 
         robot.operatorStick.setButtonHandler(this::operatorStickButtonEvent);
         robot.operatorStick.setYInverted(false);
+        
+        robot.tempGrabberHoldPower = HalDashboard.getNumber("Test/Grabber Hold Power", RobotInfo.PICKUP_HOLD_CUBE_POWER);
+        
     } // startMode
 
     @Override

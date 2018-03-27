@@ -201,6 +201,8 @@ public class Robot extends FrcRobotBase
     public double tuneKi;
     public double tuneKd;
     public double tuneKf;
+    
+    public double tempGrabberHoldPower = RobotInfo.PICKUP_HOLD_CUBE_POWER;
 
     /**
      * Constructor.
