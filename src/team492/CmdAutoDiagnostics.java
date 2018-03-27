@@ -82,6 +82,7 @@ public class CmdAutoDiagnostics implements TrcRobot.RobotCommand
         return motorPositions;
     }
     
+    // CodeReview: don't really need this. Each motor has a name already. Just call motor.toString().
     private String getMotorName(int motorIndex, int numMotors)
     {
         String motorName = null;
@@ -255,6 +256,7 @@ public class CmdAutoDiagnostics implements TrcRobot.RobotCommand
                     {
                         robot.cubePickup.deployPickup();
                     }
+                    // CodeReview: BTW, you can check the grabber current to make sure it's spinning.
                     robot.cubePickup.setPickupPower(1.0);
                     timer.set(GRABBER_DELAY, event);
                     sm.waitForSingleEvent(event, State.TOGGLE_GRABBER_AGAIN);
@@ -276,6 +278,7 @@ public class CmdAutoDiagnostics implements TrcRobot.RobotCommand
                     {
                         robot.cubePickup.deployPickup();
                     }
+                    // CodeReview: BTW, you can check the grabber current to make sure it's spinning.
                     robot.cubePickup.dropCube(1.0);
                     timer.set(GRABBER_DELAY, event);
                     sm.waitForSingleEvent(event, State.DONE);
