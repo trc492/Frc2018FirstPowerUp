@@ -153,15 +153,14 @@ public class CmdAutoSideSwitch implements TrcRobot.RobotCommand
                         //
                         // Do delay if any.
                         //
-                        nextState = State.DONE; //CodeReview: this autonomous is doing nothing?!
                         if (delay == 0.0)
                         {
-                            sm.setState(nextState);
+                            sm.setState(State.DRIVE_TO_SWITCH);
                         }
                         else
                         {
                             timer.set(delay, event);
-                            sm.waitForSingleEvent(event, nextState);
+                            sm.waitForSingleEvent(event, State.DRIVE_TO_SWITCH);
                         }
                         break;
 
