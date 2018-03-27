@@ -206,6 +206,7 @@ public class CmdAutoSideSwitch implements TrcRobot.RobotCommand
                     	break;
                     	
                     case TURN_SOUTH:
+                    	robot.cubePickup.stopPickup();
                     	xDistance = yDistance = 0.0;
                     	robot.targetHeading = SOUTH_HEADING;
                     	robot.pidDrive.setTarget(xDistance, yDistance, robot.targetHeading, false, event);
@@ -315,12 +316,21 @@ public class CmdAutoSideSwitch implements TrcRobot.RobotCommand
                     	break;
 
                     case BACKUP_WITH_CUBE:
+                    	robot.cubePickup.stopPickup();
                         robot.encoderYPidCtrl.setOutputLimit(yPowerLimit);
                         xDistance = 0.0;
                         yDistance = robot.driveBase.getYPosition() - yStart;
                         robot.pidDrive.setTarget(xDistance, -yDistance, robot.targetHeading, false, event, 0.0);
-                        robot.elevator.setPosition(RobotInfo.ELEVATOR_CRUISE_HEIGHT);
-                        sm.waitForSingleEvent(event, State.REPOSITION_TURN);
+                        if(additionalSwitchCube)
+                        {
+                        	sm.waitForSingleEvent(event, State.START_STRAFE);
+                        	robot.elevator.setPosition(RobotInfo.ELEVATOR_MIN_HEIGHT);
+                        }
+                        else
+                        {
+                            robot.elevator.setPosition(RobotInfo.ELEVATOR_CRUISE_HEIGHT);
+                            sm.waitForSingleEvent(event, State.REPOSITION_TURN);
+                        }
                         break;
 
                     case REPOSITION_TURN:
@@ -357,6 +367,7 @@ public class CmdAutoSideSwitch implements TrcRobot.RobotCommand
                         break;
                         
                     case BACK_UP_A_BIT:
+                    	robot.cubePickup.stopPickup();
                         xDistance = 0.0;
                         yDistance = -15.0;
                         robot.cubePickup.stopPickup();
