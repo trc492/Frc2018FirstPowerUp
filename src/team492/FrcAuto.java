@@ -36,6 +36,7 @@ public class FrcAuto implements TrcRobot.RobotMode
     public static enum AutoStrategy
     {
         // Different choices for autonomous
+    	AUTO_SIDE,
         AUTO_SWITCH,
         AUTO_SCALE,
         X_TIMED_DRIVE,
@@ -60,6 +61,12 @@ public class FrcAuto implements TrcRobot.RobotMode
         LANE3,
         CUSTOM
     } // enum Lane
+    
+    public static enum ScaleOrSwitch
+    {
+        SCALE,
+        SWITCH
+    }
 
     private Robot robot;
 
@@ -71,6 +78,7 @@ public class FrcAuto implements TrcRobot.RobotMode
     private FrcChoiceMenu<YesOrNo> fastDeliveryMenu;
     private FrcChoiceMenu<YesOrNo> getSecondCubeMenu;
     private FrcChoiceMenu<Lane> laneMenu;
+    private FrcChoiceMenu<ScaleOrSwitch> preferenceMenu;
 
     private AutoStrategy autoStrategy;
     private Position startPosition;
@@ -94,11 +102,13 @@ public class FrcAuto implements TrcRobot.RobotMode
         fastDeliveryMenu = new FrcChoiceMenu<>("Auto/FastDelivery");
         getSecondCubeMenu = new FrcChoiceMenu<>("Auto/GetSecondCube");
         laneMenu = new FrcChoiceMenu<>("Auto/Lanes");
+        preferenceMenu = new FrcChoiceMenu<>("Auto/ScaleOrSwitch");
 
         //
         // Populate Autonomous Mode menus.
         //
-        autoStrategyMenu.addChoice("Auto Switch", AutoStrategy.AUTO_SWITCH, true, false);
+        autoStrategyMenu.addChoice("Auto Side", AutoStrategy.AUTO_SIDE, true, false);
+        autoStrategyMenu.addChoice("Auto Switch", AutoStrategy.AUTO_SWITCH, false, false);
         autoStrategyMenu.addChoice("Auto Scale", AutoStrategy.AUTO_SCALE, false, false);
         autoStrategyMenu.addChoice("X Timed Drive", AutoStrategy.X_TIMED_DRIVE, false, false);
         autoStrategyMenu.addChoice("Y Timed Drive", AutoStrategy.Y_TIMED_DRIVE, false, false);
@@ -121,6 +131,9 @@ public class FrcAuto implements TrcRobot.RobotMode
         laneMenu.addChoice("Lane 2", Lane.LANE2, true, false);
         laneMenu.addChoice("Lane 3", Lane.LANE3, false, false);
         laneMenu.addChoice("Custom Distance", Lane.CUSTOM, false, true);
+        
+        preferenceMenu.addChoice("Switch", ScaleOrSwitch.SWITCH, true, false);
+        preferenceMenu.addChoice("Scale", ScaleOrSwitch.SCALE, false, true);
     } // FrcAuto
 
     //
@@ -178,6 +191,40 @@ public class FrcAuto implements TrcRobot.RobotMode
 
         switch (autoStrategy)
         {
+            case AUTO_SIDE:
+                if(startPosition != Position.MID_POS)
+                {
+                    boolean switchRight = robot.gameSpecificMessage.charAt(0) == 'R';
+                    boolean scaleRight = robot.gameSpecificMessage.charAt(1) == 'R';
+                    boolean startRight = startPosition == Position.RIGHT_POS;
+                    ScaleOrSwitch preference = preferenceMenu.getCurrentChoiceObject();
+                    if(startRight == scaleRight && scaleRight == switchRight)
+                    {
+                        switch(preference)
+                        {
+                            case SWITCH:
+                                autoCommand = new CmdAutoSideSwitch(robot, delay, getSecondCube);
+                                break;
+                            case SCALE:
+                                autoCommand = new CmdAutoScale(robot, delay, startPosition, forwardDriveDistance);
+                                break;
+                        }
+                    }
+                    else if(startRight == switchRight)
+                    {
+                        autoCommand = new CmdAutoSideSwitch(robot, delay, getSecondCube);
+                    }
+                    else if(startRight == scaleRight)
+                    {
+                        autoCommand = new CmdAutoScale(robot, delay, startPosition, forwardDriveDistance);
+                    }
+                    else
+                    {
+                        autoCommand = new CmdAutoMoveToCrossField(robot, delay, startPosition);
+                    }
+                    break;                    
+                }
+
             case AUTO_SWITCH:
                 autoCommand = new CmdAutoSwitch(
                     robot, delay, forwardDriveDistance, startPosition, fastDelivery, getSecondCube);
