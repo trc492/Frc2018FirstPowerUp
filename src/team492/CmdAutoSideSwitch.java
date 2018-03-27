@@ -1,0 +1,409 @@
+package team492;
+
+import trclib.TrcAnalogInput;
+import trclib.TrcAnalogTrigger;
+import trclib.TrcEvent;
+import trclib.TrcRobot;
+import trclib.TrcStateMachine;
+import trclib.TrcTimer;
+
+public class CmdAutoSideSwitch implements TrcRobot.RobotCommand
+{
+    private static final String moduleName = "CmdAutoSideSwitch";
+    
+    private static final double NORTH_HEADING               = 0.0;
+    private static final double SOUTH_HEADING               = 180.0;
+    private static final double EAST_HEADING                = 90.0;
+    private static final double WEST_HEADING                = -90.0;
+    
+    private static final double FAST_DELIVERY_Y_TOLERANCE   = 5.0;
+    private static final double DRIVE_PAST_SWITCH_DISTANCE  = 108.0;
+    private static final double GET_TO_SWITCH_DISTANCE      = 21.0;
+    
+    private double[] sonarTriggerPoints = {8.0, 32.0};
+    
+
+    
+    private static enum State
+    {
+        DO_DELAY,
+        DRIVE_TO_SWITCH,
+        TURN_AND_TOUCH_SWITCH,
+        DROP_CUBE,
+        TURN_SOUTH,
+        DRIVE_PAST_SWITCH,
+        START_STRAFE,
+        STRAFE_TO_SECOND_CUBE,
+        PRECISION_STRAFE,
+        START_SECOND_PICKUP,
+        PICKUP_SECOND_CUBE,
+        RAISE_ELEVATOR_FOR_SECOND_SWITCH,
+        DROP_SECOND_CUBE,
+        BACKUP_WITH_CUBE,
+        REPOSITION_TURN,
+        RAISE_ELEVATOR_FOR_SCALE,
+        APPROACH_FINAL_TARGET,
+        DEPOSIT_CUBE,
+        BACK_UP_A_BIT,
+        LOWER_ELEVATOR,
+        DONE
+    } // enum State
+
+    private Robot robot;
+    private double delay;
+    private boolean getSecondCube;
+
+    private boolean rightSwitch;
+    private boolean rightScale;
+    private boolean additionalSwitchCube;
+
+    private TrcEvent event;
+    private TrcTimer timer;
+    private TrcStateMachine<State> sm;
+    private TrcAnalogTrigger<TrcAnalogInput.DataType> leftSonarTrigger = null;
+    private TrcAnalogTrigger<TrcAnalogInput.DataType> rightSonarTrigger = null;
+    private TrcEvent sonarEvent;
+    private double xPowerLimit, yPowerLimit;
+
+    private double xStart, yStart;
+    private Double visionTarget;
+    private boolean hasDroppedSecondCube = false;
+
+    public CmdAutoSideSwitch(Robot robot, double delay, boolean getSecondCube)
+    {
+        this.robot = robot;
+        this.delay = delay;
+        this.getSecondCube = getSecondCube;
+
+        this.rightSwitch = robot.gameSpecificMessage.charAt(0) == 'R';
+        this.rightScale = robot.gameSpecificMessage.charAt(1) == 'R';
+        
+        this.additionalSwitchCube = rightSwitch == rightScale;
+
+        event = new TrcEvent(moduleName);
+        timer = new TrcTimer(moduleName);
+        sm = new TrcStateMachine<>(moduleName);
+        
+        leftSonarTrigger = new TrcAnalogTrigger<>(
+                "LeftSonarTrigger", robot.leftSonarSensor, 0, TrcAnalogInput.DataType.INPUT_DATA,
+                sonarTriggerPoints, this::sonarTriggerEvent);
+        rightSonarTrigger = new TrcAnalogTrigger<>(
+                "RightSonarTrigger", robot.rightSonarSensor, 0, TrcAnalogInput.DataType.INPUT_DATA,
+                sonarTriggerPoints, this::sonarTriggerEvent);
+        sonarEvent = new TrcEvent("SonarEvent");
+        
+        sm.start(State.DO_DELAY);
+
+        xPowerLimit = robot.encoderXPidCtrl.getOutputLimit();
+        yPowerLimit = robot.encoderYPidCtrl.getOutputLimit();
+
+        robot.tracer.traceInfo(moduleName,
+            "alliance=%s, gameSpecificMsg=%s, delay=%.3f",
+             robot.alliance, robot.gameSpecificMessage, delay);
+    } // CmdAutoSwitch
+
+    //
+    // Implements the TrcRobot.RobotCommand interface.
+    //
+
+    @Override
+    public boolean cmdPeriodic(double elapsedTime)
+    {
+        final String funcName = "AutoSideSwitchPeriodic";
+
+        boolean done = !sm.isEnabled();
+
+        if (!done)
+        {
+            State state = sm.checkReadyAndGetState();
+            //
+            // Print debug info.
+            //
+            robot.dashboard.displayPrintf(1, "State: %s", state != null? state: sm.getState());
+
+            if (state != null)
+            {
+                double xDistance, yDistance;
+                State nextState;
+                boolean traceState = true;
+
+                switch (state)
+                {
+                // TODO: need to make sure that all encoder power limits get set correctly in all states
+                    case DO_DELAY:
+                        //
+                        // Do delay if any.
+                        //
+                        nextState = State.DONE;
+                        if (delay == 0.0)
+                        {
+                            sm.setState(nextState);
+                        }
+                        else
+                        {
+                            timer.set(delay, event);
+                            sm.waitForSingleEvent(event, nextState);
+                        }
+                        break;
+ 
+                    case DRIVE_TO_SWITCH:
+                    	if(rightSwitch)
+                    	{
+                    		robot.leftSonarArray.startRanging(true);
+                            leftSonarTrigger.setTaskEnabled(true);
+                    	}
+                    	else
+                    	{
+                    		robot.rightSonarArray.startRanging(true);
+                            rightSonarTrigger.setTaskEnabled(true);
+                    	}
+                    	sm.addEvent(sonarEvent);
+                    	xDistance = 0.0;
+                        yDistance = RobotInfo.AUTO_DISTANCE_TO_SWITCH;
+                        robot.pidDrive.setTarget(xDistance, yDistance, robot.targetHeading, false, event, 0.0);
+                        sm.addEvent(event);
+                        robot.elevator.setPosition(RobotInfo.ELEVATOR_SWITCH_HEIGHT);
+                        sm.waitForEvents(State.TURN_AND_TOUCH_SWITCH);
+                    	break;
+                    	
+                    case TURN_AND_TOUCH_SWITCH:
+                    	robot.driveBase.setBrakeMode(false);
+                    	robot.encoderYPidCtrl.setNoOscillation(true);
+                    	robot.encoderYPidCtrl.setTargetTolerance(FAST_DELIVERY_Y_TOLERANCE);
+                    	if(rightSwitch)
+                    	{
+                        	robot.leftSonarArray.stopRanging();
+                        	leftSonarTrigger.setTaskEnabled(false);
+                        	robot.targetHeading = WEST_HEADING;
+                    	}
+                    	else
+                    	{
+                        	robot.rightSonarArray.stopRanging();
+                        	rightSonarTrigger.setTaskEnabled(false);
+                        	robot.targetHeading = EAST_HEADING;
+                    	}
+                    	xDistance = 0.0;
+                    	yDistance = GET_TO_SWITCH_DISTANCE;
+                    	robot.pidDrive.setTarget(xDistance, yDistance, robot.targetHeading, false, event, 0.0);
+                    	sm.waitForSingleEvent(event, State.DROP_CUBE);
+                    	break;
+                    	
+                    case DROP_CUBE:
+                    	robot.driveBase.setBrakeMode(true);
+                        robot.encoderYPidCtrl.setNoOscillation(false);
+                        robot.encoderYPidCtrl.setTargetTolerance(RobotInfo.ENCODER_Y_TOLERANCE);
+                        robot.cubePickup.openClaw();
+                        robot.cubePickup.dropCube(0.6);
+                        if (getSecondCube)
+                        {
+                            timer.set(0.3, event);
+                            sm.waitForSingleEvent(event, State.TURN_SOUTH);
+                        }
+                        else
+                        {
+                            sm.setState(State.DONE);
+                        }
+                    	break;
+                    	
+                    case TURN_SOUTH:
+                    	xDistance = yDistance = 0.0;
+                    	robot.targetHeading = SOUTH_HEADING;
+                    	robot.pidDrive.setTarget(xDistance, yDistance, robot.targetHeading, false, event);
+                        sm.waitForSingleEvent(event, State.DRIVE_PAST_SWITCH);
+                    	break;
+                    	
+                    case DRIVE_PAST_SWITCH:
+                    	xDistance = 0.0;
+                        yDistance = DRIVE_PAST_SWITCH_DISTANCE;
+                        robot.pidDrive.setTarget(xDistance, -yDistance, robot.targetHeading, false, event, 0.0);
+                        sm.waitForSingleEvent(event, State.START_STRAFE);
+                    	break;
+                    	
+                    case START_STRAFE:
+                        robot.cubePickup.openClaw();
+                        xStart = robot.driveBase.getXPosition();
+                        xDistance = rightSwitch?
+                            RobotInfo.STRAFE_TO_SECOND_CUBE_DISTANCE: -RobotInfo.STRAFE_TO_SECOND_CUBE_DISTANCE;
+                        robot.cmdStrafeUntilCube.start(xDistance);
+                        sm.setState(State.STRAFE_TO_SECOND_CUBE);
+                        xPowerLimit = robot.encoderXPidCtrl.getOutputLimit();
+                        robot.encoderXPidCtrl.setOutputLimit(0.7);
+                        break;
+
+                    case STRAFE_TO_SECOND_CUBE:
+                        if (robot.cmdStrafeUntilCube.cmdPeriodic(elapsedTime))
+                        {
+                            sm.setState(State.PRECISION_STRAFE);
+                        }
+                        traceState = false;
+                        break;
+
+                    case PRECISION_STRAFE:
+                        robot.leftFlipper.retract();
+                        robot.rightFlipper.retract();
+                        visionTarget = robot.getPixyTargetX();
+                        xStart = robot.driveBase.getXPosition();
+                        if (visionTarget != null && visionTarget > RobotInfo.FIND_CUBE_X_TOLERANCE)
+                        {
+                            //robot.encoderXPidCtrl.setOutputLimit(0.5);
+                            xDistance = visionTarget;
+                            yDistance = 0.0;
+                            robot.pidDrive.setTarget(xDistance, yDistance, robot.targetHeading, false, event, 0.0);
+                            sm.waitForSingleEvent(event, State.START_SECOND_PICKUP);
+                        }
+                        else
+                        {
+                            sm.setState(State.START_SECOND_PICKUP);
+                        }
+                        break;
+
+                    case START_SECOND_PICKUP:
+                        double xError = visionTarget != null?
+                            visionTarget - (robot.driveBase.getXPosition() - xStart): 0.0;
+                        robot.tracer.traceInfo(funcName, "visionStrafeError=%.1f", xError);
+                        visionTarget = robot.getPixyTargetX();
+                        if (visionTarget == null)
+                        {
+                            robot.tracer.traceInfo(funcName, "Vision Target not found");
+                        }
+                        else
+                        {
+                            robot.tracer.traceInfo(funcName, "visionTargetX=%.1f", robot.getPixyTargetX());
+                        }
+                        robot.encoderXPidCtrl.setOutputLimit(xPowerLimit);
+                        // Go forward to grab the cube or until it passes a certain distance.
+                        yStart = robot.driveBase.getYPosition();
+                        robot.cmdAutoCubePickup.start(xError);
+                        sm.setState(State.PICKUP_SECOND_CUBE);
+                        yPowerLimit = robot.encoderYPidCtrl.getOutputLimit();
+                        robot.encoderYPidCtrl.setOutputLimit(0.3);
+                        break;
+
+                    case PICKUP_SECOND_CUBE:
+                        if (robot.cmdAutoCubePickup.cmdPeriodic(elapsedTime))
+                        {
+                        	if(additionalSwitchCube)
+                        	{
+                        		sm.setState(State.RAISE_ELEVATOR_FOR_SECOND_SWITCH);
+                        	}
+                        	else
+                        	{
+                                sm.setState(State.BACKUP_WITH_CUBE);
+                        	}
+                        }
+                        traceState = false;
+                        break;
+                        
+                    case RAISE_ELEVATOR_FOR_SECOND_SWITCH:
+                    	// TODO: might need to back up from switch a little before rasing elevator
+                         robot.elevator.setPosition(RobotInfo.ELEVATOR_SWITCH_HEIGHT, event, 1.0);
+                         if(hasDroppedSecondCube) {
+                        	 sm.waitForSingleEvent(event, State.DONE);
+                         }
+                         else
+                         {
+                             sm.waitForSingleEvent(event, State.DROP_SECOND_CUBE);
+                         }
+                    	break;
+                    	
+                    case DROP_SECOND_CUBE:
+                    	robot.cubePickup.openClaw();
+                    	robot.cubePickup.dropCube(0.6);
+                    	hasDroppedSecondCube = true;
+                    	timer.set(0.3, event);
+                        sm.waitForSingleEvent(event, State.BACKUP_WITH_CUBE);
+                    	break;
+
+                    case BACKUP_WITH_CUBE:
+                        robot.encoderYPidCtrl.setOutputLimit(yPowerLimit);
+                        xDistance = 0.0;
+                        yDistance = robot.driveBase.getYPosition() - yStart;
+                        robot.pidDrive.setTarget(xDistance, -yDistance, robot.targetHeading, false, event, 0.0);
+                        robot.elevator.setPosition(RobotInfo.ELEVATOR_CRUISE_HEIGHT);
+                        sm.waitForSingleEvent(event, State.REPOSITION_TURN);
+                        break;
+
+                    case REPOSITION_TURN:
+                        xDistance = yDistance = 0.0;
+                        robot.targetHeading = NORTH_HEADING;
+                        nextState = State.RAISE_ELEVATOR_FOR_SCALE;
+                        robot.pidDrive.setTarget(xDistance, yDistance, robot.targetHeading, false, event);
+                        sm.waitForSingleEvent(event, nextState);
+                        break;
+
+                    case RAISE_ELEVATOR_FOR_SCALE:
+                        robot.tracer.traceInfo(funcName, "ElevatorStartHeight=%.1f", robot.elevator.getPosition());
+                        robot.elevator.setPosition(RobotInfo.ELEVATOR_SCALE_HIGH, event, 3.0);
+                        sm.waitForSingleEvent(event, State.APPROACH_FINAL_TARGET);
+                        break;
+
+                    case APPROACH_FINAL_TARGET:
+                        // Do another setPosition without event so it will hold position.
+                        robot.elevator.setPosition(RobotInfo.ELEVATOR_SCALE_HIGH);
+                        robot.tracer.traceInfo(funcName, "ElevatorStopHeight=%.1f", robot.elevator.getPosition());
+                        xDistance = 0.0;
+                        yDistance = RobotInfo.FINAL_FRONT_SCALE_APPROACH_DISTANCE;
+                        yPowerLimit = robot.encoderYPidCtrl.getOutputLimit();
+                        robot.encoderYPidCtrl.setOutputLimit(0.5);
+                        robot.pidDrive.setTarget(xDistance, yDistance, robot.targetHeading, false, event, 0.0);
+                        sm.waitForSingleEvent(event, State.DEPOSIT_CUBE);
+                        break;
+
+                    case DEPOSIT_CUBE:
+                        robot.encoderYPidCtrl.setOutputLimit(yPowerLimit);
+                        robot.cubePickup.dropCube(1.0);
+                        timer.set(0.3, event);
+                        sm.waitForSingleEvent(event, State.BACK_UP_A_BIT);
+                        break;
+                        
+                    case BACK_UP_A_BIT:
+                        xDistance = 0.0;
+                        yDistance = -15.0;
+                        robot.cubePickup.stopPickup();
+                        robot.pidDrive.setTarget(xDistance, yDistance, robot.targetHeading, false, event, 0.0);
+                        sm.waitForSingleEvent(event, State.DONE);
+                        
+                    case LOWER_ELEVATOR:
+                        robot.elevator.setPosition(RobotInfo.ELEVATOR_MIN_HEIGHT);
+                    	break;
+                                
+                    case DONE:
+                        //
+                        // We are done.
+                        //
+                    	robot.cubePickup.stopPickup();
+                        done = true;
+                        sm.stop();
+                        break;
+                }
+
+                if (traceState)
+                {
+                    robot.traceStateInfo(elapsedTime, state.toString());
+                }
+            }
+        }
+
+        return done;
+    } // cmdPeriodic
+
+    private void sonarTriggerEvent(int currZone, int prevZone, double zoneValue)
+    {
+        robot.tracer.traceInfo("SonarTrigger", "[%.3f] prevZone=%d, currZone=%d, distance=%.2f",
+            Robot.getModeElapsedTime(), prevZone, currZone, zoneValue);
+
+        if (Robot.getModeElapsedTime() <= 1.0) return;
+
+        if (prevZone == 1 && currZone == 0)
+        {
+            // Detected the switch fence.
+            sonarEvent.set(true);
+            if (robot.pidDrive.isActive())
+            {
+                robot.pidDrive.cancel();
+            }
+        }
+    }
+
+
+} // class CmdAutoSideSwitch
