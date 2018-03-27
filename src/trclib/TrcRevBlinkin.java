@@ -303,7 +303,7 @@ public abstract class TrcRevBlinkin
      * @param patternPriorities specifies the pattern priority list.
      * @return the pattern priority if found, -1 if not found.
      */
-    private int findPatternPriority(LEDPattern pattern, LEDPattern[] patternPriorities)
+    public int findPatternPriority(LEDPattern pattern, LEDPattern[] patternPriorities)
     {
         final String funcName = "findPatternPriority";
         int priority = -1;

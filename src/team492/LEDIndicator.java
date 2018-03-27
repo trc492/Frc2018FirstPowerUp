@@ -100,7 +100,14 @@ public class LEDIndicator
 
     public void setPattern(LEDPattern pattern)
     {
-        ledStrip.setPatternWithPriority(pattern, patternPriorities);
+        if (ledStrip.findPatternPriority(pattern, patternPriorities) != -1)
+        {
+            throw new IllegalArgumentException("Pattern is already reserved in the priority list.");
+        }
+        else
+        {
+            ledStrip.setPatternWithPriority(pattern, patternPriorities);
+        }
     }
 
     private void turnOffPattern(LEDPattern pattern)

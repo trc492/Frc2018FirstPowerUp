@@ -664,19 +664,19 @@ class CmdAutoSwitch implements TrcRobot.RobotCommand
                         timer.set(0.3, event);
                         sm.waitForSingleEvent(event, State.BACK_UP_A_BIT);
                         break;
-                        
+
                     case BACK_UP_A_BIT:
                         xDistance = 0.0;
                         yDistance = -15.0;
                         robot.cubePickup.stopPickup();
                         robot.pidDrive.setTarget(xDistance, yDistance, robot.targetHeading, false, event, 0.0);
                         sm.waitForSingleEvent(event, State.DONE);
-                        
+
                     case DONE:
                         //
                         // We are done.
                         //
-                    	robot.cubePickup.stopPickup();
+                        robot.cubePickup.stopPickup();
                         robot.elevator.setPosition(RobotInfo.ELEVATOR_MIN_HEIGHT);
                         done = true;
                         sm.stop();
