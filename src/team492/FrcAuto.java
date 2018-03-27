@@ -30,6 +30,7 @@ import frclib.FrcChoiceMenu;
 import hallib.HalDashboard;
 import team492.RobotInfo.Position;
 import trclib.TrcRobot;
+import trclib.TrcRobot.RunMode;
 
 public class FrcAuto implements TrcRobot.RobotMode
 {
@@ -145,7 +146,7 @@ public class FrcAuto implements TrcRobot.RobotMode
     public void startMode()
     {
         if (Robot.USE_TRACELOG)
-            robot.startTraceLog(null);
+            robot.startTraceLog(RunMode.AUTO_MODE);
 
         Date now = new Date();
         robot.tracer.traceInfo(Robot.programName, "%s[%.3f]: ***** Starting autonomous *****",

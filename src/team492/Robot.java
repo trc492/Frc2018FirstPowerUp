@@ -637,12 +637,17 @@ public class Robot extends FrcRobotBase
         }
     }   //announceIdling
 
-    public void startTraceLog(String prefix)
+    public void startTraceLog(RunMode runMode, String prefix)
     {
-        String filePrefix = prefix != null? prefix: eventName + "_" + matchType.toString();
+        String filePrefix = prefix != null? prefix: runMode.toString() + "_" + eventName + "_" + matchType.toString();
         if (prefix == null) filePrefix += String.format("%03d", matchNumber);
         tracer.openTraceLog("/home/lvuser/tracelog", filePrefix);
     }   //startTraceLog
+
+    public void startTraceLog(RunMode runMode)
+    {
+        startTraceLog(runMode, null);
+    }
 
     public void stopTraceLog()
     {

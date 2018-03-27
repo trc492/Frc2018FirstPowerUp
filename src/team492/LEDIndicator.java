@@ -31,6 +31,7 @@ public class LEDIndicator
     // LED strip pattern constants.
     //
     private static final LEDPattern LED_OFF                     = LEDPattern.SolidBlack;
+    private static final LEDPattern LED_DIAGNOSTIC_NORMAL       = LEDPattern.FixedLightChaseBlue;
     private static final LEDPattern LED_DIAGNOSTIC_ERROR        = LEDPattern.FixedLightChaseRed;
     private static final LEDPattern LED_CUBE_IN_VIEW            = LEDPattern.SolidBlue;
     private static final LEDPattern LED_CUBE_ALIGNED            = LEDPattern.SolidViolet;
@@ -40,6 +41,7 @@ public class LEDIndicator
 //  private static final LEDPattern LED_GYRO_ASSIST_ON          = LEDPattern.SolidRed;
     private static final LEDPattern[] patternPriorities =
     {
+            LED_DIAGNOSTIC_NORMAL,
             LED_DIAGNOSTIC_ERROR,
             LED_CUBE_IN_VIEW,
             LED_CUBE_ALIGNED,
@@ -95,7 +97,7 @@ public class LEDIndicator
 
     public void indicateNoDiagnosticError()
     {
-        turnOffPattern(LED_DIAGNOSTIC_ERROR);
+        ledStrip.setPattern(LED_DIAGNOSTIC_NORMAL);
     }
 
     public void setPattern(LEDPattern pattern)

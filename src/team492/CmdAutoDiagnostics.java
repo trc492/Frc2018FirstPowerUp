@@ -36,7 +36,7 @@ public class CmdAutoDiagnostics implements TrcRobot.RobotCommand
     private static final double FLIPPER_EXTEND_DELAY = 3.0;
     private static final double ELEVATOR_ERROR_THRESHOLD = 2.0; // 2 inches
     private static final double GRABBER_DELAY = 3.0;
-    
+
     private enum State
     {
         START,
@@ -49,27 +49,29 @@ public class CmdAutoDiagnostics implements TrcRobot.RobotCommand
         TOGGLE_GRABBER_AGAIN,
         DONE
     }
-    
+
     private Robot robot;
     private TrcStateMachine<State> sm;
     private TrcEvent event;
     private TrcTimer timer;
     private CmdTimedDrive timedDrive;
+    private boolean diagnosticsFailed = false;
+
     public CmdAutoDiagnostics(Robot robot)
     {
         this.robot = robot;
         event = new TrcEvent(moduleName);
         sm = new TrcStateMachine<>(moduleName);
         timer = new TrcTimer(moduleName);
-        
+
         sm.start(State.START);
     }
-    
+
     private CmdTimedDrive createTimedDrive(double xPower, double yPower)
     {
         return new CmdTimedDrive(robot, 0.0, DRIVE_TIME, xPower, yPower, 0.0);
     }
-    
+
     private double[] getMotorPositions()
     {
         double[] motorPositions = new double[]
@@ -81,7 +83,7 @@ public class CmdAutoDiagnostics implements TrcRobot.RobotCommand
             };
         return motorPositions;
     }
-    
+
     // CodeReview: don't really need this. Each motor has a name already. Just call motor.toString().
     private String getMotorName(int motorIndex, int numMotors)
     {
@@ -109,17 +111,18 @@ public class CmdAutoDiagnostics implements TrcRobot.RobotCommand
         }
         return motorName;
     }
-    
+
     private void checkMotorEncoders()
     {
         double[] motorPositions = getMotorPositions();
         double avgPos = 0;
+
         for(double pos:motorPositions)
         {
             avgPos += pos;
         }
         avgPos /= motorPositions.length;
-        
+
         for(int i = 0; i < motorPositions.length; i++)
         {
             String motorName = getMotorName(i, motorPositions.length);
@@ -129,7 +132,8 @@ public class CmdAutoDiagnostics implements TrcRobot.RobotCommand
                 robot.tracer.traceWarn(moduleName,
                     "Motor %s may not be working! AvgPos:%.2f, Pos:%.2f, Error:%.2f",
                     motorName, avgPos, motorPositions[i], error);
-            } else
+            }
+            else
             {
                 robot.tracer.traceInfo(moduleName,
                     "Motor %s seems to be working! AvgPos:%.2f, Pos:%.2f, Error:%.2f",
@@ -150,7 +154,7 @@ public class CmdAutoDiagnostics implements TrcRobot.RobotCommand
         // Print debug info.
         //
         robot.dashboard.displayPrintf(1, "State: %s", state != null? state: sm.getState());
-        
+
         double yPosition;
         if(state != null)
         {
@@ -158,16 +162,17 @@ public class CmdAutoDiagnostics implements TrcRobot.RobotCommand
             {
                 case START:
                     timedDrive = null;
+                    diagnosticsFailed = false;
                     sm.setState(State.SPIN_MOTORS_FORWARD);
                     break;
-                    
+
                 case SPIN_MOTORS_FORWARD:
                     if(timedDrive == null)
                     {
                         robot.driveBase.resetPosition();
                         timedDrive = createTimedDrive(0.0,0.7);
                     }
-                    
+
                     if(timedDrive.cmdPeriodic(elapsedTime))
                     {
                         checkMotorEncoders();
@@ -179,20 +184,21 @@ public class CmdAutoDiagnostics implements TrcRobot.RobotCommand
                         else
                         {
                             robot.tracer.traceInfo(moduleName, "Tried to spin forward! Motors are not okay! yPosition=%.2f", yPosition);
+                            diagnosticsFailed = true;
                         }
                         
                         timedDrive = null;
                         sm.setState(State.SPIN_MOTORS_BACKWARD);
                     }
                     break;
-                    
+
                 case SPIN_MOTORS_BACKWARD:
                     if(timedDrive == null)
                     {
                         robot.driveBase.resetPosition();
                         timedDrive = createTimedDrive(0.0,-0.7);
                     }
-                    
+
                     if(timedDrive.cmdPeriodic(elapsedTime))
                     {
                         checkMotorEncoders();
@@ -204,11 +210,12 @@ public class CmdAutoDiagnostics implements TrcRobot.RobotCommand
                         else
                         {
                             robot.tracer.traceInfo(moduleName, "Tried to spin backward! Motors are not okay, probably! yPosition=%.2f", yPosition);
+                            diagnosticsFailed = true;
                         }
                         sm.setState(State.TEST_FLIPPERS);
                     }
                     break;
-                    
+
                 case TEST_FLIPPERS:
                     robot.tracer.traceInfo(moduleName, "Attempting to extend flippers for %.1f seconds!", FLIPPER_EXTEND_DELAY);
                     robot.leftFlipper.timedExtend(FLIPPER_EXTEND_DELAY);
@@ -216,13 +223,13 @@ public class CmdAutoDiagnostics implements TrcRobot.RobotCommand
                     timer.set(FLIPPER_EXTEND_DELAY, event);
                     sm.waitForSingleEvent(event, State.RAISE_ELEVATOR);
                     break;
-                    
+
                 case RAISE_ELEVATOR:
                     robot.tracer.traceInfo(moduleName, "Attempting to raise elevator to %.1f inches!", RobotInfo.ELEVATOR_MAX_HEIGHT);
                     robot.elevator.setPosition(RobotInfo.ELEVATOR_MAX_HEIGHT, event, 0.0);
                     sm.waitForSingleEvent(event, State.DONE);
                     break;
-                    
+
                 case CHECK_ELEVATOR:
                     double elevatorHeight = robot.elevator.getPosition();
                     double error = RobotInfo.ELEVATOR_MAX_HEIGHT - elevatorHeight;
@@ -231,7 +238,9 @@ public class CmdAutoDiagnostics implements TrcRobot.RobotCommand
                         robot.tracer.traceWarn(moduleName,
                             "Elevator innacurate! Target: %.2f, Actual: %.2f, Error: %.2f",
                             RobotInfo.ELEVATOR_MAX_HEIGHT, elevatorHeight, error);
-                    } else
+                        diagnosticsFailed = true;
+                    }
+                    else
                     {
                         robot.tracer.traceInfo(moduleName, "Elevator working fine!, Target: %.2f, Actual: %.2f, Error: %.2f",
                             RobotInfo.ELEVATOR_MAX_HEIGHT, elevatorHeight, error);
@@ -239,20 +248,22 @@ public class CmdAutoDiagnostics implements TrcRobot.RobotCommand
                     robot.elevator.setPosition(RobotInfo.ELEVATOR_MIN_HEIGHT, event, 0.0);
                     sm.waitForSingleEvent(event, State.TOGGLE_GRABBER);
                     break;
-                    
+
                 case TOGGLE_GRABBER:
                     if(robot.cubePickup.isClawOpen())
                     {
                         robot.cubePickup.closeClaw();
-                    } else
+                    }
+                    else
                     {
                         robot.cubePickup.openClaw();
                     }
-                    
+
                     if(robot.cubePickup.isPickupDeployed())
                     {
                         robot.cubePickup.raisePickup();
-                    } else
+                    }
+                    else
                     {
                         robot.cubePickup.deployPickup();
                     }
@@ -261,20 +272,22 @@ public class CmdAutoDiagnostics implements TrcRobot.RobotCommand
                     timer.set(GRABBER_DELAY, event);
                     sm.waitForSingleEvent(event, State.TOGGLE_GRABBER_AGAIN);
                     break;
-                    
+
                 case TOGGLE_GRABBER_AGAIN:
                     if(robot.cubePickup.isClawOpen())
                     {
                         robot.cubePickup.closeClaw();
-                    } else
+                    }
+                    else
                     {
                         robot.cubePickup.openClaw();
                     }
-                    
+
                     if(robot.cubePickup.isPickupDeployed())
                     {
                         robot.cubePickup.raisePickup();
-                    } else
+                    }
+                    else
                     {
                         robot.cubePickup.deployPickup();
                     }
@@ -283,9 +296,13 @@ public class CmdAutoDiagnostics implements TrcRobot.RobotCommand
                     timer.set(GRABBER_DELAY, event);
                     sm.waitForSingleEvent(event, State.DONE);
                     break;
-                    
+
                 case DONE:
                     done = true;
+                    if (diagnosticsFailed)
+                        robot.ledIndicator.indicateDiagnosticError();
+                    else
+                        robot.ledIndicator.indicateNoDiagnosticError();
                     break;
             }
         }
