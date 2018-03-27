@@ -147,14 +147,15 @@ public class FrcAuto implements TrcRobot.RobotMode
             robot.startTraceLog(null);
 
         Date now = new Date();
-        robot.tracer.traceInfo(Robot.programName, "%s: ***** Starting autonomous *****", now.toString());
+        robot.tracer.traceInfo(Robot.programName, "%s[%.3f]: ***** Starting autonomous *****",
+            Robot.getModeElapsedTime(), now.toString());
         robot.tracer.traceInfo(Robot.programName, "%s_%s_%3d (%s%d) [FMSConnected=%b]", robot.eventName,
             robot.matchType.toString(), robot.matchNumber, robot.alliance.toString(), robot.location,
             robot.ds.isFMSAttached());
 
         robot.dashboard.clearDisplay();
 
-        robot.encoderYPidCtrl.setOutputLimit(0.6);
+        robot.encoderYPidCtrl.setOutputLimit(0.6);  //CodeReview: can we use RobotInfo.DRIVE_MAX_YPID_POWER?
         robot.encoderXPidCtrl.setOutputLimit(RobotInfo.DRIVE_MAX_XPID_POWER);
 
         //
@@ -165,7 +166,7 @@ public class FrcAuto implements TrcRobot.RobotMode
         startPosition = startPositionMenu.getCurrentChoiceObject();
 
         fastDelivery = fastDeliveryMenu.getCurrentChoiceObject() == YesOrNo.YES;
-        getSecondCube = (getSecondCubeMenu.getCurrentChoiceObject() == YesOrNo.YES);
+        getSecondCube = getSecondCubeMenu.getCurrentChoiceObject() == YesOrNo.YES;
 
         lane = laneMenu.getCurrentChoiceObject();
         switch (lane)

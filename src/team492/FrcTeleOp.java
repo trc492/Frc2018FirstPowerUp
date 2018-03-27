@@ -72,9 +72,9 @@ public class FrcTeleOp implements TrcRobot.RobotMode
 
         robot.operatorStick.setButtonHandler(this::operatorStickButtonEvent);
         robot.operatorStick.setYInverted(false);
-        
-        robot.tempGrabberHoldPower = HalDashboard.getNumber("Test/Grabber Hold Power", RobotInfo.PICKUP_HOLD_CUBE_POWER);
-        
+
+        robot.tempGrabberHoldPower = HalDashboard.getNumber("Test/GrabberHoldPower", RobotInfo.PICKUP_HOLD_CUBE_POWER);
+
     } // startMode
 
     @Override

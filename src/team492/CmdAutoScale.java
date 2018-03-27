@@ -86,6 +86,9 @@ public class CmdAutoScale implements TrcRobot.RobotCommand
      */
     public CmdAutoScale(Robot robot, double delay, Position startPosition, double forwardDriveDistance)
     {
+        robot.tracer.traceInfo(moduleName, "[%.3f] delay=%.1f, startPos=%s, fwdDistance=%.1f",
+            Robot.getModeElapsedTime(), delay, startPosition, forwardDriveDistance);
+
         this.robot = robot;
         this.delay = delay;
         this.startPosition = startPosition;

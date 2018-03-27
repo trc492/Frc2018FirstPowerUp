@@ -116,6 +116,10 @@ class CmdAutoSwitch implements TrcRobot.RobotCommand
 
     CmdAutoSwitch(Robot robot, double delay, double forwardDistance, Position startPosition, boolean fastDelivery, boolean getSecondCube)
     {
+        robot.tracer.traceInfo(
+            moduleName, "[%.3f] delay=%.1f, fwdDistance=%.1f, startPos=%s, fastDelivery=%b, getSecondCube=%b",
+            Robot.getModeElapsedTime(), delay, forwardDistance, startPosition, fastDelivery, getSecondCube);
+
         this.robot = robot;
         this.delay = delay;
         // if forwardDistance is -1, it means the driver picked "custom".

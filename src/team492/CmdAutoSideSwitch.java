@@ -93,6 +93,9 @@ public class CmdAutoSideSwitch implements TrcRobot.RobotCommand
 
     public CmdAutoSideSwitch(Robot robot, double delay, boolean getSecondCube)
     {
+        robot.tracer.traceInfo(moduleName, "[%.3f] delay=%.1f, getSecondCube=%b",
+            Robot.getModeElapsedTime(), delay, getSecondCube);
+
         this.robot = robot;
         this.delay = delay;
         this.getSecondCube = getSecondCube;
