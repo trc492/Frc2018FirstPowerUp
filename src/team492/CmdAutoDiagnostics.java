@@ -73,7 +73,7 @@ public class CmdAutoDiagnostics implements TrcRobot.RobotCommand
     {
         return new CmdTimedDrive(robot, 0.0, DRIVE_TIME, xPower, yPower, 0.0);
     }
-    
+
     private FrcCANTalon[] getMotors()
     {
         return new FrcCANTalon[] {
@@ -100,20 +100,19 @@ public class CmdAutoDiagnostics implements TrcRobot.RobotCommand
 
         for(int i = 0; i < motors.length; i++)
         {
-            
-            String motorName = motors[i].toString();
             double error = avgPos - motorPositions[i];
             if(Math.abs(error) >= ENCODER_Y_ERROR_THRESHOLD)
             {
                 robot.tracer.traceWarn(moduleName,
                     "Motor %s may not be working! AvgPos:%.2f, Pos:%.2f, Error:%.2f",
-                    motorName, avgPos, motorPositions[i], error);
+                    motors[i], avgPos, motorPositions[i], error);
+                diagnosticsFailed = true;
             }
             else
             {
                 robot.tracer.traceInfo(moduleName,
                     "Motor %s seems to be working! AvgPos:%.2f, Pos:%.2f, Error:%.2f",
-                    motorName, avgPos, motorPositions[i], error);
+                    motors[i], avgPos, motorPositions[i], error);
             }
         }
     }
@@ -259,7 +258,9 @@ public class CmdAutoDiagnostics implements TrcRobot.RobotCommand
                     {
                         robot.tracer.traceErr(moduleName, "Grabber motors in not working! Current=%.2f, Power=%.2f",
                             pickupCurrent, robot.cubePickup.getPickupPower());
+                        diagnosticsFailed = true;
                     }
+
                     if(robot.cubePickup.isClawOpen())
                     {
                         robot.cubePickup.closeClaw();
@@ -277,6 +278,7 @@ public class CmdAutoDiagnostics implements TrcRobot.RobotCommand
                     {
                         robot.cubePickup.deployPickup();
                     }
+
                     robot.cubePickup.dropCube(1.0);
                     timer.set(GRABBER_DELAY, event);
                     sm.waitForSingleEvent(event, State.DONE);
@@ -293,13 +295,17 @@ public class CmdAutoDiagnostics implements TrcRobot.RobotCommand
                     {
                         robot.tracer.traceErr(moduleName, "Grabber motors out not working! Current=%.2f, Power=%.2f",
                             pickupCurrent, robot.cubePickup.getPickupPower());
+                        diagnosticsFailed = true;
                     }
+
                     robot.cubePickup.stopPickup();
-                    done = true;
+
                     if (diagnosticsFailed)
                         robot.ledIndicator.indicateDiagnosticError();
                     else
                         robot.ledIndicator.indicateNoDiagnosticError();
+
+                    done = true;
                     break;
             }
         }
