@@ -212,8 +212,8 @@ public class RobotInfo
     
     public static final double ELEVATOR_CRUISE_HEIGHT           = 35.0;
 
-    public static final double ELEVATOR_FLOOR_PICKUP_HEIGHT     = ELEVATOR_MIN_HEIGHT;  // Lowest point on elevator
-    public static final double ELEVATOR_OFF_GROUND              = ELEVATOR_MIN_HEIGHT + 8.0; // 16 in
+    public static final double ELEVATOR_FLOOR_PICKUP_HEIGHT     = ELEVATOR_POSITION_OFFSET;  // Lowest point on elevator
+    public static final double ELEVATOR_OFF_GROUND              = ELEVATOR_FLOOR_PICKUP_HEIGHT + 8.0; // 16 in
     public static final double ELEVATOR_SWITCH_HEIGHT           = SWITCH_FENCE_HEIGHT + CUBE_HEIGHT + 5.0; // fence height + cube height + 5 in buffer
     public static final double ELEVATOR_SCALE_LOW               = 48.0 + CUBE_HEIGHT + 5.0; // 4ft + cube height + 5 in buffer
     public static final double ELEVATOR_SCALE_MED               = 60.0 + CUBE_HEIGHT + 5.0; // 5ft + cube height + 5 in buffer
