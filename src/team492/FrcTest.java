@@ -22,11 +22,14 @@
 
 package team492;
 
+import java.util.Map;
+
 import common.CmdPidDrive;
 import common.CmdTimedDrive;
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 import frclib.FrcChoiceMenu;
 import frclib.FrcJoystick;
+import hallib.HalDashboard;
 import team492.PixyVision.TargetInfo;
 import trclib.TrcEvent;
 import trclib.TrcRevBlinkin.LEDPattern;
@@ -397,6 +400,16 @@ public class FrcTest extends FrcTeleOp
             super.operatorStickButtonEvent(button, pressed);
         }
     }   //operatorStickButtonEvent
+    
+    private void updateDiagnostics()
+    {
+        robot.diagnostics.doPeriodicTests();
+        Map<String,Boolean> testResults = robot.diagnostics.getDiagnosticResults();
+        for(String testName:testResults.keySet())
+        {
+            HalDashboard.putBoolean("Diagnostics/" + testName, testResults.get(testName));
+        }
+    }
 
     /**
      * This method reads all sensors and prints out their values. This is a very
@@ -437,6 +450,7 @@ public class FrcTest extends FrcTeleOp
         robot.dashboard.displayPrintf(7, "Elevator: pos=%.1f,limitSwitches=%b,%b",
             robot.elevator.getPosition(), robot.elevator.elevatorMotor.isLowerLimitSwitchActive(),
             robot.elevator.elevatorMotor.isUpperLimitSwitchActive());
+        updateDiagnostics();
     } // doSensorsTest
 
     /**

@@ -1,7 +1,9 @@
 package team492.diagnostics;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import edu.wpi.first.wpilibj.DriverStation;
 import team492.Robot;
@@ -57,24 +59,34 @@ public class OnBoardDiagnostics
 
         tests.add(new DigitalSensorUnchangedTest(robot.cubePickup::cubeInProximity, "grabber cube proximity sensor"));
 
-        tests.add(new ElevatorPositionUnchangedTest(robot.elevator));
+        tests.add(new ElevatorPositionUnchangedTest("Elevator position", robot.elevator));
 
-        tests.add(new PneumaticsNotPressurizingTest(robot));
+        tests.add(new PneumaticsNotPressurizingTest("Pneumatics", robot));
 
         if (robot.pixy != null)
         {
-            tests.add(new PixyVisionTaskTerminatedTest(robot.pixy));
+            tests.add(new PixyVisionTaskTerminatedTest("Pixy", robot.pixy));
         }
 
         if (robot.gyro != null)
         {
-            tests.add(new GyroNotConnectedTest(robot.gyro));
+            tests.add(new GyroNotConnectedTest("Gyro", robot.gyro));
         }
     }
 
     public void doPeriodicTests()
     {
         tests.forEach(DiagnosticsTest::test);
+    }
+    
+    public Map<String,Boolean> getDiagnosticResults()
+    {
+        Map<String,Boolean> map = new HashMap<>();
+        for(DiagnosticsTest test:tests)
+        {
+            map.put(test.getName(), !test.getResult().faultDetected());
+        }
+        return map;
     }
 
     public void printDiagnostics()

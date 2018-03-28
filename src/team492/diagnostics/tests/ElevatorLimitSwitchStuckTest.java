@@ -6,7 +6,7 @@ import team492.diagnostics.DiagnosticsTest;
 import java.util.function.Supplier;
 
 
-public class ElevatorLimitSwitchStuckTest implements DiagnosticsTest {
+public class ElevatorLimitSwitchStuckTest extends DiagnosticsTest {
 
     private static final double ELEVATOR_POSITION_CHANGE_THRESHOLD_INCHES = 2.0;
 
@@ -24,6 +24,7 @@ public class ElevatorLimitSwitchStuckTest implements DiagnosticsTest {
     private Double elevatorPosWhenLimitSwitchActivatedInches = null;
 
     public ElevatorLimitSwitchStuckTest(Elevator elevator, ElevatorLimitSwitch chosenLimitSwitchEnum) {
+        super(chosenLimitSwitchEnum.name() + " elevator");
         if (chosenLimitSwitchEnum == ElevatorLimitSwitch.LOWER) {
             this.chosenLimitSwitch = elevator.elevatorMotor::isLowerLimitSwitchActive;
         } else {

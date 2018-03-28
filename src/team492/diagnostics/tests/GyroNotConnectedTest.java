@@ -3,13 +3,14 @@ package team492.diagnostics.tests;
 import frclib.FrcAHRSGyro;
 import team492.diagnostics.DiagnosticsTest;
 
-public class GyroNotConnectedTest implements DiagnosticsTest{
+public class GyroNotConnectedTest extends DiagnosticsTest{
 	
 	private FrcAHRSGyro gyro;
 	
 	private boolean hasLostConnection = false;
 	
-	public GyroNotConnectedTest(FrcAHRSGyro gyro) {
+	public GyroNotConnectedTest(String name, FrcAHRSGyro gyro) {
+	    super(name);
 		this.gyro = gyro;
 	}
 

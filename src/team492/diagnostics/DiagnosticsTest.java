@@ -1,8 +1,26 @@
 package team492.diagnostics;
 
-public interface DiagnosticsTest {
-	public void test();
-	public TestResult getResult();
+public abstract class DiagnosticsTest {
+    
+    private String name;
+    public DiagnosticsTest(String name)
+    {
+        this.name = name;
+    }
+    
+    public String getName()
+    {
+        return name;
+    }
+    
+    @Override
+    public String toString()
+    {
+        return name;
+    }
+    
+	public abstract void test();
+	public abstract TestResult getResult();
 	
 	public static class TestResult {
 		private boolean fault;

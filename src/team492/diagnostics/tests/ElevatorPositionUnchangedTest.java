@@ -5,8 +5,8 @@ import team492.Elevator;
 public class ElevatorPositionUnchangedTest extends ExpectSensorChangeTest {
 	private static final int MIN_EXPECTED_MOVE_INCHES = 1;
 
-	public ElevatorPositionUnchangedTest(Elevator elevator) {
-		super(elevator::getPosition, MIN_EXPECTED_MOVE_INCHES); 
+	public ElevatorPositionUnchangedTest(String name, Elevator elevator) {
+		super(name, elevator::getPosition, MIN_EXPECTED_MOVE_INCHES); 
 	}
 
 	@Override

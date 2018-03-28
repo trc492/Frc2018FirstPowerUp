@@ -4,7 +4,7 @@ import java.util.function.Supplier;
 
 import team492.diagnostics.DiagnosticsTest;
 
-public abstract class ExpectSensorChangeTest implements DiagnosticsTest {
+public abstract class ExpectSensorChangeTest extends DiagnosticsTest {
 	
 	private final Supplier<Double> sensor;
 	private final double expectedMinAbsChange;
@@ -12,8 +12,9 @@ public abstract class ExpectSensorChangeTest implements DiagnosticsTest {
 	private boolean sensorWorking = false;
 	private double firstReading;
 	
-	public ExpectSensorChangeTest(Supplier<Double> sensor, double expectedMinAbsChange) 
+	public ExpectSensorChangeTest(String name, Supplier<Double> sensor, double expectedMinAbsChange) 
 	{
+	    super(name);
 		this.sensor = sensor;
 		this.expectedMinAbsChange = expectedMinAbsChange;
 		this.firstReading = sensor.get();
