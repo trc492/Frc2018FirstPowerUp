@@ -23,6 +23,7 @@
 package team492;
 
 import common.CmdTimedDrive;
+import frclib.FrcCANTalon;
 import trclib.TrcEvent;
 import trclib.TrcRobot;
 import trclib.TrcStateMachine;
@@ -32,10 +33,11 @@ public class CmdAutoDiagnostics implements TrcRobot.RobotCommand
 {
     private static final String moduleName = "CmdAutoDiagnostics";
     private static final double DRIVE_TIME = 5.0;
-    private static final double ENCODER_Y_ERROR_THRESHOLD = 2.0/RobotInfo.ENCODER_Y_INCHES_PER_COUNT; // 2 inches
+    private static final double ENCODER_Y_ERROR_THRESHOLD = 5.0/RobotInfo.ENCODER_Y_INCHES_PER_COUNT; // 5 inches
     private static final double FLIPPER_EXTEND_DELAY = 3.0;
     private static final double ELEVATOR_ERROR_THRESHOLD = 2.0; // 2 inches
     private static final double GRABBER_DELAY = 3.0;
+    private static final double GRABBER_CURRENT_THRESHOLD = 5.0;
 
     private enum State
     {
@@ -71,61 +73,35 @@ public class CmdAutoDiagnostics implements TrcRobot.RobotCommand
     {
         return new CmdTimedDrive(robot, 0.0, DRIVE_TIME, xPower, yPower, 0.0);
     }
-
-    private double[] getMotorPositions()
+    
+    private FrcCANTalon[] getMotors()
     {
-        double[] motorPositions = new double[]
-            {
-                    robot.leftFrontWheel.getPosition(),
-                    robot.rightFrontWheel.getPosition(),
-                    robot.leftRearWheel.getPosition(),
-                    robot.rightRearWheel.getPosition()
-            };
-        return motorPositions;
-    }
-
-    // CodeReview: don't really need this. Each motor has a name already. Just call motor.toString().
-    private String getMotorName(int motorIndex, int numMotors)
-    {
-        String motorName = null;
-        if(numMotors == 4)
-        {
-            switch(motorIndex)
-            {
-                case 0:
-                    motorName = "lf";
-                    break;
-
-                case 1:
-                    motorName = "rf";
-                    break;
-
-                case 2:
-                    motorName = "lr";
-                    break;
-
-                case 3:
-                    motorName = "rr";
-                    break;
-            }
-        }
-        return motorName;
+        return new FrcCANTalon[] {
+                robot.leftFrontWheel,
+                robot.rightFrontWheel,
+                robot.leftRearWheel,
+                robot.rightRearWheel
+        };
     }
 
     private void checkMotorEncoders()
     {
-        double[] motorPositions = getMotorPositions();
+        FrcCANTalon[] motors = getMotors();
+        double[] motorPositions = new double[motors.length];
         double avgPos = 0;
 
-        for(double pos:motorPositions)
+        for(int i = 0; i < motors.length; i++)
         {
+            double pos = motors[i].getPosition();
+            motorPositions[i] = pos;
             avgPos += pos;
         }
-        avgPos /= motorPositions.length;
+        avgPos /= (double)motors.length;
 
-        for(int i = 0; i < motorPositions.length; i++)
+        for(int i = 0; i < motors.length; i++)
         {
-            String motorName = getMotorName(i, motorPositions.length);
+            
+            String motorName = motors[i].toString();
             double error = avgPos - motorPositions[i];
             if(Math.abs(error) >= ENCODER_Y_ERROR_THRESHOLD)
             {
@@ -155,7 +131,7 @@ public class CmdAutoDiagnostics implements TrcRobot.RobotCommand
         //
         robot.dashboard.displayPrintf(1, "State: %s", state != null? state: sm.getState());
 
-        double yPosition;
+        double yPosition, pickupCurrent;
         if(state != null)
         {
             switch(state)
@@ -267,13 +243,23 @@ public class CmdAutoDiagnostics implements TrcRobot.RobotCommand
                     {
                         robot.cubePickup.deployPickup();
                     }
-                    // CodeReview: BTW, you can check the grabber current to make sure it's spinning.
                     robot.cubePickup.setPickupPower(1.0);
                     timer.set(GRABBER_DELAY, event);
                     sm.waitForSingleEvent(event, State.TOGGLE_GRABBER_AGAIN);
                     break;
 
                 case TOGGLE_GRABBER_AGAIN:
+                    pickupCurrent = robot.cubePickup.getPickupCurrent();
+                    if(pickupCurrent >= GRABBER_CURRENT_THRESHOLD)
+                    {
+                        robot.tracer.traceInfo(moduleName, "Grabber motors in working! Current=%.2f, Power=%.2f",
+                            pickupCurrent, robot.cubePickup.getPickupPower());
+                    }
+                    else
+                    {
+                        robot.tracer.traceErr(moduleName, "Grabber motors in not working! Current=%.2f, Power=%.2f",
+                            pickupCurrent, robot.cubePickup.getPickupPower());
+                    }
                     if(robot.cubePickup.isClawOpen())
                     {
                         robot.cubePickup.closeClaw();
@@ -291,13 +277,24 @@ public class CmdAutoDiagnostics implements TrcRobot.RobotCommand
                     {
                         robot.cubePickup.deployPickup();
                     }
-                    // CodeReview: BTW, you can check the grabber current to make sure it's spinning.
                     robot.cubePickup.dropCube(1.0);
                     timer.set(GRABBER_DELAY, event);
                     sm.waitForSingleEvent(event, State.DONE);
                     break;
 
                 case DONE:
+                    pickupCurrent = robot.cubePickup.getPickupCurrent();
+                    if(pickupCurrent >= GRABBER_CURRENT_THRESHOLD)
+                    {
+                        robot.tracer.traceInfo(moduleName, "Grabber motors out working! Current=%.2f, Power=%.2f",
+                            pickupCurrent, robot.cubePickup.getPickupPower());
+                    }
+                    else
+                    {
+                        robot.tracer.traceErr(moduleName, "Grabber motors out not working! Current=%.2f, Power=%.2f",
+                            pickupCurrent, robot.cubePickup.getPickupPower());
+                    }
+                    robot.cubePickup.stopPickup();
                     done = true;
                     if (diagnosticsFailed)
                         robot.ledIndicator.indicateDiagnosticError();
