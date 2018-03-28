@@ -200,10 +200,9 @@ public class CmdAutoDiagnostics implements TrcRobot.RobotCommand
                     break;
 
                 case RAISE_ELEVATOR:
-                    // CodeReview: should add a timeout. Also, why does this go to DONE afterwards?
                     robot.tracer.traceInfo(moduleName, "Attempting to raise elevator to %.1f inches!", RobotInfo.ELEVATOR_MAX_HEIGHT);
-                    robot.elevator.setPosition(RobotInfo.ELEVATOR_MAX_HEIGHT, event, 0.0);
-                    sm.waitForSingleEvent(event, State.DONE);
+                    robot.elevator.setPosition(RobotInfo.ELEVATOR_MAX_HEIGHT, event, 3.0);
+                    sm.waitForSingleEvent(event, State.CHECK_ELEVATOR);
                     break;
 
                 case CHECK_ELEVATOR:
@@ -222,7 +221,7 @@ public class CmdAutoDiagnostics implements TrcRobot.RobotCommand
                         robot.tracer.traceInfo(moduleName, "Elevator working fine!, Target: %.2f, Actual: %.2f, Error: %.2f",
                             RobotInfo.ELEVATOR_MAX_HEIGHT, elevatorHeight, error);
                     }
-                    robot.elevator.setPosition(RobotInfo.ELEVATOR_MIN_HEIGHT, event, 0.0);
+                    robot.elevator.setPosition(RobotInfo.ELEVATOR_MIN_HEIGHT, event, 3.0);
                     sm.waitForSingleEvent(event, State.TOGGLE_GRABBER);
                     break;
 
