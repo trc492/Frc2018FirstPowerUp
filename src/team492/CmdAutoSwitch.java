@@ -588,6 +588,7 @@ class CmdAutoSwitch implements TrcRobot.RobotCommand
                         robot.encoderXPidCtrl.setOutputLimit(xPowerLimit);
                         // Go forward to grab the cube or until it passes a certain distance.
                         yStart = robot.driveBase.getYPosition();
+                        // Precondition: elevator is at floor pickup height
                         robot.cmdAutoCubePickup.start(xError);
                         sm.setState(State.PICKUP_SECOND_CUBE);
                         yPowerLimit = robot.encoderYPidCtrl.getOutputLimit();

@@ -88,9 +88,15 @@ public class FrcTeleOp implements TrcRobot.RobotMode
     @Override
     public void runPeriodic(double elapsedTime)
     {
+        
+        double leftDriveX = robot.leftDriveStick.getXWithDeadband(true);
+        double leftDriveY = robot.leftDriveStick.getYWithDeadband(true);
+        double rightDriveX = robot.rightDriveStick.getXWithDeadband(true);
+        double rightDriveY = robot.rightDriveStick.getYWithDeadband(true);
         // Cancel auto assist if the driver does anything
-        if(robot.leftDriveStick.getXWithDeadband(true) != 0 || robot.leftDriveStick.getYWithDeadband(true) != 0)
+        if(leftDriveX != 0 || leftDriveY != 0 || rightDriveX != 0 || rightDriveY != 0)
         {
+            robot.tracer.traceInfo("FrcTeleOp", "[%.3f] Stopping all auto!", elapsedTime);
             robot.cancelAutoAssist();
         }
 
@@ -102,8 +108,8 @@ public class FrcTeleOp implements TrcRobot.RobotMode
             switch (driveMode)
             {
                 case TANK_MODE:
-                    double leftPower = robot.leftDriveStick.getYWithDeadband(true);
-                    double rightPower = robot.rightDriveStick.getYWithDeadband(true);
+                    double leftPower = leftDriveY;
+                    double rightPower = rightDriveY;
                     if (slowDriveOverride)
                     {
                         leftPower /= RobotInfo.DRIVE_SLOW_YSCALE;
@@ -113,7 +119,7 @@ public class FrcTeleOp implements TrcRobot.RobotMode
                     break;
 
                 case ARCADE_MODE:
-                    double drivePower = robot.rightDriveStick.getYWithDeadband(true);
+                    double drivePower = rightDriveY;
                     double turnPower = robot.rightDriveStick.getTwistWithDeadband(true);
                     if (slowDriveOverride)
                     {
@@ -124,8 +130,8 @@ public class FrcTeleOp implements TrcRobot.RobotMode
                     break;
 
                 case MECANUM_MODE:
-                    double x = robot.leftDriveStick.getXWithDeadband(true);
-                    double y = robot.rightDriveStick.getYWithDeadband(true);
+                    double x = leftDriveX;
+                    double y = rightDriveY;
                     double rot = robot.rightDriveStick.getTwistWithDeadband(true);
                     if (slowDriveOverride)
                     {
@@ -158,12 +164,15 @@ public class FrcTeleOp implements TrcRobot.RobotMode
     {
         if (robot.cmdAutoCubePickup.isEnabled())
         {
-            robot.tracer.tracePrintf("Activated: %b", robot.cmdAutoCubePickup.isEnabled());
+            robot.tracer.traceInfo("FrcTeleOp", "[%.3f] AutoCubePickup - Activated: %b",
+                elapsedTime, robot.cmdAutoCubePickup.isEnabled());
             robot.cmdAutoCubePickup.cmdPeriodic(elapsedTime);
         }
 
         if(robot.cmdExchangeAlign.isEnabled())
         {
+            robot.tracer.traceInfo("FrcTeleOp", "[%.3f] ExchangeAlign - Activated: %b",
+                elapsedTime, robot.cmdExchangeAlign.isEnabled());
             robot.cmdExchangeAlign.cmdPeriodic(elapsedTime);
         }
     } // runContinuous

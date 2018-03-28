@@ -65,9 +65,9 @@ public class CmdCubePickup implements TrcRobot.RobotCommand
 
     public void start(double xError)
     {
-        this.xError = xError;
         if (!sm.isEnabled())
         {
+            this.xError = xError;
             sm.start(State.START);
         }
     }
@@ -105,8 +105,8 @@ public class CmdCubePickup implements TrcRobot.RobotCommand
                         // Deploy and open cube pickup
                         robot.cubePickup.deployPickup();
                         robot.cubePickup.openClaw();
-                        robot.elevator.setPosition(RobotInfo.ELEVATOR_FLOOR_PICKUP_HEIGHT, event, 0.0);
-                        sm.waitForSingleEvent(event, State.DRIVE);
+                        robot.elevator.setPosition(RobotInfo.ELEVATOR_FLOOR_PICKUP_HEIGHT);
+                        sm.setState(State.DRIVE);
                         break;
 
                     case DRIVE:
