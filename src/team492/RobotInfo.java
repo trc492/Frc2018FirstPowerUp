@@ -207,20 +207,19 @@ public class RobotInfo
     public static final double ELEVATOR_GRAVITY_COMPENSATION    = 0.0;      // was 0.08 before added counter-balance
     public static final double ELEVATOR_CAL_POWER               = 0.3;      // this too
     public static final double ELEVATOR_POSITION_OFFSET         = 8.0;
-    public static final double ELEVATOR_MIN_HEIGHT              = 6.0;
-    public static final double ELEVATOR_MAX_HEIGHT              = 82.0;     //need calibration
-    
-    public static final double ELEVATOR_CRUISE_HEIGHT           = 35.0;
+    public static final double ELEVATOR_PID_FLOOR               = 6.0;
+    public static final double ELEVATOR_PID_CEILING             = 82.0;     //need calibration
 
-    public static final double ELEVATOR_FLOOR_PICKUP_HEIGHT     = ELEVATOR_POSITION_OFFSET;  // Lowest point on elevator
-    public static final double ELEVATOR_OFF_GROUND              = ELEVATOR_FLOOR_PICKUP_HEIGHT + 8.0; // 16 in
+    public static final double ELEVATOR_MIN_HEIGHT              = ELEVATOR_POSITION_OFFSET;
+    public static final double ELEVATOR_MAX_HEIGHT              = ELEVATOR_PID_CEILING - 1.0;
+    public static final double ELEVATOR_FLOOR_PICKUP_HEIGHT     = ELEVATOR_MIN_HEIGHT;  // Lowest point on elevator
+    public static final double ELEVATOR_OFF_GROUND              = ELEVATOR_MIN_HEIGHT + 8.0; // 16 in
+    public static final double ELEVATOR_CRUISE_HEIGHT           = 35.0;
     public static final double ELEVATOR_SWITCH_HEIGHT           = SWITCH_FENCE_HEIGHT + CUBE_HEIGHT + 5.0; // fence height + cube height + 5 in buffer
     public static final double ELEVATOR_SCALE_LOW               = 48.0 + CUBE_HEIGHT + 5.0; // 4ft + cube height + 5 in buffer
     public static final double ELEVATOR_SCALE_MED               = 60.0 + CUBE_HEIGHT + 5.0; // 5ft + cube height + 5 in buffer
     public static final double ELEVATOR_SCALE_HIGH              = 72.0 + CUBE_HEIGHT + 5.0; // 6ft + cube height + 5 in buffer
-    
-    public static final double ELEVATOR_EXCHANGE_HEIGHT         = ELEVATOR_FLOOR_PICKUP_HEIGHT + 2.0;
-    
+    public static final double ELEVATOR_EXCHANGE_HEIGHT         = ELEVATOR_MIN_HEIGHT + 2.0;
     public static final double[] ELEVATOR_HEIGHTS = new double[] { ELEVATOR_OFF_GROUND,
                                                                    ELEVATOR_SWITCH_HEIGHT,
                                                                    ELEVATOR_SCALE_LOW,

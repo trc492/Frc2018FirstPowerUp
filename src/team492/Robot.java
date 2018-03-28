@@ -807,8 +807,8 @@ public class Robot extends FrcRobotBase
 
     public double constrainForcePercentageByElevatorHeight(double desiredForcePercentage)
     {
-        double heightPercentage = (elevator.getPosition()-RobotInfo.ELEVATOR_POSITION_OFFSET)
-            /(RobotInfo.ELEVATOR_MAX_HEIGHT-RobotInfo.ELEVATOR_POSITION_OFFSET);
+        double heightPercentage = (elevator.getPosition()-RobotInfo.ELEVATOR_MIN_HEIGHT)
+            /(RobotInfo.ELEVATOR_MAX_HEIGHT-RobotInfo.ELEVATOR_MIN_HEIGHT);
         double powerPercentage = 1.0 - (heightPercentage*0.85);
         return TrcUtil.clipRange(desiredForcePercentage, -powerPercentage, powerPercentage);
     }

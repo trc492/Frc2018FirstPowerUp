@@ -50,7 +50,7 @@ public class Elevator
             RobotInfo.ELEVATOR_TOLERANCE, this::getPosition);
         elevator = new TrcPidActuator("elevator", elevatorMotor,
             new FrcCANTalonLimitSwitch("elevatorLowerLimit", elevatorMotor, false), elevatorPidCtrl,
-            RobotInfo.ELEVATOR_MIN_HEIGHT, RobotInfo.ELEVATOR_MAX_HEIGHT, this::getGravityCompensation);
+            RobotInfo.ELEVATOR_PID_FLOOR, RobotInfo.ELEVATOR_PID_CEILING, this::getGravityCompensation);
         elevator.setPositionScale(RobotInfo.ELEVATOR_INCHES_PER_COUNT, RobotInfo.ELEVATOR_POSITION_OFFSET);
     }
 
@@ -75,13 +75,13 @@ public class Elevator
      */
     public void setPosition(double pos)
     {
-        pos = TrcUtil.clipRange(pos, RobotInfo.ELEVATOR_POSITION_OFFSET, RobotInfo.ELEVATOR_MAX_HEIGHT-1);
+        pos = TrcUtil.clipRange(pos, RobotInfo.ELEVATOR_MIN_HEIGHT, RobotInfo.ELEVATOR_MAX_HEIGHT);
         elevator.setTarget(pos, true);
     } // setPosition
 
     public void setPosition(double pos, TrcEvent event, double timeout)
     {
-        pos = TrcUtil.clipRange(pos, RobotInfo.ELEVATOR_POSITION_OFFSET, RobotInfo.ELEVATOR_MAX_HEIGHT-1);
+        pos = TrcUtil.clipRange(pos, RobotInfo.ELEVATOR_MIN_HEIGHT, RobotInfo.ELEVATOR_MAX_HEIGHT);
         elevator.setTarget(pos, event, timeout);
     }
 
