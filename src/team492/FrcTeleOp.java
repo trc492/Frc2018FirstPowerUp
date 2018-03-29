@@ -156,7 +156,7 @@ public class FrcTeleOp implements TrcRobot.RobotMode
 
         robot.updateDashboard();
         robot.announceSafety();
-        robot.diagnostics.doPeriodicTests();
+        robot.diagnostics.updateDiagnosticsAndDashboard();
     } // runPeriodic
 
     @Override

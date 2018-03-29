@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 import edu.wpi.first.wpilibj.DriverStation;
+import hallib.HalDashboard;
 import team492.Robot;
 import team492.diagnostics.DiagnosticsTest.TestResult;
 import team492.diagnostics.tests.DigitalSensorUnchangedTest;
@@ -87,6 +88,16 @@ public class OnBoardDiagnostics
             map.put(test.getName(), !test.getResult().faultDetected());
         }
         return map;
+    }
+    
+    public void updateDiagnosticsAndDashboard()
+    {
+        doPeriodicTests();
+        Map<String,Boolean> testResults = robot.diagnostics.getDiagnosticResults();
+        for(String testName:testResults.keySet())
+        {
+            HalDashboard.putBoolean("Diagnostics/" + testName, testResults.get(testName));
+        }
     }
 
     public void printDiagnostics()

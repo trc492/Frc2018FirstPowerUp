@@ -244,10 +244,10 @@ class CmdAutoSwitch implements TrcRobot.RobotCommand
                         robot.encoderYPidCtrl.setNoOscillation(false);
                         robot.encoderYPidCtrl.setTargetTolerance(RobotInfo.ENCODER_Y_TOLERANCE);
                         robot.gyroTurnPidCtrl.setTargetTolerance(RobotInfo.GYRO_TURN_TOLERANCE);
-                        robot.cubePickup.dropCube(1.0);
+                        robot.cubePickup.dropCube(0.8);
                         if (getSecondCube)
                         {
-                            timer.set(2.0, event);
+                            timer.set(1.0, event);
                             sm.waitForSingleEvent(event, State.TURN_TO_END_OF_SWITCH);
                         }
                         else

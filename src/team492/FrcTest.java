@@ -215,6 +215,7 @@ public class FrcTest extends FrcTeleOp
         {
             case SENSORS_TEST:
                 doSensorsTest();
+                robot.diagnostics.updateDiagnosticsAndDashboard();
                 break;
 
             case SUBSYSTEMS_TEST:
@@ -228,11 +229,13 @@ public class FrcTest extends FrcTeleOp
 
             case DRIVE_MOTORS_TEST:
                 doDriveMotorsTest();
+                robot.diagnostics.updateDiagnosticsAndDashboard();
                 break;
 
             default:
                 break;
         }
+        
     } // runPeriodic
 
     @Override
@@ -401,15 +404,7 @@ public class FrcTest extends FrcTeleOp
         }
     }   //operatorStickButtonEvent
     
-    private void updateDiagnostics()
-    {
-        robot.diagnostics.doPeriodicTests();
-        Map<String,Boolean> testResults = robot.diagnostics.getDiagnosticResults();
-        for(String testName:testResults.keySet())
-        {
-            HalDashboard.putBoolean("Diagnostics/" + testName, testResults.get(testName));
-        }
-    }
+    
 
     /**
      * This method reads all sensors and prints out their values. This is a very
@@ -450,7 +445,6 @@ public class FrcTest extends FrcTeleOp
         robot.dashboard.displayPrintf(7, "Elevator: pos=%.1f,limitSwitches=%b,%b",
             robot.elevator.getPosition(), robot.elevator.elevatorMotor.isLowerLimitSwitchActive(),
             robot.elevator.elevatorMotor.isUpperLimitSwitchActive());
-        updateDiagnostics();
     } // doSensorsTest
 
     /**

@@ -50,7 +50,9 @@ public class FrcDisabled implements TrcRobot.RobotMode
     @Override
     public void runPeriodic(double elapsedTime)
     {
+        robot.updateDashboard();
         robot.announceIdling();
+        System.out.println("*** Disabled periodic running");
     } // runPeriodic
 
     @Override

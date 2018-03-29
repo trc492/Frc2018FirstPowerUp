@@ -39,7 +39,7 @@ public class CmdAutoSideSwitch implements TrcRobot.RobotCommand
     private static final double WEST_HEADING = -90.0;
 
     private static final double FAST_DELIVERY_Y_TOLERANCE = 5.0;
-    private static final double DRIVE_PAST_SWITCH_DISTANCE = 60.0;
+    private static final double DRIVE_PAST_SWITCH_DISTANCE = 45.0;
     private static final double GET_TO_SWITCH_DISTANCE = 50.0;
 
     private static final double[] sonarTriggerPoints = { 8.0, 32.0 };
@@ -181,7 +181,7 @@ public class CmdAutoSideSwitch implements TrcRobot.RobotCommand
                         }
                         sm.addEvent(sonarEvent);
                         xDistance = 0.0;
-                        yDistance = RobotInfo.AUTO_DISTANCE_TO_SWITCH - 24;
+                        yDistance = RobotInfo.AUTO_DISTANCE_TO_SWITCH - 30;
                         robot.pidDrive.setTarget(xDistance, yDistance, robot.targetHeading, false, event, 0.0);
                         sm.addEvent(event);
                         robot.elevator.setPosition(RobotInfo.ELEVATOR_SWITCH_HEIGHT);
@@ -227,6 +227,7 @@ public class CmdAutoSideSwitch implements TrcRobot.RobotCommand
 
                     case TURN_SOUTH:
                         robot.cubePickup.stopPickup();
+                        robot.elevator.setPosition(RobotInfo.ELEVATOR_MIN_HEIGHT);
                         xDistance = yDistance = 0.0;
                         robot.targetHeading = SOUTH_HEADING;
                         robot.pidDrive.setTarget(xDistance, yDistance, robot.targetHeading, false, event, 0.0);
