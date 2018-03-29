@@ -118,7 +118,7 @@ class CmdAutoSwitch implements TrcRobot.RobotCommand
     {
         robot.tracer.traceInfo(
             moduleName, "[%.3f] delay=%.1f, fwdDistance=%.1f, startPos=%s, fastDelivery=%b, getSecondCube=%b",
-            Robot.getModeElapsedTime(), delay, forwardDistance, startPosition, fastDelivery, getSecondCube);
+            Robot.getModeElapsedTime(), delay, forwardDistance, startPosition.name(), fastDelivery, getSecondCube);
 
         this.robot = robot;
         this.delay = delay;

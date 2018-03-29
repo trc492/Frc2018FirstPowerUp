@@ -58,7 +58,7 @@ public class CmdAutoMoveToCrossField implements TrcRobot.RobotCommand
     public CmdAutoMoveToCrossField(Robot robot, double delay, Position startPosition)
     {
         robot.tracer.traceInfo(moduleName, "[%.3f] delay=%.1f, startPos=%s",
-            Robot.getModeElapsedTime(), delay, startPosition);
+            Robot.getModeElapsedTime(), delay, startPosition.name());
 
         this.robot = robot;
         this.delay = delay;
