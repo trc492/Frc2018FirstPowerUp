@@ -117,7 +117,7 @@ public class CmdAutoSideSwitch implements TrcRobot.RobotCommand
         yPowerLimit = robot.encoderYPidCtrl.getOutputLimit();
 
         robot.tracer.traceInfo(moduleName, "alliance=%s, gameSpecificMsg=%s, delay=%.3f, getSecondCube=%b",
-            robot.alliance.name(), robot.gameSpecificMessage, delay, getSecondCube);
+            robot.alliance, robot.gameSpecificMessage, delay, getSecondCube);
     } // CmdAutoSwitch
 
     //

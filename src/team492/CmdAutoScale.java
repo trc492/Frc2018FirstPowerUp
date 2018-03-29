@@ -130,7 +130,7 @@ public class CmdAutoScale implements TrcRobot.RobotCommand
 
         robot.tracer.traceInfo(moduleName,
             "alliance=%s, gameSpecificMsg=%s, delay=%.3f, startPosition=%s, fwdDistance=%.0f",
-             robot.alliance.name(), robot.gameSpecificMessage, delay, startPosition.name(), forwardDriveDistance);
+             robot.alliance, robot.gameSpecificMessage, delay, startPosition, forwardDriveDistance);
     }
 
     @Override

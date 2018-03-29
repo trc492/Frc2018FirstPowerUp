@@ -118,7 +118,7 @@ class CmdAutoSwitch implements TrcRobot.RobotCommand
     {
         robot.tracer.traceInfo(
             moduleName, "[%.3f] delay=%.1f, fwdDistance=%.1f, startPos=%s, fastDelivery=%b, getSecondCube=%b",
-            Robot.getModeElapsedTime(), delay, forwardDistance, startPosition.name(), fastDelivery, getSecondCube);
+            Robot.getModeElapsedTime(), delay, forwardDistance, startPosition, fastDelivery, getSecondCube);
 
         this.robot = robot;
         this.delay = delay;
@@ -172,7 +172,7 @@ class CmdAutoSwitch implements TrcRobot.RobotCommand
 
         robot.tracer.traceInfo(moduleName,
             "alliance=%s, gameSpecificMsg=%s, delay=%.3f, fwdDistance=%.0f, startPosition=%s, flipInFlight=%b",
-             robot.alliance.name(), robot.gameSpecificMessage, delay, forwardDistance, startPosition.name(), flipInFlight);
+             robot.alliance, robot.gameSpecificMessage, delay, forwardDistance, startPosition, flipInFlight);
     } // CmdAutoSwitch
 
     //
