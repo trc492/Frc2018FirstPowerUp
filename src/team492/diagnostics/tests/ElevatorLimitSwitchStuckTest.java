@@ -2,6 +2,7 @@ package team492.diagnostics.tests;
 
 import team492.Elevator;
 import team492.diagnostics.DiagnosticsTest;
+import team492.diagnostics.OnBoardDiagnostics.Subsystem;
 
 import java.util.function.Supplier;
 
@@ -24,7 +25,7 @@ public class ElevatorLimitSwitchStuckTest extends DiagnosticsTest {
     private Double elevatorPosWhenLimitSwitchActivatedInches = null;
 
     public ElevatorLimitSwitchStuckTest(Elevator elevator, ElevatorLimitSwitch chosenLimitSwitchEnum) {
-        super(chosenLimitSwitchEnum.name() + " elevator");
+        super(chosenLimitSwitchEnum.name() + " elevator stuck", Subsystem.ELEVATOR);
         if (chosenLimitSwitchEnum == ElevatorLimitSwitch.LOWER) {
             this.chosenLimitSwitch = elevator.elevatorMotor::isLowerLimitSwitchActive;
         } else {

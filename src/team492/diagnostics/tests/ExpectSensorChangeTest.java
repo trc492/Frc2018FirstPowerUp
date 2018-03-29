@@ -3,6 +3,7 @@ package team492.diagnostics.tests;
 import java.util.function.Supplier;
 
 import team492.diagnostics.DiagnosticsTest;
+import team492.diagnostics.OnBoardDiagnostics.Subsystem;
 
 public abstract class ExpectSensorChangeTest extends DiagnosticsTest {
 	
@@ -12,9 +13,9 @@ public abstract class ExpectSensorChangeTest extends DiagnosticsTest {
 	private boolean sensorWorking = false;
 	private double firstReading;
 	
-	public ExpectSensorChangeTest(String name, Supplier<Double> sensor, double expectedMinAbsChange) 
+	public ExpectSensorChangeTest(String name, Subsystem subsystem, Supplier<Double> sensor, double expectedMinAbsChange) 
 	{
-	    super(name);
+	    super(name, subsystem);
 		this.sensor = sensor;
 		this.expectedMinAbsChange = expectedMinAbsChange;
 		this.firstReading = sensor.get();

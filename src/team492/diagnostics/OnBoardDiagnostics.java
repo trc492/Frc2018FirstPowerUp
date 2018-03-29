@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import edu.wpi.first.wpilibj.DriverStation;
 import hallib.HalDashboard;
@@ -24,21 +25,29 @@ public class OnBoardDiagnostics
 
     private Robot robot;
     private List<DiagnosticsTest> tests;
+    
+    public enum Subsystem
+    {
+        DRIVEBASE,
+        ELEVATOR,
+        SENSORS,
+        PRESSURE
+    }
 
     public OnBoardDiagnostics(Robot robot)
     {
         this.robot = robot;
         tests = new ArrayList<>();
-        tests.add(new EncoderUnpluggedTest(robot.leftFrontWheel, "left front encoder"));
-        tests.add(new EncoderUnpluggedTest(robot.rightFrontWheel, "right front encoder"));
-        tests.add(new EncoderUnpluggedTest(robot.leftRearWheel, "left rear encoder"));
-        tests.add(new EncoderUnpluggedTest(robot.rightRearWheel, "right rear encoder"));
+        tests.add(new EncoderUnpluggedTest(robot.leftFrontWheel, "left front encoder", Subsystem.DRIVEBASE));
+        tests.add(new EncoderUnpluggedTest(robot.rightFrontWheel, "right front encoder", Subsystem.DRIVEBASE));
+        tests.add(new EncoderUnpluggedTest(robot.leftRearWheel, "left rear encoder", Subsystem.DRIVEBASE));
+        tests.add(new EncoderUnpluggedTest(robot.rightRearWheel, "right rear encoder", Subsystem.DRIVEBASE));
 
-        tests.add(new HighTalonErrorRateTest(robot.leftFrontWheel, "left front wheel motor"));
-        tests.add(new HighTalonErrorRateTest(robot.rightFrontWheel, "right front wheel motor"));
-        tests.add(new HighTalonErrorRateTest(robot.leftRearWheel, "left rear wheel motor"));
-        tests.add(new HighTalonErrorRateTest(robot.rightRearWheel, "right rear wheel motor"));
-        tests.add(new HighTalonErrorRateTest(robot.elevator.elevatorMotor, "elevator motor"));
+        tests.add(new HighTalonErrorRateTest(robot.leftFrontWheel, "lf motor errors", Subsystem.DRIVEBASE));
+        tests.add(new HighTalonErrorRateTest(robot.rightFrontWheel, "rf motor errors", Subsystem.DRIVEBASE));
+        tests.add(new HighTalonErrorRateTest(robot.leftRearWheel, "lr motor errors", Subsystem.DRIVEBASE));
+        tests.add(new HighTalonErrorRateTest(robot.rightRearWheel, "rr motor errors", Subsystem.DRIVEBASE));
+        tests.add(new HighTalonErrorRateTest(robot.elevator.elevatorMotor, "elevator motor errors", Subsystem.ELEVATOR));
 
         tests.add(
             new ElevatorLimitSwitchStuckTest(robot.elevator, ElevatorLimitSwitchStuckTest.ElevatorLimitSwitch.LOWER));
@@ -56,22 +65,24 @@ public class OnBoardDiagnostics
         }
 
         tests.add(new DigitalSensorUnchangedTest(robot.elevator.elevatorMotor::isLowerLimitSwitchActive,
-            "elevator lower limit switch"));
+            "elev L switch unchanged", Subsystem.ELEVATOR));
+        tests.add(new DigitalSensorUnchangedTest(robot.elevator.elevatorMotor::isUpperLimitSwitchActive,
+            "elev U switch unchanged", Subsystem.ELEVATOR));
 
-        tests.add(new DigitalSensorUnchangedTest(robot.cubePickup::cubeInProximity, "grabber cube proximity sensor"));
+        tests.add(new DigitalSensorUnchangedTest(robot.cubePickup::cubeInProximity, "grabber cube proximity sensor", Subsystem.SENSORS));
 
         tests.add(new ElevatorPositionUnchangedTest("Elevator position", robot.elevator));
 
-        tests.add(new PneumaticsNotPressurizingTest("Pneumatics", robot));
+        tests.add(new PneumaticsNotPressurizingTest("Pneumatics charged", robot));
 
         if (robot.pixy != null)
         {
-            tests.add(new PixyVisionTaskTerminatedTest("Pixy", robot.pixy));
+            tests.add(new PixyVisionTaskTerminatedTest("Pixy errors", robot.pixy));
         }
 
         if (robot.gyro != null)
         {
-            tests.add(new GyroNotConnectedTest("Gyro", robot.gyro));
+            tests.add(new GyroNotConnectedTest("Gyro connected", robot.gyro));
         }
     }
 
@@ -80,7 +91,7 @@ public class OnBoardDiagnostics
         tests.forEach(DiagnosticsTest::test);
     }
     
-    public Map<String,Boolean> getDiagnosticResults()
+    public Map<String,Boolean> getAllDiagnosticResults()
     {
         Map<String,Boolean> map = new HashMap<>();
         for(DiagnosticsTest test:tests)
@@ -90,14 +101,31 @@ public class OnBoardDiagnostics
         return map;
     }
     
+    public Map<Subsystem, Boolean> getSubsystemDiagnosticResults()
+    {
+        return tests.stream()
+                .collect(Collectors.groupingBy(DiagnosticsTest::getSubsystem,
+                                               Collectors.reducing(
+                                                   true, // Show green by default
+                                                   test -> !test.getResult().faultDetected(), // Show green if not faulted
+                                                   Boolean::logicalAnd))); // Show green only if all are OK
+    }
+    
     public void updateDiagnosticsAndDashboard()
     {
         doPeriodicTests();
-        Map<String,Boolean> testResults = robot.diagnostics.getDiagnosticResults();
+        Map<String,Boolean> testResults = getAllDiagnosticResults();
         for(String testName:testResults.keySet())
         {
             HalDashboard.putBoolean("Diagnostics/" + testName, testResults.get(testName));
         }
+        
+        Map<Subsystem, Boolean> subsystemResults = getSubsystemDiagnosticResults();
+        for(Map.Entry<Subsystem, Boolean> entry : subsystemResults.entrySet())
+        {
+            HalDashboard.putBoolean("Tests/" + entry.getKey().name(), entry.getValue());
+        }
+        
     }
 
     public void printDiagnostics()

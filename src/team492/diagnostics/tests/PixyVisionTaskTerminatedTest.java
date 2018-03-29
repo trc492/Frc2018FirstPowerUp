@@ -2,6 +2,7 @@ package team492.diagnostics.tests;
 
 import team492.PixyVision;
 import team492.diagnostics.DiagnosticsTest;
+import team492.diagnostics.OnBoardDiagnostics.Subsystem;
 
 public class PixyVisionTaskTerminatedTest extends DiagnosticsTest {
 
@@ -10,7 +11,7 @@ public class PixyVisionTaskTerminatedTest extends DiagnosticsTest {
     private boolean hasTaskEverTerminated = false;
 
     public PixyVisionTaskTerminatedTest(String name, PixyVision pixyVision) {
-        super(name);
+        super(name, Subsystem.SENSORS);
         this.pixyVision = pixyVision;
     }
 

@@ -2,6 +2,7 @@ package team492.diagnostics.tests;
 
 import frclib.FrcCANTalon;
 import team492.diagnostics.DiagnosticsTest;
+import team492.diagnostics.OnBoardDiagnostics.Subsystem;
 
 public class HighTalonErrorRateTest extends DiagnosticsTest {
 
@@ -9,8 +10,8 @@ public class HighTalonErrorRateTest extends DiagnosticsTest {
 
     private final FrcCANTalon motor;
 
-    public HighTalonErrorRateTest(FrcCANTalon motor, String motorName) {
-        super(motorName);
+    public HighTalonErrorRateTest(FrcCANTalon motor, String motorName, Subsystem subsystem) {
+        super(motorName, subsystem);
         this.motor = motor;
     }
 

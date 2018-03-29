@@ -2,6 +2,7 @@ package team492.diagnostics.tests;
 
 import frclib.FrcAHRSGyro;
 import team492.diagnostics.DiagnosticsTest;
+import team492.diagnostics.OnBoardDiagnostics.Subsystem;
 
 public class GyroNotConnectedTest extends DiagnosticsTest{
 	
@@ -10,7 +11,7 @@ public class GyroNotConnectedTest extends DiagnosticsTest{
 	private boolean hasLostConnection = false;
 	
 	public GyroNotConnectedTest(String name, FrcAHRSGyro gyro) {
-	    super(name);
+	    super(name, Subsystem.DRIVEBASE);
 		this.gyro = gyro;
 	}
 

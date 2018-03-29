@@ -1,11 +1,16 @@
 package team492.diagnostics;
 
+import team492.diagnostics.OnBoardDiagnostics.Subsystem;
+
 public abstract class DiagnosticsTest {
     
     private String name;
-    public DiagnosticsTest(String name)
+    private Subsystem subsystem;
+    
+    public DiagnosticsTest(String name, Subsystem subsystem)
     {
         this.name = name;
+        this.subsystem = subsystem;
     }
     
     public String getName()
@@ -17,6 +22,11 @@ public abstract class DiagnosticsTest {
     public String toString()
     {
         return name;
+    }
+    
+    public Subsystem getSubsystem()
+    {
+        return subsystem;
     }
     
 	public abstract void test();

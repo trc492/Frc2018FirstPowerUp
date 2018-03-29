@@ -2,6 +2,7 @@ package team492.diagnostics.tests;
 
 import team492.Robot;
 import team492.diagnostics.DiagnosticsTest;
+import team492.diagnostics.OnBoardDiagnostics.Subsystem;
 
 public class PneumaticsNotPressurizingTest extends DiagnosticsTest{
 
@@ -11,7 +12,7 @@ public class PneumaticsNotPressurizingTest extends DiagnosticsTest{
     private static final double WORKING_PRESSURE_PSI = 60.0;
 
     public PneumaticsNotPressurizingTest(String name, Robot robot){
-        super(name);
+        super(name, Subsystem.PRESSURE);
         this.robot = robot;
     }
 

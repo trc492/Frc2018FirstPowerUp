@@ -2,13 +2,15 @@ package team492.diagnostics.tests;
 
 import java.util.function.Supplier;
 
+import team492.diagnostics.OnBoardDiagnostics.Subsystem;
+
 public class UltrasonicUnpluggedTest extends ExpectSensorChangeTest {
 
 	private static final double EXPECTED_CHANGE_INCHES = 1.0;
 	
 	public UltrasonicUnpluggedTest(Supplier<Double> sonarSensor, String sensorName) 
 	{
-		super(sensorName, sonarSensor, EXPECTED_CHANGE_INCHES);
+		super(sensorName, Subsystem.SENSORS, sonarSensor, EXPECTED_CHANGE_INCHES);
 	}
 
 	@Override

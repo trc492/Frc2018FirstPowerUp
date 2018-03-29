@@ -1,14 +1,15 @@
 package team492.diagnostics.tests;
 
 import frclib.FrcCANTalon;
+import team492.diagnostics.OnBoardDiagnostics.Subsystem;
 
 public class EncoderUnpluggedTest extends ExpectSensorChangeTest{
 
 	private static final double EXPECTED_DRIVEBASE_ENCODER_CHANGE_INCHES = 10.0;
 	
-	public EncoderUnpluggedTest(FrcCANTalon motor, String encoderName)
+	public EncoderUnpluggedTest(FrcCANTalon motor, String encoderName, Subsystem subsystem)
 	{
-		super(encoderName, motor::getPosition, EXPECTED_DRIVEBASE_ENCODER_CHANGE_INCHES);
+		super(encoderName, subsystem, motor::getPosition, EXPECTED_DRIVEBASE_ENCODER_CHANGE_INCHES);
 
 	}
 
