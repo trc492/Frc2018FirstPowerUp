@@ -39,8 +39,8 @@ public class CmdAutoSideSwitch implements TrcRobot.RobotCommand
     private static final double WEST_HEADING = -90.0;
 
     private static final double FAST_DELIVERY_Y_TOLERANCE = 5.0;
-    private static final double DRIVE_PAST_SWITCH_DISTANCE = 108.0;
-    private static final double GET_TO_SWITCH_DISTANCE = 21.0;
+    private static final double DRIVE_PAST_SWITCH_DISTANCE = 60.0;
+    private static final double GET_TO_SWITCH_DISTANCE = 50.0;
 
     private static final double[] sonarTriggerPoints = { 8.0, 32.0 };
 
@@ -165,6 +165,10 @@ public class CmdAutoSideSwitch implements TrcRobot.RobotCommand
                         break;
 
                     case DRIVE_TO_SWITCH:
+                        robot.driveBase.setBrakeMode(false);
+                        robot.encoderYPidCtrl.setNoOscillation(true);
+                        robot.encoderYPidCtrl.setTargetTolerance(FAST_DELIVERY_Y_TOLERANCE);
+                        robot.gyroTurnPidCtrl.setTargetTolerance(4.0);
                         if (rightSwitch)
                         {
                             robot.leftSonarArray.startRanging(true);
@@ -177,7 +181,7 @@ public class CmdAutoSideSwitch implements TrcRobot.RobotCommand
                         }
                         sm.addEvent(sonarEvent);
                         xDistance = 0.0;
-                        yDistance = RobotInfo.AUTO_DISTANCE_TO_SWITCH;
+                        yDistance = RobotInfo.AUTO_DISTANCE_TO_SWITCH - 24;
                         robot.pidDrive.setTarget(xDistance, yDistance, robot.targetHeading, false, event, 0.0);
                         sm.addEvent(event);
                         robot.elevator.setPosition(RobotInfo.ELEVATOR_SWITCH_HEIGHT);
@@ -185,9 +189,7 @@ public class CmdAutoSideSwitch implements TrcRobot.RobotCommand
                         break;
 
                     case TURN_AND_TOUCH_SWITCH:
-                        robot.driveBase.setBrakeMode(false);
-                        robot.encoderYPidCtrl.setNoOscillation(true);
-                        robot.encoderYPidCtrl.setTargetTolerance(FAST_DELIVERY_Y_TOLERANCE);
+                        yStart = robot.driveBase.getYPosition();
                         if (rightSwitch)
                         {
                             robot.leftSonarArray.stopRanging();

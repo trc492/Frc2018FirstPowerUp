@@ -171,8 +171,8 @@ class CmdAutoSwitch implements TrcRobot.RobotCommand
         robot.gyroTurnPidCtrl.setNoOscillation(true);
 
         robot.tracer.traceInfo(moduleName,
-            "alliance=%s, gameSpecificMsg=%s, delay=%.3f, fwdDistance=%.0f, startPosition=%.1f, flipInFlight=%b",
-             robot.alliance, robot.gameSpecificMessage, delay, forwardDistance, startPosition, flipInFlight);
+            "alliance=%s, gameSpecificMsg=%s, delay=%.3f, fwdDistance=%.0f, startPosition=%s, flipInFlight=%b",
+             robot.alliance.name(), robot.gameSpecificMessage, delay, forwardDistance, startPosition.name(), flipInFlight);
     } // CmdAutoSwitch
 
     //
@@ -228,7 +228,8 @@ class CmdAutoSwitch implements TrcRobot.RobotCommand
                         robot.targetHeading = rightSwitch? (SWITCH_HEADING): (-SWITCH_HEADING-2.5);
                         robot.pidDrive.setTarget(xDistance, yDistance, robot.targetHeading, false, event, 0.0);
                         robot.elevator.setPosition(RobotInfo.ELEVATOR_SWITCH_HEIGHT);
-                        sm.waitForSingleEvent(event, State.TURN_BACK_NORTH);
+                        //sm.waitForSingleEvent(event, State.TURN_BACK_NORTH);
+                        sm.waitForSingleEvent(event, State.THROW_CUBE);
                         break;
 
                     case TURN_BACK_NORTH:
@@ -243,11 +244,10 @@ class CmdAutoSwitch implements TrcRobot.RobotCommand
                         robot.encoderYPidCtrl.setNoOscillation(false);
                         robot.encoderYPidCtrl.setTargetTolerance(RobotInfo.ENCODER_Y_TOLERANCE);
                         robot.gyroTurnPidCtrl.setTargetTolerance(RobotInfo.GYRO_TURN_TOLERANCE);
-                        robot.cubePickup.openClaw();
-                        robot.cubePickup.dropCube(0.6);
+                        robot.cubePickup.dropCube(1.0);
                         if (getSecondCube)
                         {
-                            timer.set(0.3, event);
+                            timer.set(2.0, event);
                             sm.waitForSingleEvent(event, State.TURN_TO_END_OF_SWITCH);
                         }
                         else

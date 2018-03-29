@@ -129,8 +129,8 @@ public class CmdAutoScale implements TrcRobot.RobotCommand
         robot.gyroTurnPidCtrl.setNoOscillation(true);
 
         robot.tracer.traceInfo(moduleName,
-            "alliance=%s, gameSpecificMsg=%s, delay=%.3f, startPosition=%.1f, fwdDistance=%.0f",
-             robot.alliance, robot.gameSpecificMessage, delay, startPosition, forwardDriveDistance);
+            "alliance=%s, gameSpecificMsg=%s, delay=%.3f, startPosition=%s, fwdDistance=%.0f",
+             robot.alliance.name(), robot.gameSpecificMessage, delay, startPosition.name(), forwardDriveDistance);
     }
 
     @Override
@@ -225,7 +225,7 @@ public class CmdAutoScale implements TrcRobot.RobotCommand
                         // Start raising elevator
                         robot.elevator.setPosition(RobotInfo.ELEVATOR_CRUISE_HEIGHT);
                         // The target scale is ahead of us, go to it.
-                        yDistance = RobotInfo.FIELD_LENGTH/2.0 - currY - RobotInfo.ROBOT_LENGTH/2.0 + 30.0;
+                        yDistance = RobotInfo.FIELD_LENGTH/2.0 - currY - RobotInfo.ROBOT_LENGTH/2.0;
                         nextState = State.TURN_TO_FACE_SCALE;
                     }
                     else

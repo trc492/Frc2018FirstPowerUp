@@ -163,7 +163,7 @@ public class RobotInfo
     // 2017-03-21: 0.0152347136491642, 0.15, 0.0, 0.0
     // 0.7 power is pretty gud fam
     // 2-20-2018: 0.0148258400720388, 0.15, 0.0, 0.0 -- competition robot
-    public static final double ENCODER_X_INCHES_PER_COUNT       = 0.0129836759876149;//0.0148258400720388;//0.0144546649145861;//0.0152347136491642;//0.0264367338026265;
+    public static final double ENCODER_X_INCHES_PER_COUNT       = 0.00874986860034917173913043478261;//0.0129836759876149;//0.0148258400720388;//0.0144546649145861;//0.0152347136491642;//0.0264367338026265;
     public static final double ENCODER_X_KP                     = 0.15;
     public static final double ENCODER_X_KI                     = 0.0;
     public static final double ENCODER_X_KD                     = 0.015;
@@ -174,7 +174,7 @@ public class RobotInfo
     // 2-24-2018: 0.0172358143438125, 0.02, 0.0, 0.004 --practice robot
     
     // 3-16-2018: 0.0172358143438125; 0.03, 0.0, 0.001 -- practice robot
-    public static final double ENCODER_Y_INCHES_PER_COUNT       = 0.0172358143438125;
+    public static final double ENCODER_Y_INCHES_PER_COUNT       = 0.01557713764963807531380753138075; //0.0172358143438125;
     public static final double ENCODER_Y_KP                     = 0.02;
     public static final double ENCODER_Y_KI                     = 0.0;
     public static final double ENCODER_Y_KD                     = 0.001;

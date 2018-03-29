@@ -150,7 +150,7 @@ public class FrcAuto implements TrcRobot.RobotMode
 
         Date now = new Date();
         robot.tracer.traceInfo(Robot.programName, "%s[%.3f]: ***** Starting autonomous *****",
-            Robot.getModeElapsedTime(), now.toString());
+            now.toString(), Robot.getModeElapsedTime());
         robot.tracer.traceInfo(Robot.programName, "%s_%s_%3d (%s%d) [FMSConnected=%b]", robot.eventName,
             robot.matchType.toString(), robot.matchNumber, robot.alliance.toString(), robot.location,
             robot.ds.isFMSAttached());
