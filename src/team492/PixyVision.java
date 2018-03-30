@@ -30,11 +30,14 @@ import edu.wpi.first.wpilibj.I2C;
 import edu.wpi.first.wpilibj.SPI;
 import frclib.FrcPixyCam;
 import trclib.TrcPixyCam.ObjectBlock;
+import trclib.TrcUtil;
 
 public class PixyVision
 {
     private static final String moduleName = "PixyVision";
     private static final boolean debugEnabled = false;
+
+    private static final double LAST_TARGET_RECT_FRESH_DURATION_SECONDS = 0.100;
 
     public class TargetInfo
     {
@@ -75,6 +78,7 @@ public class PixyVision
     private int signature;
     private Orientation orientation;
     private Rect lastTargetRect = null;
+    private double lastTargetRectExpireTime = TrcUtil.getCurrentTime();
 
     private void commonInit(Robot robot, int signature, int brightness, Orientation orientation)
     {
@@ -138,8 +142,10 @@ public class PixyVision
         {
             //
             // Pixy is not ready for another frame, use old cached data.
+            // If cached rectangle is too old, we interpret that as nothing
+            // currently in sight and return null.
             //
-            targetRect = lastTargetRect;
+            targetRect = TrcUtil.getCurrentTime() < lastTargetRectExpireTime ? lastTargetRect : null;
         }
         else
         {
@@ -229,6 +235,7 @@ public class PixyVision
             }
 
             lastTargetRect = targetRect;
+            lastTargetRectExpireTime = TrcUtil.getCurrentTime() + LAST_TARGET_RECT_FRESH_DURATION_SECONDS;
         }
 
         return targetRect;
