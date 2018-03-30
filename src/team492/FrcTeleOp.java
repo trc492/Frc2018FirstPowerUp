@@ -160,6 +160,12 @@ public class FrcTeleOp implements TrcRobot.RobotMode
         robot.updateDashboard();
         robot.announceSafety();
         robot.diagnostics.updateDiagnosticsAndDashboard();
+
+        if (robot.pixy != null && robot.pixy.isEnabled())
+        {
+            // Force update of LEDs
+            robot.pixy.getTargetInfo();
+        }
     } // runPeriodic
 
     @Override
