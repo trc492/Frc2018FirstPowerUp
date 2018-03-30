@@ -19,6 +19,7 @@ import team492.diagnostics.tests.PixyVisionTaskTerminatedTest;
 import team492.diagnostics.tests.HighTalonErrorRateTest;
 import team492.diagnostics.tests.PneumaticsNotPressurizingTest;
 import team492.diagnostics.tests.ElevatorLimitSwitchStuckTest;
+import team492.diagnostics.tests.PneumaticsCurrentlyLowTest;
 
 public class OnBoardDiagnostics
 {
@@ -74,6 +75,7 @@ public class OnBoardDiagnostics
         tests.add(new ElevatorPositionUnchangedTest("Elevator position", robot.elevator));
 
         tests.add(new PneumaticsNotPressurizingTest("Pneumatics charged", robot));
+        tests.add(new PneumaticsCurrentlyLowTest("Pneumatics low now", robot));
 
         if (robot.pixy != null)
         {
