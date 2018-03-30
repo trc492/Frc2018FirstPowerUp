@@ -105,10 +105,10 @@ public class CmdPidDrive implements TrcRobot.RobotCommand
         sm = new TrcStateMachine<>(moduleName);
         sm.start(State.DO_DELAY);
 
-        robot.tracer.traceInfo(
+        robot.globalTracer.traceInfo(
             moduleName, "pidDrive=%s, xPidCtrl=%s, yPidCtrl=%s, turnPidCtrl=%s",
             pidDrive, xPidCtrl, yPidCtrl, turnPidCtrl);
-        robot.tracer.traceInfo(
+        robot.globalTracer.traceInfo(
             moduleName, "delay=%.3f, xDist=%.1f, yDist=%.1f, heading=%.1f, powerLimit=%.1f, testMode=%b",
             delay, xDistance, yDistance, heading, drivePowerLimit, testMode);
     }   //CmdPidDrive

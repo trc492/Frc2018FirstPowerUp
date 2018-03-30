@@ -213,7 +213,7 @@ public class CubePickup
         {
             if (userStop)
             {
-                robot.tracer.traceInfo("setPickupPower", "User Aborted Pickup (power=%.2f)", power);
+                robot.globalTracer.traceInfo("setPickupPower", "User Aborted Pickup (power=%.2f)", power);
             }
             cubeProximityTrigger.setTaskEnabled(false);
             currentTrigger.setTaskEnabled(false);
@@ -259,7 +259,7 @@ public class CubePickup
         }
         else
         {
-            robot.tracer.traceWarn("grabCube", "***** Caught double trigger *****");
+            robot.globalTracer.traceWarn("grabCube", "***** Caught double trigger *****");
         }
     }
 
@@ -298,7 +298,7 @@ public class CubePickup
                     break;
 
                 case DELAY_SAMPLING:
-                    robot.tracer.traceInfo(funcName, "[%.3f] %s: current=%.2f",
+                    robot.globalTracer.traceInfo(funcName, "[%.3f] %s: current=%.2f",
                         elapsedTime, state, getPickupCurrent());
                     timer.set(0.3, timerEvent);
                     sm.waitForSingleEvent(timerEvent, State.SAMPLE_CURRENT);
@@ -308,13 +308,13 @@ public class CubePickup
                     pickupCurrent = getPickupCurrent();
                     if (pickupCurrent >= RobotInfo.PICKUP_STALL_CURRENT)
                     {
-                        robot.tracer.traceInfo(funcName, "[%.3f] %s: Detected cube in possession (pickupCurent=%.2f)",
+                        robot.globalTracer.traceInfo(funcName, "[%.3f] %s: Detected cube in possession (pickupCurent=%.2f)",
                             elapsedTime, state, pickupCurrent);
                         sm.setState(State.DONE);
                     }
                     else
                     {
-                        robot.tracer.traceInfo(funcName, "[%.3f] %s: Detected startup spike (pickupCurrent=%.2f)",
+                        robot.globalTracer.traceInfo(funcName, "[%.3f] %s: Detected startup spike (pickupCurrent=%.2f)",
                             elapsedTime, state, pickupCurrent);
                         sm.setState(State.DELAY_SAMPLING);
                     }
@@ -340,7 +340,7 @@ public class CubePickup
 
     private void cubeProximityEvent(boolean active)
     {
-        robot.tracer.traceInfo("ProximityTrigger", "[%.3f] active=%b", TrcUtil.getCurrentTime() - startTime, active);
+        robot.globalTracer.traceInfo("ProximityTrigger", "[%.3f] active=%b", TrcUtil.getCurrentTime() - startTime, active);
         if (active)
         {
             // Detected cube close by, grab it.
@@ -354,7 +354,7 @@ public class CubePickup
 
     private void currentTriggerEvent(int currZone, int prevZone, double zoneValue)
     {
-        robot.tracer.traceInfo("CurrentTrigger", "[%.3f] prevZone=%d, currZone=%d, pickupCurrent=%.2f",
+        robot.globalTracer.traceInfo("CurrentTrigger", "[%.3f] prevZone=%d, currZone=%d, pickupCurrent=%.2f",
             TrcUtil.getCurrentTime() - startTime, prevZone, currZone, zoneValue);
         if (currZone == 1 && currZone > prevZone)
         {

@@ -91,7 +91,7 @@ public class CmdAutoSideSwitch implements TrcRobot.RobotCommand
 
     public CmdAutoSideSwitch(Robot robot, double delay, boolean getSecondCube)
     {
-        robot.tracer.traceInfo(moduleName, "[%.3f] delay=%.1f, getSecondCube=%b",
+        robot.globalTracer.traceInfo(moduleName, "[%.3f] delay=%.1f, getSecondCube=%b",
             Robot.getModeElapsedTime(), delay, getSecondCube);
 
         this.robot = robot;
@@ -116,7 +116,7 @@ public class CmdAutoSideSwitch implements TrcRobot.RobotCommand
         xPowerLimit = robot.encoderXPidCtrl.getOutputLimit();
         yPowerLimit = robot.encoderYPidCtrl.getOutputLimit();
 
-        robot.tracer.traceInfo(moduleName, "alliance=%s, gameSpecificMsg=%s, delay=%.3f, getSecondCube=%b",
+        robot.globalTracer.traceInfo(moduleName, "alliance=%s, gameSpecificMsg=%s, delay=%.3f, getSecondCube=%b",
             robot.alliance, robot.gameSpecificMessage, delay, getSecondCube);
     } // CmdAutoSwitch
 
@@ -280,15 +280,15 @@ public class CmdAutoSideSwitch implements TrcRobot.RobotCommand
                     case START_SECOND_PICKUP:
                         double xError = visionTarget != null ?
                             visionTarget - (robot.driveBase.getXPosition() - xStart): 0.0;
-                        robot.tracer.traceInfo(funcName, "visionStrafeError=%.1f", xError);
+                        robot.globalTracer.traceInfo(funcName, "visionStrafeError=%.1f", xError);
                         visionTarget = robot.getPixyTargetX();
                         if (visionTarget == null)
                         {
-                            robot.tracer.traceInfo(funcName, "Vision Target not found");
+                            robot.globalTracer.traceInfo(funcName, "Vision Target not found");
                         }
                         else
                         {
-                            robot.tracer.traceInfo(funcName, "visionTargetX=%.1f", robot.getPixyTargetX());
+                            robot.globalTracer.traceInfo(funcName, "visionTargetX=%.1f", robot.getPixyTargetX());
                         }
                         robot.encoderXPidCtrl.setOutputLimit(xPowerLimit);
                         // Go forward to grab the cube or until it passes a
@@ -364,7 +364,7 @@ public class CmdAutoSideSwitch implements TrcRobot.RobotCommand
                         break;
 
                     case RAISE_ELEVATOR_FOR_SCALE:
-                        robot.tracer.traceInfo(funcName, "ElevatorStartHeight=%.1f", robot.elevator.getPosition());
+                        robot.globalTracer.traceInfo(funcName, "ElevatorStartHeight=%.1f", robot.elevator.getPosition());
                         robot.elevator.setPosition(RobotInfo.ELEVATOR_SCALE_HIGH, event, 3.0);
                         sm.waitForSingleEvent(event, State.APPROACH_FINAL_TARGET);
                         break;
@@ -373,7 +373,7 @@ public class CmdAutoSideSwitch implements TrcRobot.RobotCommand
                         // Do another setPosition without event so it will hold
                         // position.
                         robot.elevator.setPosition(RobotInfo.ELEVATOR_SCALE_HIGH);
-                        robot.tracer.traceInfo(funcName, "ElevatorStopHeight=%.1f", robot.elevator.getPosition());
+                        robot.globalTracer.traceInfo(funcName, "ElevatorStopHeight=%.1f", robot.elevator.getPosition());
                         xDistance = 0.0;
                         yDistance = RobotInfo.FINAL_FRONT_SCALE_APPROACH_DISTANCE;
                         yPowerLimit = robot.encoderYPidCtrl.getOutputLimit();
@@ -423,7 +423,7 @@ public class CmdAutoSideSwitch implements TrcRobot.RobotCommand
 
     private void sonarTriggerEvent(int currZone, int prevZone, double zoneValue)
     {
-        robot.tracer.traceInfo("SonarTrigger", "[%.3f] prevZone=%d, currZone=%d, distance=%.2f",
+        robot.globalTracer.traceInfo("SonarTrigger", "[%.3f] prevZone=%d, currZone=%d, distance=%.2f",
             Robot.getModeElapsedTime(), prevZone, currZone, zoneValue);
 
         if (Robot.getModeElapsedTime() <= 1.0)

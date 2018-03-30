@@ -275,15 +275,15 @@ public class FrcTest extends FrcTeleOp
                 {
                     if (test == Test.X_DISTANCE_DRIVE)
                     {
-                        robot.encoderXPidCtrl.printPidInfo(robot.tracer, elapsedTime, robot.battery);
+                        robot.encoderXPidCtrl.printPidInfo(robot.globalTracer, elapsedTime, robot.battery);
                     }
                     else if (test == Test.Y_DISTANCE_DRIVE)
                     {
-                        robot.encoderYPidCtrl.printPidInfo(robot.tracer, elapsedTime, robot.battery);
+                        robot.encoderYPidCtrl.printPidInfo(robot.globalTracer, elapsedTime, robot.battery);
                     }
                     else if (test == Test.TURN_DEGREES)
                     {
-                        robot.gyroTurnPidCtrl.printPidInfo(robot.tracer, elapsedTime, robot.battery);
+                        robot.gyroTurnPidCtrl.printPidInfo(robot.globalTracer, elapsedTime, robot.battery);
                     }
                 }
                 break;
@@ -294,14 +294,14 @@ public class FrcTest extends FrcTeleOp
 
         if (robot.pidDrive.isActive())
         {
-            robot.encoderXPidCtrl.printPidInfo(robot.tracer, elapsedTime, robot.battery);
-            robot.encoderYPidCtrl.printPidInfo(robot.tracer, elapsedTime, robot.battery);
-            robot.gyroTurnPidCtrl.printPidInfo(robot.tracer, elapsedTime, robot.battery);
+            robot.encoderXPidCtrl.printPidInfo(robot.globalTracer, elapsedTime, robot.battery);
+            robot.encoderYPidCtrl.printPidInfo(robot.globalTracer, elapsedTime, robot.battery);
+            robot.gyroTurnPidCtrl.printPidInfo(robot.globalTracer, elapsedTime, robot.battery);
         }
 
         if(robot.elevator.elevator.isActive())
         {
-            robot.elevator.elevatorPidCtrl.printPidInfo(robot.tracer, elapsedTime, robot.battery);
+            robot.elevator.elevatorPidCtrl.printPidInfo(robot.globalTracer, elapsedTime, robot.battery);
         }
     } // runContinuous
 

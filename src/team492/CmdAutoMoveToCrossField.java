@@ -57,7 +57,7 @@ public class CmdAutoMoveToCrossField implements TrcRobot.RobotCommand
     // CodeReview: Should we give an option to just cross the line and not to lane 3 and cross the field?
     public CmdAutoMoveToCrossField(Robot robot, double delay, Position startPosition)
     {
-        robot.tracer.traceInfo(moduleName, "[%.3f] delay=%.1f, startPos=%s",
+        robot.globalTracer.traceInfo(moduleName, "[%.3f] delay=%.1f, startPos=%s",
             Robot.getModeElapsedTime(), delay, startPosition);
 
         this.robot = robot;

@@ -96,7 +96,7 @@ public class FrcTeleOp implements TrcRobot.RobotMode
         // Cancel auto assist if the driver does anything
         if(leftDriveX != 0 || leftDriveY != 0 || rightDriveX != 0 || rightDriveY != 0)
         {
-            robot.tracer.traceInfo("FrcTeleOp", "[%.3f] Stopping all auto!", elapsedTime);
+            robot.globalTracer.traceInfo("FrcTeleOp", "[%.3f] Stopping all auto!", elapsedTime);
             robot.cancelAutoAssist();
         }
 
@@ -164,14 +164,14 @@ public class FrcTeleOp implements TrcRobot.RobotMode
     {
         if (robot.cmdAutoCubePickup.isEnabled())
         {
-            robot.tracer.traceInfo("FrcTeleOp", "[%.3f] AutoCubePickup - Activated: %b",
+            robot.globalTracer.traceInfo("FrcTeleOp", "[%.3f] AutoCubePickup - Activated: %b",
                 elapsedTime, robot.cmdAutoCubePickup.isEnabled());
             robot.cmdAutoCubePickup.cmdPeriodic(elapsedTime);
         }
 
         if(robot.cmdExchangeAlign.isEnabled())
         {
-            robot.tracer.traceInfo("FrcTeleOp", "[%.3f] ExchangeAlign - Activated: %b",
+            robot.globalTracer.traceInfo("FrcTeleOp", "[%.3f] ExchangeAlign - Activated: %b",
                 elapsedTime, robot.cmdExchangeAlign.isEnabled());
             robot.cmdExchangeAlign.cmdPeriodic(elapsedTime);
         }
@@ -318,7 +318,7 @@ public class FrcTeleOp implements TrcRobot.RobotMode
 
         if(isAutoAssistEnabled())
         {
-            robot.tracer.traceInfo("FrcTeleOp", "AutoAssistEnabled: true");
+            robot.globalTracer.traceInfo("FrcTeleOp", "AutoAssistEnabled: true");
             return;
         }
 

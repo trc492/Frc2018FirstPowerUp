@@ -50,7 +50,6 @@ import frclib.FrcRobotBattery;
 import hallib.HalDashboard;
 import team492.PixyVision.TargetInfo;
 import team492.diagnostics.OnBoardDiagnostics;
-import trclib.TrcDbgTrace;
 import trclib.TrcDriveBase;
 import trclib.TrcEmic2TextToSpeech.Voice;
 //import trclib.TrcGyro;
@@ -102,7 +101,6 @@ public class Robot extends FrcRobotBase
 
     public DriverStation ds = DriverStation.getInstance();
     public HalDashboard dashboard = HalDashboard.getInstance();
-    public TrcDbgTrace tracer = TrcDbgTrace.getGlobalTracer();
 
     public double targetHeading = 0.0;
     public double xPowerLimit = 0.7;
@@ -402,7 +400,7 @@ public class Robot extends FrcRobotBase
         gyroTurnPidCtrl.setAbsoluteSetPoint(true);
         pidDrive = new TrcPidDrive("pidDrive", driveBase, encoderXPidCtrl, encoderYPidCtrl, gyroTurnPidCtrl);
         pidDrive.setStallTimeout(RobotInfo.DRIVE_STALL_TIMEOUT);
-        pidDrive.setMsgTracer(tracer);
+        pidDrive.setMsgTracer(globalTracer);
 
         encoderXPidCtrl.setOutputLimit(RobotInfo.DRIVE_MAX_XPID_POWER);
         encoderYPidCtrl.setOutputLimit(RobotInfo.DRIVE_MAX_YPID_POWER);
@@ -494,7 +492,7 @@ public class Robot extends FrcRobotBase
 
         cancelAutoAssist();
         cubePickup.stopPickup();
-        tracer.traceInfo(moduleName, "TotalEnergy=%.3f", battery.getTotalEnergy());
+        globalTracer.traceInfo(moduleName, "TotalEnergy=%.3f", battery.getTotalEnergy());
         stopTraceLog();
     }   //robotStopMode
 
@@ -503,7 +501,7 @@ public class Robot extends FrcRobotBase
         if (pixy != null)
         {
             pixy.setEnabled(enabled);
-            tracer.traceInfo("Vision", "Pixy is %s!", enabled? "enabled": "disabled");
+            globalTracer.traceInfo("Vision", "Pixy is %s!", enabled? "enabled": "disabled");
         }
     }   //setVisionEnabled
     
@@ -528,7 +526,7 @@ public class Robot extends FrcRobotBase
 
     public void updateDashboard()
     {
-        double currTime = TrcUtil.getCurrentTime();
+        double currTime = Robot.getModeElapsedTime();
 
         if (currTime >= nextUpdateTime)
         {
@@ -545,9 +543,9 @@ public class Robot extends FrcRobotBase
                 HalDashboard.putNumber("Power/winchCurrent", winch.getCurrent());
                 HalDashboard.putNumber("Power/pickupCurrent", cubePickup.getPickupCurrent());
                 HalDashboard.putNumber("Power/totalEnergy", battery.getTotalEnergy());
-                tracer.traceInfo("PowerUse", "[%.3f] Battery - currVoltage: %.2f, lowestVoltage: %.2f",
+                globalTracer.traceInfo("PowerUse", "[%.3f] Battery - currVoltage: %.2f, lowestVoltage: %.2f",
                     currTime, battery.getVoltage(), battery.getLowestVoltage());
-                tracer.traceInfo("PowerUse", "[%.3f] Power: pdpTotalCurrent: %.2f elev: %.2f winch: %.2f, pickup: %.2f, total: %.2f",
+                globalTracer.traceInfo("PowerUse", "[%.3f] Power: pdpTotalCurrent: %.2f elev: %.2f winch: %.2f, pickup: %.2f, total: %.2f",
                     currTime,
                     pdp.getTotalCurrent(),
                     elevator.elevatorMotor.motor.getOutputCurrent(),
@@ -641,7 +639,7 @@ public class Robot extends FrcRobotBase
     {
         String filePrefix = prefix != null? prefix: runMode.toString() + "_" + eventName + "_" + matchType.toString();
         if (prefix == null) filePrefix += String.format("%03d", matchNumber);
-        tracer.openTraceLog("/home/lvuser/tracelog", filePrefix);
+        globalTracer.openTraceLog("/home/lvuser/tracelog", filePrefix);
     }   //startTraceLog
 
     public void startTraceLog(RunMode runMode)
@@ -651,12 +649,12 @@ public class Robot extends FrcRobotBase
 
     public void stopTraceLog()
     {
-        tracer.closeTraceLog();
+        globalTracer.closeTraceLog();
     }   //stopTraceLog
 
     public void traceStateInfo(double elapsedTime, String stateName)
     {
-        tracer.traceInfo(moduleName, "[%5.3f] %10s: xPos=%6.2f,yPos=%6.2f,heading=%6.1f/%6.1f,volts=%.1f(%.1f)",
+        globalTracer.traceInfo(moduleName, "[%5.3f] %10s: xPos=%6.2f,yPos=%6.2f,heading=%6.1f/%6.1f,volts=%.1f(%.1f)",
             elapsedTime, stateName, driveBase.getXPosition(), driveBase.getYPosition(), driveBase.getHeading(),
             targetHeading, battery.getVoltage(), battery.getLowestVoltage());
     }   //traceStateInfo
@@ -738,12 +736,12 @@ public class Robot extends FrcRobotBase
 
         if (targetInfo != null)
         {
-            tracer.traceInfo(funcName, "Found cube: x=%.1f, y=%1.f, angle=%.1f",
+            globalTracer.traceInfo(funcName, "Found cube: x=%.1f, y=%1.f, angle=%.1f",
                 targetInfo.xDistance, targetInfo.yDistance, targetInfo.angle);
         }
         else
         {
-            tracer.traceInfo(funcName, "Cube not found!");
+            globalTracer.traceInfo(funcName, "Cube not found!");
         }
 
         return targetInfo != null? targetInfo.angle: null;
@@ -756,12 +754,12 @@ public class Robot extends FrcRobotBase
 
         if (targetInfo != null)
         {
-            tracer.traceInfo(funcName, "Found cube: x=%.1f, y=%.1f, angle=%.1f",
+            globalTracer.traceInfo(funcName, "Found cube: x=%.1f, y=%.1f, angle=%.1f",
                 targetInfo.xDistance, targetInfo.yDistance, targetInfo.angle);
         }
         else
         {
-            tracer.traceInfo(funcName, "Cube not found!");
+            globalTracer.traceInfo(funcName, "Cube not found!");
         }
 
         return targetInfo != null? targetInfo.xDistance: null;
@@ -774,12 +772,12 @@ public class Robot extends FrcRobotBase
 
         if (targetInfo != null)
         {
-            tracer.traceInfo(funcName, "Found cube: x=%.1f, y=%1.f, angle=%.1f",
+            globalTracer.traceInfo(funcName, "Found cube: x=%.1f, y=%1.f, angle=%.1f",
                 targetInfo.xDistance, targetInfo.yDistance, targetInfo.angle);
         }
         else
         {
-            tracer.traceInfo(funcName, "Cube not found!");
+            globalTracer.traceInfo(funcName, "Cube not found!");
         }
 
         return targetInfo != null? targetInfo.yDistance: null;
@@ -795,7 +793,7 @@ public class Robot extends FrcRobotBase
         double desiredTorqueAtWheelOzIn = constrainedForceOz * RobotInfo.DRIVE_WHEEL_RADIUS_IN;
         double desiredTorqueAtMotorOzIn = desiredTorqueAtWheelOzIn/RobotInfo.DRIVE_MOTOR_ROTATIONS_PER_WHEEL_ROTATION;
         double returnValue = TrcUtil.clipRange(desiredTorqueAtMotorOzIn/max_torque_at_rpm_in_ounce_inch, -1.0, 1.0);
-        tracer.traceInfo("TranslateMotorPower", "desiredForcePercentage=%.2f, ticksPerSecond=%.2f, "
+        globalTracer.traceInfo("TranslateMotorPower", "desiredForcePercentage=%.2f, ticksPerSecond=%.2f, "
             + "rpmAtWheel=%.2f, rpmAtMotor=%.2f, constrainedForcePercentage=%.2f, constrainedForceOz=%.2f, "
             + "maxTorqueAtRPMOzIn=%.2f, desireTorqueAtWheelOzIn=%.2f, desiredTorqueAtMotorOzIn=%.2f, "
             + "returnValue=%.2f",

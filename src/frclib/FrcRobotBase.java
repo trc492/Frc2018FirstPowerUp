@@ -72,6 +72,8 @@ public abstract class FrcRobotBase extends RobotBase
      */
     public abstract void robotStopMode(RunMode runMode);
 
+    public TrcDbgTrace globalTracer = TrcDbgTrace.getGlobalTracer();
+
     private TrcTaskMgr taskMgr = new TrcTaskMgr();
     private HalDashboard dashboard = new HalDashboard();
 
@@ -194,12 +196,14 @@ public abstract class FrcRobotBase extends RobotBase
         // loop forever, calling the appropriate mode-dependent function
         //
         final double timesliceThreshold = 0.1;
+        final double taskTimeThreshold = 0.05;
         RunMode prevMode = RunMode.INVALID_MODE;
         RunMode currMode = RunMode.INVALID_MODE;
 
         while (true)
         {
             double timeSliceStart = Timer.getFPGATimestamp();
+            double startTime, elapsedTime;
 
             prevMode = currMode;
             //
@@ -313,17 +317,32 @@ public abstract class FrcRobotBase extends RobotBase
             //
             // PreContinuous
             //
+            startTime = Timer.getFPGATimestamp();
             taskMgr.executeTaskType(TrcTaskMgr.TaskType.PRECONTINUOUS_TASK, currMode);
+            elapsedTime = Timer.getFPGATimestamp() - startTime;
+            if (elapsedTime > taskTimeThreshold)
+            {
+                globalTracer.traceWarn(funcName, "%s.preContinuousTasks takes too long (%.3fs)\n",
+                    currMode, elapsedTime);
+            }
             //
             // PrePeriodic
             //
             if (periodReady)
             {
+                startTime = Timer.getFPGATimestamp();
                 taskMgr.executeTaskType(TrcTaskMgr.TaskType.PREPERIODIC_TASK, currMode);
+                elapsedTime = Timer.getFPGATimestamp() - startTime;
+                if (elapsedTime > taskTimeThreshold)
+                {
+                    globalTracer.traceWarn(funcName, "%s.prePeriodicTasks takes too long (%.3fs)\n",
+                        currMode, elapsedTime);
+                }
             }
             //
             // Continuous
             //
+            startTime = Timer.getFPGATimestamp();
             if (currMode == RunMode.DISABLED_MODE && disabledMode != null)
             {
                 disabledMode.runContinuous(modeElapsedTime);
@@ -340,11 +359,18 @@ public abstract class FrcRobotBase extends RobotBase
             {
                 teleOpMode.runContinuous(modeElapsedTime);
             }
+            elapsedTime = Timer.getFPGATimestamp() - startTime;
+            if (elapsedTime > taskTimeThreshold)
+            {
+                globalTracer.traceWarn(funcName, "%s.continuous takes too long (%.3fs)\n",
+                    currMode, elapsedTime);
+            }
             //
             // Periodic
             //
             if (periodReady)
             {
+                startTime = Timer.getFPGATimestamp();
                 if (currMode == RunMode.DISABLED_MODE)
                 {
                     HAL.observeUserProgramDisabled();
@@ -377,21 +403,48 @@ public abstract class FrcRobotBase extends RobotBase
                         teleOpMode.runPeriodic(modeElapsedTime);
                     }
                 }
+                elapsedTime = Timer.getFPGATimestamp() - startTime;
+                if (elapsedTime > taskTimeThreshold)
+                {
+                    globalTracer.traceWarn(funcName, "%s.periodic takes too long (%.3fs)\n",
+                        currMode, elapsedTime);
+                }
             }
             //
             // PostContinuous
             //
+            startTime = Timer.getFPGATimestamp();
             taskMgr.executeTaskType(TrcTaskMgr.TaskType.POSTCONTINUOUS_TASK, currMode);
+            elapsedTime = Timer.getFPGATimestamp() - startTime;
+            if (elapsedTime > taskTimeThreshold)
+            {
+                globalTracer.traceWarn(funcName, "%s.postContinuousTasks takes too long (%.3fs)\n",
+                    currMode, elapsedTime);
+            }
             //
             // PostPeriodic
             //
             if (periodReady)
             {
+                startTime = Timer.getFPGATimestamp();
                 taskMgr.executeTaskType(TrcTaskMgr.TaskType.POSTPERIODIC_TASK, currMode);
+                elapsedTime = Timer.getFPGATimestamp() - startTime;
+                if (elapsedTime > taskTimeThreshold)
+                {
+                    globalTracer.traceWarn(funcName, "%s.postPeriodicTasks takes too long (%.3fs)\n",
+                        currMode, elapsedTime);
+                }
             }
 
+            startTime = Timer.getFPGATimestamp();
             SmartDashboard.updateValues();
             LiveWindow.updateValues();
+            elapsedTime = Timer.getFPGATimestamp() - startTime;
+            if (elapsedTime > taskTimeThreshold)
+            {
+                globalTracer.traceWarn(funcName, "%s.updates takes too long (%.3fs)\n",
+                    currMode, elapsedTime);
+            }
 
             if (dashboardEnabled)
             {
@@ -405,8 +458,7 @@ public abstract class FrcRobotBase extends RobotBase
             double timeSliceUsed = Timer.getFPGATimestamp() - timeSliceStart;
             if (timeSliceUsed > timesliceThreshold)
             {
-                TrcDbgTrace.getGlobalTracer().traceWarn(funcName, "%s takes too long (%5.3fs)\n",
-                    currMode.toString(), timeSliceUsed);
+                globalTracer.traceWarn(funcName, "%s takes too long (%.3fs)\n", currMode.toString(), timeSliceUsed);
             }
         }
     }   //startCompetition

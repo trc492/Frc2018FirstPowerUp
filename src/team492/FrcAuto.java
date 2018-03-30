@@ -30,6 +30,7 @@ import frclib.FrcChoiceMenu;
 import hallib.HalDashboard;
 import team492.RobotInfo.Position;
 import trclib.TrcRobot;
+import trclib.TrcTaskMgr;
 import trclib.TrcRobot.RunMode;
 
 public class FrcAuto implements TrcRobot.RobotMode
@@ -149,9 +150,9 @@ public class FrcAuto implements TrcRobot.RobotMode
             robot.startTraceLog(RunMode.AUTO_MODE);
 
         Date now = new Date();
-        robot.tracer.traceInfo(Robot.programName, "%s[%.3f]: ***** Starting autonomous *****",
+        robot.globalTracer.traceInfo(Robot.programName, "%s[%.3f]: ***** Starting autonomous *****",
             now.toString(), Robot.getModeElapsedTime());
-        robot.tracer.traceInfo(Robot.programName, "%s_%s_%3d (%s%d) [FMSConnected=%b]", robot.eventName,
+        robot.globalTracer.traceInfo(Robot.programName, "%s_%s_%3d (%s%d) [FMSConnected=%b]", robot.eventName,
             robot.matchType.toString(), robot.matchNumber, robot.alliance.toString(), robot.location,
             robot.ds.isFMSAttached());
 
@@ -276,14 +277,15 @@ public class FrcAuto implements TrcRobot.RobotMode
         robot.setVisionEnabled(true);
         robot.driveBase.resetPosition();
         robot.targetHeading = 0.0;
-        robot.tracer.traceInfo("FrcAuto.startMode", "[%.3f] startMode done!", Robot.getModeElapsedTime());
+        robot.globalTracer.traceInfo("FrcAuto.startMode", "[%.3f] startMode done!", Robot.getModeElapsedTime());
     } // startMode
 
     @Override
     public void stopMode()
     {
-    	robot.diagnostics.printDiagnostics();
         robot.setVisionEnabled(false);
+        robot.diagnostics.printDiagnostics();
+        TrcTaskMgr.getInstance().printTaskPerformanceMetrics(robot.globalTracer);
     } // stopMode
 
     @Override
@@ -303,14 +305,14 @@ public class FrcAuto implements TrcRobot.RobotMode
 
             if (robot.pidDrive.isActive())
             {
-                robot.encoderXPidCtrl.printPidInfo(robot.tracer, elapsedTime, robot.battery);
-                robot.encoderYPidCtrl.printPidInfo(robot.tracer, elapsedTime, robot.battery);
-                robot.gyroTurnPidCtrl.printPidInfo(robot.tracer, elapsedTime, robot.battery);
+                robot.encoderXPidCtrl.printPidInfo(robot.globalTracer, elapsedTime, robot.battery);
+                robot.encoderYPidCtrl.printPidInfo(robot.globalTracer, elapsedTime, robot.battery);
+                robot.gyroTurnPidCtrl.printPidInfo(robot.globalTracer, elapsedTime, robot.battery);
             }
 
             if(robot.elevator.elevator.isActive())
             {
-                robot.elevator.elevatorPidCtrl.printPidInfo(robot.tracer, elapsedTime, robot.battery);
+                robot.elevator.elevatorPidCtrl.printPidInfo(robot.globalTracer, elapsedTime, robot.battery);
             }
         }
     } // runContinuous

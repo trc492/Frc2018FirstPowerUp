@@ -86,7 +86,7 @@ public class CmdAutoScale implements TrcRobot.RobotCommand
      */
     public CmdAutoScale(Robot robot, double delay, Position startPosition, double forwardDriveDistance)
     {
-        robot.tracer.traceInfo(moduleName, "[%.3f] delay=%.1f, startPos=%s, fwdDistance=%.1f",
+        robot.globalTracer.traceInfo(moduleName, "[%.3f] delay=%.1f, startPos=%s, fwdDistance=%.1f",
             Robot.getModeElapsedTime(), delay, startPosition, forwardDriveDistance);
 
         this.robot = robot;
@@ -128,7 +128,7 @@ public class CmdAutoScale implements TrcRobot.RobotCommand
 
         robot.gyroTurnPidCtrl.setNoOscillation(true);
 
-        robot.tracer.traceInfo(moduleName,
+        robot.globalTracer.traceInfo(moduleName,
             "alliance=%s, gameSpecificMsg=%s, delay=%.3f, startPosition=%s, fwdDistance=%.0f",
              robot.alliance, robot.gameSpecificMessage, delay, startPosition, forwardDriveDistance);
     }
@@ -236,7 +236,7 @@ public class CmdAutoScale implements TrcRobot.RobotCommand
                         nextState = State.TURN_TO_OPPOSITE_SCALE;
                     }
 
-                    robot.tracer.traceInfo(moduleName, "sonarDistance=%.1f, distanceFromWall=%.1f, xDistance=%.1f, yDistance=%.1f",
+                    robot.globalTracer.traceInfo(moduleName, "sonarDistance=%.1f, distanceFromWall=%.1f, xDistance=%.1f, yDistance=%.1f",
                         sonarDistance, distanceFromWall, xDistance, yDistance);
                     robot.pidDrive.setTarget(xDistance, yDistance, robot.targetHeading, false, event, 0.0);
                     sm.waitForSingleEvent(event, nextState);
@@ -307,14 +307,14 @@ public class CmdAutoScale implements TrcRobot.RobotCommand
 
     private void setSonarTriggerEnabled(boolean enabled)
     {
-        robot.tracer.traceInfo(moduleName, "setSonarTriggerEnabled(%b)", enabled);
+        robot.globalTracer.traceInfo(moduleName, "setSonarTriggerEnabled(%b)", enabled);
         sonarTrigger.setTaskEnabled(enabled);
         if (enabled) sonarEvent.clear();
     }
 
     private void setRangingEnabled(boolean enabled)
     {
-        robot.tracer.traceInfo(moduleName, "setRangingEnabled(%b)", enabled);
+        robot.globalTracer.traceInfo(moduleName, "setRangingEnabled(%b)", enabled);
         if(enabled)
         {
             sonarArray.startRanging(true);
@@ -327,7 +327,7 @@ public class CmdAutoScale implements TrcRobot.RobotCommand
 
     private void sonarTriggerEvent(int currZone, int prevZone, double zoneValue)
     {
-        robot.tracer.traceInfo(moduleName, "SonarTriggerEvent: prevZone=%d, currZone=%d, value:%.1f",
+        robot.globalTracer.traceInfo(moduleName, "SonarTriggerEvent: prevZone=%d, currZone=%d, value:%.1f",
             prevZone, currZone, zoneValue);
 
         if (prevZone == 1 && currZone == 0)

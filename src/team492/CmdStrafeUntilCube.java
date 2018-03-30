@@ -104,7 +104,7 @@ public class CmdStrafeUntilCube implements TrcRobot.RobotCommand
                         break;
 
                     case VISION_DONE:
-                        robot.tracer.traceInfo(funcName, "visionEvent=%b, driveEvent=%b",
+                        robot.globalTracer.traceInfo(funcName, "visionEvent=%b, driveEvent=%b",
                             visionEvent.isSignaled(), event.isSignaled());
                         stop();
                         if (onFinishedEvent != null)
@@ -123,7 +123,7 @@ public class CmdStrafeUntilCube implements TrcRobot.RobotCommand
 
     public void visionTriggerHandler(int currZone, int prevZone, double value)
     {
-        robot.tracer.traceInfo("VisionTrigger", "prevZone=%d, currZone=%d, value=%.2f", prevZone, currZone, value);
+        robot.globalTracer.traceInfo("VisionTrigger", "prevZone=%d, currZone=%d, value=%.2f", prevZone, currZone, value);
         if (currZone == 1)
         {
             if (visionTriggerEvent != null)

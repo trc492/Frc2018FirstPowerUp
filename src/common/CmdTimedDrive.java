@@ -78,7 +78,7 @@ public class CmdTimedDrive implements TrcRobot.RobotCommand
         sm = new TrcStateMachine<>(moduleName);
         sm.start(State.DO_DELAY);
 
-        robot.tracer.traceInfo(
+        robot.globalTracer.traceInfo(
             moduleName, "delay=%.3f, time=%.1f, xPower=%.1f, yPower=%.1f, turnPower=%.1f",
             delay, driveTime, xDrivePower, yDrivePower, turnPower);
     }   //CmdTimedDrive

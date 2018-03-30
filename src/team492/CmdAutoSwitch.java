@@ -115,7 +115,7 @@ class CmdAutoSwitch implements TrcRobot.RobotCommand
 
     CmdAutoSwitch(Robot robot, double delay, double forwardDistance, Position startPosition, boolean fastDelivery, boolean getSecondCube)
     {
-        robot.tracer.traceInfo(
+        robot.globalTracer.traceInfo(
             moduleName, "[%.3f] delay=%.1f, fwdDistance=%.1f, startPos=%s, fastDelivery=%b, getSecondCube=%b",
             Robot.getModeElapsedTime(), delay, forwardDistance, startPosition, fastDelivery, getSecondCube);
 
@@ -168,7 +168,7 @@ class CmdAutoSwitch implements TrcRobot.RobotCommand
 
         robot.gyroTurnPidCtrl.setNoOscillation(true);
 
-        robot.tracer.traceInfo(moduleName,
+        robot.globalTracer.traceInfo(moduleName,
             "alliance=%s, gameSpecificMsg=%s, delay=%.3f, fwdDistance=%.0f, startPosition=%s, flipInFlight=%b",
              robot.alliance, robot.gameSpecificMessage, delay, forwardDistance, startPosition, flipInFlight);
     } // CmdAutoSwitch
@@ -329,7 +329,7 @@ class CmdAutoSwitch implements TrcRobot.RobotCommand
                         sonarDistance = rightSwitch? robot.getRightSonarDistance(): robot.getLeftSonarDistance();
                         // Since we moved backward, yPos is negative, let's make yStart positive.
                         yStart = -robot.driveBase.getYPosition();
-                        robot.tracer.traceInfo(funcName, "sonarDistance=%.1f, yPos=%.1f", sonarDistance, yStart);
+                        robot.globalTracer.traceInfo(funcName, "sonarDistance=%.1f, yPos=%.1f", sonarDistance, yStart);
 
                         if (flipInFlight)
                         {
@@ -453,7 +453,7 @@ class CmdAutoSwitch implements TrcRobot.RobotCommand
                             xDistance = (RobotInfo.AUTO_DISTANCE_TO_SWITCH - forwardDistance) - 36.0;
                         }
                         if (rightSwitch) xDistance = -xDistance;
-                        robot.tracer.traceInfo(moduleName, "Strafe to switch, forwardDistance=%.1f,xDistance=%.2f",
+                        robot.globalTracer.traceInfo(moduleName, "Strafe to switch, forwardDistance=%.1f,xDistance=%.2f",
                             forwardDistance, xDistance);
                         robot.pidDrive.setTarget(xDistance, yDistance, robot.targetHeading, false, event, 0.0);
                         sm.addEvent(event);
@@ -567,15 +567,15 @@ class CmdAutoSwitch implements TrcRobot.RobotCommand
                     case START_SECOND_PICKUP:
                         double xError = visionTarget != null?
                             visionTarget - (robot.driveBase.getXPosition() - xStart): 0.0;
-                        robot.tracer.traceInfo(funcName, "visionStrafeError=%.1f", xError);
+                        robot.globalTracer.traceInfo(funcName, "visionStrafeError=%.1f", xError);
                         visionTarget = robot.getPixyTargetX();
                         if (visionTarget == null)
                         {
-                            robot.tracer.traceInfo(funcName, "Vision Target not found");
+                            robot.globalTracer.traceInfo(funcName, "Vision Target not found");
                         }
                         else
                         {
-                            robot.tracer.traceInfo(funcName, "visionTargetX=%.1f", robot.getPixyTargetX());
+                            robot.globalTracer.traceInfo(funcName, "visionTargetX=%.1f", robot.getPixyTargetX());
                         }
                         robot.encoderXPidCtrl.setOutputLimit(xPowerLimit);
                         // Go forward to grab the cube or until it passes a certain distance.
@@ -625,7 +625,7 @@ class CmdAutoSwitch implements TrcRobot.RobotCommand
                         xDistance = 0;
                         yDistance =
                             RobotInfo.SCALE_FRONT_POSITION + (RobotInfo.RIGHT_SWITCH_LOCATION - cubeStrafeDistance);
-                        robot.tracer.traceInfo(funcName, "cubeStrafeDistance=%.1f driveAcrossFieldDistance=%.1f",cubeStrafeDistance, yDistance);
+                        robot.globalTracer.traceInfo(funcName, "cubeStrafeDistance=%.1f driveAcrossFieldDistance=%.1f",cubeStrafeDistance, yDistance);
                         robot.pidDrive.setTarget(xDistance, yDistance, robot.targetHeading, false, event, 0.0);
                         sm.waitForSingleEvent(event, State.TURN_ROBOT);
                         break;
@@ -638,7 +638,7 @@ class CmdAutoSwitch implements TrcRobot.RobotCommand
                         break;
 
                     case RAISE_ELEVATOR:
-                        robot.tracer.traceInfo(funcName, "ElevatorStartHeight=%.1f", robot.elevator.getPosition());
+                        robot.globalTracer.traceInfo(funcName, "ElevatorStartHeight=%.1f", robot.elevator.getPosition());
                         robot.elevator.setPosition(RobotInfo.ELEVATOR_SCALE_HIGH, event, 3.0);
                         sm.waitForSingleEvent(event, State.APPROACH_FINAL_TARGET);
                         break;
@@ -646,7 +646,7 @@ class CmdAutoSwitch implements TrcRobot.RobotCommand
                     case APPROACH_FINAL_TARGET:
                         // Do another setPosition without event so it will hold position.
                         robot.elevator.setPosition(RobotInfo.ELEVATOR_SCALE_HIGH);
-                        robot.tracer.traceInfo(funcName, "ElevatorStopHeight=%.1f", robot.elevator.getPosition());
+                        robot.globalTracer.traceInfo(funcName, "ElevatorStopHeight=%.1f", robot.elevator.getPosition());
                         xDistance = 0.0;
                         // left this side approach distance just in case we need it again
                         yDistance = RobotInfo.FINAL_FRONT_SCALE_APPROACH_DISTANCE;
@@ -694,7 +694,7 @@ class CmdAutoSwitch implements TrcRobot.RobotCommand
 
     private void sonarTriggerEvent(int currZone, int prevZone, double zoneValue)
     {
-        robot.tracer.traceInfo("SonarTrigger", "[%.3f] prevZone=%d, currZone=%d, distance=%.2f",
+        robot.globalTracer.traceInfo("SonarTrigger", "[%.3f] prevZone=%d, currZone=%d, distance=%.2f",
             Robot.getModeElapsedTime(), prevZone, currZone, zoneValue);
 
         if (Robot.getModeElapsedTime() <= 1.0) return;
