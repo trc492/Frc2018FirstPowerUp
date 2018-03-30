@@ -220,6 +220,7 @@ public class CmdAutoScale implements TrcRobot.RobotCommand
                     if (!sameSide && !lane3) currY = currY - startY + forwardDriveDistance;
                     if (sameSide || !lane3)
                     {
+                        robot.encoderYPidCtrl.setTargetTolerance(3.0);
                         xDistance = RobotInfo.SCALE_TO_WALL_DISTANCE - RobotInfo.ROBOT_TO_SCALE_DISTANCE - distanceFromWall;
                         if (scaleRight) xDistance *= -1;
                         // Start raising elevator
@@ -238,7 +239,7 @@ public class CmdAutoScale implements TrcRobot.RobotCommand
 
                     robot.globalTracer.traceInfo(moduleName, "sonarDistance=%.1f, distanceFromWall=%.1f, xDistance=%.1f, yDistance=%.1f",
                         sonarDistance, distanceFromWall, xDistance, yDistance);
-                    robot.pidDrive.setTarget(xDistance, yDistance, robot.targetHeading, false, event, 0.0);
+                    robot.pidDrive.setTarget(xDistance, yDistance, robot.targetHeading, false, event, 5.0);
                     sm.waitForSingleEvent(event, nextState);
                     break;
 
@@ -269,9 +270,10 @@ public class CmdAutoScale implements TrcRobot.RobotCommand
                     break;
 
                 case TURN_TO_FACE_SCALE:
+                    robot.encoderYPidCtrl.setTargetTolerance(RobotInfo.ENCODER_Y_TOLERANCE);
                     robot.gyroTurnPidCtrl.setNoOscillation(false);
                     robot.targetHeading = scaleRight?DRIVE_HEADING_WEST:DRIVE_HEADING_EAST;
-                    robot.pidDrive.setTarget(0.0, 0.0, robot.targetHeading, false, event);
+                    robot.pidDrive.setTarget(0.0, 0.0, robot.targetHeading, false, event, 2.5);
                     sm.waitForSingleEvent(event, State.RAISE_ELEVATOR);
                     break;
 

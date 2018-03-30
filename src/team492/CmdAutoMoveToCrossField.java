@@ -69,6 +69,8 @@ public class CmdAutoMoveToCrossField implements TrcRobot.RobotCommand
         sm = new TrcStateMachine<>(moduleName);
 
         startRight = startPosition == Position.RIGHT_POS;
+        
+        sm.start(State.START);
     }
 
     @Override
