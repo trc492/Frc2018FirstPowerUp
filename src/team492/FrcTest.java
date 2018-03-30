@@ -212,7 +212,6 @@ public class FrcTest extends FrcTeleOp
         {
             case SENSORS_TEST:
                 doSensorsTest();
-                robot.diagnostics.updateDiagnosticsAndDashboard();
                 break;
 
             case SUBSYSTEMS_TEST:
@@ -226,13 +225,13 @@ public class FrcTest extends FrcTeleOp
 
             case DRIVE_MOTORS_TEST:
                 doDriveMotorsTest();
-                robot.diagnostics.updateDiagnosticsAndDashboard();
                 break;
 
             default:
                 break;
         }
-        
+
+        robot.diagnostics.updateDiagnosticsAndDashboard();
     } // runPeriodic
 
     @Override
