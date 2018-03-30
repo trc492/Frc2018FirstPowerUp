@@ -216,8 +216,7 @@ public class FrcTest extends FrcTeleOp
 
             case SUBSYSTEMS_TEST:
                 //
-                // Allow TeleOp to run so we can control the robot in sensors
-                // test mode.
+                // Allow TeleOp to run so we can control the robot in subsystems test mode.
                 //
                 super.runPeriodic(elapsedTime);
                 doSensorsTest();
