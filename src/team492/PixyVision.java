@@ -118,7 +118,10 @@ public class PixyVision
      * This method analyzes all the detected object rectangles and attempts to find a pair that are the likely targets.
      * It then returns the rectangle enclosing the two object rectangles.
      *
-     * @return rectangle of the detected target.
+     * Caches the last result seen from the camera - callers do not need to handle the case of a frame
+     * not being available from the camera.
+     *
+     * @return rectangle of the detected target last received from the camera. Null if no objects were seen.
      */
     private Rect getTargetRect()
     {
@@ -138,7 +141,7 @@ public class PixyVision
             //
             targetRect = lastTargetRect;
         }
-        else if (detectedObjects.length >= 1)
+        else
         {
             //
             // Make sure the camera detected at least one objects.
@@ -219,6 +222,10 @@ public class PixyVision
                     robot.globalTracer.traceInfo(moduleName, "===TargetRect===: x=%d, y=%d, w=%d, h=%d",
                         targetRect.x, targetRect.y, targetRect.width, targetRect.height);
                 }
+            }
+
+            if (targetRect == null) {
+                robot.globalTracer.traceInfo(moduleName, "===TargetRect=== None, is now null");
             }
 
             lastTargetRect = targetRect;
