@@ -492,7 +492,7 @@ public class Robot extends FrcRobotBase
 
         cancelAutoAssist();
         cubePickup.stopPickup();
-        globalTracer.traceInfo(moduleName, "TotalEnergy=%.3f", battery.getTotalEnergy());
+        globalTracer.traceInfo(moduleName, "TotalEnergy=%.3fWh", battery.getTotalEnergy());
         stopTraceLog();
     }   //robotStopMode
 

@@ -39,7 +39,7 @@ public class TrcTaskMgr
     private static final TrcDbgTrace.MsgLevel msgLevel = TrcDbgTrace.MsgLevel.INFO;
     private TrcDbgTrace dbgTrace = null;
 
-    private static final long taskNanoTimeThreshold = 50000000; // 0.05 sec
+    private static final long taskNanoTimeThreshold = 10000000; // 10 msec
 
     /**
      * These are the task type TrcTaskMgr supports:
