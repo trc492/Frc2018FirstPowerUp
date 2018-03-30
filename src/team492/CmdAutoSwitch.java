@@ -22,7 +22,6 @@
 
 package team492;
 
-import hallib.HalDashboard;
 import team492.RobotInfo.Position;
 import trclib.TrcAnalogInput;
 import trclib.TrcAnalogTrigger;
@@ -123,8 +122,7 @@ class CmdAutoSwitch implements TrcRobot.RobotCommand
         this.robot = robot;
         this.delay = delay;
         // if forwardDistance is -1, it means the driver picked "custom".
-        this.forwardDistance = forwardDistance != -1.0?
-            forwardDistance: HalDashboard.getNumber("Auto/FwdDistance", 10.0);
+        this.forwardDistance = forwardDistance;
         this.getSecondCube = getSecondCube;
         this.startPosition = startPosition;
         robot.gyroTurnPidCtrl.setTargetTolerance(4.0);
@@ -245,15 +243,9 @@ class CmdAutoSwitch implements TrcRobot.RobotCommand
                         robot.encoderYPidCtrl.setTargetTolerance(RobotInfo.ENCODER_Y_TOLERANCE);
                         robot.gyroTurnPidCtrl.setTargetTolerance(RobotInfo.GYRO_TURN_TOLERANCE);
                         robot.cubePickup.dropCube(0.8);
-                        if (getSecondCube)
-                        {
-                            timer.set(1.0, event);
-                            sm.waitForSingleEvent(event, State.TURN_TO_END_OF_SWITCH);
-                        }
-                        else
-                        {
-                            sm.setState(State.DONE);
-                        }
+                        nextState = getSecondCube?State.TURN_TO_END_OF_SWITCH:State.DONE;
+                        timer.set(1.0, event);
+                        sm.waitForSingleEvent(event, nextState);
                         break;
 
                     case TURN_TO_END_OF_SWITCH:

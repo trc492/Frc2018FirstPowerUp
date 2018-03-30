@@ -38,10 +38,10 @@ public class OnBoardDiagnostics
     {
         this.robot = robot;
         tests = new ArrayList<>();
-        tests.add(new EncoderUnpluggedTest(robot.leftFrontWheel, "left front encoder", Subsystem.DRIVEBASE));
-        tests.add(new EncoderUnpluggedTest(robot.rightFrontWheel, "right front encoder", Subsystem.DRIVEBASE));
-        tests.add(new EncoderUnpluggedTest(robot.leftRearWheel, "left rear encoder", Subsystem.DRIVEBASE));
-        tests.add(new EncoderUnpluggedTest(robot.rightRearWheel, "right rear encoder", Subsystem.DRIVEBASE));
+        tests.add(new EncoderUnpluggedTest(robot.leftFrontWheel, "lf encoder", Subsystem.DRIVEBASE));
+        tests.add(new EncoderUnpluggedTest(robot.rightFrontWheel, "rf encoder", Subsystem.DRIVEBASE));
+        tests.add(new EncoderUnpluggedTest(robot.leftRearWheel, "lr encoder", Subsystem.DRIVEBASE));
+        tests.add(new EncoderUnpluggedTest(robot.rightRearWheel, "rr encoder", Subsystem.DRIVEBASE));
 
         tests.add(new HighTalonErrorRateTest(robot.leftFrontWheel, "lf motor errors", Subsystem.DRIVEBASE));
         tests.add(new HighTalonErrorRateTest(robot.rightFrontWheel, "rf motor errors", Subsystem.DRIVEBASE));
@@ -69,7 +69,7 @@ public class OnBoardDiagnostics
         tests.add(new DigitalSensorUnchangedTest(robot.elevator.elevatorMotor::isUpperLimitSwitchActive,
             "elev U switch unchanged", Subsystem.ELEVATOR));
 
-        tests.add(new DigitalSensorUnchangedTest(robot.cubePickup::cubeInProximity, "grabber cube proximity sensor", Subsystem.SENSORS));
+        tests.add(new DigitalSensorUnchangedTest(robot.cubePickup::cubeInProximity, "cube proximity sensor", Subsystem.SENSORS));
 
         tests.add(new ElevatorPositionUnchangedTest("Elevator position", robot.elevator));
 
@@ -123,7 +123,7 @@ public class OnBoardDiagnostics
         Map<Subsystem, Boolean> subsystemResults = getSubsystemDiagnosticResults();
         for(Map.Entry<Subsystem, Boolean> entry : subsystemResults.entrySet())
         {
-            HalDashboard.putBoolean("Tests/" + entry.getKey().name(), entry.getValue());
+            HalDashboard.putBoolean("Test/" + entry.getKey().name(), entry.getValue());
         }
         
     }

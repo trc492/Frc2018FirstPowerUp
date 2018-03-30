@@ -1,5 +1,5 @@
 {
-  "dividerPosition": 0.13249211356466878,
+  "dividerPosition": 0.14169139465875372,
   "tabPane": [
     {
       "title": "FMSInfo",
@@ -349,13 +349,24 @@
           },
           "16,0": {
             "size": [
-              5,
-              3
+              4,
+              2
             ],
             "content": {
               "_type": "ComboBox Chooser",
               "_source0": "network_table:///SmartDashboard/Auto/ScaleOrSwitch",
               "_title": "ScaleOrSwitch"
+            }
+          },
+          "8,2": {
+            "size": [
+              4,
+              2
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/Auto/FwdDistance",
+              "_title": "FwdDistance"
             }
           }
         }
@@ -483,13 +494,65 @@
           },
           "16,0": {
             "size": [
-              2,
-              2
+              4,
+              3
             ],
             "content": {
               "_type": "Text View",
               "_source0": "network_table:///SmartDashboard/Test/GrabberHoldPower",
               "_title": "GrabberHoldPower"
+            }
+          },
+          "6,8": {
+            "size": [
+              3,
+              3
+            ],
+            "content": {
+              "_type": "Boolean Box",
+              "_source0": "network_table:///SmartDashboard/Test/ELEVATOR",
+              "_title": "ELEVATOR",
+              "colorWhenTrue": "#7CFC00FF",
+              "colorWhenFalse": "#8B0000FF"
+            }
+          },
+          "9,8": {
+            "size": [
+              3,
+              3
+            ],
+            "content": {
+              "_type": "Boolean Box",
+              "_source0": "network_table:///SmartDashboard/Test/SENSORS",
+              "_title": "SENSORS",
+              "colorWhenTrue": "#7CFC00FF",
+              "colorWhenFalse": "#8B0000FF"
+            }
+          },
+          "12,8": {
+            "size": [
+              3,
+              3
+            ],
+            "content": {
+              "_type": "Boolean Box",
+              "_source0": "network_table:///SmartDashboard/Test/PRESSURE",
+              "_title": "PRESSURE",
+              "colorWhenTrue": "#7CFC00FF",
+              "colorWhenFalse": "#8B0000FF"
+            }
+          },
+          "3,8": {
+            "size": [
+              3,
+              3
+            ],
+            "content": {
+              "_type": "Boolean Box",
+              "_source0": "network_table:///SmartDashboard/Test/DRIVEBASE",
+              "_title": "DRIVEBASE",
+              "colorWhenTrue": "#7CFC00FF",
+              "colorWhenFalse": "#8B0000FF"
             }
           }
         }
@@ -658,113 +721,22 @@
         "hgap": 16.0,
         "vgap": 16.0,
         "tiles": {
-          "0,0": {
+          "0,8": {
             "size": [
               4,
               2
             ],
             "content": {
               "_type": "Boolean Box",
-              "_source0": "network_table:///SmartDashboard/Diagnostics/left front wheel motor",
-              "_title": "left front wheel motor",
+              "_source0": "network_table:///SmartDashboard/Diagnostics/cube proximity sensor",
+              "_title": "cube proximity sensor",
               "colorWhenTrue": "#7CFC00FF",
               "colorWhenFalse": "#8B0000FF"
             }
           },
-          "8,4": {
+          "7,8": {
             "size": [
-              4,
-              2
-            ],
-            "content": {
-              "_type": "Boolean Box",
-              "_source0": "network_table:///SmartDashboard/Diagnostics/UPPER elevator",
-              "_title": "UPPER elevator",
-              "colorWhenTrue": "#7CFC00FF",
-              "colorWhenFalse": "#8B0000FF"
-            }
-          },
-          "16,0": {
-            "size": [
-              4,
-              2
-            ],
-            "content": {
-              "_type": "Boolean Box",
-              "_source0": "network_table:///SmartDashboard/Diagnostics/left sonar",
-              "_title": "left sonar",
-              "colorWhenTrue": "#7CFC00FF",
-              "colorWhenFalse": "#8B0000FF"
-            }
-          },
-          "8,2": {
-            "size": [
-              4,
-              2
-            ],
-            "content": {
-              "_type": "Boolean Box",
-              "_source0": "network_table:///SmartDashboard/Diagnostics/left rear encoder",
-              "_title": "left rear encoder",
-              "colorWhenTrue": "#7CFC00FF",
-              "colorWhenFalse": "#8B0000FF"
-            }
-          },
-          "4,2": {
-            "size": [
-              4,
-              2
-            ],
-            "content": {
-              "_type": "Boolean Box",
-              "_source0": "network_table:///SmartDashboard/Diagnostics/right rear wheel motor",
-              "_title": "right rear wheel motor",
-              "colorWhenTrue": "#7CFC00FF",
-              "colorWhenFalse": "#8B0000FF"
-            }
-          },
-          "4,0": {
-            "size": [
-              4,
-              2
-            ],
-            "content": {
-              "_type": "Boolean Box",
-              "_source0": "network_table:///SmartDashboard/Diagnostics/right front wheel motor",
-              "_title": "right front wheel motor",
-              "colorWhenTrue": "#7CFC00FF",
-              "colorWhenFalse": "#8B0000FF"
-            }
-          },
-          "16,2": {
-            "size": [
-              4,
-              2
-            ],
-            "content": {
-              "_type": "Boolean Box",
-              "_source0": "network_table:///SmartDashboard/Diagnostics/Gyro",
-              "_title": "Gyro",
-              "colorWhenTrue": "#7CFC00FF",
-              "colorWhenFalse": "#8B0000FF"
-            }
-          },
-          "0,2": {
-            "size": [
-              4,
-              2
-            ],
-            "content": {
-              "_type": "Boolean Box",
-              "_source0": "network_table:///SmartDashboard/Diagnostics/left rear wheel motor",
-              "_title": "left rear wheel motor",
-              "colorWhenTrue": "#7CFC00FF",
-              "colorWhenFalse": "#8B0000FF"
-            }
-          },
-          "20,0": {
-            "size": [
-              4,
+              3,
               2
             ],
             "content": {
@@ -775,100 +747,204 @@
               "colorWhenFalse": "#8B0000FF"
             }
           },
-          "4,4": {
+          "9,0": {
             "size": [
-              4,
+              3,
               2
             ],
             "content": {
               "_type": "Boolean Box",
-              "_source0": "network_table:///SmartDashboard/Diagnostics/LOWER elevator",
-              "_title": "LOWER elevator",
+              "_source0": "network_table:///SmartDashboard/Diagnostics/rf motor errors",
+              "_title": "rf motor errors",
               "colorWhenTrue": "#7CFC00FF",
               "colorWhenFalse": "#8B0000FF"
             }
           },
-          "12,2": {
+          "3,2": {
             "size": [
-              4,
+              3,
               2
             ],
             "content": {
               "_type": "Boolean Box",
-              "_source0": "network_table:///SmartDashboard/Diagnostics/right rear encoder",
-              "_title": "right rear encoder",
+              "_source0": "network_table:///SmartDashboard/Diagnostics/rr encoder",
+              "_title": "rr encoder",
               "colorWhenTrue": "#7CFC00FF",
               "colorWhenFalse": "#8B0000FF"
             }
           },
-          "20,4": {
+          "6,2": {
             "size": [
-              4,
+              3,
               2
             ],
             "content": {
               "_type": "Boolean Box",
-              "_source0": "network_table:///SmartDashboard/Diagnostics/grabber cube proximity sensor",
-              "_title": "grabber cube proximity sensor",
+              "_source0": "network_table:///SmartDashboard/Diagnostics/lr motor errors",
+              "_title": "lr motor errors",
               "colorWhenTrue": "#7CFC00FF",
               "colorWhenFalse": "#8B0000FF"
             }
           },
-          "12,4": {
+          "4,8": {
             "size": [
-              4,
+              3,
               2
             ],
             "content": {
               "_type": "Boolean Box",
-              "_source0": "network_table:///SmartDashboard/Diagnostics/elevator motor",
-              "_title": "elevator motor",
-              "colorWhenTrue": "#7CFC00FF",
-              "colorWhenFalse": "#8B0000FF"
-            }
-          },
-          "0,4": {
-            "size": [
-              4,
-              2
-            ],
-            "content": {
-              "_type": "Boolean Box",
-              "_source0": "network_table:///SmartDashboard/Diagnostics/elevator lower limit switch",
-              "_title": "elevator lower limit switch",
+              "_source0": "network_table:///SmartDashboard/Diagnostics/left sonar",
+              "_title": "left sonar",
               "colorWhenTrue": "#7CFC00FF",
               "colorWhenFalse": "#8B0000FF"
             }
           },
           "12,0": {
             "size": [
-              4,
+              3,
               2
             ],
             "content": {
               "_type": "Boolean Box",
-              "_source0": "network_table:///SmartDashboard/Diagnostics/right front encoder",
-              "_title": "right front encoder",
+              "_source0": "network_table:///SmartDashboard/Diagnostics/Gyro connected",
+              "_title": "Gyro connected",
               "colorWhenTrue": "#7CFC00FF",
               "colorWhenFalse": "#8B0000FF"
             }
           },
-          "8,0": {
+          "3,0": {
+            "size": [
+              3,
+              2
+            ],
+            "content": {
+              "_type": "Boolean Box",
+              "_source0": "network_table:///SmartDashboard/Diagnostics/rf encoder",
+              "_title": "rf encoder",
+              "colorWhenTrue": "#7CFC00FF",
+              "colorWhenFalse": "#8B0000FF"
+            }
+          },
+          "0,0": {
+            "size": [
+              3,
+              2
+            ],
+            "content": {
+              "_type": "Boolean Box",
+              "_source0": "network_table:///SmartDashboard/Diagnostics/lf encoder",
+              "_title": "lf encoder",
+              "colorWhenTrue": "#7CFC00FF",
+              "colorWhenFalse": "#8B0000FF"
+            }
+          },
+          "0,2": {
+            "size": [
+              3,
+              2
+            ],
+            "content": {
+              "_type": "Boolean Box",
+              "_source0": "network_table:///SmartDashboard/Diagnostics/lr encoder",
+              "_title": "lr encoder",
+              "colorWhenTrue": "#7CFC00FF",
+              "colorWhenFalse": "#8B0000FF"
+            }
+          },
+          "16,5": {
             "size": [
               4,
               2
             ],
             "content": {
               "_type": "Boolean Box",
-              "_source0": "network_table:///SmartDashboard/Diagnostics/left front encoder",
-              "_title": "left front encoder",
+              "_source0": "network_table:///SmartDashboard/Diagnostics/elevator motor errors",
+              "_title": "elevator motor errors",
               "colorWhenTrue": "#7CFC00FF",
               "colorWhenFalse": "#8B0000FF"
             }
           },
-          "16,4": {
+          "10,8": {
+            "size": [
+              3,
+              2
+            ],
+            "content": {
+              "_type": "Boolean Box",
+              "_source0": "network_table:///SmartDashboard/Diagnostics/Pixy errors",
+              "_title": "Pixy errors",
+              "colorWhenTrue": "#7CFC00FF",
+              "colorWhenFalse": "#8B0000FF"
+            }
+          },
+          "15,8": {
             "size": [
               4,
+              2
+            ],
+            "content": {
+              "_type": "Boolean Box",
+              "_source0": "network_table:///SmartDashboard/Diagnostics/Pneumatics charged",
+              "_title": "Pneumatics charged",
+              "colorWhenTrue": "#7CFC00FF",
+              "colorWhenFalse": "#8B0000FF"
+            }
+          },
+          "6,0": {
+            "size": [
+              3,
+              2
+            ],
+            "content": {
+              "_type": "Boolean Box",
+              "_source0": "network_table:///SmartDashboard/Diagnostics/lf motor errors",
+              "_title": "lf motor errors",
+              "colorWhenTrue": "#7CFC00FF",
+              "colorWhenFalse": "#8B0000FF"
+            }
+          },
+          "9,2": {
+            "size": [
+              3,
+              2
+            ],
+            "content": {
+              "_type": "Boolean Box",
+              "_source0": "network_table:///SmartDashboard/Diagnostics/rr motor errors",
+              "_title": "rr motor errors",
+              "colorWhenTrue": "#7CFC00FF",
+              "colorWhenFalse": "#8B0000FF"
+            }
+          },
+          "8,5": {
+            "size": [
+              4,
+              2
+            ],
+            "content": {
+              "_type": "Boolean Box",
+              "_source0": "network_table:///SmartDashboard/Diagnostics/elev L switch unchanged",
+              "_title": "elev L switch unchanged",
+              "colorWhenTrue": "#7CFC00FF",
+              "colorWhenFalse": "#8B0000FF"
+            }
+          },
+          "4,5": {
+            "size": [
+              4,
+              2
+            ],
+            "content": {
+              "_type": "Boolean Box",
+              "_source0": "network_table:///SmartDashboard/Diagnostics/UPPER elevator stuck",
+              "_title": "UPPER elevator stuck",
+              "colorWhenTrue": "#7CFC00FF",
+              "colorWhenFalse": "#8B0000FF"
+            }
+          },
+          "20,5": {
+            "size": [
+              3,
               2
             ],
             "content": {
@@ -879,28 +955,28 @@
               "colorWhenFalse": "#8B0000FF"
             }
           },
-          "24,0": {
+          "12,5": {
             "size": [
               4,
               2
             ],
             "content": {
               "_type": "Boolean Box",
-              "_source0": "network_table:///SmartDashboard/Diagnostics/Pneumatics",
-              "_title": "Pneumatics",
+              "_source0": "network_table:///SmartDashboard/Diagnostics/elev U switch unchanged",
+              "_title": "elev U switch unchanged",
               "colorWhenTrue": "#7CFC00FF",
               "colorWhenFalse": "#8B0000FF"
             }
           },
-          "20,2": {
+          "0,5": {
             "size": [
               4,
               2
             ],
             "content": {
               "_type": "Boolean Box",
-              "_source0": "network_table:///SmartDashboard/Diagnostics/Pixy",
-              "_title": "Pixy",
+              "_source0": "network_table:///SmartDashboard/Diagnostics/LOWER elevator stuck",
+              "_title": "LOWER elevator stuck",
               "colorWhenTrue": "#7CFC00FF",
               "colorWhenFalse": "#8B0000FF"
             }

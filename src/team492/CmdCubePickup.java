@@ -77,6 +77,7 @@ public class CmdCubePickup implements TrcRobot.RobotCommand
         if (sm.isEnabled())
         {
             robot.cubePickup.setProximityTriggerEnabled(false, null);
+            robot.cubePickup.stopPickup();
             robot.pidDrive.cancel();
             sm.stop();
         }
@@ -125,6 +126,7 @@ public class CmdCubePickup implements TrcRobot.RobotCommand
                         break;
 
                     case DONE:
+                        robot.elevator.setPosition(RobotInfo.ELEVATOR_OFF_GROUND);
                         stop();
                         done = true;
                         break;

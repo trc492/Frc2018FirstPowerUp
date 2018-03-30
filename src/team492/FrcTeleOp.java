@@ -316,6 +316,12 @@ public class FrcTeleOp implements TrcRobot.RobotMode
     {
         robot.dashboard.displayPrintf(8, "  OperatorStick: button=0x%04x %s", button, pressed? "pressed": "released");
 
+        if(isAutoAssistEnabled())
+        {
+            robot.tracer.traceInfo("FrcTeleOp", "AutoAssistEnabled: true");
+            return;
+        }
+
 //        double currHeight;
         switch (button)
         {

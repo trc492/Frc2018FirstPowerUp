@@ -170,6 +170,9 @@ public class FrcAuto implements TrcRobot.RobotMode
         fastDelivery = fastDeliveryMenu.getCurrentChoiceObject() == YesOrNo.YES;
         getSecondCube = getSecondCubeMenu.getCurrentChoiceObject() == YesOrNo.YES;
 
+        // CodeReview: Why do it here again? You already initialized forwardDriveDistance below.
+        forwardDriveDistance = HalDashboard.getNumber("Auto/FwdDistance", RobotInfo.FWD_DISTANCE_3);
+
         lane = laneMenu.getCurrentChoiceObject();
         switch (lane)
         {
@@ -186,7 +189,7 @@ public class FrcAuto implements TrcRobot.RobotMode
                 break;
 
             case CUSTOM:
-                forwardDriveDistance = -1.0;
+                forwardDriveDistance = HalDashboard.getNumber("Auto/FwdDistance", RobotInfo.FWD_DISTANCE_3);
                 break;
         }
 
