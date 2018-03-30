@@ -43,6 +43,7 @@ public class TrcPidDrive
     private static final TrcDbgTrace.MsgLevel msgLevel = TrcDbgTrace.MsgLevel.INFO;
     private TrcDbgTrace dbgTrace = null;
     private TrcDbgTrace msgTracer = null;
+    private TrcRobotBattery battery = null;
 
     /**
      * This interface provides a stuck wheel notification handler. It is useful for detecting drive base motor
@@ -149,10 +150,22 @@ public class TrcPidDrive
      * This method sets the message tracer for logging trace messages.
      *
      * @param tracer specifies the tracer for logging messages.
+     * @param battery specifies the battery object to get battery info for the message.
+     */
+    public void setMsgTracer(TrcDbgTrace tracer, TrcRobotBattery battery)
+    {
+        this.msgTracer = tracer;
+        this.battery = battery;
+    }   //setMsgTracer
+
+    /**
+     * This method sets the message tracer for logging trace messages.
+     *
+     * @param tracer specifies the tracer for logging messages.
      */
     public void setMsgTracer(TrcDbgTrace tracer)
     {
-        this.msgTracer = tracer;
+        setMsgTracer(tracer, null);
     }   //setMsgTracer
 
     /**
@@ -787,6 +800,13 @@ public class TrcPidDrive
         else
         {
            driveBase.drive(yPower, turnPower);
+        }
+
+        if (msgTracer != null)
+        {
+            if (xPidCtrl != null) xPidCtrl.printPidInfo(msgTracer, 0.0, battery);
+            if (yPidCtrl != null) yPidCtrl.printPidInfo(msgTracer, 0.0, battery);
+            if (turnPidCtrl != null) turnPidCtrl.printPidInfo(msgTracer, 0.0, battery);
         }
 
         if (debugEnabled)

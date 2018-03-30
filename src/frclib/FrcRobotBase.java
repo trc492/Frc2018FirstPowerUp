@@ -86,6 +86,8 @@ public abstract class FrcRobotBase extends RobotBase
     private static double modeStartTime = 0.0;
     private static double modeElapsedTime = 0.0;
     private static long loopCounter = 0;
+    private RunMode prevMode = RunMode.INVALID_MODE;
+    private RunMode currMode = RunMode.INVALID_MODE;
 
     /**
      * Constructor: Create an instance of the object.
@@ -143,6 +145,16 @@ public abstract class FrcRobotBase extends RobotBase
     }   //getLoopCounter
 
     /**
+     * This method returns the current run mode.
+     *
+     * @return current run mode.
+     */
+    public RunMode getCurrentRunMode()
+    {
+        return currMode;
+    }   //getCurrentRunMode
+
+    /**
      * This method is called by the subclass to set up various robot mode objects.
      *
      * @param teleOpMode specifies the TeleOp mode object.
@@ -197,8 +209,6 @@ public abstract class FrcRobotBase extends RobotBase
         //
         final double timesliceThreshold = 0.1;
         final double taskTimeThreshold = 0.02;
-        RunMode prevMode = RunMode.INVALID_MODE;
-        RunMode currMode = RunMode.INVALID_MODE;
 
         while (true)
         {

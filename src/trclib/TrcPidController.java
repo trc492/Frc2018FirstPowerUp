@@ -231,25 +231,20 @@ public class TrcPidController
 
         if (tracer != null)
         {
+            String msg = timestamp != 0.0? String.format("[%.3f] ", timestamp): "";
+
+            msg += String.format(
+                "%s: Target=%6.1f, Input=%6.1f, Error=%6.1f, " +
+                "PIDTerms=%6.3f/%6.3f/%6.3f/%6.3f, Output=%6.3f(%6.3f/%5.3f)",
+                instanceName, setPoint, input, currError,
+                pTerm, iTerm, dTerm, fTerm, output, minOutput, maxOutput);
+
             if (battery != null)
             {
-                tracer.traceInfo(
-                        funcName,
-                        "[%.3f] %s: Target=%6.1f, Input=%6.1f, Error=%6.1f, " +
-                        "PIDTerms=%6.3f/%6.3f/%6.3f/%6.3f, Output=%6.3f(%6.3f/%5.3f), Volt=%.1f(%.1f)",
-                        timestamp, instanceName, setPoint, input, currError,
-                        pTerm, iTerm, dTerm, fTerm, output, minOutput, maxOutput,
-                        battery.getVoltage(), battery.getLowestVoltage());
+                msg += String.format(", Volt=%.1f(%.1f)", battery.getVoltage(), battery.getLowestVoltage());
             }
-            else
-            {
-                tracer.traceInfo(
-                    funcName,
-                    "[%.3f] %s: Target=%6.1f, Input=%6.1f, Error=%6.1f, " +
-                    "PIDTerms=%6.3f/%6.3f/%6.3f/%6.3f, Output=%6.3f(%6.3f/%5.3f)",
-                    timestamp, instanceName, setPoint, input, currError,
-                    pTerm, iTerm, dTerm, fTerm, output, minOutput, maxOutput);
-            }
+
+            tracer.traceInfo(funcName, msg);
         }
     }   //printPidInfo
 
@@ -273,22 +268,7 @@ public class TrcPidController
      */
     public void printPidInfo(TrcDbgTrace tracer)
     {
-        final String funcName = "printPidInfo";
-
-        if (tracer == null)
-        {
-            tracer = dbgTrace;
-        }
-
-        if (tracer != null)
-        {
-            tracer.traceInfo(
-                    funcName,
-                    "%s: Target=%6.1f, Input=%6.1f, Error=%6.1f, " +
-                    "PIDTerms=%6.3f/%6.3f/%6.3f/%6.3f, Output=%6.3f(%6.3f/%5.3f)",
-                    instanceName, setPoint, input, currError,
-                    pTerm, iTerm, dTerm, fTerm, output, minOutput, maxOutput);
-        }
+        printPidInfo(tracer, 0.0, null);
     }   //printPidInfo
 
     /**
@@ -296,7 +276,7 @@ public class TrcPidController
      */
     public void printPidInfo()
     {
-        printPidInfo(null);
+        printPidInfo(null, 0.0, null);
     }   //printPidInfo
 
     /**

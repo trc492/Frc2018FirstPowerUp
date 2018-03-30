@@ -303,13 +303,6 @@ public class FrcAuto implements TrcRobot.RobotMode
         {
             autoCommand.cmdPeriodic(elapsedTime);
 
-            if (robot.pidDrive.isActive())
-            {
-                robot.encoderXPidCtrl.printPidInfo(robot.globalTracer, elapsedTime, robot.battery);
-                robot.encoderYPidCtrl.printPidInfo(robot.globalTracer, elapsedTime, robot.battery);
-                robot.gyroTurnPidCtrl.printPidInfo(robot.globalTracer, elapsedTime, robot.battery);
-            }
-
             if(robot.elevator.elevator.isActive())
             {
                 robot.elevator.elevatorPidCtrl.printPidInfo(robot.globalTracer, elapsedTime, robot.battery);

@@ -400,7 +400,7 @@ public class Robot extends FrcRobotBase
         gyroTurnPidCtrl.setAbsoluteSetPoint(true);
         pidDrive = new TrcPidDrive("pidDrive", driveBase, encoderXPidCtrl, encoderYPidCtrl, gyroTurnPidCtrl);
         pidDrive.setStallTimeout(RobotInfo.DRIVE_STALL_TIMEOUT);
-        pidDrive.setMsgTracer(globalTracer);
+        pidDrive.setMsgTracer(globalTracer, battery);
 
         encoderXPidCtrl.setOutputLimit(RobotInfo.DRIVE_MAX_XPID_POWER);
         encoderYPidCtrl.setOutputLimit(RobotInfo.DRIVE_MAX_YPID_POWER);
@@ -543,15 +543,19 @@ public class Robot extends FrcRobotBase
                 HalDashboard.putNumber("Power/winchCurrent", winch.getCurrent());
                 HalDashboard.putNumber("Power/pickupCurrent", cubePickup.getPickupCurrent());
                 HalDashboard.putNumber("Power/totalEnergy", battery.getTotalEnergy());
-                globalTracer.traceInfo("PowerUse", "[%.3f] Battery - currVoltage: %.2f, lowestVoltage: %.2f",
-                    currTime, battery.getVoltage(), battery.getLowestVoltage());
-                globalTracer.traceInfo("PowerUse", "[%.3f] Power: pdpTotalCurrent: %.2f elev: %.2f winch: %.2f, pickup: %.2f, total: %.2f",
-                    currTime,
-                    pdp.getTotalCurrent(),
-                    elevator.elevatorMotor.motor.getOutputCurrent(),
-                    winch.getCurrent(),
-                    cubePickup.getPickupCurrent(),
-                    battery.getTotalEnergy());
+                if (getCurrentRunMode() == RunMode.TELEOP_MODE)
+                {
+                    globalTracer.traceInfo("PowerUse", "[%.3f] Battery: currVoltage=%.2f, lowestVoltage=%.2f",
+                        currTime, battery.getVoltage(), battery.getLowestVoltage());
+                    globalTracer.traceInfo(
+                        "PowerUse", "[%.3f] Total=%.2fA: Elevator=%.2fA, Winch=%.2fA, Pickup=%.2fA, TotalEnergy=%.2fWh",
+                        currTime,
+                        pdp.getTotalCurrent(),
+                        elevator.elevatorMotor.motor.getOutputCurrent(),
+                        winch.getCurrent(),
+                        cubePickup.getPickupCurrent(),
+                        battery.getTotalEnergy());
+                }
             }
 
             if (DEBUG_DRIVE_BASE)
