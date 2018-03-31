@@ -94,7 +94,7 @@ public class FrcTeleOp implements TrcRobot.RobotMode
         double rightDriveX = robot.rightDriveStick.getXWithDeadband(true);
         double rightDriveY = robot.rightDriveStick.getYWithDeadband(true);
         // Cancel auto assist if the driver does anything
-        if(leftDriveX != 0 || leftDriveY != 0 || rightDriveX != 0 || rightDriveY != 0)
+        if (isAutoAssistEnabled() && (leftDriveX != 0 || leftDriveY != 0 || rightDriveX != 0 || rightDriveY != 0))
         {
             robot.globalTracer.traceInfo("FrcTeleOp", "[%.3f] Stopping all auto!", elapsedTime);
             robot.cancelAutoAssist();
