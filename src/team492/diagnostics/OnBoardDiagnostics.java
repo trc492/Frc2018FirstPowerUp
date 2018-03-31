@@ -17,6 +17,7 @@ import team492.diagnostics.tests.GyroNotConnectedTest;
 import team492.diagnostics.tests.UltrasonicUnpluggedTest;
 import team492.diagnostics.tests.PixyVisionTaskTerminatedTest;
 import team492.diagnostics.tests.HighTalonErrorRateTest;
+import team492.diagnostics.tests.MotorCurrentTest;
 import team492.diagnostics.tests.PneumaticsNotPressurizingTest;
 import team492.diagnostics.tests.ElevatorLimitSwitchStuckTest;
 import team492.diagnostics.tests.PneumaticsCurrentlyLowTest;
@@ -32,6 +33,7 @@ public class OnBoardDiagnostics
         DRIVEBASE,
         ELEVATOR,
         SENSORS,
+        GRABBER,
         PRESSURE
     }
 
@@ -77,6 +79,9 @@ public class OnBoardDiagnostics
         tests.add(new PneumaticsNotPressurizingTest("Pneumatics working", robot));
         tests.add(new PneumaticsCurrentlyLowTest("Pneumatics charged", robot));
 
+        tests.add(new MotorCurrentTest("Master grabber motor", Subsystem.GRABBER, robot.cubePickup.controlMotor));
+        tests.add(new MotorCurrentTest("Slave grabber motor", Subsystem.GRABBER, robot.cubePickup.slaveMotor));
+        
         if (robot.pixy != null)
         {
             tests.add(new PixyVisionTaskTerminatedTest("Pixy errors", robot.pixy));

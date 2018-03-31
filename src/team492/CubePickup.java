@@ -48,7 +48,7 @@ public class CubePickup
     private static final double[] currentThresholds =
         {RobotInfo.PICKUP_FREE_SPIN_CURRENT, RobotInfo.PICKUP_STALL_CURRENT};
     private Robot robot;
-    private FrcCANTalon controlMotor, slaveMotor;
+    public FrcCANTalon controlMotor, slaveMotor;
     private FrcPneumatic claw, deployer;
     private FrcDigitalInput cubeProximitySensor;
     private TrcDigitalTrigger cubeProximityTrigger;
