@@ -200,6 +200,7 @@ public class FrcAuto implements TrcRobot.RobotMode
         }
 
         delay = HalDashboard.getNumber("Auto/Delay", 0.0);
+        boolean useSonar = useSonarMenu.getCurrentChoiceObject() == YesOrNo.YES;
 
         switch (autoStrategy)
         {
@@ -209,7 +210,6 @@ public class FrcAuto implements TrcRobot.RobotMode
                     boolean switchRight = robot.gameSpecificMessage.charAt(0) == 'R';
                     boolean scaleRight = robot.gameSpecificMessage.charAt(1) == 'R';
                     boolean startRight = startPosition == Position.RIGHT_POS;
-                    boolean useSonar = useSonarMenu.getCurrentChoiceObject() == YesOrNo.YES;
                     ScaleOrSwitch preference = preferenceMenu.getCurrentChoiceObject();
 
                     if (startRight == scaleRight && scaleRight == switchRight)
@@ -221,7 +221,7 @@ public class FrcAuto implements TrcRobot.RobotMode
                                 break;
 
                             case SCALE:
-                                autoCommand = new CmdAutoScale(robot, delay, startPosition, forwardDriveDistance);
+                                autoCommand = new CmdAutoScale(robot, delay, startPosition, forwardDriveDistance, useSonar);
                                 break;
                         }
                     }
@@ -231,7 +231,7 @@ public class FrcAuto implements TrcRobot.RobotMode
                     }
                     else if (startRight == scaleRight)
                     {
-                        autoCommand = new CmdAutoScale(robot, delay, startPosition, forwardDriveDistance);
+                        autoCommand = new CmdAutoScale(robot, delay, startPosition, forwardDriveDistance, useSonar);
                     }
                     else
                     {
@@ -246,7 +246,7 @@ public class FrcAuto implements TrcRobot.RobotMode
                 break;
 
             case AUTO_SCALE:
-                autoCommand = new CmdAutoScale(robot, delay, startPosition, forwardDriveDistance);
+                autoCommand = new CmdAutoScale(robot, delay, startPosition, forwardDriveDistance, useSonar);
                 break;
 
             case X_TIMED_DRIVE:
