@@ -306,7 +306,7 @@ public class CubePickup
 
                 case SAMPLE_CURRENT:
                     pickupCurrent = getPickupCurrent();
-                    if (pickupCurrent >= RobotInfo.PICKUP_STALL_CURRENT)
+                    if (pickupCurrent >= 35.0) //RobotInfo.PICKUP_STALL_CURRENT) 35A. Used to be 45A.
                     {
                         robot.globalTracer.traceInfo(funcName, "[%.3f] %s: Detected cube in possession (pickupCurent=%.2f)",
                             elapsedTime, state, pickupCurrent);

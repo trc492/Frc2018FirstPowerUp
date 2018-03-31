@@ -88,8 +88,9 @@ public class CmdAutoSideSwitch implements TrcRobot.RobotCommand
     private double xStart, yStart;
     private Double visionTarget;
     private boolean hasDroppedSecondCube = false;
+    private boolean useSonar;
 
-    public CmdAutoSideSwitch(Robot robot, double delay, boolean getSecondCube)
+    public CmdAutoSideSwitch(Robot robot, double delay, boolean getSecondCube, boolean useSonar)
     {
         robot.globalTracer.traceInfo(moduleName, "[%.3f] delay=%.1f, getSecondCube=%b",
             Robot.getModeElapsedTime(), delay, getSecondCube);
@@ -97,6 +98,7 @@ public class CmdAutoSideSwitch implements TrcRobot.RobotCommand
         this.robot = robot;
         this.delay = delay;
         this.getSecondCube = getSecondCube;
+        this.useSonar = useSonar;
 
         this.rightSwitch = robot.gameSpecificMessage.charAt(0) == 'R';
         this.rightScale = robot.gameSpecificMessage.charAt(1) == 'R';
@@ -169,17 +171,21 @@ public class CmdAutoSideSwitch implements TrcRobot.RobotCommand
                         robot.encoderYPidCtrl.setNoOscillation(true);
                         robot.encoderYPidCtrl.setTargetTolerance(FAST_DELIVERY_Y_TOLERANCE);
                         robot.gyroTurnPidCtrl.setTargetTolerance(4.0);
-                        if (rightSwitch)
+                        if(useSonar)
                         {
-                            robot.leftSonarArray.startRanging(true);
-                            leftSonarTrigger.setTaskEnabled(true);
+                            sonarEvent.clear();
+                            if (rightSwitch)
+                            {
+                                robot.leftSonarArray.startRanging(true);
+                                leftSonarTrigger.setTaskEnabled(true);
+                            }
+                            else
+                            {
+                                robot.rightSonarArray.startRanging(true);
+                                rightSonarTrigger.setTaskEnabled(true);
+                            }                            
+                            sm.addEvent(sonarEvent);
                         }
-                        else
-                        {
-                            robot.rightSonarArray.startRanging(true);
-                            rightSonarTrigger.setTaskEnabled(true);
-                        }
-                        sm.addEvent(sonarEvent);
                         xDistance = 0.0;
                         yDistance = RobotInfo.AUTO_DISTANCE_TO_SWITCH - 30;
                         robot.pidDrive.setTarget(xDistance, yDistance, robot.targetHeading, false, event, 0.0);
@@ -213,7 +219,7 @@ public class CmdAutoSideSwitch implements TrcRobot.RobotCommand
                         robot.encoderYPidCtrl.setNoOscillation(false);
                         robot.encoderYPidCtrl.setTargetTolerance(RobotInfo.ENCODER_Y_TOLERANCE);
                         robot.cubePickup.openClaw();
-                        robot.cubePickup.dropCube(0.6);
+                        robot.cubePickup.dropCube(0.54);
                         if (getSecondCube)
                         {
                             timer.set(0.3, event);

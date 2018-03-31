@@ -92,12 +92,12 @@ public class LEDIndicator
     {
         // Diagnostic error is low priority. Only indicate this when nobody is active. So it is the lowest
         // on the priority list.
-        ledStrip.setPattern(LED_DIAGNOSTIC_ERROR);
+        ledStrip.setPatternWithPriority(LED_DIAGNOSTIC_ERROR, patternPriorities);
    }
 
     public void indicateNoDiagnosticError()
     {
-        ledStrip.setPattern(LED_DIAGNOSTIC_NORMAL);
+        turnOffPattern(LED_DIAGNOSTIC_ERROR);
     }
 
     public void setPattern(LEDPattern pattern)

@@ -8,7 +8,7 @@ public class PneumaticsCurrentlyLowTest extends DiagnosticsTest{
 
     private Robot robot;
 
-    private static final double TARGET_PRESSURE_PSI = 80.0;
+    private static final double TARGET_PRESSURE_PSI = 100.0;
 
     public PneumaticsCurrentlyLowTest(String name, Robot robot){
         super(name, Subsystem.PRESSURE);

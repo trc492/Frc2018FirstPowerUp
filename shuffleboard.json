@@ -171,8 +171,8 @@
           },
           "0,10": {
             "size": [
-              12,
-              3
+              6,
+              2
             ],
             "content": {
               "_type": "Text View",
@@ -367,6 +367,17 @@
               "_type": "Text View",
               "_source0": "network_table:///SmartDashboard/Auto/FwdDistance",
               "_title": "FwdDistance"
+            }
+          },
+          "12,2": {
+            "size": [
+              4,
+              2
+            ],
+            "content": {
+              "_type": "ComboBox Chooser",
+              "_source0": "network_table:///SmartDashboard/Auto/UseSonar",
+              "_title": "UseSonar"
             }
           }
         }
@@ -567,7 +578,74 @@
         "showGrid": true,
         "hgap": 16.0,
         "vgap": 16.0,
-        "tiles": {}
+        "tiles": {
+          "0,0": {
+            "size": [
+              3,
+              2
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/Power/pdpTotalCurrent",
+              "_title": "pdpTotalCurrent"
+            }
+          },
+          "3,0": {
+            "size": [
+              3,
+              2
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/Power/elevatorCurrent",
+              "_title": "elevatorCurrent"
+            }
+          },
+          "6,0": {
+            "size": [
+              3,
+              2
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/Power/winchCurrent",
+              "_title": "winchCurrent"
+            }
+          },
+          "9,0": {
+            "size": [
+              3,
+              2
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/Power/pickupCurrent",
+              "_title": "pickupCurrent"
+            }
+          },
+          "12,0": {
+            "size": [
+              3,
+              2
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/Power/totalEnergy",
+              "_title": "totalEnergy"
+            }
+          },
+          "15,0": {
+            "size": [
+              1,
+              1
+            ],
+            "content": {
+              "_type": "Network Table Tree",
+              "_source0": "network_table:///SmartDashboard/Test",
+              "_title": "/SmartDashboard/Test"
+            }
+          }
+        }
       }
     },
     {
@@ -813,19 +891,6 @@
               "colorWhenFalse": "#8B0000FF"
             }
           },
-          "15,8": {
-            "size": [
-              4,
-              2
-            ],
-            "content": {
-              "_type": "Boolean Box",
-              "_source0": "network_table:///SmartDashboard/Diagnostics/Pneumatics charged",
-              "_title": "Pneumatics charged",
-              "colorWhenTrue": "#7CFC00FF",
-              "colorWhenFalse": "#8B0000FF"
-            }
-          },
           "6,0": {
             "size": [
               3,
@@ -913,6 +978,32 @@
               "_type": "Boolean Box",
               "_source0": "network_table:///SmartDashboard/Diagnostics/LOWER elevator stuck",
               "_title": "LOWER elevator stuck",
+              "colorWhenTrue": "#7CFC00FF",
+              "colorWhenFalse": "#8B0000FF"
+            }
+          },
+          "14,8": {
+            "size": [
+              4,
+              2
+            ],
+            "content": {
+              "_type": "Boolean Box",
+              "_source0": "network_table:///SmartDashboard/Diagnostics/Pneumatics working",
+              "_title": "Pneumatics working",
+              "colorWhenTrue": "#7CFC00FF",
+              "colorWhenFalse": "#8B0000FF"
+            }
+          },
+          "18,8": {
+            "size": [
+              4,
+              2
+            ],
+            "content": {
+              "_type": "Boolean Box",
+              "_source0": "network_table:///SmartDashboard/Diagnostics/Pneumatics charged",
+              "_title": "Pneumatics charged",
               "colorWhenTrue": "#7CFC00FF",
               "colorWhenFalse": "#8B0000FF"
             }

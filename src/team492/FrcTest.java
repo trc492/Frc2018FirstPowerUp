@@ -356,37 +356,15 @@ public class FrcTest extends FrcTeleOp
                 break;
 
             case FrcJoystick.LOGITECH_BUTTON8:
-                if(pressed)
-                {
-                    robot.elevator.setPosition(RobotInfo.ELEVATOR_CRUISE_HEIGHT);
-                }
-                processedInput = true;
                 break;
 
             case FrcJoystick.LOGITECH_BUTTON9:
-                if(pressed)
-                {
-                    robot.elevator.setPosition(RobotInfo.ELEVATOR_SCALE_HIGH - 18.0);
-                }
-                processedInput = true;
                 break;
 
             case FrcJoystick.LOGITECH_BUTTON10:
-                if(pressed)
-                {
-                    robot.targetHeading = (robot.targetHeading + 90.0) % 360.0;
-                    robot.pidDrive.setTarget(0.0, 0.0, robot.targetHeading, false, event);
-                    processedInput = true;
-                }
                 break;
 
             case FrcJoystick.LOGITECH_BUTTON11:
-                if(pressed)
-                {
-                    robot.targetHeading = (robot.targetHeading + 180.0) % 360.0;
-                    robot.pidDrive.setTarget(0.0, 0.0, robot.targetHeading, false, event);
-                    processedInput = true;
-                }
                 break;
 
             case FrcJoystick.LOGITECH_BUTTON12:
@@ -498,7 +476,7 @@ public class FrcTest extends FrcTeleOp
                             robot.rightFrontWheel.setPower(0.0);
                             robot.leftRearWheel.setPower(robot.drivePower);
                             robot.rightRearWheel.setPower(0.0);
-                            robot.ledIndicator.setPattern(LEDPattern.SolidBlue);
+                            robot.ledIndicator.setPattern(LEDPattern.SolidGold);
                             break;
 
                         case 3:

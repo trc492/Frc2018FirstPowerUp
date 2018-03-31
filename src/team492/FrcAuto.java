@@ -81,6 +81,7 @@ public class FrcAuto implements TrcRobot.RobotMode
     private FrcChoiceMenu<YesOrNo> getSecondCubeMenu;
     private FrcChoiceMenu<Lane> laneMenu;
     private FrcChoiceMenu<ScaleOrSwitch> preferenceMenu;
+    private FrcChoiceMenu<YesOrNo> useSonarMenu;
 
     private AutoStrategy autoStrategy;
     private Position startPosition;
@@ -105,6 +106,7 @@ public class FrcAuto implements TrcRobot.RobotMode
         getSecondCubeMenu = new FrcChoiceMenu<>("Auto/GetSecondCube");
         laneMenu = new FrcChoiceMenu<>("Auto/Lanes");
         preferenceMenu = new FrcChoiceMenu<>("Auto/ScaleOrSwitch");
+        useSonarMenu = new FrcChoiceMenu<>("Auto/UseSonar");
 
         //
         // Populate Autonomous Mode menus.
@@ -137,6 +139,9 @@ public class FrcAuto implements TrcRobot.RobotMode
         
         preferenceMenu.addChoice("Switch", ScaleOrSwitch.SWITCH, true, false);
         preferenceMenu.addChoice("Scale", ScaleOrSwitch.SCALE, false, true);
+        
+        useSonarMenu.addChoice("Yes", YesOrNo.YES, true, false);
+        useSonarMenu.addChoice("No", YesOrNo.NO, false, true);
     } // FrcAuto
 
     //
@@ -204,6 +209,7 @@ public class FrcAuto implements TrcRobot.RobotMode
                     boolean switchRight = robot.gameSpecificMessage.charAt(0) == 'R';
                     boolean scaleRight = robot.gameSpecificMessage.charAt(1) == 'R';
                     boolean startRight = startPosition == Position.RIGHT_POS;
+                    boolean useSonar = useSonarMenu.getCurrentChoiceObject() == YesOrNo.YES;
                     ScaleOrSwitch preference = preferenceMenu.getCurrentChoiceObject();
 
                     if (startRight == scaleRight && scaleRight == switchRight)
@@ -211,7 +217,7 @@ public class FrcAuto implements TrcRobot.RobotMode
                         switch(preference)
                         {
                             case SWITCH:
-                                autoCommand = new CmdAutoSideSwitch(robot, delay, getSecondCube);
+                                autoCommand = new CmdAutoSideSwitch(robot, delay, getSecondCube, useSonar);
                                 break;
 
                             case SCALE:
@@ -221,7 +227,7 @@ public class FrcAuto implements TrcRobot.RobotMode
                     }
                     else if (startRight == switchRight)
                     {
-                        autoCommand = new CmdAutoSideSwitch(robot, delay, getSecondCube);
+                        autoCommand = new CmdAutoSideSwitch(robot, delay, getSecondCube, useSonar);
                     }
                     else if (startRight == scaleRight)
                     {

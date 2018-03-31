@@ -74,8 +74,8 @@ public class OnBoardDiagnostics
 
         tests.add(new ElevatorPositionUnchangedTest("Elevator position", robot.elevator));
 
-        tests.add(new PneumaticsNotPressurizingTest("Pneumatics charged", robot));
-        tests.add(new PneumaticsCurrentlyLowTest("Pneumatics low now", robot));
+        tests.add(new PneumaticsNotPressurizingTest("Pneumatics working", robot));
+        tests.add(new PneumaticsCurrentlyLowTest("Pneumatics charged", robot));
 
         if (robot.pixy != null)
         {

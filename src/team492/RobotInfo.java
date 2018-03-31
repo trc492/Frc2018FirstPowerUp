@@ -234,7 +234,7 @@ public class RobotInfo
     public static final double PICKUP_FREE_SPIN_CURRENT         = 10.0;
     public static final double PICKUP_STALL_CURRENT             = 45.0;
     public static final double PICKUP_TELEOP_POWER              = 0.6; // TODO: This needs to be calibrated
-    public static final double PICKUP_HOLD_CUBE_POWER           = 0.05;
+    public static final double PICKUP_HOLD_CUBE_POWER           = 0.1;
 
     //
     // Winch subsystem.

@@ -226,7 +226,7 @@ public class CmdAutoScale implements TrcRobot.RobotCommand
                         // Start raising elevator
                         robot.elevator.setPosition(RobotInfo.ELEVATOR_CRUISE_HEIGHT);
                         // The target scale is ahead of us, go to it.
-                        yDistance = RobotInfo.FIELD_LENGTH/2.0 - currY - RobotInfo.ROBOT_LENGTH/2.0;
+                        yDistance = RobotInfo.FIELD_LENGTH/2.0 - currY - RobotInfo.ROBOT_LENGTH/2.0 - 8.0; // Arbitrary reduction (empirical)
                         nextState = State.TURN_TO_FACE_SCALE;
                     }
                     else
@@ -279,13 +279,13 @@ public class CmdAutoScale implements TrcRobot.RobotCommand
 
                 case RAISE_ELEVATOR:
                     // Already started to raise elevator, so wait for it to complete
-                    robot.elevator.setPosition(RobotInfo.ELEVATOR_SCALE_HIGH - 18.0, elevatorEvent, 0.0);
+                    robot.elevator.setPosition(RobotInfo.ELEVATOR_SCALE_HIGH - 10.0, elevatorEvent, 2.0);
                     sm.waitForSingleEvent(elevatorEvent, State.THROW_CUBE);
                     break;
 
                 case THROW_CUBE:
                     // Do another setPosition without event so it will hold position.
-                    robot.elevator.setPosition(RobotInfo.ELEVATOR_SCALE_HIGH - 18.0);
+                    robot.elevator.setPosition(RobotInfo.ELEVATOR_SCALE_HIGH - 10.0);
                     robot.cubePickup.deployPickup();
                     robot.cubePickup.dropCube(RobotInfo.CUBE_PICKUP_DROP_POWER);
                     timer.set(RobotInfo.DROP_CUBE_TIMEOUT, event);

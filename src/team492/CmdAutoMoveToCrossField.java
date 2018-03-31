@@ -131,6 +131,7 @@ public class CmdAutoMoveToCrossField implements TrcRobot.RobotCommand
                     sm.stop();
                     break;
             }
+            robot.traceStateInfo(elapsedTime, state.toString());
         }
         return done;
     }
