@@ -171,7 +171,7 @@ public class CmdAutoSideSwitch implements TrcRobot.RobotCommand
                         robot.encoderYPidCtrl.setNoOscillation(true);
                         robot.encoderYPidCtrl.setTargetTolerance(FAST_DELIVERY_Y_TOLERANCE);
                         robot.gyroTurnPidCtrl.setTargetTolerance(4.0);
-                        if(useSonar)
+                        if (useSonar)
                         {
                             sonarEvent.clear();
                             if (rightSwitch)
@@ -183,7 +183,7 @@ public class CmdAutoSideSwitch implements TrcRobot.RobotCommand
                             {
                                 robot.rightSonarArray.startRanging(true);
                                 rightSonarTrigger.setTaskEnabled(true);
-                            }                            
+                            }
                             sm.addEvent(sonarEvent);
                         }
                         xDistance = 0.0;

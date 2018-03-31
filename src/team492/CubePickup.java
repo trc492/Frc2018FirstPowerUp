@@ -306,6 +306,7 @@ public class CubePickup
 
                 case SAMPLE_CURRENT:
                     pickupCurrent = getPickupCurrent();
+                    // CodeReview: Should we restore 45A since we figured out the triggers were really correct?
                     if (pickupCurrent >= 35.0) //RobotInfo.PICKUP_STALL_CURRENT) 35A. Used to be 45A.
                     {
                         robot.globalTracer.traceInfo(funcName, "[%.3f] %s: Detected cube in possession (pickupCurent=%.2f)",

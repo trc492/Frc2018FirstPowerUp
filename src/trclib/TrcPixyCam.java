@@ -281,8 +281,8 @@ public abstract class TrcPixyCam implements TrcSerialBusDevice.CompletionHandler
     /**
      * This method returns an array of detected object blocks.
      *
-     * @return array of detected object blocks, can be null if no frame is available. May
-     * be empty when no objects were seen in the last frame.
+     * @return array of detected object blocks, can be null if no object detected or result of the next frame
+     *         not yet available.
      */
     public ObjectBlock[] getDetectedObjects()
     {
@@ -442,20 +442,19 @@ public abstract class TrcPixyCam implements TrcSerialBusDevice.CompletionHandler
                         //
                         // Detected end-of-frame, convert the array list of objects into detected object array.
                         //
-                        synchronized (objectLock)
+                        if (objects.size() > 0)
                         {
-                            ObjectBlock[] array = new ObjectBlock[objects.size()];
-                            detectedObjects = objects.toArray(array);
-                            objects.clear();
-                            if (debugEnabled)
+                            synchronized (objectLock)
                             {
-                                if (detectedObjects.length < 1) {
-                                    dbgTrace.traceInfo(funcName, "No objects detected");
-                                }
-
-                                for (int i = 0; i < detectedObjects.length; i++)
+                                ObjectBlock[] array = new ObjectBlock[objects.size()];
+                                detectedObjects = objects.toArray(array);
+                                objects.clear();
+                                if (debugEnabled)
                                 {
-                                    dbgTrace.traceInfo(funcName, "[%02d] %s", i, detectedObjects[i].toString());
+                                    for (int i = 0; i < detectedObjects.length; i++)
+                                    {
+                                        dbgTrace.traceInfo(funcName, "[%02d] %s", i, detectedObjects[i].toString());
+                                    }
                                 }
                             }
                         }

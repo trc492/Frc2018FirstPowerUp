@@ -63,13 +63,11 @@ public class CmdAutoMoveToCrossField implements TrcRobot.RobotCommand
         this.robot = robot;
         this.delay = delay;
         this.startPosition = startPosition;
+        startRight = startPosition == Position.RIGHT_POS;
 
         event = new TrcEvent(moduleName);
         timer = new TrcTimer(moduleName);
         sm = new TrcStateMachine<>(moduleName);
-
-        startRight = startPosition == Position.RIGHT_POS;
-        
         sm.start(State.START);
     }
 

@@ -37,7 +37,8 @@ public class PixyVision
     private static final String moduleName = "PixyVision";
     private static final boolean debugEnabled = false;
 
-    private static final double LAST_TARGET_RECT_FRESH_DURATION_SECONDS = 0.100;
+    // If last target rect is this old, its stale data.
+    private static final double LAST_TARGET_RECT_FRESH_DURATION_SECONDS = 0.1;  // 100 msec
 
     public class TargetInfo
     {
@@ -119,18 +120,22 @@ public class PixyVision
     } //isTaskTerminatedAbnormally
 
     /**
-     * This method analyzes all the detected object rectangles and attempts to find a pair that are the likely targets.
-     * It then returns the rectangle enclosing the two object rectangles.
+     * This method gets the rectangle of the last detected target from the camera. If the camera does not have
+     * any. It may mean the camera is still busy analyzing a frame or it can't find any valid target in a frame.
+     * We can't tell the reason. If the camera is likely busying processing a frame, we will return the last
+     * cached rectangle. Therefore, the last cached rectangle will have an expiration (i.e. cached data can be
+     * stale). If the last cached data becomes stale, we will discard it and return nothing. Otherwise, we will
+     * return the cached data. Of course we will return fresh data if the camera does return another rectangle,
+     * in which case it will become the new cached data.
      *
-     * Caches the last result seen from the camera - callers do not need to handle the case of a frame
-     * not being available from the camera.
-     *
-     * @return rectangle of the detected target last received from the camera. Null if no objects were seen.
+     * @return rectangle of the detected target last received from the camera or last cached target if cached
+     *         data has not expired. Null if no object was seen and last cached data has expired.
      */
     private Rect getTargetRect()
     {
         Rect targetRect = null;
         ObjectBlock[] detectedObjects = pixyCamera.getDetectedObjects();
+        double currTime = TrcUtil.getCurrentTime();
 
         if (debugEnabled)
         {
@@ -138,16 +143,7 @@ public class PixyVision
                 detectedObjects != null? "" + detectedObjects.length: "null");
         }
 
-        if (detectedObjects == null)
-        {
-            //
-            // Pixy is not ready for another frame, use old cached data.
-            // If cached rectangle is too old, we interpret that as nothing
-            // currently in sight and return null.
-            //
-            targetRect = TrcUtil.getCurrentTime() < lastTargetRectExpireTime ? lastTargetRect : null;
-        }
-        else
+        if (detectedObjects != null && detectedObjects.length >= 1)
         {
             //
             // Make sure the camera detected at least one objects.
@@ -230,12 +226,17 @@ public class PixyVision
                 }
             }
 
-            if (targetRect == null) {
+            if (targetRect == null)
+            {
                 robot.globalTracer.traceInfo(moduleName, "===TargetRect=== None, is now null");
             }
 
             lastTargetRect = targetRect;
-            lastTargetRectExpireTime = TrcUtil.getCurrentTime() + LAST_TARGET_RECT_FRESH_DURATION_SECONDS;
+            lastTargetRectExpireTime = currTime + LAST_TARGET_RECT_FRESH_DURATION_SECONDS;
+        }
+        else if (currTime < lastTargetRectExpireTime)
+        {
+            targetRect = lastTargetRect;
         }
 
         return targetRect;

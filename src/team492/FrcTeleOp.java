@@ -146,15 +146,12 @@ public class FrcTeleOp implements TrcRobot.RobotMode
 //                    HalDashboard.putNumber("yForceOz", yForceOz);
                     break;
             }
-            
-            if(!isAutoAssistEnabled())
-            {
-                double elevatorPower = robot.operatorStick.getYWithDeadband(true);
-                robot.elevator.setPower(elevatorPower); // Pull joystick back -> move elevator up
-                
-                double winchPower = winchDirection*(1.0 - robot.operatorStick.getZ())/2.0;
-                robot.winch.setPower(winchPower);                
-            }
+
+            double elevatorPower = robot.operatorStick.getYWithDeadband(true);
+            robot.elevator.setPower(elevatorPower); // Pull joystick back -> move elevator up
+
+            double winchPower = winchDirection*(1.0 - robot.operatorStick.getZ())/2.0;
+            robot.winch.setPower(winchPower);                
         }
 
         robot.updateDashboard();
