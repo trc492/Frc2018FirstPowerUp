@@ -6,7 +6,7 @@ import team492.diagnostics.OnBoardDiagnostics.Subsystem;
 
 public class UltrasonicUnpluggedTest extends ExpectSensorChangeTest {
 
-	private static final double EXPECTED_CHANGE_INCHES = 1.0;
+	private static final double EXPECTED_CHANGE_INCHES = 6.0;
 	
 	public UltrasonicUnpluggedTest(Supplier<Double> sonarSensor, String sensorName) 
 	{
