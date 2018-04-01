@@ -213,7 +213,7 @@ public class Robot extends FrcRobotBase
 
         if (USE_TRACELOG)
         {
-            String filePrefix = eventName + "_" + matchType.toString() + String.format("%03d", matchNumber);
+            String filePrefix = String.format("%s_%s%03d", eventName, matchType.toString(), matchNumber);
             startTraceLog(filePrefix);
         }
         //
