@@ -565,6 +565,19 @@
               "colorWhenTrue": "#7CFC00FF",
               "colorWhenFalse": "#8B0000FF"
             }
+          },
+          "15,8": {
+            "size": [
+              3,
+              3
+            ],
+            "content": {
+              "_type": "Boolean Box",
+              "_source0": "network_table:///SmartDashboard/Test/GRABBER",
+              "_title": "GRABBER",
+              "colorWhenTrue": "#7CFC00FF",
+              "colorWhenFalse": "#8B0000FF"
+            }
           }
         }
       }
@@ -632,17 +645,6 @@
               "_type": "Text View",
               "_source0": "network_table:///SmartDashboard/Power/totalEnergy",
               "_title": "totalEnergy"
-            }
-          },
-          "15,0": {
-            "size": [
-              1,
-              1
-            ],
-            "content": {
-              "_type": "Network Table Tree",
-              "_source0": "network_table:///SmartDashboard/Test",
-              "_title": "/SmartDashboard/Test"
             }
           }
         }
@@ -1004,6 +1006,32 @@
               "_type": "Boolean Box",
               "_source0": "network_table:///SmartDashboard/Diagnostics/Pneumatics charged",
               "_title": "Pneumatics charged",
+              "colorWhenTrue": "#7CFC00FF",
+              "colorWhenFalse": "#8B0000FF"
+            }
+          },
+          "19,2": {
+            "size": [
+              4,
+              2
+            ],
+            "content": {
+              "_type": "Boolean Box",
+              "_source0": "network_table:///SmartDashboard/Diagnostics/Slave grabber motor",
+              "_title": "Slave grabber motor",
+              "colorWhenTrue": "#7CFC00FF",
+              "colorWhenFalse": "#8B0000FF"
+            }
+          },
+          "15,2": {
+            "size": [
+              4,
+              2
+            ],
+            "content": {
+              "_type": "Boolean Box",
+              "_source0": "network_table:///SmartDashboard/Diagnostics/Master grabber motor",
+              "_title": "Master grabber motor",
               "colorWhenTrue": "#7CFC00FF",
               "colorWhenFalse": "#8B0000FF"
             }

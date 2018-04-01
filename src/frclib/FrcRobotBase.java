@@ -295,7 +295,7 @@ public abstract class FrcRobotBase extends RobotBase
                 elapsedTime = Timer.getFPGATimestamp() - startTime;
                 if (elapsedTime > taskTimeThreshold)
                 {
-                    globalTracer.traceWarn(funcName, "robotStopMode takes too long (%.3fs)",
+                    globalTracer.traceWarn(funcName, "%s.robotStopMode takes too long (%.3fs)",
                         prevMode, elapsedTime);
                 }
                 //
@@ -308,7 +308,7 @@ public abstract class FrcRobotBase extends RobotBase
                 elapsedTime = Timer.getFPGATimestamp() - startTime;
                 if (elapsedTime > taskTimeThreshold)
                 {
-                    globalTracer.traceWarn(funcName, "robotStartMode takes too long (%.3fs)",
+                    globalTracer.traceWarn(funcName, "%s.robotStartMode takes too long (%.3fs)",
                         currMode, elapsedTime);
                 }
 

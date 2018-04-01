@@ -114,7 +114,7 @@ public class CmdAutoMoveToCrossField implements TrcRobot.RobotCommand
                     yDistance = 0.0;
                     robot.targetHeading = startRight?DRIVE_HEADING_WEST:DRIVE_HEADING_EAST;
                     robot.pidDrive.setTarget(xDistance, yDistance, robot.targetHeading, false, event);
-                    sm.waitForSingleEvent(event, State.TURN_ACROSS_FIELD);
+                    sm.waitForSingleEvent(event, State.DONE);
                     break;
 
                 case DRIVE_ACROSS_FIELD:
