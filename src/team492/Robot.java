@@ -22,6 +22,8 @@
 
 package team492;
 
+import java.util.Date;
+
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 
 import edu.wpi.cscore.UsbCamera;
@@ -32,10 +34,8 @@ import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.DriverStation.MatchType;
 import edu.wpi.first.wpilibj.I2C;
 import edu.wpi.first.wpilibj.PowerDistributionPanel;
-import edu.wpi.first.wpilibj.Relay;
 import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.SerialPort;
-import edu.wpi.first.wpilibj.Relay.Direction;
 import frclib.FrcAHRSGyro;
 import frclib.FrcAnalogInput;
 import frclib.FrcCANTalon;
@@ -52,8 +52,7 @@ import team492.PixyVision.TargetInfo;
 import team492.diagnostics.OnBoardDiagnostics;
 import trclib.TrcDriveBase;
 import trclib.TrcEmic2TextToSpeech.Voice;
-//import trclib.TrcGyro;
-//import trclib.TrcLidarLite;
+import trclib.TrcLidarLite;
 import trclib.TrcMaxbotixSonarArray;
 import trclib.TrcPidController;
 import trclib.TrcPidController.PidCoefficients;
@@ -76,18 +75,16 @@ public class Robot extends FrcRobotBase
 
     public static final boolean USE_TRACELOG = true;
     public static final boolean USE_NAV_X = true;
+    public static final boolean USE_SONAR = true;
+    public static final boolean USE_MAXBOTIX_SONAR_ARRAY = true;
+    public static final boolean USE_LIDAR = false;
     public static final boolean USE_USB_CAM = false;
     public static final boolean USE_PIXY_SPI = false;
     public static final boolean USE_PIXY_I2C = true;
     public static final boolean USE_TEXT_TO_SPEECH = false;
     public static final boolean USE_MESSAGE_BOARD = false;
-    public static final boolean USE_GYRO_ASSIST = true;
     public static final boolean USE_TORQUE_BASED_DRIVING = false;
-    public static final boolean USE_SONAR = true;
-    public static final boolean USE_FRONT_SONAR = false;
-    public static final boolean USE_MAXBOTIX_SONAR_ARRAY = true;
-    public static final boolean USE_LIDAR = false;
-    public static final boolean USE_RINGLIGHT = false;
+    public static final boolean USE_GYRO_ASSIST = true;
 
     private static final boolean DEBUG_POWER_CONSUMPTION = true;
     private static final boolean DEBUG_DRIVE_BASE = false;
@@ -109,72 +106,6 @@ public class Robot extends FrcRobotBase
 
     private double nextUpdateTime = TrcUtil.getCurrentTime();
 
-    //
-    // Inputs.
-    //
-    public FrcJoystick leftDriveStick = null;
-    public FrcJoystick rightDriveStick = null;
-    public FrcJoystick operatorStick = null;
-
-    //
-    // Sensors.
-    //
-    public PowerDistributionPanel pdp = null;
-    public TrcRobotBattery battery = null;
-    public FrcAHRSGyro gyro = null;
-    public AnalogInput pressureSensor = null;
-    public FrcAnalogInput leftSonarSensor = null;
-    public FrcAnalogInput rightSonarSensor = null;
-    public FrcAnalogInput frontSonarSensor = null;
-    public TrcMaxbotixSonarArray leftSonarArray = null;
-    public TrcMaxbotixSonarArray rightSonarArray = null;
-    public TrcMaxbotixSonarArray frontSonarArray = null;
-    public FrcI2cDevice lidarSensor = null;
-//    public TrcLidarLite frontRanger = null;
-//    public Lidar lidar = null;
-
-    //
-    // VisionTarget subsystem.
-    //
-    public PixyVision pixy = null;
-
-    //
-    // Miscellaneous subsystem.
-    //
-    public LEDIndicator ledIndicator = null;
-    public FrcEmic2TextToSpeech tts = null;
-    private double nextTimeToSpeakInSeconds = 0.0;  //0 means disabled, no need to speak;
-    public FrcI2cLEDPanel messageBoard = null;
-    public Relay ringLightsPower = null;
-    public OnBoardDiagnostics diagnostics;
-
-    //
-    // DriveBase subsystem.
-    //
-    public FrcCANTalon leftFrontWheel;
-    public FrcCANTalon leftRearWheel;
-    public FrcCANTalon rightFrontWheel;
-    public FrcCANTalon rightRearWheel;
-    public TrcDriveBase driveBase;
-
-    public TrcPidController encoderXPidCtrl;
-    public TrcPidController encoderYPidCtrl;
-    public TrcPidController gyroTurnPidCtrl;
-    public TrcPidDrive pidDrive;
-
-    //
-    // Define our subsystems for Auto and TeleOp modes.
-    //
-    public Elevator elevator;
-    public CubePickup cubePickup;
-    public Winch winch;
-    public FrcPneumatic leftFlipper;
-    public FrcPneumatic rightFlipper;
-
-    public CmdCubePickup cmdAutoCubePickup;
-    public CmdStrafeUntilCube cmdStrafeUntilCube;
-    public CmdExchangeAlign cmdExchangeAlign;
-
     // FMS provided the following info:
     //  - event name
     //  - match type
@@ -189,18 +120,75 @@ public class Robot extends FrcRobotBase
     public Alliance alliance = Alliance.Red;
     public int location = 1;
     public String gameSpecificMessage = null;
+    //
+    // Inputs.
+    //
+    public FrcJoystick leftDriveStick = null;
+    public FrcJoystick rightDriveStick = null;
+    public FrcJoystick operatorStick = null;
+    //
+    // Sensors.
+    //
+    public PowerDistributionPanel pdp = null;
+    public TrcRobotBattery battery = null;
+    public FrcAHRSGyro gyro = null;
+    public AnalogInput pressureSensor = null;
+    public FrcAnalogInput leftSonarSensor = null;
+    public FrcAnalogInput rightSonarSensor = null;
+    public FrcAnalogInput frontSonarSensor = null;
+    public TrcMaxbotixSonarArray leftSonarArray = null;
+    public TrcMaxbotixSonarArray rightSonarArray = null;
+    public TrcMaxbotixSonarArray frontSonarArray = null;
+    public FrcI2cDevice lidarSensor = null;
+    public TrcLidarLite frontRanger = null;
+    public Lidar lidar = null;
+    //
+    // VisionTarget subsystem.
+    //
+    public PixyVision pixy = null;
+    //
+    // Miscellaneous subsystem.
+    //
+    public LEDIndicator ledIndicator = null;
+    public FrcEmic2TextToSpeech tts = null;
+    private double nextTimeToSpeakInSeconds = 0.0;  //0 means disabled, no need to speak;
+    public FrcI2cLEDPanel messageBoard = null;
+    public OnBoardDiagnostics diagnostics;
+    //
+    // DriveBase subsystem.
+    //
+    public FrcCANTalon leftFrontWheel;
+    public FrcCANTalon leftRearWheel;
+    public FrcCANTalon rightFrontWheel;
+    public FrcCANTalon rightRearWheel;
+    public TrcDriveBase driveBase;
+
+    public TrcPidController encoderXPidCtrl;
+    public TrcPidController encoderYPidCtrl;
+    public TrcPidController gyroTurnPidCtrl;
+    public TrcPidDrive pidDrive;
+    //
+    // Define our subsystems for Auto and TeleOp modes.
+    //
+    public Elevator elevator;
+    public CubePickup cubePickup;
+    public Winch winch;
+    public FrcPneumatic leftFlipper;
+    public FrcPneumatic rightFlipper;
+
+    public CmdCubePickup cmdAutoCubePickup;
+    public CmdStrafeUntilCube cmdStrafeUntilCube;
+    public CmdExchangeAlign cmdExchangeAlign;
 
     public double driveTime;
     public double drivePower;
     public double driveDistance;
-    public double drivePowerLimit;
     public double turnDegrees;
+    public double drivePowerLimit;
     public double tuneKp;
     public double tuneKi;
     public double tuneKd;
     public double tuneKf;
-
-    public double tempGrabberHoldPower = RobotInfo.PICKUP_HOLD_CUBE_POWER;
 
     /**
      * Constructor.
@@ -216,18 +204,30 @@ public class Robot extends FrcRobotBase
     @Override
     public void robotInit()
     {
+        eventName = ds.getEventName();
+        matchType = ds.getMatchType();
+        matchNumber = ds.getMatchNumber();
+        alliance = ds.getAlliance();
+        location = ds.getLocation();
+        gameSpecificMessage = ds.getGameSpecificMessage();
+
+        if (USE_TRACELOG)
+        {
+            String filePrefix = eventName + "_" + matchType.toString() + String.format("%03d", matchNumber);
+            startTraceLog(filePrefix);
+        }
         //
         // Inputs.
         //
         leftDriveStick = new FrcJoystick("leftDriveStick", RobotInfo.JSPORT_LEFT_DRIVESTICK);
         rightDriveStick = new FrcJoystick("rightDriveStick", RobotInfo.JSPORT_RIGHT_DRIVESTICK);
         operatorStick = new FrcJoystick("operatorStick", RobotInfo.JSPORT_OPERATORSTICK);
-
         //
         // Sensors.
         //
         pdp = new PowerDistributionPanel(RobotInfo.CANID_PDP);
         battery = new FrcRobotBattery(RobotInfo.CANID_PDP);
+        battery.setTaskEnabled(true);
         if (USE_NAV_X)
         {
             gyro = new FrcAHRSGyro("NavX", SPI.Port.kMXP);
@@ -236,29 +236,11 @@ public class Robot extends FrcRobotBase
 
         if (USE_SONAR)
         {
-//            TrcSpuriousFilter leftSonarFilter =
-//                new TrcSpuriousFilter("LeftSonarFilter", RobotInfo.SONAR_ERROR_THRESHOLD, tracer);
-//            leftSonarSensor = new FrcAnalogInput(
-//                "LeftSonarSensor", RobotInfo.AIN_LEFT_SONAR_SENSOR, new TrcFilter[] {leftSonarFilter});
             leftSonarSensor = new FrcAnalogInput("LeftSonarSensor", RobotInfo.AIN_LEFT_SONAR_SENSOR);
             leftSonarSensor.setScale(RobotInfo.SONAR_INCHES_PER_VOLT, RobotInfo.SONAR_LEFT_DISTANCE_OFFSET);
 
-//            TrcSpuriousFilter rightSonarFilter =
-//                new TrcSpuriousFilter("RightSonarFilter", RobotInfo.SONAR_ERROR_THRESHOLD, tracer);
-//            rightSonarSensor = new FrcAnalogInput(
-//                "RightSonarSensor", RobotInfo.AIN_RIGHT_SONAR_SENSOR, new TrcFilter[] {rightSonarFilter});
             rightSonarSensor = new FrcAnalogInput("RightSonarSensor", RobotInfo.AIN_RIGHT_SONAR_SENSOR);
             rightSonarSensor.setScale(RobotInfo.SONAR_INCHES_PER_VOLT, RobotInfo.SONAR_RIGHT_DISTANCE_OFFSET);
-
-            if (USE_FRONT_SONAR)
-            {
-//                TrcSpuriousFilter frontSonarFilter =
-//                    new TrcSpuriousFilter("FrontSonarFilter", RobotInfo.SONAR_ERROR_THRESHOLD, tracer);
-//                frontSonarSensor = new FrcAnalogInput(
-//                    "FrontSonarSensor", RobotInfo.AIN_FRONT_SONAR_SENSOR, new TrcFilter[] {frontSonarFilter});
-                frontSonarSensor = new FrcAnalogInput("FrontSonarSensor", RobotInfo.AIN_FRONT_SONAR_SENSOR);
-                frontSonarSensor.setScale(RobotInfo.SONAR_INCHES_PER_VOLT, RobotInfo.SONAR_FRONT_DISTANCE_OFFSET);
-            }
 
             if (USE_MAXBOTIX_SONAR_ARRAY)
             {
@@ -267,20 +249,13 @@ public class Robot extends FrcRobotBase
 
                 FrcDigitalOutput rightSonarPing = new FrcDigitalOutput("RightSonarPing", RobotInfo.DIO_RIGHT_SONAR_PING);
                 rightSonarArray = new TrcMaxbotixSonarArray("RightSonar", rightSonarSensor, rightSonarPing);
-
-                if (USE_FRONT_SONAR)
-                {
-                    FrcDigitalOutput frontSonarPing = new FrcDigitalOutput(
-                        "FrontSonarPing", RobotInfo.DIO_FRONT_SONAR_PING);
-                    frontSonarArray = new TrcMaxbotixSonarArray("FrontSonar", frontSonarSensor, frontSonarPing);
-                }
             }
         }
 
         if (USE_LIDAR)
         {
-//            lidarSensor = new FrcI2cDevice("LidarSensor", I2C.Port.kMXP, TrcLidarLite.DEF_I2C_ADDRESS_7BIT);
-//            frontRanger = new TrcLidarLite("LidarRanger", lidarSensor);
+            lidarSensor = new FrcI2cDevice("LidarSensor", I2C.Port.kMXP, TrcLidarLite.DEF_I2C_ADDRESS_7BIT);
+            frontRanger = new TrcLidarLite("LidarRanger", lidarSensor);
         }
 
         //
@@ -327,11 +302,7 @@ public class Robot extends FrcRobotBase
             messageBoard = new FrcI2cLEDPanel("messageBoard", I2C.Port.kOnboard);
         }
 
-        if (USE_RINGLIGHT)
-        {
-            ringLightsPower = new Relay(RobotInfo.RELAY_RINGLIGHT_POWER);
-            ringLightsPower.setDirection(Direction.kForward);
-        }
+        diagnostics = new OnBoardDiagnostics(this);
 
         //
         // DriveBase subsystem.
@@ -425,75 +396,78 @@ public class Robot extends FrcRobotBase
         cmdExchangeAlign = new CmdExchangeAlign(this);
 
         //
-        // Robot Modes.
+        // Create Robot Modes.
         //
         setupRobotModes(
             new FrcTeleOp(this),
             new FrcAuto(this),
             new FrcTest(this),
             tts != null? new FrcDisabled(this): null);
-        
-        diagnostics = new OnBoardDiagnostics(this);
     }   //robotInit
 
     public void robotStartMode(RunMode runMode)
     {
-        if (tts != null)
+        if (runMode != RunMode.DISABLED_MODE)
         {
-            if (runMode == RunMode.DISABLED_MODE)
+            Date now = new Date();
+            globalTracer.traceInfo(Robot.programName, "%s[%.3f]: ***** %s *****",
+                now.toString(), Robot.getModeElapsedTime(), runMode);
+
+            setVisionEnabled(true);
+            driveBase.resetPosition();
+            targetHeading = 0.0;
+
+            dashboard.clearDisplay();
+
+            if (tts != null)
             {
-                // Robot is safe.
-                // Note: "disaibled" is not a typo. It forces the speech board to pronounce it correctly.
-                tts.speak("Robot disaibled");
-                nextTimeToSpeakInSeconds = TrcUtil.getCurrentTime() + IDLE_PERIOD_SECONDS;
+                if (runMode == RunMode.DISABLED_MODE)
+                {
+                    // Robot is safe.
+                    // Note: "disaibled" is not a typo. It forces the speech board to pronounce it correctly.
+                    tts.speak("Robot disaibled");
+                    nextTimeToSpeakInSeconds = TrcUtil.getCurrentTime() + IDLE_PERIOD_SECONDS;
+                }
+                else
+                {
+                    // Robot is unsafe
+                    tts.speak("Robot enabled, stand clear");
+                    nextTimeToSpeakInSeconds = TrcUtil.getCurrentTime() + SPEAK_PERIOD_SECONDS;
+                }
             }
-            else
+
+            if (frontRanger != null)
             {
-                // Robot is unsafe
-                tts.speak("Robot enabled, stand clear");
-                nextTimeToSpeakInSeconds = TrcUtil.getCurrentTime() + SPEAK_PERIOD_SECONDS;
+                frontRanger.start();
             }
+
+            driveTime = HalDashboard.getNumber("Test/DriveTime", 5.0);
+            drivePower = HalDashboard.getNumber("Test/DrivePower", 0.2);
+            driveDistance = HalDashboard.getNumber("Test/DriveDistance", 6.0);
+            turnDegrees = HalDashboard.getNumber("Test/TurnDegrees", 90.0);
+            drivePowerLimit = HalDashboard.getNumber("Test/DrivePowerLimit", 0.5);
+            tuneKp = HalDashboard.getNumber("Test/TuneKp", RobotInfo.GYRO_TURN_KP);
+            tuneKi = HalDashboard.getNumber("Test/TuneKi", RobotInfo.GYRO_TURN_KI);
+            tuneKd = HalDashboard.getNumber("Test/TuneKd", RobotInfo.GYRO_TURN_KD);
+            tuneKf = HalDashboard.getNumber("Test/TuneKf", 0.0);
         }
-
-//        if (frontRanger != null)
-//        {
-//            frontRanger.start();
-//        }
-
-        if (ds.isFMSAttached())
-        {
-            eventName = ds.getEventName();
-            matchType = ds.getMatchType();
-            matchNumber = ds.getMatchNumber();
-        }
-
-        alliance = ds.getAlliance();
-        location = ds.getLocation();
-        gameSpecificMessage = ds.getGameSpecificMessage();
-
-        battery.setTaskEnabled(true);
-        driveTime = HalDashboard.getNumber("Test/DriveTime", 5.0);
-        drivePower = HalDashboard.getNumber("Test/DrivePower", 0.2);
-        driveDistance = HalDashboard.getNumber("Test/DriveDistance", 6.0);
-        drivePowerLimit = HalDashboard.getNumber("Test/DrivePowerLimit", 0.5);
-        turnDegrees = HalDashboard.getNumber("Test/TurnDegrees", 90.0);
-        tuneKp = HalDashboard.getNumber("Test/TuneKp", RobotInfo.GYRO_TURN_KP);
-        tuneKi = HalDashboard.getNumber("Test/TuneKi", RobotInfo.GYRO_TURN_KI);
-        tuneKd = HalDashboard.getNumber("Test/TuneKd", RobotInfo.GYRO_TURN_KD);
-        tuneKf = HalDashboard.getNumber("Test/TuneKf", 0.0);
     }   //robotStartMode
 
     public void robotStopMode(RunMode runMode)
     {
-        cubePickup.closeClaw();
-        cubePickup.raisePickup();
-        driveBase.stop();
-        battery.setTaskEnabled(false);
-
-        cancelAutoAssist();
-        cubePickup.stopPickup();
-        globalTracer.traceInfo(moduleName, "TotalEnergy=%.3fWh", battery.getTotalEnergy());
-        stopTraceLog();
+        if (runMode != RunMode.DISABLED_MODE)
+        {
+            if (runMode == RunMode.TELEOP_MODE || runMode == RunMode.TEST_MODE)
+            {
+                cubePickup.closeClaw();
+                cubePickup.raisePickup();
+            }
+            setVisionEnabled(false);
+            cancelAutoAssist();
+            cubePickup.stopPickup();
+            globalTracer.traceInfo(moduleName, "TotalEnergy=%.3fWh", battery.getTotalEnergy());
+            diagnostics.printDiagnostics();
+        }
     }   //robotStopMode
 
     public void setVisionEnabled(boolean enabled)
@@ -532,10 +506,6 @@ public class Robot extends FrcRobotBase
         {
             nextUpdateTime = currTime + DASHBOARD_UPDATE_INTERVAL;
 
-            double xPos = driveBase.getXPosition();
-            double yPos = driveBase.getYPosition();
-            double heading = driveBase.getHeading();
-
             if (DEBUG_POWER_CONSUMPTION)
             {
                 HalDashboard.putNumber("Power/pdpTotalCurrent", pdp.getTotalCurrent());
@@ -560,6 +530,10 @@ public class Robot extends FrcRobotBase
 
             if (DEBUG_DRIVE_BASE)
             {
+                double xPos = driveBase.getXPosition();
+                double yPos = driveBase.getYPosition();
+                double heading = driveBase.getHeading();
+
                 HalDashboard.putNumber("DriveBase/xPos", xPos);
                 HalDashboard.putNumber("DriveBase/yPos", yPos);
                 HalDashboard.putNumber("DriveBase/heading", heading);
@@ -639,17 +613,10 @@ public class Robot extends FrcRobotBase
         }
     }   //announceIdling
 
-    public void startTraceLog(RunMode runMode, String prefix)
+    public void startTraceLog(String filePrefix)
     {
-        String filePrefix = prefix != null? prefix: runMode.toString() + "_" + eventName + "_" + matchType.toString();
-        if (prefix == null) filePrefix += String.format("%03d", matchNumber);
         globalTracer.openTraceLog("/home/lvuser/tracelog", filePrefix);
     }   //startTraceLog
-
-    public void startTraceLog(RunMode runMode)
-    {
-        startTraceLog(runMode, null);
-    }
 
     public void stopTraceLog()
     {
@@ -703,22 +670,6 @@ public class Robot extends FrcRobotBase
 
         return value;
     }   //getRightSonarDistance
-
-    public double getFrontSonarDistance()
-    {
-        double value = 0.0;
-
-        if (frontSonarArray != null)
-        {
-            value = frontSonarArray.getDistance(0).value;
-        }
-        else if (frontSonarSensor != null)
-        {
-            value = frontSonarSensor.getData(0).value;
-        }
-
-        return value;
-    }   //getFrontSonarDistance
 
     public double getLidarDistane()
     {

@@ -323,8 +323,7 @@ public class CubePickup
 
                 case DONE:
                     // We have the cube, we can stop now.
-//                	setPickupPower(RobotInfo.PICKUP_HOLD_CUBE_POWER, false);
-                    setPickupPower(robot.tempGrabberHoldPower, false);
+                    setPickupPower(RobotInfo.PICKUP_HOLD_CUBE_POWER, false);
                     robot.ledIndicator.indicateHasCube();
                     if (cubeInPossessionEvent != null)
                     {

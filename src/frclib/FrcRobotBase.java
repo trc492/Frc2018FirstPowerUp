@@ -249,124 +249,108 @@ public abstract class FrcRobotBase extends RobotBase
                 {
                     dbgTrace.traceInfo(funcName, "Mode Transition: %s->%s.", prevMode.toString(), currMode.toString());
                 }
-                //
-                // Execute all stop tasks for previous mode.
-                //
+
                 if (prevMode != RunMode.INVALID_MODE)
                 {
+                    //
+                    // Execute all stop tasks for previous mode.
+                    //
                     startTime = Timer.getFPGATimestamp();
                     taskMgr.executeTaskType(TrcTaskMgr.TaskType.STOP_TASK, prevMode);
                     elapsedTime = Timer.getFPGATimestamp() - startTime;
-                    if (elapsedTime > taskTimeThreshold)
+                    globalTracer.traceInfo(funcName, "%s.stopTask took %.3fs", prevMode, elapsedTime);
+                    //
+                    // Stop previous mode.
+                    //
+                    startTime = Timer.getFPGATimestamp();
+                    if (prevMode == RunMode.DISABLED_MODE && disabledMode != null)
                     {
-                        globalTracer.traceWarn(funcName, "%s.stopTask takes too long (%.3fs)",
-                            prevMode, elapsedTime);
+                        disabledMode.stopMode();
                     }
-                }
-                //
-                // Stop previous mode.
-                //
-                startTime = Timer.getFPGATimestamp();
-                if (prevMode == RunMode.DISABLED_MODE && disabledMode != null)
-                {
-                    disabledMode.stopMode();
-                }
-                else if (prevMode == RunMode.TEST_MODE && testMode != null)
-                {
-                    testMode.stopMode();
-                }
-                else if (prevMode == RunMode.AUTO_MODE && autoMode != null)
-                {
-                    autoMode.stopMode();
-                }
-                else if (prevMode == RunMode.TELEOP_MODE && teleOpMode != null)
-                {
-                    teleOpMode.stopMode();
-                }
-                elapsedTime = Timer.getFPGATimestamp() - startTime;
-                if (elapsedTime > taskTimeThreshold)
-                {
-                    globalTracer.traceWarn(funcName, "%s.stopMode takes too long (%.3fs)",
-                        prevMode, elapsedTime);
+                    else if (prevMode == RunMode.TEST_MODE && testMode != null)
+                    {
+                        testMode.stopMode();
+                    }
+                    else if (prevMode == RunMode.AUTO_MODE && autoMode != null)
+                    {
+                        autoMode.stopMode();
+                    }
+                    else if (prevMode == RunMode.TELEOP_MODE && teleOpMode != null)
+                    {
+                        teleOpMode.stopMode();
+                    }
+                    elapsedTime = Timer.getFPGATimestamp() - startTime;
+                    globalTracer.traceInfo(funcName, "%s.stopMode took %.3fs", prevMode, elapsedTime);
+                    //
+                    // Run robotStopMode for the previous mode.
+                    //
+                    startTime = Timer.getFPGATimestamp();
+                    robotStopMode(prevMode);
+                    elapsedTime = Timer.getFPGATimestamp() - startTime;
+                    globalTracer.traceInfo(funcName, "%s.robotStopMode took %.3fs", prevMode, elapsedTime);
                 }
 
-                startTime = Timer.getFPGATimestamp();
-                robotStopMode(prevMode);
-                elapsedTime = Timer.getFPGATimestamp() - startTime;
-                if (elapsedTime > taskTimeThreshold)
-                {
-                    globalTracer.traceWarn(funcName, "%s.robotStopMode takes too long (%.3fs)",
-                        prevMode, elapsedTime);
-                }
-                //
-                // Start current mode.
-                //
-                modeStartTime = TrcUtil.getCurrentTime();
-
-                startTime = Timer.getFPGATimestamp();
-                robotStartMode(currMode);
-                elapsedTime = Timer.getFPGATimestamp() - startTime;
-                if (elapsedTime > taskTimeThreshold)
-                {
-                    globalTracer.traceWarn(funcName, "%s.robotStartMode takes too long (%.3fs)",
-                        currMode, elapsedTime);
-                }
-
-                startTime = Timer.getFPGATimestamp();
-                if (currMode == RunMode.DISABLED_MODE)
-                {
-                    LiveWindow.setEnabled(false);
-                    if (disabledMode != null)
-                    {
-                        disabledMode.startMode();
-                    }
-                }
-                else if (currMode == RunMode.TEST_MODE)
-                {
-                    LiveWindow.setEnabled(true);
-                    if (testMode != null)
-                    {
-                        testMode.startMode();
-                    }
-                }
-                else if (currMode == RunMode.AUTO_MODE)
-                {
-                    LiveWindow.setEnabled(false);
-                    if (autoMode != null)
-                    {
-                        autoMode.startMode();
-                    }
-                }
-                else if (currMode == RunMode.TELEOP_MODE)
-                {
-                    LiveWindow.setEnabled(false);
-                    if (teleOpMode != null)
-                    {
-                        teleOpMode.startMode();
-                    }
-                }
-                elapsedTime = Timer.getFPGATimestamp() - startTime;
-                if (elapsedTime > taskTimeThreshold)
-                {
-                    globalTracer.traceWarn(funcName, "%s.startMode takes too long (%.3fs)",
-                        currMode, elapsedTime);
-                }
-                //
-                // Execute all start tasks for current mode.
-                //
                 if (currMode != RunMode.INVALID_MODE)
                 {
+                    modeStartTime = TrcUtil.getCurrentTime();
+                    //
+                    // Run robotStartMode for the current mode.
+                    //
+                    startTime = Timer.getFPGATimestamp();
+                    robotStartMode(currMode);
+                    elapsedTime = Timer.getFPGATimestamp() - startTime;
+                    globalTracer.traceInfo(funcName, "%s.robotStartMode took %.3fs", currMode, elapsedTime);
+                    //
+                    // Start current mode.
+                    //
+                    startTime = Timer.getFPGATimestamp();
+                    if (currMode == RunMode.DISABLED_MODE)
+                    {
+                        LiveWindow.setEnabled(false);
+                        if (disabledMode != null)
+                        {
+                            disabledMode.startMode();
+                        }
+                    }
+                    else if (currMode == RunMode.TEST_MODE)
+                    {
+                        LiveWindow.setEnabled(true);
+                        if (testMode != null)
+                        {
+                            testMode.startMode();
+                        }
+                    }
+                    else if (currMode == RunMode.AUTO_MODE)
+                    {
+                        LiveWindow.setEnabled(false);
+                        if (autoMode != null)
+                        {
+                            autoMode.startMode();
+                        }
+                    }
+                    else if (currMode == RunMode.TELEOP_MODE)
+                    {
+                        LiveWindow.setEnabled(false);
+                        if (teleOpMode != null)
+                        {
+                            teleOpMode.startMode();
+                        }
+                    }
+                    elapsedTime = Timer.getFPGATimestamp() - startTime;
+                    globalTracer.traceInfo(funcName, "%s.startMode took %.3fs", currMode, elapsedTime);
+                    //
+                    // Execute all start tasks for current mode.
+                    //
                     startTime = Timer.getFPGATimestamp();
                     taskMgr.executeTaskType(TrcTaskMgr.TaskType.START_TASK, currMode);
                     elapsedTime = Timer.getFPGATimestamp() - startTime;
-                    if (elapsedTime > taskTimeThreshold)
-                    {
-                        globalTracer.traceWarn(funcName, "%s.startTask takes too long (%.3fs)",
-                            currMode, elapsedTime);
-                    }
+                    globalTracer.traceInfo(funcName, "%s.startTask took %.3fs", currMode, elapsedTime);
                 }
             }
 
+            //
+            // Run the time slice.
+            //
             modeElapsedTime = TrcUtil.getCurrentTime() - modeStartTime;
             boolean periodReady = nextPeriodReady();
             //

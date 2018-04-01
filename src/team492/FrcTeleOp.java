@@ -23,9 +23,7 @@
 package team492;
 
 import frclib.FrcJoystick;
-import hallib.HalDashboard;
 import trclib.TrcRobot;
-import trclib.TrcRobot.RunMode;
 
 public class FrcTeleOp implements TrcRobot.RobotMode
 {
@@ -54,14 +52,6 @@ public class FrcTeleOp implements TrcRobot.RobotMode
     @Override
     public void startMode()
     {
-        if (Robot.USE_TRACELOG) robot.startTraceLog(RunMode.TELEOP_MODE);
-
-        robot.dashboard.clearDisplay();
-        robot.setVisionEnabled(true);
-
-        robot.driveBase.resetPosition();
-        robot.targetHeading = 0.0;
-
         //
         // Configure joysticks.
         //
@@ -73,16 +63,11 @@ public class FrcTeleOp implements TrcRobot.RobotMode
 
         robot.operatorStick.setButtonHandler(this::operatorStickButtonEvent);
         robot.operatorStick.setYInverted(false);
-
-        robot.tempGrabberHoldPower = HalDashboard.getNumber("Test/GrabberHoldPower", RobotInfo.PICKUP_HOLD_CUBE_POWER);
-
     } // startMode
 
     @Override
     public void stopMode()
     {
-    	robot.diagnostics.printDiagnostics();
-        robot.setVisionEnabled(false);
     } // stopMode
 
     @Override

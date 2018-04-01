@@ -22,8 +22,6 @@
 
 package team492;
 
-import java.util.Date;
-
 import common.CmdPidDrive;
 import common.CmdTimedDrive;
 import frclib.FrcChoiceMenu;
@@ -31,7 +29,6 @@ import hallib.HalDashboard;
 import team492.RobotInfo.Position;
 import trclib.TrcRobot;
 import trclib.TrcTaskMgr;
-import trclib.TrcRobot.RunMode;
 
 public class FrcAuto implements TrcRobot.RobotMode
 {
@@ -151,17 +148,9 @@ public class FrcAuto implements TrcRobot.RobotMode
     @Override
     public void startMode()
     {
-        if (Robot.USE_TRACELOG)
-            robot.startTraceLog(RunMode.AUTO_MODE);
-
-        Date now = new Date();
-        robot.globalTracer.traceInfo(Robot.programName, "%s[%.3f]: ***** Starting autonomous *****",
-            now.toString(), Robot.getModeElapsedTime());
-        robot.globalTracer.traceInfo(Robot.programName, "%s_%s_%3d (%s%d) [FMSConnected=%b]", robot.eventName,
+        robot.globalTracer.traceInfo(Robot.programName, "%s_%s_%03d (%s%d) [FMSConnected=%b]", robot.eventName,
             robot.matchType.toString(), robot.matchNumber, robot.alliance.toString(), robot.location,
             robot.ds.isFMSAttached());
-
-        robot.dashboard.clearDisplay();
 
         robot.encoderYPidCtrl.setOutputLimit(0.6);  //CodeReview: can we use RobotInfo.DRIVE_MAX_YPID_POWER?
         robot.encoderXPidCtrl.setOutputLimit(RobotInfo.DRIVE_MAX_XPID_POWER);
@@ -279,18 +268,11 @@ public class FrcAuto implements TrcRobot.RobotMode
                 autoCommand = null;
                 break;
         }
-
-        robot.setVisionEnabled(true);
-        robot.driveBase.resetPosition();
-        robot.targetHeading = 0.0;
-        robot.globalTracer.traceInfo("FrcAuto.startMode", "[%.3f] startMode done!", Robot.getModeElapsedTime());
     } // startMode
 
     @Override
     public void stopMode()
     {
-        robot.setVisionEnabled(false);
-        robot.diagnostics.printDiagnostics();
         TrcTaskMgr.getInstance().printTaskPerformanceMetrics(robot.globalTracer);
     } // stopMode
 
