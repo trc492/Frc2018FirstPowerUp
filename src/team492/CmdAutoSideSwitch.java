@@ -22,6 +22,7 @@
 
 package team492;
 
+import team492.RobotInfo.Position;
 import trclib.TrcAnalogInput;
 import trclib.TrcAnalogTrigger;
 import trclib.TrcEvent;
@@ -121,8 +122,8 @@ public class CmdAutoSideSwitch implements TrcRobot.RobotCommand
         xPowerLimit = robot.encoderXPidCtrl.getOutputLimit();
         yPowerLimit = robot.encoderYPidCtrl.getOutputLimit();
 
-        robot.globalTracer.traceInfo(moduleName, "alliance=%s, gameSpecificMsg=%s, delay=%.3f, getSecondCube=%b",
-            robot.alliance, robot.gameSpecificMessage, delay, getSecondCube);
+        robot.globalTracer.traceInfo(moduleName, "alliance=%s, startPos=%s, gameSpecificMsg=%s, delay=%.3f, getSecondCube=%b",
+            robot.alliance, rightSwitch?Position.RIGHT_POS:Position.LEFT_POS, robot.gameSpecificMessage, delay, getSecondCube);
     } // CmdAutoSwitch
 
     //

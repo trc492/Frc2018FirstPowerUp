@@ -104,8 +104,7 @@ public class CmdCubePickup implements TrcRobot.RobotCommand
                 {
                     case START:
                         // Deploy and open cube pickup
-                        robot.cubePickup.deployPickup();
-                        robot.cubePickup.openClaw();
+                        robot.cubePickup.prepareForPickup();
                         robot.elevator.setPosition(RobotInfo.ELEVATOR_FLOOR_PICKUP_HEIGHT);
                         sm.setState(State.DRIVE);
                         break;
@@ -114,11 +113,7 @@ public class CmdCubePickup implements TrcRobot.RobotCommand
                         // Go forward the expected distance or until the cube is in possession.
                         xDistance = xError;
                         yDistance = RobotInfo.AUTO_PICKUP_CUBE_DISTANCE;
-//                        yDistance = robot.frontSonarSensor != null?
-//                            robot.getFrontSonarDistance(): RobotInfo.AUTO_PICKUP_CUBE_DISTANCE;
                         robot.cubePickup.grabCube(RobotInfo.PICKUP_TELEOP_POWER, pickupEvent);
-//                        robot.cubePickup.setProximityTriggerEnabled(true, proximityEvent);
-//                        sm.addEvent(proximityEvent);
                         sm.addEvent(pickupEvent);
                         robot.pidDrive.setTarget(xDistance, yDistance, robot.targetHeading, false, event);
                         sm.addEvent(event);
@@ -134,7 +129,6 @@ public class CmdCubePickup implements TrcRobot.RobotCommand
                 robot.traceStateInfo(elapsedTime, state.toString());
             }
         }
-
         return done;
     }
 
