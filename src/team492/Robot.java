@@ -648,7 +648,7 @@ public class Robot extends FrcRobotBase
     public void traceStateInfo(double elapsedTime, String stateName)
     {
         globalTracer.traceInfo(
-            moduleName, "[%5.3f] State=%10s: xPos=%6.2f,yPos=%6.2f,heading=%6.1f/%6.1f,volts=%.1f(%.1f)",
+            moduleName, "[%5.3f] <<<%16s>>> xPos=%6.2f,yPos=%6.2f,heading=%6.1f/%6.1f,volts=%.1f(%.1f)",
             elapsedTime, stateName, driveBase.getXPosition(), driveBase.getYPosition(), driveBase.getHeading(),
             targetHeading, battery.getVoltage(), battery.getLowestVoltage());
     }   //traceStateInfo
