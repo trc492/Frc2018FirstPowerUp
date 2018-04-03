@@ -67,6 +67,10 @@ public class FrcDisabled implements TrcRobot.RobotMode
                     robot.closeTraceLog();
                     state = State.DONE;
                     break;
+
+                default:
+                case DONE:
+                    break;
             }
         }
         else
