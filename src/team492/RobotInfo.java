@@ -213,6 +213,9 @@ public class RobotInfo
     public static final double ELEVATOR_PID_FLOOR               = 6.0;
     public static final double ELEVATOR_PID_CEILING             = 82.0;     //need calibration
 
+    public static final double ELEVATOR_STALL_MIN_POWER         = 0.3;
+    public static final double ELEVATOR_STALL_TIMEOUT           = 0.5;
+    public static final double ELEVATOR_STALL_RESET_TIMEOUT     = 0.5;
     public static final double ELEVATOR_MIN_HEIGHT              = ELEVATOR_POSITION_OFFSET;
     public static final double ELEVATOR_MAX_HEIGHT              = ELEVATOR_PID_CEILING - 1.0;
     public static final double ELEVATOR_FLOOR_PICKUP_HEIGHT     = ELEVATOR_MIN_HEIGHT;  // Lowest point on elevator

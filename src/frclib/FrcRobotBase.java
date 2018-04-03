@@ -209,7 +209,7 @@ public abstract class FrcRobotBase extends RobotBase
         // loop forever, calling the appropriate mode-dependent function
         //
         final double timesliceThreshold = 0.1;
-        final double taskTimeThreshold = 0.03;
+        final double taskTimeThreshold = 0.04;
 
         while (true)
         {

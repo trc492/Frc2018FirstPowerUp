@@ -39,6 +39,7 @@ public class TrcPidMotor
     protected TrcDbgTrace dbgTrace = null;
     private TrcDbgTrace msgTracer = null;
     private TrcRobotBattery battery = null;
+    private boolean tracePidInfo = false;
 
     /**
      * Some actuators are non-linear. The load may vary depending on the position. For example, raising an arm
@@ -236,12 +237,25 @@ public class TrcPidMotor
      * This method sets the message tracer for logging trace messages.
      *
      * @param tracer specifies the tracer for logging messages.
+     * @param tracePidInfo specifies true to enable tracing of PID info, false otherwise.
      * @param battery specifies the battery object to get battery info for the message.
      */
-    public void setMsgTracer(TrcDbgTrace tracer, TrcRobotBattery battery)
+    public void setMsgTracer(TrcDbgTrace tracer, boolean tracePidInfo, TrcRobotBattery battery)
     {
         this.msgTracer = tracer;
+        this.tracePidInfo = tracePidInfo;
         this.battery = battery;
+    }   //setMsgTracer
+
+    /**
+     * This method sets the message tracer for logging trace messages.
+     *
+     * @param tracer specifies the tracer for logging messages.
+     * @param tracePidInfo specifies true to enable tracing of PID info, false otherwise.
+     */
+    public void setMsgTracer(TrcDbgTrace tracer, boolean tracePidInfo)
+    {
+        setMsgTracer(tracer, tracePidInfo, null);
     }   //setMsgTracer
 
     /**
@@ -251,7 +265,7 @@ public class TrcPidMotor
      */
     public void setMsgTracer(TrcDbgTrace tracer)
     {
-        setMsgTracer(tracer, null);
+        setMsgTracer(tracer, false, null);
     }   //setMsgTracer
 
     /**
@@ -610,6 +624,11 @@ public class TrcPidMotor
                         if (beepDevice != null)
                         {
                             beepDevice.playTone(beepHighFrequency, beepDuration);
+                        }
+
+                        if (msgTracer != null)
+                        {
+                            msgTracer.traceInfo(funcName, "Motor stalled");
                         }
                     }
                 }
@@ -999,7 +1018,7 @@ public class TrcPidMotor
                 motorPower = pidCtrl.getOutput();
                 setPower(motorPower, MIN_MOTOR_POWER, MAX_MOTOR_POWER, false);
 
-                if (msgTracer != null)
+                if (msgTracer != null && tracePidInfo)
                 {
                     pidCtrl.printPidInfo(msgTracer, TrcUtil.getCurrentTime(), battery);
                 }

@@ -357,6 +357,7 @@ public class Robot extends FrcRobotBase
         gyroTurnPidCtrl.setAbsoluteSetPoint(true);
         pidDrive = new TrcPidDrive("pidDrive", driveBase, encoderXPidCtrl, encoderYPidCtrl, gyroTurnPidCtrl);
         pidDrive.setStallTimeout(RobotInfo.DRIVE_STALL_TIMEOUT);
+        pidDrive.setMsgTracer(globalTracer);
 
         encoderXPidCtrl.setOutputLimit(RobotInfo.DRIVE_MAX_XPID_POWER);
         encoderYPidCtrl.setOutputLimit(RobotInfo.DRIVE_MAX_YPID_POWER);
@@ -646,7 +647,8 @@ public class Robot extends FrcRobotBase
 
     public void traceStateInfo(double elapsedTime, String stateName)
     {
-        globalTracer.traceInfo(moduleName, "[%5.3f] %10s: xPos=%6.2f,yPos=%6.2f,heading=%6.1f/%6.1f,volts=%.1f(%.1f)",
+        globalTracer.traceInfo(
+            moduleName, "[%5.3f] State=%10s: xPos=%6.2f,yPos=%6.2f,heading=%6.1f/%6.1f,volts=%.1f(%.1f)",
             elapsedTime, stateName, driveBase.getXPosition(), driveBase.getYPosition(), driveBase.getHeading(),
             targetHeading, battery.getVoltage(), battery.getLowestVoltage());
     }   //traceStateInfo

@@ -44,6 +44,7 @@ public class TrcPidDrive
     private TrcDbgTrace dbgTrace = null;
     private TrcDbgTrace msgTracer = null;
     private TrcRobotBattery battery = null;
+    private boolean tracePidInfo = false;
 
     /**
      * This interface provides a stuck wheel notification handler. It is useful for detecting drive base motor
@@ -150,12 +151,25 @@ public class TrcPidDrive
      * This method sets the message tracer for logging trace messages.
      *
      * @param tracer specifies the tracer for logging messages.
+     * @param tracePidInfo specifies true to enable tracing of PID info, false otherwise.
      * @param battery specifies the battery object to get battery info for the message.
      */
-    public void setMsgTracer(TrcDbgTrace tracer, TrcRobotBattery battery)
+    public void setMsgTracer(TrcDbgTrace tracer, boolean tracePidInfo, TrcRobotBattery battery)
     {
         this.msgTracer = tracer;
+        this.tracePidInfo = tracePidInfo;
         this.battery = battery;
+    }   //setMsgTracer
+
+    /**
+     * This method sets the message tracer for logging trace messages.
+     *
+     * @param tracer specifies the tracer for logging messages.
+     * @param tracePidInfo specifies true to enable tracing of PID info, false otherwise.
+     */
+    public void setMsgTracer(TrcDbgTrace tracer, boolean tracePidInfo)
+    {
+        setMsgTracer(tracer, tracePidInfo, null);
     }   //setMsgTracer
 
     /**
@@ -165,7 +179,7 @@ public class TrcPidDrive
      */
     public void setMsgTracer(TrcDbgTrace tracer)
     {
-        setMsgTracer(tracer, null);
+        setMsgTracer(tracer, false, null);
     }   //setMsgTracer
 
     /**
@@ -802,7 +816,7 @@ public class TrcPidDrive
            driveBase.drive(yPower, turnPower);
         }
 
-        if (msgTracer != null)
+        if (msgTracer != null && tracePidInfo)
         {
             double currTime = TrcUtil.getCurrentTime();
             if (xPidCtrl != null) xPidCtrl.printPidInfo(msgTracer, currTime, battery);

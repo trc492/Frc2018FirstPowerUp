@@ -52,6 +52,9 @@ public class Elevator
             new FrcCANTalonLimitSwitch("elevatorLowerLimit", elevatorMotor, false), elevatorPidCtrl,
             RobotInfo.ELEVATOR_PID_FLOOR, RobotInfo.ELEVATOR_PID_CEILING, this::getGravityCompensation);
         elevator.setPositionScale(RobotInfo.ELEVATOR_INCHES_PER_COUNT, RobotInfo.ELEVATOR_POSITION_OFFSET);
+        elevator.setStallProtection(
+            RobotInfo.ELEVATOR_STALL_MIN_POWER, RobotInfo.ELEVATOR_STALL_TIMEOUT,
+            RobotInfo.ELEVATOR_STALL_RESET_TIMEOUT);
     }
 
     public void setManualOverride(boolean manualOverride)
@@ -76,7 +79,7 @@ public class Elevator
     public void setPosition(double pos)
     {
         pos = TrcUtil.clipRange(pos, RobotInfo.ELEVATOR_MIN_HEIGHT, RobotInfo.ELEVATOR_MAX_HEIGHT);
-        elevator.setTarget(pos, true);
+        elevator.setTarget(pos, pos != RobotInfo.ELEVATOR_MIN_HEIGHT);
     } // setPosition
 
     public void setPosition(double pos, TrcEvent event, double timeout)

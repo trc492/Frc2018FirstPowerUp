@@ -24,7 +24,7 @@ public class Lidar
     private int measurementCount = 0;
 
     private static final int LIDAR_BUSY_MASK = 0x01;
-    private static final int LIDAR_COMMAND_ACQUIRE_WITHOUT_CORRECTION = 0x03;
+//    private static final int LIDAR_COMMAND_ACQUIRE_WITHOUT_CORRECTION = 0x03;
     private static final int LIDAR_COMMAND_ACQUIRE_WITH_CORRECTION = 0x04;
     private static final int LIDAR_CONFIG_REGISTER = 0x00;
     private static final int LIDAR_STATUS_REGISTER = 0x01;
