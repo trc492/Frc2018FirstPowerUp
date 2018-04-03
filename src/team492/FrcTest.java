@@ -260,22 +260,7 @@ public class FrcTest extends FrcTeleOp
                 robot.encoderXPidCtrl.displayPidInfo(3);
                 robot.encoderYPidCtrl.displayPidInfo(5);
                 robot.gyroTurnPidCtrl.displayPidInfo(7);
-
-                if (!pidDriveCommand.cmdPeriodic(elapsedTime))
-                {
-                    if (test == Test.X_DISTANCE_DRIVE)
-                    {
-                        robot.encoderXPidCtrl.printPidInfo(robot.globalTracer, elapsedTime, robot.battery);
-                    }
-                    else if (test == Test.Y_DISTANCE_DRIVE)
-                    {
-                        robot.encoderYPidCtrl.printPidInfo(robot.globalTracer, elapsedTime, robot.battery);
-                    }
-                    else if (test == Test.TURN_DEGREES)
-                    {
-                        robot.gyroTurnPidCtrl.printPidInfo(robot.globalTracer, elapsedTime, robot.battery);
-                    }
-                }
+                pidDriveCommand.cmdPeriodic(elapsedTime);
                 break;
 
             default:

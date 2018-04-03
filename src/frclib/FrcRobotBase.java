@@ -25,7 +25,6 @@ package frclib;
 import java.io.InputStream;
 import java.io.IOException;
 
-import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.hal.FRCNetComm.tInstances;
 import edu.wpi.first.wpilibj.hal.FRCNetComm.tResourceType; 
@@ -54,6 +53,7 @@ public abstract class FrcRobotBase extends RobotBase
     protected static final TrcDbgTrace.TraceLevel traceLevel = TrcDbgTrace.TraceLevel.API;
     protected static final TrcDbgTrace.MsgLevel msgLevel = TrcDbgTrace.MsgLevel.INFO;
     protected TrcDbgTrace dbgTrace = null;
+    protected boolean liveWindowEnabled = false;
 
     private static final boolean dashboardEnabled = true;
 
@@ -203,16 +203,17 @@ public abstract class FrcRobotBase extends RobotBase
         //
         HAL.observeUserProgramStarting();
 
-        LiveWindow.setEnabled(false);
+        liveWindowEnabled = false;
+        LiveWindow.setEnabled(liveWindowEnabled);
         //
         // loop forever, calling the appropriate mode-dependent function
         //
         final double timesliceThreshold = 0.1;
-        final double taskTimeThreshold = 0.02;
+        final double taskTimeThreshold = 0.03;
 
         while (true)
         {
-            double timeSliceStart = Timer.getFPGATimestamp();
+            double timeSliceStart = TrcUtil.getCurrentTime();
             double startTime, elapsedTime;
 
             prevMode = currMode;
@@ -247,7 +248,7 @@ public abstract class FrcRobotBase extends RobotBase
                 //
                 if (debugEnabled)
                 {
-                    dbgTrace.traceInfo(funcName, "Mode Transition: %s->%s.", prevMode.toString(), currMode.toString());
+                    dbgTrace.traceInfo(funcName, "Mode Transition: %s->%s.", prevMode, currMode);
                 }
 
                 if (prevMode != RunMode.INVALID_MODE)
@@ -255,14 +256,25 @@ public abstract class FrcRobotBase extends RobotBase
                     //
                     // Execute all stop tasks for previous mode.
                     //
-                    startTime = Timer.getFPGATimestamp();
-                    taskMgr.executeTaskType(TrcTaskMgr.TaskType.STOP_TASK, prevMode);
-                    elapsedTime = Timer.getFPGATimestamp() - startTime;
-                    globalTracer.traceInfo(funcName, "%s.stopTask took %.3fs", prevMode, elapsedTime);
+                    if (debugEnabled)
+                    {
+                        startTime = TrcUtil.getCurrentTime();
+                        taskMgr.executeTaskType(TrcTaskMgr.TaskType.STOP_TASK, prevMode);
+                        elapsedTime = TrcUtil.getCurrentTime() - startTime;
+                        globalTracer.traceInfo(funcName, "%s.stopTask took %.3fs", prevMode, elapsedTime);
+                    }
+                    else
+                    {
+                        taskMgr.executeTaskType(TrcTaskMgr.TaskType.STOP_TASK, prevMode);
+                    }
                     //
                     // Stop previous mode.
                     //
-                    startTime = Timer.getFPGATimestamp();
+                    if (debugEnabled)
+                    {
+                        startTime = TrcUtil.getCurrentTime();
+                    }
+
                     if (prevMode == RunMode.DISABLED_MODE && disabledMode != null)
                     {
                         disabledMode.stopMode();
@@ -279,15 +291,26 @@ public abstract class FrcRobotBase extends RobotBase
                     {
                         teleOpMode.stopMode();
                     }
-                    elapsedTime = Timer.getFPGATimestamp() - startTime;
-                    globalTracer.traceInfo(funcName, "%s.stopMode took %.3fs", prevMode, elapsedTime);
+
+                    if (debugEnabled)
+                    {
+                        elapsedTime = TrcUtil.getCurrentTime() - startTime;
+                        globalTracer.traceInfo(funcName, "%s.stopMode took %.3fs", prevMode, elapsedTime);
+                    }
                     //
                     // Run robotStopMode for the previous mode.
                     //
-                    startTime = Timer.getFPGATimestamp();
-                    robotStopMode(prevMode);
-                    elapsedTime = Timer.getFPGATimestamp() - startTime;
-                    globalTracer.traceInfo(funcName, "%s.robotStopMode took %.3fs", prevMode, elapsedTime);
+                    if (debugEnabled)
+                    {
+                        startTime = TrcUtil.getCurrentTime();
+                        robotStopMode(prevMode);
+                        elapsedTime = TrcUtil.getCurrentTime() - startTime;
+                        globalTracer.traceInfo(funcName, "%s.robotStopMode took %.3fs", prevMode, elapsedTime);
+                    }
+                    else
+                    {
+                        robotStopMode(prevMode);
+                    }
                 }
 
                 if (currMode != RunMode.INVALID_MODE)
@@ -296,17 +319,28 @@ public abstract class FrcRobotBase extends RobotBase
                     //
                     // Run robotStartMode for the current mode.
                     //
-                    startTime = Timer.getFPGATimestamp();
-                    robotStartMode(currMode);
-                    elapsedTime = Timer.getFPGATimestamp() - startTime;
-                    globalTracer.traceInfo(funcName, "%s.robotStartMode took %.3fs", currMode, elapsedTime);
+                    if (debugEnabled)
+                    {
+                        startTime = TrcUtil.getCurrentTime();
+                        robotStartMode(currMode);
+                        elapsedTime = TrcUtil.getCurrentTime() - startTime;
+                        globalTracer.traceInfo(funcName, "%s.robotStartMode took %.3fs", currMode, elapsedTime);
+                    }
+                    else
+                    {
+                        robotStartMode(currMode);
+                    }
                     //
                     // Start current mode.
                     //
-                    startTime = Timer.getFPGATimestamp();
+                    if (debugEnabled)
+                    {
+                        startTime = TrcUtil.getCurrentTime();
+                    }
+
                     if (currMode == RunMode.DISABLED_MODE)
                     {
-                        LiveWindow.setEnabled(false);
+                        liveWindowEnabled = false;
                         if (disabledMode != null)
                         {
                             disabledMode.startMode();
@@ -314,7 +348,7 @@ public abstract class FrcRobotBase extends RobotBase
                     }
                     else if (currMode == RunMode.TEST_MODE)
                     {
-                        LiveWindow.setEnabled(true);
+                        liveWindowEnabled = true;
                         if (testMode != null)
                         {
                             testMode.startMode();
@@ -322,7 +356,7 @@ public abstract class FrcRobotBase extends RobotBase
                     }
                     else if (currMode == RunMode.AUTO_MODE)
                     {
-                        LiveWindow.setEnabled(false);
+                        liveWindowEnabled = false;
                         if (autoMode != null)
                         {
                             autoMode.startMode();
@@ -330,21 +364,33 @@ public abstract class FrcRobotBase extends RobotBase
                     }
                     else if (currMode == RunMode.TELEOP_MODE)
                     {
-                        LiveWindow.setEnabled(false);
+                        liveWindowEnabled = false;
                         if (teleOpMode != null)
                         {
                             teleOpMode.startMode();
                         }
                     }
-                    elapsedTime = Timer.getFPGATimestamp() - startTime;
-                    globalTracer.traceInfo(funcName, "%s.startMode took %.3fs", currMode, elapsedTime);
+                    LiveWindow.setEnabled(liveWindowEnabled);
+
+                    if (debugEnabled)
+                    {
+                        elapsedTime = TrcUtil.getCurrentTime() - startTime;
+                        globalTracer.traceInfo(funcName, "%s.startMode took %.3fs", currMode, elapsedTime);
+                    }
                     //
                     // Execute all start tasks for current mode.
                     //
-                    startTime = Timer.getFPGATimestamp();
-                    taskMgr.executeTaskType(TrcTaskMgr.TaskType.START_TASK, currMode);
-                    elapsedTime = Timer.getFPGATimestamp() - startTime;
-                    globalTracer.traceInfo(funcName, "%s.startTask took %.3fs", currMode, elapsedTime);
+                    if (debugEnabled)
+                    {
+                        startTime = TrcUtil.getCurrentTime();
+                        taskMgr.executeTaskType(TrcTaskMgr.TaskType.START_TASK, currMode);
+                        elapsedTime = TrcUtil.getCurrentTime() - startTime;
+                        globalTracer.traceInfo(funcName, "%s.startTask took %.3fs", currMode, elapsedTime);
+                    }
+                    else
+                    {
+                        taskMgr.executeTaskType(TrcTaskMgr.TaskType.START_TASK, currMode);
+                    }
                 }
             }
 
@@ -356,12 +402,12 @@ public abstract class FrcRobotBase extends RobotBase
             //
             // PreContinuous
             //
-            startTime = Timer.getFPGATimestamp();
+            startTime = TrcUtil.getCurrentTime();
             taskMgr.executeTaskType(TrcTaskMgr.TaskType.PRECONTINUOUS_TASK, currMode);
-            elapsedTime = Timer.getFPGATimestamp() - startTime;
+            elapsedTime = TrcUtil.getCurrentTime() - startTime;
             if (elapsedTime > taskTimeThreshold)
             {
-                globalTracer.traceWarn(funcName, "%s.preContinuousTasks takes too long (%.3fs)",
+                globalTracer.traceWarn(funcName, "%s.preContinuousTasks take too long (%.3fs)",
                     currMode, elapsedTime);
             }
             //
@@ -369,19 +415,19 @@ public abstract class FrcRobotBase extends RobotBase
             //
             if (periodReady)
             {
-                startTime = Timer.getFPGATimestamp();
+                startTime = TrcUtil.getCurrentTime();
                 taskMgr.executeTaskType(TrcTaskMgr.TaskType.PREPERIODIC_TASK, currMode);
-                elapsedTime = Timer.getFPGATimestamp() - startTime;
+                elapsedTime = TrcUtil.getCurrentTime() - startTime;
                 if (elapsedTime > taskTimeThreshold)
                 {
-                    globalTracer.traceWarn(funcName, "%s.prePeriodicTasks takes too long (%.3fs)",
+                    globalTracer.traceWarn(funcName, "%s.prePeriodicTasks take too long (%.3fs)",
                         currMode, elapsedTime);
                 }
             }
             //
             // Continuous
             //
-            startTime = Timer.getFPGATimestamp();
+            startTime = TrcUtil.getCurrentTime();
             if (currMode == RunMode.DISABLED_MODE && disabledMode != null)
             {
                 disabledMode.runContinuous(modeElapsedTime);
@@ -398,7 +444,7 @@ public abstract class FrcRobotBase extends RobotBase
             {
                 teleOpMode.runContinuous(modeElapsedTime);
             }
-            elapsedTime = Timer.getFPGATimestamp() - startTime;
+            elapsedTime = TrcUtil.getCurrentTime() - startTime;
             if (elapsedTime > taskTimeThreshold)
             {
                 globalTracer.traceWarn(funcName, "%s.runContinuous takes too long (%.3fs)",
@@ -409,7 +455,7 @@ public abstract class FrcRobotBase extends RobotBase
             //
             if (periodReady)
             {
-                startTime = Timer.getFPGATimestamp();
+                startTime = TrcUtil.getCurrentTime();
                 if (currMode == RunMode.DISABLED_MODE)
                 {
                     HAL.observeUserProgramDisabled();
@@ -442,7 +488,7 @@ public abstract class FrcRobotBase extends RobotBase
                         teleOpMode.runPeriodic(modeElapsedTime);
                     }
                 }
-                elapsedTime = Timer.getFPGATimestamp() - startTime;
+                elapsedTime = TrcUtil.getCurrentTime() - startTime;
                 if (elapsedTime > taskTimeThreshold)
                 {
                     globalTracer.traceWarn(funcName, "%s.runPeriodic takes too long (%.3fs)",
@@ -452,12 +498,12 @@ public abstract class FrcRobotBase extends RobotBase
             //
             // PostContinuous
             //
-            startTime = Timer.getFPGATimestamp();
+            startTime = TrcUtil.getCurrentTime();
             taskMgr.executeTaskType(TrcTaskMgr.TaskType.POSTCONTINUOUS_TASK, currMode);
-            elapsedTime = Timer.getFPGATimestamp() - startTime;
+            elapsedTime = TrcUtil.getCurrentTime() - startTime;
             if (elapsedTime > taskTimeThreshold)
             {
-                globalTracer.traceWarn(funcName, "%s.postContinuousTasks takes too long (%.3fs)",
+                globalTracer.traceWarn(funcName, "%s.postContinuousTasks take too long (%.3fs)",
                     currMode, elapsedTime);
             }
             //
@@ -465,39 +511,42 @@ public abstract class FrcRobotBase extends RobotBase
             //
             if (periodReady)
             {
-                startTime = Timer.getFPGATimestamp();
+                startTime = TrcUtil.getCurrentTime();
                 taskMgr.executeTaskType(TrcTaskMgr.TaskType.POSTPERIODIC_TASK, currMode);
-                elapsedTime = Timer.getFPGATimestamp() - startTime;
+                elapsedTime = TrcUtil.getCurrentTime() - startTime;
                 if (elapsedTime > taskTimeThreshold)
                 {
-                    globalTracer.traceWarn(funcName, "%s.postPeriodicTasks takes too long (%.3fs)",
+                    globalTracer.traceWarn(funcName, "%s.postPeriodicTask takes too long (%.3fs)",
                         currMode, elapsedTime);
                 }
             }
 
-            startTime = Timer.getFPGATimestamp();
+            startTime = TrcUtil.getCurrentTime();
             SmartDashboard.updateValues();
-            LiveWindow.updateValues();
-            elapsedTime = Timer.getFPGATimestamp() - startTime;
+            if (liveWindowEnabled)
+            {
+                LiveWindow.updateValues();
+            }
+            elapsedTime = TrcUtil.getCurrentTime() - startTime;
             if (elapsedTime > taskTimeThreshold)
             {
-                globalTracer.traceWarn(funcName, "%s.updates takes too long (%.3fs)",
+                globalTracer.traceWarn(funcName, "%s.updates take too long (%.3fs)",
                     currMode, elapsedTime);
             }
 
             if (dashboardEnabled)
             {
                 dashboard.displayPrintf(0, "[%3d:%06.3f] %s",
-                    (int)(modeElapsedTime/60), modeElapsedTime%60, currMode.toString());
+                    (int)(modeElapsedTime/60), modeElapsedTime%60, currMode);
             }
 
             //
             // Do house keeping statistics.
             //
-            double timeSliceUsed = Timer.getFPGATimestamp() - timeSliceStart;
+            double timeSliceUsed = TrcUtil.getCurrentTime() - timeSliceStart;
             if (timeSliceUsed > timesliceThreshold)
             {
-                globalTracer.traceWarn(funcName, "%s takes too long (%.3fs)", currMode.toString(), timeSliceUsed);
+                globalTracer.traceWarn(funcName, "%s takes too long (%.3fs)", currMode, timeSliceUsed);
             }
         }
     }   //startCompetition

@@ -37,6 +37,8 @@ public class TrcPidMotor
     protected static final TrcDbgTrace.TraceLevel traceLevel = TrcDbgTrace.TraceLevel.API;
     protected static final TrcDbgTrace.MsgLevel msgLevel = TrcDbgTrace.MsgLevel.INFO;
     protected TrcDbgTrace dbgTrace = null;
+    private TrcDbgTrace msgTracer = null;
+    private TrcRobotBattery battery = null;
 
     /**
      * Some actuators are non-linear. The load may vary depending on the position. For example, raising an arm
@@ -229,6 +231,28 @@ public class TrcPidMotor
     {
         return instanceName;
     }   //toString
+
+    /**
+     * This method sets the message tracer for logging trace messages.
+     *
+     * @param tracer specifies the tracer for logging messages.
+     * @param battery specifies the battery object to get battery info for the message.
+     */
+    public void setMsgTracer(TrcDbgTrace tracer, TrcRobotBattery battery)
+    {
+        this.msgTracer = tracer;
+        this.battery = battery;
+    }   //setMsgTracer
+
+    /**
+     * This method sets the message tracer for logging trace messages.
+     *
+     * @param tracer specifies the tracer for logging messages.
+     */
+    public void setMsgTracer(TrcDbgTrace tracer)
+    {
+        setMsgTracer(tracer, null);
+    }   //setMsgTracer
 
     /**
      * This method returns the state of the PID motor.
@@ -974,6 +998,11 @@ public class TrcPidMotor
                 //
                 motorPower = pidCtrl.getOutput();
                 setPower(motorPower, MIN_MOTOR_POWER, MAX_MOTOR_POWER, false);
+
+                if (msgTracer != null)
+                {
+                    pidCtrl.printPidInfo(msgTracer, TrcUtil.getCurrentTime(), battery);
+                }
             }
         }
 

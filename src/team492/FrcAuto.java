@@ -32,6 +32,8 @@ import trclib.TrcTaskMgr;
 
 public class FrcAuto implements TrcRobot.RobotMode
 {
+//    private static final boolean DO_UPDATES = false;
+
     public static enum AutoStrategy
     {
         // Different choices for autonomous
@@ -148,9 +150,11 @@ public class FrcAuto implements TrcRobot.RobotMode
     @Override
     public void startMode()
     {
-        robot.globalTracer.traceInfo(Robot.programName, "%s_%s_%03d (%s%d) [FMSConnected=%b]", robot.eventName,
-            robot.matchType.toString(), robot.matchNumber, robot.alliance.toString(), robot.location,
-            robot.ds.isFMSAttached());
+        robot.getGameInfo();
+
+        robot.globalTracer.traceInfo(Robot.programName, "%s_%s%03d (%s%d) [FMSConnected=%b] msg=%s", robot.eventName,
+            robot.matchType, robot.matchNumber, robot.alliance.toString(), robot.location,
+            robot.ds.isFMSAttached(), robot.gameSpecificMessage);
 
         robot.encoderYPidCtrl.setOutputLimit(0.6);  //CodeReview: can we use RobotInfo.DRIVE_MAX_YPID_POWER?
         robot.encoderXPidCtrl.setOutputLimit(RobotInfo.DRIVE_MAX_XPID_POWER);
@@ -279,9 +283,12 @@ public class FrcAuto implements TrcRobot.RobotMode
     @Override
     public void runPeriodic(double elapsedTime)
     {
-        robot.updateDashboard();
-        robot.announceSafety();
-        robot.diagnostics.updateDiagnosticsAndDashboard();
+//        if (DO_UPDATES)
+//        {
+//            robot.updateDashboard();
+//            robot.announceSafety();
+//            robot.diagnostics.updateDiagnosticsAndDashboard();
+//        }
     } // runPeriodic
 
     @Override
@@ -291,7 +298,14 @@ public class FrcAuto implements TrcRobot.RobotMode
         {
             autoCommand.cmdPeriodic(elapsedTime);
 
-            if(robot.elevator.elevator.isActive())
+            if (robot.pidDrive.isActive())
+            {
+                robot.encoderXPidCtrl.printPidInfo(robot.globalTracer, elapsedTime, robot.battery);
+                robot.encoderYPidCtrl.printPidInfo(robot.globalTracer, elapsedTime, robot.battery);
+                robot.gyroTurnPidCtrl.printPidInfo(robot.globalTracer, elapsedTime, robot.battery);
+            }
+
+            if (robot.elevator.elevator.isActive())
             {
                 robot.elevator.elevatorPidCtrl.printPidInfo(robot.globalTracer, elapsedTime, robot.battery);
             }

@@ -99,6 +99,7 @@ public class TrcDbgTrace
     private MsgLevel msgLevel;
     private double nextTraceTime;
     private PrintStream traceLog = null;
+    private boolean traceLogEnabled = false;
 
     /**
      * Constructor: Create an instance of the object.
@@ -167,6 +168,7 @@ public class TrcDbgTrace
             traceLog = null;
             success = false;
         }
+        traceLogEnabled = false;
 
         return success;
     }   //openTraceLog
@@ -198,8 +200,19 @@ public class TrcDbgTrace
         {
             traceLog.close();
             traceLog = null;
+            traceLogEnabled = false;
         }
     }   //closeTraceLog
+
+    /**
+     * This method enables/disables the trace log.
+     *
+     * @param enabled specifies true to enable trace log, false otherwise.
+     */
+    public void setTraceLogEnabled(boolean enabled)
+    {
+        traceLogEnabled = enabled;
+    }   //setTraceLogEnabled
 
     /**
      * This method sets the trace level, message level of the debug tracer. It can also enables/disables function
@@ -379,7 +392,7 @@ public class TrcDbgTrace
                 nextTraceTime = currTime + traceInterval;
                 String msg = msgPrefix(funcName, level) + String.format(format, args);
                 HalDbgLog.msg(level, msg + "\n");
-                if (traceLog != null)
+                if (traceLogEnabled)
                 {
                     traceLog.print(msg + "\r\n");
                     traceLog.flush();

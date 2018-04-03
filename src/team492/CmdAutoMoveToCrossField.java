@@ -68,7 +68,10 @@ public class CmdAutoMoveToCrossField implements TrcRobot.RobotCommand
         event = new TrcEvent(moduleName);
         timer = new TrcTimer(moduleName);
         sm = new TrcStateMachine<>(moduleName);
-        sm.start(State.START);
+        if (delay != 0.0)
+            sm.start(State.START);
+        else
+            sm.start(State.DRIVE_TO_LANE_3);
     }
 
     @Override

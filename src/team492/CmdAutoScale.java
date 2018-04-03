@@ -103,12 +103,18 @@ public class CmdAutoScale implements TrcRobot.RobotCommand
         elevatorEvent = new TrcEvent(moduleName + ".elevatorEvent");
         timer = new TrcTimer(moduleName);
         sm = new TrcStateMachine<>(moduleName);
-        sm.start(State.START);
 
         startRight = this.startPosition == Position.RIGHT_POS;
         scaleRight = robot.gameSpecificMessage.charAt(1) == 'R';
         sameSide = startRight == scaleRight;
         lane3 = forwardDriveDistance > RobotInfo.AUTO_DISTANCE_TO_SWITCH;
+
+        if (delay != 0.0)
+            sm.start(State.START);
+        else if (sameSide || lane3)
+            sm.start(State.DRIVE_TO_SWITCH);
+        else
+            sm.start(State.DRIVE_TO_LANE);
 
         FrcAnalogInput sonarSensor;
         if (scaleRight && sameSide ||

@@ -107,7 +107,10 @@ public class CmdAutoSideSwitch implements TrcRobot.RobotCommand
         event = new TrcEvent(moduleName);
         timer = new TrcTimer(moduleName);
         sm = new TrcStateMachine<>(moduleName);
-        sm.start(State.DO_DELAY);
+        if (delay != 0.0)
+            sm.start(State.DO_DELAY);
+        else
+            sm.start(State.DRIVE_TO_SWITCH);
 
         leftSonarTrigger = new TrcAnalogTrigger<>("LeftSonarTrigger", robot.leftSonarSensor, 0,
             TrcAnalogInput.DataType.INPUT_DATA, sonarTriggerPoints, this::sonarTriggerEvent);

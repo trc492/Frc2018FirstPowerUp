@@ -26,7 +26,16 @@ import trclib.TrcRobot;
 
 public class FrcDisabled implements TrcRobot.RobotMode
 {
-    protected Robot robot;
+    private enum State
+    {
+        START,
+        AUTO_DONE,
+        TELEOP_DONE,
+        DONE
+    }
+
+    private Robot robot;
+    private State state = State.START;
 
     public FrcDisabled(Robot robot)
     {
@@ -40,19 +49,55 @@ public class FrcDisabled implements TrcRobot.RobotMode
     @Override
     public void startMode()
     {
+        if (robot.ds.isFMSAttached())
+        {
+            //
+            // We are in a competition match.
+            //
+            switch (state)
+            {
+                case START:
+                    break;
+
+                case AUTO_DONE:
+                    state = State.TELEOP_DONE;
+                    break;
+
+                case TELEOP_DONE:
+                    robot.closeTraceLog();
+                    state = State.DONE;
+                    break;
+            }
+        }
+        else
+        {
+            //
+            // Not in competition match, probably in test or practice mode.
+            //
+            robot.closeTraceLog();
+        }
     } // startMode
 
     @Override
     public void stopMode()
     {
+        if (!robot.ds.isFMSAttached())
+        {
+            robot.openTraceLog();
+        }
     } // stopMode
 
     @Override
     public void runPeriodic(double elapsedTime)
     {
+        if (!robot.traceLogOpened && state != State.DONE && robot.ds.isFMSAttached())
+        {
+            robot.openTraceLog();
+            state = State.AUTO_DONE;
+        }
+
         robot.updateDashboard();
         robot.announceIdling();
-        System.out.println("*** Disabled periodic running");
     } // runPeriodic
 
     @Override

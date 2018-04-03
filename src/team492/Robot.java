@@ -84,13 +84,13 @@ public class Robot extends FrcRobotBase
     public static final boolean USE_TEXT_TO_SPEECH = false;
     public static final boolean USE_MESSAGE_BOARD = false;
     public static final boolean USE_TORQUE_BASED_DRIVING = false;
-    public static final boolean USE_GYRO_ASSIST = true;
+    public static final boolean USE_GYRO_ASSIST = false;
 
-    private static final boolean DEBUG_POWER_CONSUMPTION = true;
+    private static final boolean DEBUG_POWER_CONSUMPTION = false;
     private static final boolean DEBUG_DRIVE_BASE = false;
     private static final boolean DEBUG_PID_DRIVE = false;
-    private static final boolean DEBUG_SUBSYSTEMS = true;
-    private static final boolean DEBUG_PIXY = true;
+    private static final boolean DEBUG_SUBSYSTEMS = false;
+    private static final boolean DEBUG_PIXY = false;
 
     private static final double DASHBOARD_UPDATE_INTERVAL = 0.1;
     private static final double SPEAK_PERIOD_SECONDS = 20.0; // Speaks once every this # of second.
@@ -102,7 +102,6 @@ public class Robot extends FrcRobotBase
     public double targetHeading = 0.0;
     public double xPowerLimit = 0.7;
     public double yPowerLimit = 0.7;
-    public double turnPowerLimit = 0.7;
 
     private double nextUpdateTime = TrcUtil.getCurrentTime();
 
@@ -120,6 +119,7 @@ public class Robot extends FrcRobotBase
     public Alliance alliance = Alliance.Red;
     public int location = 1;
     public String gameSpecificMessage = null;
+    public boolean traceLogOpened = false;
     //
     // Inputs.
     //
@@ -153,7 +153,6 @@ public class Robot extends FrcRobotBase
     public FrcEmic2TextToSpeech tts = null;
     private double nextTimeToSpeakInSeconds = 0.0;  //0 means disabled, no need to speak;
     public FrcI2cLEDPanel messageBoard = null;
-    public OnBoardDiagnostics diagnostics;
     //
     // DriveBase subsystem.
     //
@@ -179,6 +178,7 @@ public class Robot extends FrcRobotBase
     public CmdCubePickup cmdAutoCubePickup;
     public CmdStrafeUntilCube cmdStrafeUntilCube;
     public CmdExchangeAlign cmdExchangeAlign;
+    public OnBoardDiagnostics diagnostics;
 
     public double driveTime;
     public double drivePower;
@@ -204,17 +204,6 @@ public class Robot extends FrcRobotBase
     @Override
     public void robotInit()
     {
-        eventName = ds.getEventName();
-        matchType = ds.getMatchType();
-        matchNumber = ds.getMatchNumber();
-        alliance = ds.getAlliance();
-        location = ds.getLocation();
-        gameSpecificMessage = ds.getGameSpecificMessage();
-
-        if (USE_TRACELOG)
-        {
-            startTraceLog(String.format("%s_%s%03d", eventName, matchType, matchNumber));
-        }
         //
         // Inputs.
         //
@@ -301,8 +290,6 @@ public class Robot extends FrcRobotBase
             messageBoard = new FrcI2cLEDPanel("messageBoard", I2C.Port.kOnboard);
         }
 
-        diagnostics = new OnBoardDiagnostics(this);
-
         //
         // DriveBase subsystem.
         //
@@ -370,7 +357,6 @@ public class Robot extends FrcRobotBase
         gyroTurnPidCtrl.setAbsoluteSetPoint(true);
         pidDrive = new TrcPidDrive("pidDrive", driveBase, encoderXPidCtrl, encoderYPidCtrl, gyroTurnPidCtrl);
         pidDrive.setStallTimeout(RobotInfo.DRIVE_STALL_TIMEOUT);
-        pidDrive.setMsgTracer(globalTracer, battery);
 
         encoderXPidCtrl.setOutputLimit(RobotInfo.DRIVE_MAX_XPID_POWER);
         encoderYPidCtrl.setOutputLimit(RobotInfo.DRIVE_MAX_YPID_POWER);
@@ -394,6 +380,8 @@ public class Robot extends FrcRobotBase
         cmdStrafeUntilCube = new CmdStrafeUntilCube(this);
         cmdExchangeAlign = new CmdExchangeAlign(this);
 
+        diagnostics = new OnBoardDiagnostics(this);
+
         //
         // Create Robot Modes.
         //
@@ -401,13 +389,15 @@ public class Robot extends FrcRobotBase
             new FrcTeleOp(this),
             new FrcAuto(this),
             new FrcTest(this),
-            tts != null? new FrcDisabled(this): null);
+            new FrcDisabled(this));
     }   //robotInit
 
     public void robotStartMode(RunMode runMode)
     {
         if (runMode != RunMode.DISABLED_MODE)
         {
+            setTraceLogEnabled(true);
+
             Date now = new Date();
             globalTracer.traceInfo(Robot.programName, "%s[%.3f]: ***** %s *****",
                 now.toString(), Robot.getModeElapsedTime(), runMode);
@@ -466,8 +456,50 @@ public class Robot extends FrcRobotBase
             cubePickup.stopPickup();
             globalTracer.traceInfo(moduleName, "TotalEnergy=%.3fWh", battery.getTotalEnergy());
             diagnostics.printDiagnostics();
+            setTraceLogEnabled(false);
         }
     }   //robotStopMode
+
+    public void getFMSInfo()
+    {
+        eventName = ds.isFMSAttached()? ds.getEventName(): "Unknown";
+        matchType = ds.getMatchType();
+        matchNumber = ds.getMatchNumber();
+    }
+
+    public void getGameInfo()
+    {
+        alliance = ds.getAlliance();
+        location = ds.getLocation();
+        gameSpecificMessage = ds.getGameSpecificMessage();
+    }
+
+    public void openTraceLog()
+    {
+        if (USE_TRACELOG && !traceLogOpened)
+        {
+            getFMSInfo();
+            traceLogOpened = globalTracer.openTraceLog(
+                "/home/lvuser/tracelog", String.format("%s_%s%03d", eventName, matchType, matchNumber));
+        }
+    }
+
+    public void closeTraceLog()
+    {
+        if (traceLogOpened)
+        {
+            globalTracer.closeTraceLog();
+            traceLogOpened = false;
+        }
+    }
+
+    public void setTraceLogEnabled(boolean enabled)
+    {
+        if (traceLogOpened)
+        {
+            globalTracer.setTraceLogEnabled(enabled);
+        }
+    }
 
     public void setVisionEnabled(boolean enabled)
     {
@@ -611,16 +643,6 @@ public class Robot extends FrcRobotBase
             nextTimeToSpeakInSeconds = currTime + SPEAK_PERIOD_SECONDS;
         }
     }   //announceIdling
-
-    public void startTraceLog(String filePrefix)
-    {
-        globalTracer.openTraceLog("/home/lvuser/tracelog", filePrefix);
-    }   //startTraceLog
-
-    public void stopTraceLog()
-    {
-        globalTracer.closeTraceLog();
-    }   //stopTraceLog
 
     public void traceStateInfo(double elapsedTime, String stateName)
     {

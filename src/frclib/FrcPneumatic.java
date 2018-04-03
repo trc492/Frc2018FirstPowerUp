@@ -23,7 +23,6 @@
 package frclib;
 
 import edu.wpi.first.wpilibj.Solenoid;
-import edu.wpi.first.wpilibj.Timer;
 import trclib.TrcBooleanState;
 import trclib.TrcDbgTrace;
 import trclib.TrcEvent;
@@ -31,6 +30,7 @@ import trclib.TrcRobot;
 import trclib.TrcStateMachine;
 import trclib.TrcTaskMgr;
 import trclib.TrcTimer;
+import trclib.TrcUtil;
 
 public class FrcPneumatic
 {
@@ -591,7 +591,7 @@ public class FrcPneumatic
                         dbgTrace.traceInfo(
                                 funcName,
                                 "[%f] Executing action %d/%d",
-                                Timer.getFPGATimestamp(),
+                                TrcUtil.getCurrentTime(),
                                 actionIndex, numActions);
                     }
                     for (int i = 0; i < solenoids.length; i++)
