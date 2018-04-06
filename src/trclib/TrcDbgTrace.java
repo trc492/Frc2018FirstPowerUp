@@ -100,6 +100,7 @@ public class TrcDbgTrace
     private double nextTraceTime;
     private PrintStream traceLog = null;
     private boolean traceLogEnabled = false;
+    private String traceLogName = null;
 
     /**
      * Constructor: Create an instance of the object.
@@ -148,6 +149,11 @@ public class TrcDbgTrace
     {
         globalTracer.setDbgTraceConfig(traceEnabled, traceLevel, msgLevel);
     }   //setGlobalTracerConfig
+    
+    public String getTraceLogName()
+    {
+        return traceLogName;
+    }
 
     /**
      * This method opens a log file for writing all the trace messages to it.
@@ -162,9 +168,11 @@ public class TrcDbgTrace
         try
         {
             traceLog = new PrintStream(new File(traceLogName));
+            this.traceLogName = traceLogName;
         }
         catch (FileNotFoundException e)
         {
+            this.traceLogName = null;
             traceLog = null;
             success = false;
         }
@@ -201,6 +209,7 @@ public class TrcDbgTrace
             traceLog.close();
             traceLog = null;
             traceLogEnabled = false;
+            traceLogName = null;
         }
     }   //closeTraceLog
 

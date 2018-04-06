@@ -24,6 +24,7 @@ import team492.diagnostics.tests.PneumaticsCurrentlyLowTest;
 
 public class OnBoardDiagnostics
 {
+    private static final String moduleName = "OnBoardDiagnostics";
 
     private Robot robot;
     private List<DiagnosticsTest> tests;
@@ -146,7 +147,9 @@ public class OnBoardDiagnostics
             if (result.faultDetected())
             {
                 faults = true;
-                DriverStation.reportError("### Diagnostics: " + result.errorMessage(), false);
+                String err = "### Diagnostics: " + result.errorMessage();
+                DriverStation.reportError(err, false);
+                robot.globalTracer.traceErr(moduleName, err);
             }
         }
 
@@ -156,7 +159,9 @@ public class OnBoardDiagnostics
         }
         else
         {
-            DriverStation.reportError("### Diagnostics: No faults", false);
+            String message = "### Diagnostics: No faults";
+            DriverStation.reportError(message, false);
+            robot.globalTracer.traceInfo(moduleName, message);
             robot.ledIndicator.indicateNoDiagnosticError();
         }
     }

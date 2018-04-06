@@ -224,15 +224,8 @@ public class CmdAutoSideSwitch implements TrcRobot.RobotCommand
                         robot.encoderYPidCtrl.setTargetTolerance(RobotInfo.ENCODER_Y_TOLERANCE);
                         robot.cubePickup.openClaw();
                         robot.cubePickup.dropCube(0.54);
-                        if (getSecondCube)
-                        {
-                            timer.set(0.3, event);
-                            sm.waitForSingleEvent(event, State.TURN_SOUTH);
-                        }
-                        else
-                        {
-                            sm.setState(State.DONE);
-                        }
+                        timer.set(0.3, event);
+                        sm.waitForSingleEvent(event,  getSecondCube ? State.TURN_SOUTH : State.DONE);
                         break;
 
                     case TURN_SOUTH:

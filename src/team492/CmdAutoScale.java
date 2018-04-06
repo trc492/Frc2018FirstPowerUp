@@ -240,12 +240,13 @@ public class CmdAutoScale implements TrcRobot.RobotCommand
                     if (sameSide || !lane3)
                     {
                         robot.encoderYPidCtrl.setTargetTolerance(3.0);
-                        xDistance = RobotInfo.SCALE_TO_WALL_DISTANCE - RobotInfo.ROBOT_TO_SCALE_DISTANCE - distanceFromWall;                            
+                        xDistance = RobotInfo.SCALE_TO_WALL_DISTANCE - RobotInfo.ROBOT_TO_SCALE_DISTANCE - distanceFromWall;
                         if (scaleRight) xDistance *= -1;
                         // Start raising elevator
                         robot.elevator.setPosition(RobotInfo.ELEVATOR_CRUISE_HEIGHT);
                         // The target scale is ahead of us, go to it.
-                        yDistance = RobotInfo.FIELD_LENGTH/2.0 - currY - RobotInfo.ROBOT_LENGTH/2.0 - 8.0; // Arbitrary reduction (empirical)
+                        // TODO: 30 is really wrong. RETUNE the y scale
+                        yDistance = RobotInfo.FIELD_LENGTH/2.0 - currY - RobotInfo.ROBOT_LENGTH/2.0 - 30.0; // Arbitrary reduction (empirical)
                         nextState = State.TURN_TO_FACE_SCALE;
                     }
                     else
@@ -256,8 +257,8 @@ public class CmdAutoScale implements TrcRobot.RobotCommand
                         nextState = State.TURN_TO_OPPOSITE_SCALE;
                     }
 
-                    robot.globalTracer.traceInfo(moduleName, "sonarDistance=%.1f, distanceFromWall=%.1f, useSonar=%b, xDistance=%.1f, yDistance=%.1f",
-                        sonarDistance, distanceFromWall, useSonar, xDistance, yDistance);
+                    robot.globalTracer.traceInfo(moduleName, "sonarDistance=%.1f, distanceFromWall=%.1f, useSonar=%b, currY=%.1f, xDistance=%.1f, yDistance=%.1f",
+                        sonarDistance, distanceFromWall, useSonar, currY, xDistance, yDistance);
                     
                     robot.pidDrive.setTarget(xDistance, yDistance, robot.targetHeading, false, event, 5.0);
                     sm.waitForSingleEvent(event, nextState);
@@ -354,6 +355,11 @@ public class CmdAutoScale implements TrcRobot.RobotCommand
     {
         robot.globalTracer.traceInfo(moduleName, "SonarTriggerEvent: prevZone=%d, currZone=%d, value:%.1f",
             prevZone, currZone, zoneValue);
+        
+        if(Robot.getModeElapsedTime() < 1.0)
+        {
+            return;
+        }
 
         if (prevZone == 1 && currZone == 0)
         {

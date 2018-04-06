@@ -166,6 +166,14 @@ public class FrcTeleOp implements TrcRobot.RobotMode
                 elapsedTime, robot.cmdExchangeAlign.isEnabled());
             robot.cmdExchangeAlign.cmdPeriodic(elapsedTime);
         }
+        
+        if (robot.elevator.elevator.isActive())
+        {
+            robot.elevator.elevatorPidCtrl.printPidInfo(robot.globalTracer, elapsedTime, robot.battery);
+            robot.globalTracer.traceInfo("FrcAuto", "Elevator limit switch: %b/%b",
+                robot.elevator.elevatorMotor.isLowerLimitSwitchActive(),
+                robot.elevator.elevatorMotor.isUpperLimitSwitchActive());
+        }
     } // runContinuous
 
     private boolean isAutoAssistEnabled()
@@ -186,14 +194,13 @@ public class FrcTeleOp implements TrcRobot.RobotMode
         switch (button)
         {
             case FrcJoystick.LOGITECH_TRIGGER:
-                slowDriveOverride = pressed;
-                break;
-
-            case FrcJoystick.LOGITECH_BUTTON2:
                 if (pressed && !robot.cmdAutoCubePickup.isEnabled())
                 {
                     robot.cmdAutoCubePickup.start();
                 }
+                break;
+
+            case FrcJoystick.LOGITECH_BUTTON2:
                 break;
 
             case FrcJoystick.LOGITECH_BUTTON3:
@@ -247,10 +254,7 @@ public class FrcTeleOp implements TrcRobot.RobotMode
         switch (button)
         {
             case FrcJoystick.SIDEWINDER_TRIGGER:
-//                if (pressed)
-//                {
-//                    driveInverted = !driveInverted;
-//                }
+                slowDriveOverride = pressed;
                 break;
 
             case FrcJoystick.SIDEWINDER_BUTTON2:
