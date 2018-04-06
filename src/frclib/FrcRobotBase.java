@@ -243,6 +243,7 @@ public abstract class FrcRobotBase extends RobotBase
 
             if (currMode != prevMode)
             {
+                globalTracer.traceInfo(funcName, "*** Transitioning from %s to %s ***", prevMode, currMode);
                 //
                 // Detected mode transition.
                 //

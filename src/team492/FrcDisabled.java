@@ -65,6 +65,7 @@ public class FrcDisabled implements TrcRobot.RobotMode
                     break;
 
                 case TELEOP_DONE:
+                    robot.closeTraceLog();
                     // TODO: Figure out what the hell is going on here
 //                    try
 //                    {
