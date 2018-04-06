@@ -22,9 +22,6 @@
 
 package team492;
 
-import java.io.File;
-
-import edu.wpi.first.wpilibj.DriverStation;
 import trclib.TrcRobot;
 
 public class FrcDisabled implements TrcRobot.RobotMode
