@@ -156,9 +156,6 @@ public class FrcAuto implements TrcRobot.RobotMode
         robot.globalTracer.traceInfo(Robot.programName, "%s_%s%03d (%s%d) [FMSConnected=%b] msg=%s", robot.eventName,
             robot.matchType, robot.matchNumber, robot.alliance.toString(), robot.location,
             robot.ds.isFMSAttached(), robot.gameSpecificMessage);
-        
-        robot.globalTracer.traceInfo(Robot.programName, "eventName=%s, matchType=%s, matchNumber=%03d",
-            robot.eventName, robot.matchType, robot.matchNumber);
 
         robot.encoderYPidCtrl.setOutputLimit(0.6);  //CodeReview: can we use RobotInfo.DRIVE_MAX_YPID_POWER?
         robot.encoderXPidCtrl.setOutputLimit(RobotInfo.DRIVE_MAX_XPID_POWER);

@@ -85,6 +85,8 @@ public class FrcDisabled implements TrcRobot.RobotMode
                     }
                     catch(Exception e)
                     {
+                        // We failed to rename the file, close the log anyway.
+                        robot.closeTraceLog();
                         DriverStation.reportError(e.getMessage(), false);
                         // Fail silently
                     }
