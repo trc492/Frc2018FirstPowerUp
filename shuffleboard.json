@@ -1,5 +1,5 @@
 {
-  "dividerPosition": 0.13269794721407624,
+  "dividerPosition": 0.1327893175074184,
   "tabPane": [
     {
       "title": "FMSInfo",
@@ -205,7 +205,7 @@
           "16,4": {
             "size": [
               16,
-              3
+              2
             ],
             "content": {
               "_type": "Text View",
@@ -216,7 +216,7 @@
           "16,6": {
             "size": [
               16,
-              3
+              2
             ],
             "content": {
               "_type": "Text View",
@@ -227,7 +227,7 @@
           "16,8": {
             "size": [
               16,
-              3
+              2
             ],
             "content": {
               "_type": "Text View",
@@ -238,7 +238,7 @@
           "16,10": {
             "size": [
               16,
-              3
+              2
             ],
             "content": {
               "_type": "Text View",
@@ -249,7 +249,7 @@
           "16,12": {
             "size": [
               16,
-              3
+              2
             ],
             "content": {
               "_type": "Text View",

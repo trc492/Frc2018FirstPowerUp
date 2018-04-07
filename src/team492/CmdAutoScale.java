@@ -246,7 +246,7 @@ public class CmdAutoScale implements TrcRobot.RobotCommand
                         robot.elevator.setPosition(RobotInfo.ELEVATOR_CRUISE_HEIGHT);
                         // The target scale is ahead of us, go to it.
                         // TODO: 30 is really wrong. RETUNE the y scale
-                        yDistance = RobotInfo.FIELD_LENGTH/2.0 - currY - RobotInfo.ROBOT_LENGTH/2.0 - 30.0; // Arbitrary reduction (empirical)
+                        yDistance = RobotInfo.FIELD_LENGTH/2.0 - currY - RobotInfo.ROBOT_LENGTH/2.0 - 8.0; // Arbitrary reduction (empirical)
                         nextState = State.TURN_TO_FACE_SCALE;
                     }
                     else

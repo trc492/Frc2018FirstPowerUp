@@ -22,6 +22,9 @@
 
 package team492;
 
+import java.io.File;
+
+import edu.wpi.first.wpilibj.DriverStation;
 import trclib.TrcRobot;
 
 public class FrcDisabled implements TrcRobot.RobotMode
@@ -36,6 +39,7 @@ public class FrcDisabled implements TrcRobot.RobotMode
 
     private Robot robot;
     private State state = State.START;
+    private boolean finishedMatch = false;
 
     public FrcDisabled(Robot robot)
     {
@@ -49,7 +53,7 @@ public class FrcDisabled implements TrcRobot.RobotMode
     @Override
     public void startMode()
     {
-        if (robot.ds.isFMSAttached())
+        if (robot.ds.isFMSAttached() || finishedMatch)
         {
             //
             // We are in a competition match.
@@ -57,34 +61,35 @@ public class FrcDisabled implements TrcRobot.RobotMode
             switch (state)
             {
                 case START:
+                    finishedMatch = false;
                     break;
 
                 case AUTO_DONE:
                     state = State.TELEOP_DONE;
-                    robot.getFMSInfo();
+                    finishedMatch = true;
                     break;
 
                 case TELEOP_DONE:
-                    robot.closeTraceLog();
                     // TODO: Figure out what the hell is going on here
-//                    try
-//                    {
-//                        String traceLogName = robot.globalTracer.getTraceLogName();
-//                        String suffix = traceLogName.substring(traceLogName.indexOf('&'));
-//                        String newFile = String.format("%s_%s%03d%s", 
-//                            robot.eventName, robot.matchType, robot.matchNumber, suffix);
-//                        File file = new File(traceLogName);
-//                        robot.globalTracer.traceInfo("FrcDisabled", "### OldName: %s, NewName: %s",
-//                            traceLogName, newFile);
-//                        robot.closeTraceLog();
-//                        //file.renameTo(new File(file.getParent() + "\\" + newFile));                        
-//                    }
-//                    catch(Exception e)
-//                    {
-//                        DriverStation.reportError(e.getMessage(), false);
-//                        // Fail silently
-//                    }
+                    try
+                    {
+                        String traceLogName = robot.globalTracer.getTraceLogName();
+                        String suffix = traceLogName.substring(traceLogName.indexOf('&'));
+                        String newFile = String.format("%s_%s%03d%s", 
+                            robot.eventName, robot.matchType, robot.matchNumber, suffix);
+                        robot.globalTracer.traceInfo("FrcDisabled", "### OldName: %s, NewName: %s",
+                            traceLogName, newFile);
+                        File file = new File(traceLogName);
+                        robot.closeTraceLog();
+                        file.renameTo(new File(file.getParent() + File.separator + newFile));                        
+                    }
+                    catch(Exception e)
+                    {
+                        DriverStation.reportError(e.getMessage(), false);
+                        // Fail silently
+                    }
                     state = State.DONE;
+                    finishedMatch = false;
                     break;
 
                 default:

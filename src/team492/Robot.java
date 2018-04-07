@@ -115,7 +115,7 @@ public class Robot extends FrcRobotBase
 
     public String eventName = "Unknown";
     public MatchType matchType = MatchType.None;
-    public int matchNumber = 0;
+    public int matchNumber = -1;
     public Alliance alliance = Alliance.Red;
     public int location = 1;
     public String gameSpecificMessage = null;
@@ -479,9 +479,8 @@ public class Robot extends FrcRobotBase
     {
         if (USE_TRACELOG && !traceLogOpened)
         {
-            getFMSInfo();
             traceLogOpened = globalTracer.openTraceLog(
-                "/home/lvuser/tracelog", String.format("%s_%s%03d&", eventName, matchType, matchNumber));
+                "/home/lvuser/tracelog", String.format("%s_%s%03d", eventName, matchType, matchNumber));
         }
     }
 
