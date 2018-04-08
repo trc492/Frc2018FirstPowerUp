@@ -33,7 +33,6 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.DriverStation.MatchType;
 import edu.wpi.first.wpilibj.I2C;
-import edu.wpi.first.wpilibj.PowerDistributionPanel;
 import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.SerialPort;
 import frclib.FrcAHRSGyro;
@@ -44,6 +43,7 @@ import frclib.FrcEmic2TextToSpeech;
 import frclib.FrcI2cDevice;
 import frclib.FrcI2cLEDPanel;
 import frclib.FrcJoystick;
+import frclib.FrcPdp;
 import frclib.FrcPneumatic;
 import frclib.FrcRobotBase;
 import frclib.FrcRobotBattery;
@@ -128,7 +128,7 @@ public class Robot extends FrcRobotBase
     //
     // Sensors.
     //
-    public PowerDistributionPanel pdp = null;
+    public FrcPdp pdp = null;
     public TrcRobotBattery battery = null;
     public FrcAHRSGyro gyro = null;
     public AnalogInput pressureSensor = null;
@@ -212,9 +212,8 @@ public class Robot extends FrcRobotBase
         //
         // Sensors.
         //
-        pdp = new PowerDistributionPanel(RobotInfo.CANID_PDP);
-        battery = new FrcRobotBattery(RobotInfo.CANID_PDP);
-        battery.setTaskEnabled(true);
+        pdp = new FrcPdp(RobotInfo.CANID_PDP);
+        battery = new FrcRobotBattery(pdp);
         if (USE_NAV_X)
         {
             gyro = new FrcAHRSGyro("NavX", SPI.Port.kMXP);
@@ -404,6 +403,8 @@ public class Robot extends FrcRobotBase
             globalTracer.traceInfo(funcName, "[%.3f] %s: ***** %s *****",
                 Robot.getModeElapsedTime(), now.toString(), runMode);
 
+            pdp.setTaskEnabled(true);
+            battery.setTaskEnabled(true);
             setVisionEnabled(true);
             driveBase.resetPosition();
             targetHeading = 0.0;
@@ -458,6 +459,12 @@ public class Robot extends FrcRobotBase
             setVisionEnabled(false);
             cancelAutoAssist();
             cubePickup.stopPickup();
+            pdp.setTaskEnabled(false);
+            battery.setTaskEnabled(false);
+            for (int i = 0; i < FrcPdp.NUM_PDP_CHANNELS; i++)
+            {
+                globalTracer.traceInfo(funcName, "[PDP-%02d] EnergyUsed=%f Wh", pdp.getEnergyUsed(i));
+            }
             double totalEnergy = battery.getTotalEnergy();
             globalTracer.traceInfo(
                 funcName, "TotalEnergy=%.3fWh (%.2f%%)",

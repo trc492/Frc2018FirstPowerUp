@@ -22,7 +22,6 @@
 
 package frclib;
 
-import edu.wpi.first.wpilibj.PowerDistributionPanel;
 import trclib.TrcDbgTrace;
 import trclib.TrcRobotBattery;
 
@@ -32,25 +31,27 @@ import trclib.TrcRobotBattery;
  */
 public class FrcRobotBattery extends TrcRobotBattery
 {
-    private PowerDistributionPanel pdp;
+    private FrcPdp pdp;
 
     /**
      * Constructor: Creates an instance of the object.
      *
-     * @param module specifies the CAN ID of the PDP.
+     * @param pdp specifies the PDP object.
      */
-    public FrcRobotBattery(int module)
+    public FrcRobotBattery(FrcPdp pdp)
     {
         super(true, true, true);
-        pdp = new PowerDistributionPanel(module);
+        this.pdp = pdp;
     }   //FrcRobotBattery
 
     /**
      * Constructor: Creates an instance of the object.
+     *
+     * @param canId specifies the CAN ID of the PDP.
      */
-    public FrcRobotBattery()
+    public FrcRobotBattery(int canId)
     {
-        this(0);
+        this(new FrcPdp(canId));
     }   //FrcRobotBattery
 
     //
