@@ -28,7 +28,7 @@ import trclib.TrcStateMachine;
 
 public class CmdCubePickup implements TrcRobot.RobotCommand
 {
-    private static final String moduleName = "CmdAutoCubePickup";
+    private static final String moduleName = "CmdCubePickup";
 
     public static enum State
     {

@@ -80,7 +80,7 @@ public class CmdStrafeUntilCube implements TrcRobot.RobotCommand
     @Override
     public boolean cmdPeriodic(double elapsedTime)
     {
-        final String funcName = "VisionStrafePeriodic";
+        final String funcName = moduleName + ".cmdPeriodic";
         boolean done = !sm.isEnabled();
 
         if (!done)
@@ -123,7 +123,9 @@ public class CmdStrafeUntilCube implements TrcRobot.RobotCommand
 
     public void visionTriggerHandler(int currZone, int prevZone, double value)
     {
-        robot.globalTracer.traceInfo("VisionTrigger", "prevZone=%d, currZone=%d, value=%.2f", prevZone, currZone, value);
+        final String funcName = moduleName + ".visionTriggerHandler";
+
+        robot.globalTracer.traceInfo(funcName, "prevZone=%d, currZone=%d, value=%.2f", prevZone, currZone, value);
         if (currZone == 1)
         {
             if (visionTriggerEvent != null)

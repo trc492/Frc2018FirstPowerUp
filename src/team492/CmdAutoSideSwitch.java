@@ -133,7 +133,7 @@ public class CmdAutoSideSwitch implements TrcRobot.RobotCommand
     @Override
     public boolean cmdPeriodic(double elapsedTime)
     {
-        final String funcName = "AutoSideSwitchPeriodic";
+        final String funcName = moduleName + ".cmdPeriodic";
 
         boolean done = !sm.isEnabled();
 
@@ -425,7 +425,9 @@ public class CmdAutoSideSwitch implements TrcRobot.RobotCommand
 
     private void sonarTriggerEvent(int currZone, int prevZone, double zoneValue)
     {
-        robot.globalTracer.traceInfo("SonarTrigger", "[%.3f] prevZone=%d, currZone=%d, distance=%.2f",
+        final String funcName = moduleName + ".sonarTriggerEvent";
+
+        robot.globalTracer.traceInfo(funcName, "[%.3f] prevZone=%d, currZone=%d, distance=%.2f",
             Robot.getModeElapsedTime(), prevZone, currZone, zoneValue);
 
         if (Robot.getModeElapsedTime() <= 1.0)

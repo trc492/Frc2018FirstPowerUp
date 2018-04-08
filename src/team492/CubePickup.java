@@ -209,11 +209,13 @@ public class CubePickup
      */
     private void setPickupPower(double power, boolean userStop)
     {
+        final String funcName = "setPickupPower";
+
         if (sm.isEnabled())
         {
             if (userStop)
             {
-                robot.globalTracer.traceInfo("setPickupPower", "User Aborted Pickup (power=%.2f)", power);
+                robot.globalTracer.traceInfo(funcName, "User Aborted Pickup (power=%.2f)", power);
             }
             cubeProximityTrigger.setTaskEnabled(false);
             currentTrigger.setTaskEnabled(false);
@@ -251,6 +253,7 @@ public class CubePickup
      */
     public void grabCube(double power, TrcEvent event)
     {
+        final String funcName = "grabCube";
         if (!sm.isEnabled())
         {
             controlMotor.setPower(power);
@@ -259,7 +262,7 @@ public class CubePickup
         }
         else
         {
-            robot.globalTracer.traceWarn("grabCube", "***** Caught double trigger *****");
+            robot.globalTracer.traceWarn(funcName, "***** Caught double trigger *****");
         }
     }
 
@@ -309,13 +312,15 @@ public class CubePickup
                     // CodeReview: Should we restore 45A since we figured out the triggers were really correct?
                     if (pickupCurrent >= 35.0) //RobotInfo.PICKUP_STALL_CURRENT) 35A. Used to be 45A.
                     {
-                        robot.globalTracer.traceInfo(funcName, "[%.3f] %s: Detected cube in possession (pickupCurent=%.2f)",
+                        robot.globalTracer.traceInfo(
+                            funcName, "[%.3f] %s: Detected cube in possession (pickupCurent=%.2f)",
                             elapsedTime, state, pickupCurrent);
                         sm.setState(State.DONE);
                     }
                     else
                     {
-                        robot.globalTracer.traceInfo(funcName, "[%.3f] %s: Detected startup spike (pickupCurrent=%.2f)",
+                        robot.globalTracer.traceInfo(
+                            funcName, "[%.3f] %s: Detected startup spike (pickupCurrent=%.2f)",
                             elapsedTime, state, pickupCurrent);
                         sm.setState(State.DELAY_SAMPLING);
                     }
@@ -340,7 +345,9 @@ public class CubePickup
 
     private void cubeProximityEvent(boolean active)
     {
-        robot.globalTracer.traceInfo("ProximityTrigger", "[%.3f] active=%b", TrcUtil.getCurrentTime() - startTime, active);
+        final String funcName = "cubeProximityEvent";
+
+        robot.globalTracer.traceInfo(funcName, "[%.3f] active=%b", TrcUtil.getCurrentTime() - startTime, active);
         if (active)
         {
             // Detected cube close by, grab it.
@@ -354,7 +361,9 @@ public class CubePickup
 
     private void currentTriggerEvent(int currZone, int prevZone, double zoneValue)
     {
-        robot.globalTracer.traceInfo("CurrentTrigger", "[%.3f] prevZone=%d, currZone=%d, pickupCurrent=%.2f",
+        final String funcName = "currentTriggerEvent";
+
+        robot.globalTracer.traceInfo(funcName, "[%.3f] prevZone=%d, currZone=%d, pickupCurrent=%.2f",
             TrcUtil.getCurrentTime() - startTime, prevZone, currZone, zoneValue);
         if (currZone == 1 && currZone > prevZone)
         {

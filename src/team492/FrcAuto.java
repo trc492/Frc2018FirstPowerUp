@@ -32,12 +32,13 @@ import trclib.TrcTaskMgr;
 
 public class FrcAuto implements TrcRobot.RobotMode
 {
+    private static final String moduleName = "FrcAuto";
 //    private static final boolean DO_UPDATES = false;
 
     public static enum AutoStrategy
     {
         // Different choices for autonomous
-    	AUTO_SIDE,
+        AUTO_SIDE,
         AUTO_SWITCH,
         AUTO_SCALE,
         X_TIMED_DRIVE,
@@ -150,11 +151,13 @@ public class FrcAuto implements TrcRobot.RobotMode
     @Override
     public void startMode()
     {
+        final String funcName = moduleName + ".startMode";
+
         robot.getGameInfo();
         robot.getFMSInfo();
 
-        robot.globalTracer.traceInfo(Robot.programName, "%s_%s%03d (%s%d) [FMSConnected=%b] msg=%s", robot.eventName,
-            robot.matchType, robot.matchNumber, robot.alliance.toString(), robot.location,
+        robot.globalTracer.traceInfo(funcName, "%s_%s%03d (%s%d) [FMSConnected=%b] msg=%s",
+            robot.eventName, robot.matchType, robot.matchNumber, robot.alliance.toString(), robot.location,
             robot.ds.isFMSAttached(), robot.gameSpecificMessage);
 
         robot.encoderYPidCtrl.setOutputLimit(0.6);  //CodeReview: can we use RobotInfo.DRIVE_MAX_YPID_POWER?
@@ -295,6 +298,8 @@ public class FrcAuto implements TrcRobot.RobotMode
     @Override
     public void runContinuous(double elapsedTime)
     {
+        final String funcName = moduleName + ".runContinuous";
+
         if (autoCommand != null)
         {
             autoCommand.cmdPeriodic(elapsedTime);
@@ -309,7 +314,7 @@ public class FrcAuto implements TrcRobot.RobotMode
             if (robot.elevator.elevator.isActive())
             {
                 robot.elevator.elevatorPidCtrl.printPidInfo(robot.globalTracer, elapsedTime, robot.battery);
-                robot.globalTracer.traceInfo("FrcAuto", "Elevator limit switch: %b/%b",
+                robot.globalTracer.traceInfo(funcName, "Elevator limit switch: %b/%b",
                     robot.elevator.elevatorMotor.isLowerLimitSwitchActive(),
                     robot.elevator.elevatorMotor.isUpperLimitSwitchActive());
             }

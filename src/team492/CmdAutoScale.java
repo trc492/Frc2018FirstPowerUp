@@ -144,6 +144,7 @@ public class CmdAutoScale implements TrcRobot.RobotCommand
     @Override
     public boolean cmdPeriodic(double elapsedTime)
     {
+        final String funcName = moduleName + ".cmdPeriodic";
         boolean done = !sm.isEnabled();
 
         if (done || startPosition == Position.MID_POS) return true;
@@ -257,7 +258,9 @@ public class CmdAutoScale implements TrcRobot.RobotCommand
                         nextState = State.TURN_TO_OPPOSITE_SCALE;
                     }
 
-                    robot.globalTracer.traceInfo(moduleName, "sonarDistance=%.1f, distanceFromWall=%.1f, useSonar=%b, currY=%.1f, xDistance=%.1f, yDistance=%.1f",
+                    robot.globalTracer.traceInfo(
+                        funcName,
+                        "sonarDistance=%.1f, distanceFromWall=%.1f, useSonar=%b, currY=%.1f, xDistance=%.1f, yDistance=%.1f",
                         sonarDistance, distanceFromWall, useSonar, currY, xDistance, yDistance);
                     
                     robot.pidDrive.setTarget(xDistance, yDistance, robot.targetHeading, false, event, 5.0);
@@ -333,14 +336,18 @@ public class CmdAutoScale implements TrcRobot.RobotCommand
 
     private void setSonarTriggerEnabled(boolean enabled)
     {
-        robot.globalTracer.traceInfo(moduleName, "setSonarTriggerEnabled(%b)", enabled);
+        final String funcName = "setSonarTriggerEnabled";
+
+        robot.globalTracer.traceInfo(funcName, "setSonarTriggerEnabled(%b)", enabled);
         sonarTrigger.setTaskEnabled(enabled);
         if (enabled) sonarEvent.clear();
     }
 
     private void setRangingEnabled(boolean enabled)
     {
-        robot.globalTracer.traceInfo(moduleName, "setRangingEnabled(%b)", enabled);
+        final String funcName = "setRangingEnabled";
+
+        robot.globalTracer.traceInfo(funcName, "setRangingEnabled(%b)", enabled);
         if(enabled)
         {
             sonarArray.startRanging(true);
@@ -353,7 +360,9 @@ public class CmdAutoScale implements TrcRobot.RobotCommand
 
     private void sonarTriggerEvent(int currZone, int prevZone, double zoneValue)
     {
-        robot.globalTracer.traceInfo(moduleName, "SonarTriggerEvent: prevZone=%d, currZone=%d, value:%.1f",
+        final String funcName = moduleName + ".sonarTriggerEvent";
+
+        robot.globalTracer.traceInfo(funcName, "SonarTriggerEvent: prevZone=%d, currZone=%d, value:%.1f",
             prevZone, currZone, zoneValue);
         
         if(Robot.getModeElapsedTime() < 1.0)

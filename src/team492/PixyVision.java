@@ -133,14 +133,15 @@ public class PixyVision
      */
     private Rect getTargetRect()
     {
+        final String funcName = "getTargetRect";
         Rect targetRect = null;
         ObjectBlock[] detectedObjects = pixyCamera.getDetectedObjects();
         double currTime = TrcUtil.getCurrentTime();
 
         if (debugEnabled)
         {
-            robot.globalTracer.traceInfo(moduleName, "%s object(s) found",
-                detectedObjects != null? "" + detectedObjects.length: "null");
+            robot.globalTracer.traceInfo(
+                funcName, "%s object(s) found", detectedObjects != null? "" + detectedObjects.length: "null");
         }
 
         if (detectedObjects != null && detectedObjects.length >= 1)
@@ -197,7 +198,7 @@ public class PixyVision
 
                     if (debugEnabled)
                     {
-                        robot.globalTracer.traceInfo(moduleName, "[%d] %s", i, detectedObjects[i].toString());
+                        robot.globalTracer.traceInfo(funcName, "[%d] %s", i, detectedObjects[i].toString());
                     }
                 }
             }
@@ -221,14 +222,14 @@ public class PixyVision
 
                 if (debugEnabled)
                 {
-                    robot.globalTracer.traceInfo(moduleName, "===TargetRect===: x=%d, y=%d, w=%d, h=%d",
+                    robot.globalTracer.traceInfo(funcName, "===TargetRect===: x=%d, y=%d, w=%d, h=%d",
                         targetRect.x, targetRect.y, targetRect.width, targetRect.height);
                 }
             }
 
             if (targetRect == null)
             {
-                robot.globalTracer.traceInfo(moduleName, "===TargetRect=== None, is now null");
+                robot.globalTracer.traceInfo(funcName, "===TargetRect=== None, is now null");
             }
 
             lastTargetRect = targetRect;
@@ -244,6 +245,7 @@ public class PixyVision
 
     public TargetInfo getTargetInfo()
     {
+        final String funcName = "getTargetInfo";
         TargetInfo targetInfo = null;
         Rect targetRect = getTargetRect();
 
@@ -278,7 +280,7 @@ public class PixyVision
             if (debugEnabled)
             {
                 robot.globalTracer.traceInfo(
-                    moduleName, "###TargetInfo###: xDist=%.1f, yDist=%.1f, angle=%.1f",
+                    funcName, "###TargetInfo###: xDist=%.1f, yDist=%.1f, angle=%.1f",
                     targetXDistance, targetYDistance, targetAngle);
             }
         }

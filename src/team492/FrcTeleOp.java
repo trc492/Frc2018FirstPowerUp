@@ -27,6 +27,8 @@ import trclib.TrcRobot;
 
 public class FrcTeleOp implements TrcRobot.RobotMode
 {
+    private static final String moduleName = "FrcTeleOp";
+
     private enum DriveMode
     {
         MECANUM_MODE, ARCADE_MODE, TANK_MODE
@@ -73,7 +75,7 @@ public class FrcTeleOp implements TrcRobot.RobotMode
     @Override
     public void runPeriodic(double elapsedTime)
     {
-        
+        final String funcName = moduleName + ".runPeriodic";
         double leftDriveX = robot.leftDriveStick.getXWithDeadband(true);
         double leftDriveY = robot.leftDriveStick.getYWithDeadband(true);
         double rightDriveX = robot.rightDriveStick.getXWithDeadband(true);
@@ -81,7 +83,7 @@ public class FrcTeleOp implements TrcRobot.RobotMode
         // Cancel auto assist if the driver does anything
         if (isAutoAssistEnabled() && (leftDriveX != 0 || leftDriveY != 0 || rightDriveX != 0 || rightDriveY != 0))
         {
-            robot.globalTracer.traceInfo("FrcTeleOp", "[%.3f] Stopping all auto!", elapsedTime);
+            robot.globalTracer.traceInfo(funcName, "[%.3f] Stopping all auto!", elapsedTime);
             robot.cancelAutoAssist();
         }
 
@@ -153,25 +155,27 @@ public class FrcTeleOp implements TrcRobot.RobotMode
     @Override
     public void runContinuous(double elapsedTime)
     {
+        final String funcName = moduleName + ".runContinuous";
+
         if (robot.cmdAutoCubePickup.isEnabled())
         {
-            robot.globalTracer.traceInfo("FrcTeleOp", "[%.3f] AutoCubePickup - Activated: %b",
+            robot.globalTracer.traceInfo(funcName, "[%.3f] AutoCubePickup - Activated: %b",
                 elapsedTime, robot.cmdAutoCubePickup.isEnabled());
             robot.cmdAutoCubePickup.cmdPeriodic(elapsedTime);
         }
 
         if(robot.cmdExchangeAlign.isEnabled())
         {
-            robot.globalTracer.traceInfo("FrcTeleOp", "[%.3f] ExchangeAlign - Activated: %b",
+            robot.globalTracer.traceInfo(funcName, "[%.3f] ExchangeAlign - Activated: %b",
                 elapsedTime, robot.cmdExchangeAlign.isEnabled());
             robot.cmdExchangeAlign.cmdPeriodic(elapsedTime);
         }
-        
+
         if (robot.elevator.elevator.isActive())
         {
             robot.elevator.elevatorPidCtrl.printPidInfo(robot.globalTracer, elapsedTime, robot.battery);
             robot.globalTracer.traceInfo(
-                "FrcAuto", "elevatorLimitSwitches=%b/%b, talonCurrent=%.3f, pdpElevatorCurrent=%.3f",
+                funcName, "elevatorLimitSwitches=%b/%b, talonCurrent=%.3f, pdpElevatorCurrent=%.3f",
                 robot.elevator.elevatorMotor.isLowerLimitSwitchActive(),
                 robot.elevator.elevatorMotor.isUpperLimitSwitchActive(),
                 robot.elevator.elevatorMotor.motor.getOutputCurrent(),
@@ -312,15 +316,16 @@ public class FrcTeleOp implements TrcRobot.RobotMode
 
     public void operatorStickButtonEvent(int button, boolean pressed)
     {
+        final String funcName = "operatorStickButtonEvent";
+
         robot.dashboard.displayPrintf(8, "  OperatorStick: button=0x%04x %s", button, pressed? "pressed": "released");
 
         if(isAutoAssistEnabled())
         {
-            robot.globalTracer.traceInfo("FrcTeleOp", "AutoAssistEnabled: true");
+            robot.globalTracer.traceInfo(funcName, "AutoAssistEnabled: true");
             return;
         }
 
-//        double currHeight;
         switch (button)
         {
             case FrcJoystick.LOGITECH_TRIGGER:

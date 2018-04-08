@@ -86,6 +86,7 @@ public class CmdAutoDiagnostics implements TrcRobot.RobotCommand
 
     private void checkMotorEncoders()
     {
+        final String funcName = "checkMotorEncoders";
         FrcCANTalon[] motors = getMotors();
         double[] motorPositions = new double[motors.length];
         double avgPos = 0;
@@ -103,15 +104,15 @@ public class CmdAutoDiagnostics implements TrcRobot.RobotCommand
             double error = avgPos - motorPositions[i];
             if(Math.abs(error) >= ENCODER_Y_ERROR_THRESHOLD)
             {
-                robot.globalTracer.traceWarn(moduleName,
-                    "Motor %s may not be working! AvgPos:%.2f, Pos:%.2f, Error:%.2f",
+                robot.globalTracer.traceWarn(
+                    funcName, "Motor %s may not be working! AvgPos:%.2f, Pos:%.2f, Error:%.2f",
                     motors[i], avgPos, motorPositions[i], error);
                 diagnosticsFailed = true;
             }
             else
             {
-                robot.globalTracer.traceInfo(moduleName,
-                    "Motor %s seems to be working! AvgPos:%.2f, Pos:%.2f, Error:%.2f",
+                robot.globalTracer.traceInfo(
+                    funcName, "Motor %s seems to be working! AvgPos:%.2f, Pos:%.2f, Error:%.2f",
                     motors[i], avgPos, motorPositions[i], error);
             }
         }
@@ -120,6 +121,7 @@ public class CmdAutoDiagnostics implements TrcRobot.RobotCommand
     @Override
     public boolean cmdPeriodic(double elapsedTime)
     {
+        final String funcName = moduleName + ".cmdPeriodic";
         boolean done = !sm.isEnabled();
         if (done) return true;
 
@@ -154,11 +156,13 @@ public class CmdAutoDiagnostics implements TrcRobot.RobotCommand
                         yPosition = robot.driveBase.getYPosition();
                         if(yPosition > 0)
                         {
-                            robot.globalTracer.traceInfo(moduleName, "Spun forward! Motors working okay! yPosition=%.2f", yPosition);
+                            robot.globalTracer.traceInfo(
+                                funcName, "Spun forward! Motors working okay! yPosition=%.2f", yPosition);
                         }
                         else
                         {
-                            robot.globalTracer.traceInfo(moduleName, "Tried to spin forward! Motors are not okay! yPosition=%.2f", yPosition);
+                            robot.globalTracer.traceInfo(
+                                funcName, "Tried to spin forward! Motors are not okay! yPosition=%.2f", yPosition);
                             diagnosticsFailed = true;
                         }
                         
@@ -180,11 +184,14 @@ public class CmdAutoDiagnostics implements TrcRobot.RobotCommand
                         yPosition = robot.driveBase.getYPosition();
                         if(yPosition < 0)
                         {
-                            robot.globalTracer.traceInfo(moduleName, "Spun backward! Motors working okay, probably! yPosition=%.2f", yPosition);
+                            robot.globalTracer.traceInfo(
+                                funcName, "Spun backward! Motors working okay, probably! yPosition=%.2f", yPosition);
                         }
                         else
                         {
-                            robot.globalTracer.traceInfo(moduleName, "Tried to spin backward! Motors are not okay, probably! yPosition=%.2f", yPosition);
+                            robot.globalTracer.traceInfo(
+                                funcName,
+                                "Tried to spin backward! Motors are not okay, probably! yPosition=%.2f", yPosition);
                             diagnosticsFailed = true;
                         }
                         sm.setState(State.TEST_FLIPPERS);
@@ -192,7 +199,8 @@ public class CmdAutoDiagnostics implements TrcRobot.RobotCommand
                     break;
 
                 case TEST_FLIPPERS:
-                    robot.globalTracer.traceInfo(moduleName, "Attempting to extend flippers for %.1f seconds!", FLIPPER_EXTEND_DELAY);
+                    robot.globalTracer.traceInfo(
+                        funcName, "Attempting to extend flippers for %.1f seconds!", FLIPPER_EXTEND_DELAY);
                     robot.leftFlipper.timedExtend(FLIPPER_EXTEND_DELAY);
                     robot.rightFlipper.timedExtend(FLIPPER_EXTEND_DELAY);
                     timer.set(FLIPPER_EXTEND_DELAY, event);
@@ -200,7 +208,8 @@ public class CmdAutoDiagnostics implements TrcRobot.RobotCommand
                     break;
 
                 case RAISE_ELEVATOR:
-                    robot.globalTracer.traceInfo(moduleName, "Attempting to raise elevator to %.1f inches!", RobotInfo.ELEVATOR_MAX_HEIGHT);
+                    robot.globalTracer.traceInfo(
+                        funcName, "Attempting to raise elevator to %.1f inches!", RobotInfo.ELEVATOR_MAX_HEIGHT);
                     robot.elevator.setPosition(RobotInfo.ELEVATOR_MAX_HEIGHT, event, 3.0);
                     sm.waitForSingleEvent(event, State.CHECK_ELEVATOR);
                     break;
@@ -211,14 +220,15 @@ public class CmdAutoDiagnostics implements TrcRobot.RobotCommand
                     double error = RobotInfo.ELEVATOR_MAX_HEIGHT - elevatorHeight;
                     if(error >= ELEVATOR_ERROR_THRESHOLD)
                     {
-                        robot.globalTracer.traceWarn(moduleName,
-                            "Elevator innacurate! Target: %.2f, Actual: %.2f, Error: %.2f",
+                        robot.globalTracer.traceWarn(
+                            funcName, "Elevator innacurate! Target: %.2f, Actual: %.2f, Error: %.2f",
                             RobotInfo.ELEVATOR_MAX_HEIGHT, elevatorHeight, error);
                         diagnosticsFailed = true;
                     }
                     else
                     {
-                        robot.globalTracer.traceInfo(moduleName, "Elevator working fine!, Target: %.2f, Actual: %.2f, Error: %.2f",
+                        robot.globalTracer.traceInfo(
+                            funcName, "Elevator working fine!, Target: %.2f, Actual: %.2f, Error: %.2f",
                             RobotInfo.ELEVATOR_MAX_HEIGHT, elevatorHeight, error);
                     }
                     robot.elevator.setPosition(RobotInfo.ELEVATOR_MIN_HEIGHT, event, 3.0);
@@ -252,12 +262,14 @@ public class CmdAutoDiagnostics implements TrcRobot.RobotCommand
                     pickupCurrent = robot.cubePickup.getPickupCurrent();
                     if(pickupCurrent >= GRABBER_CURRENT_THRESHOLD)
                     {
-                        robot.globalTracer.traceInfo(moduleName, "Grabber motors in working! Current=%.2f, Power=%.2f",
+                        robot.globalTracer.traceInfo(
+                            funcName, "Grabber motors in working! Current=%.2f, Power=%.2f",
                             pickupCurrent, robot.cubePickup.getPickupPower());
                     }
                     else
                     {
-                        robot.globalTracer.traceErr(moduleName, "Grabber motors in not working! Current=%.2f, Power=%.2f",
+                        robot.globalTracer.traceErr(
+                            funcName, "Grabber motors in not working! Current=%.2f, Power=%.2f",
                             pickupCurrent, robot.cubePickup.getPickupPower());
                         diagnosticsFailed = true;
                     }
@@ -289,12 +301,14 @@ public class CmdAutoDiagnostics implements TrcRobot.RobotCommand
                     pickupCurrent = robot.cubePickup.getPickupCurrent();
                     if(pickupCurrent >= GRABBER_CURRENT_THRESHOLD)
                     {
-                        robot.globalTracer.traceInfo(moduleName, "Grabber motors out working! Current=%.2f, Power=%.2f",
+                        robot.globalTracer.traceInfo(
+                            funcName, "Grabber motors out working! Current=%.2f, Power=%.2f",
                             pickupCurrent, robot.cubePickup.getPickupPower());
                     }
                     else
                     {
-                        robot.globalTracer.traceErr(moduleName, "Grabber motors out not working! Current=%.2f, Power=%.2f",
+                        robot.globalTracer.traceErr(
+                            funcName, "Grabber motors out not working! Current=%.2f, Power=%.2f",
                             pickupCurrent, robot.cubePickup.getPickupPower());
                         diagnosticsFailed = true;
                     }

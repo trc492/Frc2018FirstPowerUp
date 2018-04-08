@@ -71,7 +71,6 @@ import trclib.TrcUtil;
 public class Robot extends FrcRobotBase
 {
     public static final String programName = "FirstPowerUp";
-    private static final String moduleName = "Robot";
 
     public static final boolean USE_TRACELOG = true;
     public static final boolean USE_NAV_X = true;
@@ -395,13 +394,15 @@ public class Robot extends FrcRobotBase
 
     public void robotStartMode(RunMode runMode)
     {
+        final String funcName = "robotStartMode";
+
         if (runMode != RunMode.DISABLED_MODE)
         {
             setTraceLogEnabled(true);
 
             Date now = new Date();
-            globalTracer.traceInfo(Robot.programName, "%s[%.3f]: ***** %s *****",
-                now.toString(), Robot.getModeElapsedTime(), runMode);
+            globalTracer.traceInfo(funcName, "[%.3f] %s: ***** %s *****",
+                Robot.getModeElapsedTime(), now.toString(), runMode);
 
             setVisionEnabled(true);
             driveBase.resetPosition();
@@ -445,6 +446,8 @@ public class Robot extends FrcRobotBase
 
     public void robotStopMode(RunMode runMode)
     {
+        final String funcName = "robotStopMode";
+
         if (runMode != RunMode.DISABLED_MODE)
         {
             if (runMode == RunMode.TELEOP_MODE || runMode == RunMode.TEST_MODE)
@@ -455,7 +458,7 @@ public class Robot extends FrcRobotBase
             setVisionEnabled(false);
             cancelAutoAssist();
             cubePickup.stopPickup();
-            globalTracer.traceInfo(moduleName, "TotalEnergy=%.3fWh", battery.getTotalEnergy());
+            globalTracer.traceInfo(funcName, "TotalEnergy=%.3fWh", battery.getTotalEnergy());
             diagnostics.printDiagnostics();
             setTraceLogEnabled(false);
         }
@@ -503,10 +506,12 @@ public class Robot extends FrcRobotBase
 
     public void setVisionEnabled(boolean enabled)
     {
+        final String funcName = "setVisionEnabled";
+
         if (pixy != null)
         {
             pixy.setEnabled(enabled);
-            globalTracer.traceInfo("Vision", "Pixy is %s!", enabled? "enabled": "disabled");
+            globalTracer.traceInfo(funcName, "Pixy is %s!", enabled? "enabled": "disabled");
         }
     }   //setVisionEnabled
     
@@ -531,6 +536,7 @@ public class Robot extends FrcRobotBase
 
     public void updateDashboard()
     {
+        final String funcName = "updateDashboard";
         double currTime = Robot.getModeElapsedTime();
 
         if (currTime >= nextUpdateTime)
@@ -546,10 +552,10 @@ public class Robot extends FrcRobotBase
                 HalDashboard.putNumber("Power/totalEnergy", battery.getTotalEnergy());
                 if (getCurrentRunMode() == RunMode.TELEOP_MODE)
                 {
-                    globalTracer.traceInfo("PowerUse", "[%.3f] Battery: currVoltage=%.2f, lowestVoltage=%.2f",
+                    globalTracer.traceInfo(funcName, "[%.3f] Battery: currVoltage=%.2f, lowestVoltage=%.2f",
                         currTime, battery.getVoltage(), battery.getLowestVoltage());
                     globalTracer.traceInfo(
-                        "PowerUse", "[%.3f] Total=%.2fA: Elevator=%.2fA, Winch=%.2fA, Pickup=%.2fA, TotalEnergy=%.2fWh",
+                        funcName, "[%.3f] Total=%.2fA: Elevator=%.2fA, Winch=%.2fA, Pickup=%.2fA, TotalEnergy=%.2fWh",
                         currTime,
                         pdp.getTotalCurrent(),
                         elevator.elevatorMotor.motor.getOutputCurrent(),
@@ -646,8 +652,10 @@ public class Robot extends FrcRobotBase
 
     public void traceStateInfo(double elapsedTime, String stateName)
     {
+        final String funcName = "traceStateInfo";
+
         globalTracer.traceInfo(
-            moduleName, "[%5.3f] <<<%16s>>> xPos=%6.2f,yPos=%6.2f,heading=%6.1f/%6.1f,volts=%.1f(%.1f)",
+            funcName, "[%5.3f] <<<%16s>>> xPos=%6.2f,yPos=%6.2f,heading=%6.1f/%6.1f,volts=%.1f(%.1f)",
             elapsedTime, stateName, driveBase.getXPosition(), driveBase.getYPosition(), driveBase.getHeading(),
             targetHeading, battery.getVoltage(), battery.getLowestVoltage());
     }   //traceStateInfo
@@ -762,6 +770,7 @@ public class Robot extends FrcRobotBase
 
     public double translateMotorPower(double desiredForcePercentage, double ticksPerSecond)
     {
+        final String funcName = "TranslateMotorPower";
         double rpmAtWheel = (Math.abs(ticksPerSecond) / RobotInfo.DRIVE_ENCODER_COUNTS_PER_ROTATION) * 60.0;
         double rpmAtMotor = rpmAtWheel * RobotInfo.DRIVE_MOTOR_ROTATIONS_PER_WHEEL_ROTATION;
         double constrainedForcePercentage = constrainForcePercentageByElevatorHeight(desiredForcePercentage);
@@ -770,7 +779,7 @@ public class Robot extends FrcRobotBase
         double desiredTorqueAtWheelOzIn = constrainedForceOz * RobotInfo.DRIVE_WHEEL_RADIUS_IN;
         double desiredTorqueAtMotorOzIn = desiredTorqueAtWheelOzIn/RobotInfo.DRIVE_MOTOR_ROTATIONS_PER_WHEEL_ROTATION;
         double returnValue = TrcUtil.clipRange(desiredTorqueAtMotorOzIn/max_torque_at_rpm_in_ounce_inch, -1.0, 1.0);
-        globalTracer.traceInfo("TranslateMotorPower", "desiredForcePercentage=%.2f, ticksPerSecond=%.2f, "
+        globalTracer.traceInfo(funcName, "desiredForcePercentage=%.2f, ticksPerSecond=%.2f, "
             + "rpmAtWheel=%.2f, rpmAtMotor=%.2f, constrainedForcePercentage=%.2f, constrainedForceOz=%.2f, "
             + "maxTorqueAtRPMOzIn=%.2f, desireTorqueAtWheelOzIn=%.2f, desiredTorqueAtMotorOzIn=%.2f, "
             + "returnValue=%.2f",

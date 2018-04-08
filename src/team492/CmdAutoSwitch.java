@@ -186,7 +186,7 @@ class CmdAutoSwitch implements TrcRobot.RobotCommand
     @Override
     public boolean cmdPeriodic(double elapsedTime)
     {
-        final String funcName = "AutoSwitchPeriodic";
+        final String funcName = moduleName + ".cmdPeriodic";
 
         boolean done = !sm.isEnabled();
 
@@ -459,7 +459,7 @@ class CmdAutoSwitch implements TrcRobot.RobotCommand
                             xDistance = (RobotInfo.AUTO_DISTANCE_TO_SWITCH - forwardDistance) - 36.0;
                         }
                         if (rightSwitch) xDistance = -xDistance;
-                        robot.globalTracer.traceInfo(moduleName, "Strafe to switch, forwardDistance=%.1f,xDistance=%.2f",
+                        robot.globalTracer.traceInfo(funcName, "Strafe to switch, forwardDistance=%.1f,xDistance=%.2f",
                             forwardDistance, xDistance);
                         robot.pidDrive.setTarget(xDistance, yDistance, robot.targetHeading, false, event, 0.0);
                         sm.addEvent(event);
@@ -700,7 +700,9 @@ class CmdAutoSwitch implements TrcRobot.RobotCommand
 
     private void sonarTriggerEvent(int currZone, int prevZone, double zoneValue)
     {
-        robot.globalTracer.traceInfo("SonarTrigger", "[%.3f] prevZone=%d, currZone=%d, distance=%.2f",
+        final String funcName = moduleName + ".sonarTriggerEvent";
+
+        robot.globalTracer.traceInfo(funcName, "[%.3f] prevZone=%d, currZone=%d, distance=%.2f",
             Robot.getModeElapsedTime(), prevZone, currZone, zoneValue);
 
         if (Robot.getModeElapsedTime() <= 1.0) return;
