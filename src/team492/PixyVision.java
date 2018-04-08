@@ -34,7 +34,6 @@ import trclib.TrcUtil;
 
 public class PixyVision
 {
-    private static final String moduleName = "PixyVision";
     private static final boolean debugEnabled = false;
 
     // If last target rect is this old, its stale data.

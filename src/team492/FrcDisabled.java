@@ -29,6 +29,8 @@ import trclib.TrcRobot;
 
 public class FrcDisabled implements TrcRobot.RobotMode
 {
+    private static final String moduleName = "FrcDisabled";
+
     private enum State
     {
         START,
@@ -39,7 +41,7 @@ public class FrcDisabled implements TrcRobot.RobotMode
 
     private Robot robot;
     private State state = State.START;
-    private boolean finishedMatch = false;
+    private boolean autoFinished = false;
 
     public FrcDisabled(Robot robot)
     {
@@ -53,20 +55,23 @@ public class FrcDisabled implements TrcRobot.RobotMode
     @Override
     public void startMode()
     {
-        if (robot.ds.isFMSAttached() || finishedMatch)
+        final String funcName = moduleName + ".startMode";
+
+        if (robot.ds.isFMSAttached() || autoFinished)
         {
             //
-            // We are in a competition match.
+            // We are in a competition match or auto just got done.
             //
             switch (state)
             {
                 case START:
-                    finishedMatch = false;
+                    autoFinished = false;
+                    // Disabled periodic will monitor and transition to AUTO_DONE.
                     break;
 
                 case AUTO_DONE:
                     state = State.TELEOP_DONE;
-                    finishedMatch = true;
+                    autoFinished = true;
                     break;
 
                 case TELEOP_DONE:
@@ -74,14 +79,16 @@ public class FrcDisabled implements TrcRobot.RobotMode
                     try
                     {
                         String traceLogName = robot.globalTracer.getTraceLogName();
-                        String suffix = traceLogName.substring(traceLogName.indexOf('&'));
-                        String newFile = String.format("%s_%s%03d%s", 
-                            robot.eventName, robot.matchType, robot.matchNumber, suffix);
-                        robot.globalTracer.traceInfo("FrcDisabled", "### OldName: %s, NewName: %s",
+                        String prefix = traceLogName.substring(0, traceLogName.indexOf('!'));
+                        String newFile = String.format("%s!%s_%s%03d.log",
+                            prefix, robot.eventName, robot.matchType, robot.matchNumber);
+                        robot.setTraceLogEnabled(true);
+                        robot.globalTracer.traceInfo(funcName, "### OldName: %s, NewName: %s ###",
                             traceLogName, newFile);
+                        robot.setTraceLogEnabled(false);
                         File file = new File(traceLogName);
                         robot.closeTraceLog();
-                        file.renameTo(new File(file.getParent() + File.separator + newFile));                        
+                        file.renameTo(new File(newFile));
                     }
                     catch(Exception e)
                     {
@@ -91,7 +98,7 @@ public class FrcDisabled implements TrcRobot.RobotMode
                         // Fail silently
                     }
                     state = State.DONE;
-                    finishedMatch = false;
+                    autoFinished = false;
                     break;
 
                 default:

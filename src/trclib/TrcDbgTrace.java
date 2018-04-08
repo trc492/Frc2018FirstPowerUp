@@ -178,16 +178,16 @@ public class TrcDbgTrace
 
     /**
      * This method opens a log file for writing all the trace messages to it. The log file is written to the specified
-     * folder. The file name will be formed by concatenating the specified file prefix and a date-time stamp.
+     * folder. The file name will be formed by concatenating the date-time stamp with the specified file name.
      *
      * @param folderPath specifies the folder path.
-     * @param filePrefix specifies the file name prefix.
+     * @param fileName specifies the file name.
      * @return true if log file is successfully opened, false if it failed.
      */
-    public boolean openTraceLog(final String folderPath, final String filePrefix)
+    public boolean openTraceLog(final String folderPath, final String fileName)
     {
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd@HHmmss", Locale.US);
-        String logFilePath = folderPath + File.separator + filePrefix + "&" + dateFormat.format(new Date()) + ".log";
+        String logFilePath = folderPath + File.separator + dateFormat.format(new Date()) + "!" + fileName + ".log";
         File folder = new File(folderPath);
         folder.mkdir();
 
