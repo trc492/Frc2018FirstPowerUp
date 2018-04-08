@@ -44,6 +44,8 @@ public class RobotInfo
     public static final double CUBE_WIDTH                       = 13.0;
     public static final double CUBE_DEPTH                       = 13.0;
 
+    public static final double BATTERY_CAPACITY_WATT_HOUR       = 18.0*12.0;
+
     //
     // Robot dimensions.
     //

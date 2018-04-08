@@ -458,7 +458,10 @@ public class Robot extends FrcRobotBase
             setVisionEnabled(false);
             cancelAutoAssist();
             cubePickup.stopPickup();
-            globalTracer.traceInfo(funcName, "TotalEnergy=%.3fWh", battery.getTotalEnergy());
+            double totalEnergy = battery.getTotalEnergy();
+            globalTracer.traceInfo(
+                funcName, "TotalEnergy=%.3fWh (%.2f%%)",
+                totalEnergy, totalEnergy*100.0/RobotInfo.BATTERY_CAPACITY_WATT_HOUR);
             diagnostics.printDiagnostics();
             setTraceLogEnabled(false);
         }
@@ -554,14 +557,16 @@ public class Robot extends FrcRobotBase
                 {
                     globalTracer.traceInfo(funcName, "[%.3f] Battery: currVoltage=%.2f, lowestVoltage=%.2f",
                         currTime, battery.getVoltage(), battery.getLowestVoltage());
+                    double totalEnergy = battery.getTotalEnergy();
                     globalTracer.traceInfo(
-                        funcName, "[%.3f] Total=%.2fA: Elevator=%.2fA, Winch=%.2fA, Pickup=%.2fA, TotalEnergy=%.2fWh",
+                        funcName,
+                        "[%.3f] Total=%.2fA: Elevator=%.2fA, Winch=%.2fA, Pickup=%.2fA, TotalEnergy=%.2fWh (%.2f%%)",
                         currTime,
                         pdp.getTotalCurrent(),
                         elevator.elevatorMotor.motor.getOutputCurrent(),
                         winch.getCurrent(),
                         cubePickup.getPickupCurrent(),
-                        battery.getTotalEnergy());
+                        totalEnergy, totalEnergy*100.0/RobotInfo.BATTERY_CAPACITY_WATT_HOUR);
                 }
             }
 
