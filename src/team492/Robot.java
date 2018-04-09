@@ -273,7 +273,7 @@ public class Robot extends FrcRobotBase
         //
         // Miscellaneous subsystems.
         //
-        ledIndicator = new LEDIndicator();
+        ledIndicator = new LEDIndicator(this);
 
         if (USE_TEXT_TO_SPEECH)
         {

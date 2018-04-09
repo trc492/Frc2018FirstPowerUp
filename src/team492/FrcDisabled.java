@@ -121,6 +121,9 @@ public class FrcDisabled implements TrcRobot.RobotMode
     {
         if (!robot.ds.isFMSAttached())
         {
+            //
+            // Not in competition match, probably about to start test or practice mode.
+            //
             robot.openTraceLog();
         }
     } // stopMode

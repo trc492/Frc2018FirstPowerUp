@@ -52,9 +52,10 @@ public class LEDIndicator
 
     private FrcRevBlinkin ledStrip;
 
-    public LEDIndicator()
+    public LEDIndicator(Robot robot)
     {
         ledStrip = new FrcRevBlinkin("LEDStrip", RobotInfo.PWM_REV_BLINKIN);
+        robot.pdp.registerEnergyUsed(RobotInfo.PDP_CHANNEL_LED, "LED");
         ledStrip.setPatternPriorities(patternPriorities);
         ledStrip.setPattern(LED_OFF);
     }

@@ -85,8 +85,9 @@ public class RobotInfo
     public static final int PDP_CHANNEL_LEFT_REAR_WHEEL         = 1;
     public static final int PDP_CHANNEL_WINCH_MASTER            = 2;
     public static final int PDP_CHANNEL_ELEVATOR                = 3;
-    public static final int PDP_CHANNEL_LEFT_PICKUP             = 4;
-    public static final int PDP_CHANNEL_RIGHT_PICKUP            = 11;
+    public static final int PDP_CHANNEL_LED                     = 9;
+    public static final int PDP_CHANNEL_RIGHT_PICKUP            = 10;
+    public static final int PDP_CHANNEL_LEFT_PICKUP             = 11;
     public static final int PDP_CHANNEL_WINCH_SLAVE             = 13;
     public static final int PDP_CHANNEL_RIGHT_REAR_WHEEL        = 14;
     public static final int PDP_CHANNEL_RIGHT_FRONT_WHEEL       = 15;
