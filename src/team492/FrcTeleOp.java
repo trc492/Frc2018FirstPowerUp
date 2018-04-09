@@ -179,7 +179,7 @@ public class FrcTeleOp implements TrcRobot.RobotMode
                 robot.elevator.elevatorMotor.isLowerLimitSwitchActive(),
                 robot.elevator.elevatorMotor.isUpperLimitSwitchActive(),
                 robot.elevator.elevatorMotor.motor.getOutputCurrent(),
-                robot.pdp.getCurrent(RobotInfo.ELEVATOR_PDP_SLOT));
+                robot.pdp.getCurrent(RobotInfo.PDP_CHANNEL_ELEVATOR));
         }
     } // runContinuous
 

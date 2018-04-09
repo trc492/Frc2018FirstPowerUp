@@ -29,7 +29,7 @@ import trclib.TrcTaskMgr;
 import trclib.TrcUtil;
 
 /**
- * This class extends the WPI PowerDistricbutonPanel class to provide a monitor on the power consumption of each
+ * This class extends the WPI PowerDistricbutonPanel class to provide monitoring of energy consumption of registered
  * power channel.
  */
 public class FrcPdp extends PowerDistributionPanel
@@ -43,9 +43,10 @@ public class FrcPdp extends PowerDistributionPanel
     private TrcDbgTrace dbgTrace = null;
 
     public static final int NUM_PDP_CHANNELS = 16;
-    
+
     private final TrcTaskMgr.TaskObject pdpEnergyTaskObj;
-    private double[] energyUsed = new double[NUM_PDP_CHANNELS];
+    private String[] channelNames = new String[NUM_PDP_CHANNELS];
+    private double[] channelEnergyUsed = new double[NUM_PDP_CHANNELS];
     private double lastTimestamp = 0.0;
 
     /**
@@ -65,6 +66,12 @@ public class FrcPdp extends PowerDistributionPanel
         }
 
         pdpEnergyTaskObj = TrcTaskMgr.getInstance().createTask(moduleName + ".preContinuous", this::pdpEnergyTask);
+
+        for (int i = 0; i < NUM_PDP_CHANNELS; i++)
+        {
+            channelNames[i] = null;
+            channelEnergyUsed[i] = 0.0;
+        }
     }   //FrcPdp
 
     /**
@@ -84,10 +91,11 @@ public class FrcPdp extends PowerDistributionPanel
 
         if (enabled)
         {
-            for (int i = 0; i < energyUsed.length; i++)
+            for (int i = 0; i < NUM_PDP_CHANNELS; i++)
             {
-                energyUsed[i] = 0.0;
+                channelEnergyUsed[i] = 0.0;
             }
+
             lastTimestamp = TrcUtil.getCurrentTime();
             pdpEnergyTaskObj.registerTask(TrcTaskMgr.TaskType.PRECONTINUOUS_TASK);
         }
@@ -103,23 +111,104 @@ public class FrcPdp extends PowerDistributionPanel
     }   //setTaskEnabled
 
     /**
-     * This method returns the energy consumed so far by the specified channel in the unit of Watt-Hour.
+     * This method registers a PDP channel for monitoring its energy used.
      *
-     * @param channel specifies the PDP channel.
-     * @return energy consumed in Watt-Hour.
+     * @param channel specifies the channel to be registered.
+     * @param name specifies the channel name.
+     * @return true if registered successfully, false if channel is invalid or already registered.
      */
-    public double getEnergyUsed(int channel)
+    public boolean registerEnergyUsed(int channel, String name)
     {
-        final String funcName = "getEnergyUsed";
+        final String funcName = "registerEnergyUsed";
+
+        if (debugEnabled)
+        {
+            dbgTrace.traceEnter(funcName, TrcDbgTrace.TraceLevel.API, "channel=%d,name=%s", channel, name);
+        }
+
+        boolean success = channel >= 0 && channel < NUM_PDP_CHANNELS && channelNames[channel] == null;
+        if (success)
+        {
+            channelNames[channel] = name;
+            channelEnergyUsed[channel] = 0.0;
+        }
+
+        if (debugEnabled)
+        {
+            dbgTrace.traceExit(funcName, TrcDbgTrace.TraceLevel.API, "=%b", success);
+        }
+
+        return success;
+    }   //registerEnergyUsed
+
+    /**
+     * This method unregisters a PDP channel for monitoring its energy used.
+     *
+     * @param channel specifies the channel to be unregistered.
+     * @return true if unregistered successfully, false if channel is not registered.
+     */
+    public boolean unregisterEnergyUsed(int channel)
+    {
+        final String funcName = "unregisterEnergyUsed";
 
         if (debugEnabled)
         {
             dbgTrace.traceEnter(funcName, TrcDbgTrace.TraceLevel.API, "channel=%d", channel);
-            dbgTrace.traceExit(funcName, TrcDbgTrace.TraceLevel.API, "=%f", energyUsed[channel]);
         }
 
-        return energyUsed[channel];
+        boolean success = channelNames[channel] != null;
+        if (success)
+        {
+            channelNames[channel] = null;
+            channelEnergyUsed[channel] = 0.0;
+        }
+
+        if (debugEnabled)
+        {
+            dbgTrace.traceExit(funcName, TrcDbgTrace.TraceLevel.API, "=%b", success);
+        }
+
+        return success;
+    }   //unregisterEnergyUsed
+
+    /**
+     * This method returns the energy consumed so far by the specified channel in the unit of Watt-Hour.
+     *
+     * @param channel specifies the PDP channel.
+     * @return energy consumed by the channel in Watt-Hour if registered, null if not registered.
+     */
+    public double getEnergyUsed(int channel)
+    {
+        final String funcName = "getEnergyUsed";
+        double energyUsed = channelNames[channel] != null? channelEnergyUsed[channel]: 0.0;
+
+        if (debugEnabled)
+        {
+            dbgTrace.traceEnter(funcName, TrcDbgTrace.TraceLevel.API, "channel=%d", channel);
+            dbgTrace.traceExit(funcName, TrcDbgTrace.TraceLevel.API, "=%f", energyUsed);
+        }
+
+        return energyUsed;
     }   //getEnergyUsed
+
+    /**
+     * This method returns the name of the registered PDP channel.
+     *
+     * @param channel specifies the PDP channel.
+     * @return PDP channel name if registered, null if not registered.
+     */
+    public String getChannelName(int channel)
+    {
+        final String funcName = "getChannelName";
+
+        if (debugEnabled)
+        {
+            dbgTrace.traceEnter(funcName, TrcDbgTrace.TraceLevel.API, "channel=%d", channel);
+            dbgTrace.traceExit(funcName, TrcDbgTrace.TraceLevel.API, "=%s", channelNames[channel]);
+        }
+
+        return channelNames[channel];
+    }   //getChannelName
 
     //
     // Implements TrcTaskMgr.Task
@@ -142,9 +231,12 @@ public class FrcPdp extends PowerDistributionPanel
             dbgTrace.traceEnter(funcName, TrcDbgTrace.TraceLevel.TASK, "taskType=%s,runMode=%s", taskType, runMode);
         }
 
-        for (int i = 0; i < energyUsed.length; i++)
+        for (int i = 0; i < NUM_PDP_CHANNELS; i++)
         {
-            energyUsed[i] += voltage*getCurrent(i)*(currTime - lastTimestamp);
+            if (channelNames[i] != null)
+            {
+                channelEnergyUsed[i] += voltage*getCurrent(i)*(currTime - lastTimestamp);
+            }
         }
 
         lastTimestamp = currTime;

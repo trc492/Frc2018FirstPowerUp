@@ -32,10 +32,12 @@ public class Winch
     private FrcCANTalon slaveMotor;
     private double motorPower = 0.0;
 
-    public Winch()
+    public Winch(Robot robot)
     {
         mainMotor = new FrcCANTalon("WinchMaster", RobotInfo.CANID_WINCH_MASTER);
         slaveMotor = new FrcCANTalon("WinchSlave", RobotInfo.CANID_WINCH_SLAVE);
+        robot.pdp.registerEnergyUsed(RobotInfo.PDP_CHANNEL_WINCH_MASTER, "WinchMaster");
+        robot.pdp.registerEnergyUsed(RobotInfo.PDP_CHANNEL_WINCH_SLAVE, "WinchSlave");
         mainMotor.setInverted(true);
         slaveMotor.setInverted(true);
         slaveMotor.motor.set(ControlMode.Follower, RobotInfo.CANID_WINCH_MASTER);

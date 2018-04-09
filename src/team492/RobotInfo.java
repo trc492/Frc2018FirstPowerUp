@@ -79,6 +79,19 @@ public class RobotInfo
     public static final int CANID_PCM2                          = 18;
 
     //
+    // PDP Channels.
+    //
+    public static final int PDP_CHANNEL_LEFT_FRONT_WHEEL        = 0;
+    public static final int PDP_CHANNEL_LEFT_REAR_WHEEL         = 1;
+    public static final int PDP_CHANNEL_WINCH_MASTER            = 2;
+    public static final int PDP_CHANNEL_ELEVATOR                = 3;
+    public static final int PDP_CHANNEL_LEFT_PICKUP             = 4;
+    public static final int PDP_CHANNEL_RIGHT_PICKUP            = 11;
+    public static final int PDP_CHANNEL_WINCH_SLAVE             = 13;
+    public static final int PDP_CHANNEL_RIGHT_REAR_WHEEL        = 14;
+    public static final int PDP_CHANNEL_RIGHT_FRONT_WHEEL       = 15;
+
+    //
     // Analog Input ports.
     //
     public static final int AIN_LEFT_SONAR_SENSOR               = 0;
@@ -217,7 +230,6 @@ public class RobotInfo
     public static final double ELEVATOR_PID_FLOOR               = 6.0;
     public static final double ELEVATOR_PID_CEILING             = 82.0;     //need calibration
 
-    public static final int ELEVATOR_PDP_SLOT                   = 3;
     public static final double ELEVATOR_STALL_MIN_POWER         = 0.3;
     public static final double ELEVATOR_STALL_TIMEOUT           = 0.5;
     public static final double ELEVATOR_STALL_RESET_TIMEOUT     = 0.5;

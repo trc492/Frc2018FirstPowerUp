@@ -37,9 +37,10 @@ public class Elevator
 
     private double elevatorPower = 0.0;
 
-    public Elevator()
+    public Elevator(Robot robot)
     {
         elevatorMotor = new FrcCANTalon("elevatorMotor", RobotInfo.CANID_ELEVATOR);
+        robot.pdp.registerEnergyUsed(RobotInfo.PDP_CHANNEL_ELEVATOR, "Elevator");
         elevatorMotor.configFwdLimitSwitchNormallyOpen(false);
         elevatorMotor.configRevLimitSwitchNormallyOpen(false);
         elevatorMotor.motor.overrideLimitSwitchesEnable(true);

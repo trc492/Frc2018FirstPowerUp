@@ -295,6 +295,10 @@ public class Robot extends FrcRobotBase
         leftRearWheel = new FrcCANTalon("LeftRearWheel", RobotInfo.CANID_LEFTREARWHEEL);
         rightFrontWheel = new FrcCANTalon("RightFrontWheel", RobotInfo.CANID_RIGHTFRONTWHEEL);
         rightRearWheel = new FrcCANTalon("RightRearWheel", RobotInfo.CANID_RIGHTREARWHEEL);
+        pdp.registerEnergyUsed(RobotInfo.PDP_CHANNEL_LEFT_FRONT_WHEEL, "LeftFrontWheel");
+        pdp.registerEnergyUsed(RobotInfo.PDP_CHANNEL_LEFT_REAR_WHEEL, "LeftRearWheel");
+        pdp.registerEnergyUsed(RobotInfo.PDP_CHANNEL_RIGHT_FRONT_WHEEL, "RightFrontWheel");
+        pdp.registerEnergyUsed(RobotInfo.PDP_CHANNEL_RIGHT_REAR_WHEEL, "RightRearWheel");
 
         //
         // Initialize each drive motor controller.
@@ -364,9 +368,9 @@ public class Robot extends FrcRobotBase
         //
         // Create other hardware subsystems.
         //
-        elevator = new Elevator();
+        elevator = new Elevator(this);
         cubePickup = new CubePickup(this);
-        winch = new Winch();
+        winch = new Winch(this);
         leftFlipper = new FrcPneumatic("leftFlipper", RobotInfo.CANID_PCM1, 
             RobotInfo.SOL_LEFT_FLIPPER_EXTEND, RobotInfo.SOL_LEFT_FLIPPER_RETRACT);
         rightFlipper =  new FrcPneumatic("rightFlipper", RobotInfo.CANID_PCM1, 
@@ -463,7 +467,12 @@ public class Robot extends FrcRobotBase
             battery.setTaskEnabled(false);
             for (int i = 0; i < FrcPdp.NUM_PDP_CHANNELS; i++)
             {
-                globalTracer.traceInfo(funcName, "[PDP-%02d] EnergyUsed=%f Wh", pdp.getEnergyUsed(i));
+                String channelName = pdp.getChannelName(i);
+                if (channelName != null)
+                {
+                    globalTracer.traceInfo(
+                        funcName, "[PDP-%02d] %s: EnergyUsed=%f Wh", i, channelName, pdp.getEnergyUsed(i));
+                }
             }
             double totalEnergy = battery.getTotalEnergy();
             globalTracer.traceInfo(
