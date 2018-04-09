@@ -53,12 +53,13 @@ public class LEDIndicator
     public LEDIndicator()
     {
         ledStrip = new FrcRevBlinkin("LEDStrip", RobotInfo.PWM_REV_BLINKIN);
+        ledStrip.setPatternPriorities(patternPriorities);
         ledStrip.setPattern(LED_OFF);
     }
 
     public void indicateHasCube()
     {
-        ledStrip.setPatternWithPriority(LED_CUBE_IN_POSSESSION, patternPriorities);
+        ledStrip.setPatternWithPriority(LED_CUBE_IN_POSSESSION);
     }
 
     public void indicateHasNoCube()
@@ -69,7 +70,7 @@ public class LEDIndicator
     public void indicateSeesCube()
     {
         // The cube is in view on the Pixy but we only indicate this if we don't already have the cube.
-        ledStrip.setPatternWithPriority(LED_CUBE_IN_VIEW, patternPriorities);
+        ledStrip.setPatternWithPriority(LED_CUBE_IN_VIEW);
     }
 
     public void indicateSeesNoCube()
@@ -80,7 +81,7 @@ public class LEDIndicator
     public void indicateAlignedToCube()
     {
         // Pixy found the cube right at center. Only indicate this if we don't already have the cube.
-        ledStrip.setPatternWithPriority(LED_CUBE_ALIGNED, patternPriorities);
+        ledStrip.setPatternWithPriority(LED_CUBE_ALIGNED);
     }
 
     public void indicateNotAlignedToCube()
@@ -92,7 +93,7 @@ public class LEDIndicator
     {
         // Diagnostic error is low priority. Only indicate this when nobody is active. So it is the lowest
         // on the priority list.
-        ledStrip.setPatternWithPriority(LED_DIAGNOSTIC_ERROR, patternPriorities);
+        ledStrip.setPatternWithPriority(LED_DIAGNOSTIC_ERROR);
    }
 
     public void indicateNoDiagnosticError()
@@ -102,13 +103,15 @@ public class LEDIndicator
 
     public void setPattern(LEDPattern pattern)
     {
-        if (ledStrip.findPatternPriority(pattern, patternPriorities) != -1)
+        if (ledStrip.getPatternPriority(pattern) != -1)
         {
             throw new IllegalArgumentException("Pattern is already reserved in the priority list.");
         }
         else
         {
-            ledStrip.setPatternWithPriority(pattern, patternPriorities);
+            // Since it is not in the priority list, it has the lowest priority. So it will only show if no pattern
+            // on the priority list is already showing.
+            ledStrip.setPatternWithPriority(pattern);
         }
     }
 

@@ -191,6 +191,7 @@ public abstract class TrcRevBlinkin
     }   //enum LEDPattern
 
     private final String instanceName;
+    private LEDPattern[] patternPriorities = null;
 
     /**
      * Constructor: Create an instance of the object.
@@ -220,6 +221,25 @@ public abstract class TrcRevBlinkin
     }   //toString
 
     /**
+     * This method sets the LED pattern priority list for operations that need it.
+     *
+     * @param patternPriorities specifies the pattern priority list.
+     */
+    public void setPatternPriorities(LEDPattern[] patternPriorities)
+    {
+        final String funcName = "setPatternPriorities";
+
+        if (debugEnabled)
+        {
+            dbgTrace.traceEnter(funcName, TrcDbgTrace.TraceLevel.API,
+                "priorityList=%s", Arrays.toString(patternPriorities));
+            dbgTrace.traceExit(funcName, TrcDbgTrace.TraceLevel.API);
+        }
+
+        this.patternPriorities = patternPriorities;
+    }   //setPatternPriorities
+
+    /**
      * This method returns the currently set LED pattern
      *
      * @return currently set LED pattern.
@@ -239,7 +259,8 @@ public abstract class TrcRevBlinkin
     }   //getPattern
 
     /**
-     * This method sets the color pattern of the LED strip.
+     * This method sets the color pattern of the LED strip regardless on what is already showing. It means it
+     * does not respect the priority list.
      *
      * @param pattern specifies the color pattern to be set.
      */
@@ -266,19 +287,17 @@ public abstract class TrcRevBlinkin
      * the priority list, it is considered the lowest priority.
      *
      * @param pattern specifies the color pattern to be set.
-     * @param patternPriorities specifies the pattern priority list.
      */
-    public void setPatternWithPriority(LEDPattern pattern, LEDPattern[] patternPriorities)
+    public void setPatternWithPriority(LEDPattern pattern)
     {
         final String funcName = "setPatternWithPriority";
         LEDPattern currPattern = getPattern();
-        int currPriority = findPatternPriority(currPattern, patternPriorities);
-        int patternPriority = findPatternPriority(pattern, patternPriorities);
+        int currPriority = getPatternPriority(currPattern);
+        int patternPriority = getPatternPriority(pattern);
 
         if (debugEnabled)
         {
-            dbgTrace.traceEnter(funcName, TrcDbgTrace.TraceLevel.API, "pattern=%s,priorities=%s",
-                pattern, Arrays.toString(patternPriorities));
+            dbgTrace.traceEnter(funcName, TrcDbgTrace.TraceLevel.API, "pattern=%s", pattern);
             dbgTrace.traceInfo(funcName, "currPattern=%s(%d), pattern=%s(%d)",
                 currPattern, currPriority, pattern, patternPriority);
         }
@@ -300,26 +319,27 @@ public abstract class TrcRevBlinkin
      * means the lowest priority.
      *
      * @param pattern specifies the LED pattern to be searched in the pattern priorities array.
-     * @param patternPriorities specifies the pattern priority list.
      * @return the pattern priority if found, -1 if not found.
      */
-    public int findPatternPriority(LEDPattern pattern, LEDPattern[] patternPriorities)
+    public int getPatternPriority(LEDPattern pattern)
     {
-        final String funcName = "findPatternPriority";
+        final String funcName = "getPatternPriority";
         int priority = -1;
 
         if (debugEnabled)
         {
-            dbgTrace.traceEnter(funcName, TrcDbgTrace.TraceLevel.FUNC, "pattern=%s,priorities=%s",
-                pattern, Arrays.toString(patternPriorities));
+            dbgTrace.traceEnter(funcName, TrcDbgTrace.TraceLevel.FUNC, "pattern=%s", pattern);
         }
 
-        for (int i = 0; i < patternPriorities.length; i++)
+        if (patternPriorities != null)
         {
-            if (pattern == patternPriorities[i])
+            for (int i = 0; i < patternPriorities.length; i++)
             {
-                priority = i;
-                break;
+                if (pattern == patternPriorities[i])
+                {
+                    priority = i;
+                    break;
+                }
             }
         }
 
@@ -329,6 +349,6 @@ public abstract class TrcRevBlinkin
         }
 
         return priority;
-    }   //findPatternPriority
+    }   //getPatternPriority
 
 }   //class TrcRevBlinkin
