@@ -114,7 +114,7 @@ public class Robot extends FrcRobotBase
 
     public String eventName = "Unknown";
     public MatchType matchType = MatchType.None;
-    public int matchNumber = -1;
+    public int matchNumber = 0;
     public Alliance alliance = Alliance.Red;
     public int location = 1;
     public String gameSpecificMessage = null;
