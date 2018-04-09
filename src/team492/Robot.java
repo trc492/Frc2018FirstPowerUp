@@ -437,15 +437,21 @@ public class Robot extends FrcRobotBase
                 frontRanger.start();
             }
 
-            driveTime = HalDashboard.getNumber("Test/DriveTime", 5.0);
-            drivePower = HalDashboard.getNumber("Test/DrivePower", 0.2);
-            driveDistance = HalDashboard.getNumber("Test/DriveDistance", 6.0);
-            turnDegrees = HalDashboard.getNumber("Test/TurnDegrees", 90.0);
-            drivePowerLimit = HalDashboard.getNumber("Test/DrivePowerLimit", 0.5);
-            tuneKp = HalDashboard.getNumber("Test/TuneKp", RobotInfo.GYRO_TURN_KP);
-            tuneKi = HalDashboard.getNumber("Test/TuneKi", RobotInfo.GYRO_TURN_KI);
-            tuneKd = HalDashboard.getNumber("Test/TuneKd", RobotInfo.GYRO_TURN_KD);
-            tuneKf = HalDashboard.getNumber("Test/TuneKf", 0.0);
+            if (runMode == RunMode.AUTO_MODE || runMode == RunMode.TEST_MODE)
+            {
+                driveTime = HalDashboard.getNumber("Test/DriveTime", 5.0);
+                drivePower = HalDashboard.getNumber("Test/DrivePower", 0.2);
+                driveDistance = HalDashboard.getNumber("Test/DriveDistance", 6.0);
+                turnDegrees = HalDashboard.getNumber("Test/TurnDegrees", 90.0);
+                drivePowerLimit = HalDashboard.getNumber("Test/DrivePowerLimit", 0.5);
+                if (runMode == RunMode.TEST_MODE)
+                {
+                    tuneKp = HalDashboard.getNumber("Test/TuneKp", RobotInfo.GYRO_TURN_KP);
+                    tuneKi = HalDashboard.getNumber("Test/TuneKi", RobotInfo.GYRO_TURN_KI);
+                    tuneKd = HalDashboard.getNumber("Test/TuneKd", RobotInfo.GYRO_TURN_KD);
+                    tuneKf = HalDashboard.getNumber("Test/TuneKf", 0.0);
+                }
+            }
         }
     }   //robotStartMode
 
@@ -457,6 +463,7 @@ public class Robot extends FrcRobotBase
         {
             if (runMode == RunMode.TELEOP_MODE || runMode == RunMode.TEST_MODE)
             {
+                // Do not do this for end of autonomous because we might have a cube in possession.
                 cubePickup.closeClaw();
                 cubePickup.raisePickup();
             }
@@ -465,6 +472,7 @@ public class Robot extends FrcRobotBase
             cubePickup.stopPickup();
             pdp.setTaskEnabled(false);
             battery.setTaskEnabled(false);
+
             for (int i = 0; i < FrcPdp.NUM_PDP_CHANNELS; i++)
             {
                 String channelName = pdp.getChannelName(i);
@@ -474,6 +482,7 @@ public class Robot extends FrcRobotBase
                         funcName, "[PDP-%02d] %s: EnergyUsed=%f Wh", i, channelName, pdp.getEnergyUsed(i));
                 }
             }
+
             double totalEnergy = battery.getTotalEnergy();
             globalTracer.traceInfo(
                 funcName, "TotalEnergy=%.3fWh (%.2f%%)",
@@ -553,7 +562,7 @@ public class Robot extends FrcRobotBase
         }
     }
 
-    public void updateDashboard()
+    public void updateDashboard(RunMode runMode)
     {
         final String funcName = "updateDashboard";
         double currTime = Robot.getModeElapsedTime();
@@ -569,7 +578,7 @@ public class Robot extends FrcRobotBase
                 HalDashboard.putNumber("Power/winchCurrent", winch.getCurrent());
                 HalDashboard.putNumber("Power/pickupCurrent", cubePickup.getPickupCurrent());
                 HalDashboard.putNumber("Power/totalEnergy", battery.getTotalEnergy());
-                if (getCurrentRunMode() == RunMode.TELEOP_MODE)
+                if (runMode == RunMode.TELEOP_MODE)
                 {
                     globalTracer.traceInfo(funcName, "[%.3f] Battery: currVoltage=%.2f, lowestVoltage=%.2f",
                         currTime, battery.getVoltage(), battery.getLowestVoltage());

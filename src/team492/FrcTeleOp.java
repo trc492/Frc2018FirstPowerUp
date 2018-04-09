@@ -24,6 +24,7 @@ package team492;
 
 import frclib.FrcJoystick;
 import trclib.TrcRobot;
+import trclib.TrcRobot.RunMode;
 
 public class FrcTeleOp implements TrcRobot.RobotMode
 {
@@ -141,7 +142,7 @@ public class FrcTeleOp implements TrcRobot.RobotMode
             robot.winch.setPower(winchPower);                
         }
 
-        robot.updateDashboard();
+        robot.updateDashboard(RunMode.TELEOP_MODE);
         robot.announceSafety();
         robot.diagnostics.updateDiagnosticsAndDashboard();
 

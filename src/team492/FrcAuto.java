@@ -289,7 +289,7 @@ public class FrcAuto implements TrcRobot.RobotMode
     {
 //        if (DO_UPDATES)
 //        {
-//            robot.updateDashboard();
+//            robot.updateDashboard(RunMode.AUTO_MODE);
 //            robot.announceSafety();
 //            robot.diagnostics.updateDiagnosticsAndDashboard();
 //        }

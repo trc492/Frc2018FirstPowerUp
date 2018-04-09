@@ -26,6 +26,7 @@ import java.io.File;
 
 import edu.wpi.first.wpilibj.DriverStation;
 import trclib.TrcRobot;
+import trclib.TrcRobot.RunMode;
 
 public class FrcDisabled implements TrcRobot.RobotMode
 {
@@ -133,7 +134,7 @@ public class FrcDisabled implements TrcRobot.RobotMode
             state = State.AUTO_DONE;
         }
 
-        robot.updateDashboard();
+        robot.updateDashboard(RunMode.DISABLED_MODE);
         robot.announceIdling();
     } // runPeriodic
 
