@@ -33,19 +33,21 @@ public class LEDIndicator
     private static final LEDPattern LED_OFF                     = LEDPattern.SolidBlack;
     private static final LEDPattern LED_DIAGNOSTIC_NORMAL       = LEDPattern.FixedLightChaseBlue;
     private static final LEDPattern LED_DIAGNOSTIC_ERROR        = LEDPattern.FixedLightChaseRed;
+    private static final LEDPattern LED_GYRO_ASSIST_ON          = LEDPattern.FixedLightChaseGray;
     private static final LEDPattern LED_CUBE_IN_VIEW            = LEDPattern.SolidBlue;
     private static final LEDPattern LED_CUBE_ALIGNED            = LEDPattern.SolidViolet;
     private static final LEDPattern LED_CUBE_IN_POSSESSION      = LEDPattern.SolidGreen;
-//  private static final LEDPattern LED_CUBE_IN_PROXIMITY       = LEDPattern.SolidYellow;
-//  private static final LEDPattern LED_GYRO_ASSIST_OFF         = LEDPattern.SolidBlack;
-//  private static final LEDPattern LED_GYRO_ASSIST_ON          = LEDPattern.SolidRed;
+
     private static final LEDPattern[] patternPriorities =
     {
+            // Lowest priority
             LED_DIAGNOSTIC_NORMAL,
             LED_DIAGNOSTIC_ERROR,
+            LED_GYRO_ASSIST_ON,
             LED_CUBE_IN_VIEW,
             LED_CUBE_ALIGNED,
             LED_CUBE_IN_POSSESSION
+            // Highest priority
     };
 
     private FrcRevBlinkin ledStrip;
@@ -87,6 +89,16 @@ public class LEDIndicator
     public void indicateNotAlignedToCube()
     {
         turnOffPattern(LED_CUBE_ALIGNED);
+    }
+
+    public void indicateGyroAssistOn()
+    {
+        ledStrip.setPatternWithPriority(LED_GYRO_ASSIST_ON);
+    }
+
+    public void indicateGyroAssistOff()
+    {
+        turnOffPattern(LED_GYRO_ASSIST_ON);
     }
 
     public void indicateDiagnosticError()
