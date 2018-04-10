@@ -54,18 +54,29 @@ public class FrcDisabled implements TrcRobot.RobotMode
         switch (state)
         {
             case START:
+                //
+                // Opening trace log at the start of Disabled mode to avoid the 0.5 second penalty to autonomous
+                // start. However, the trace log file will not have the proper name with FMS info since valid FMS
+                // info cannot be obtained at this time. Therefore, we have this elaborate state machine to keep
+                // track of what run mode we are in so we can get the FMS info at appropriate time and rename the
+                // trace log file to its proper name when closing.
+                //
                 robot.openTraceLog();
                 state = State.ENTER_RUN_MODE;
                 break;
 
             case EXIT_RUN_MODE:
+                //
                 // Exiting test or practice mode, close the log with appropriate mode name.
+                //
                 robot.closeTraceLog(prevMode.toString() + ".log");
                 state = State.START;
                 break;
 
             case EXIT_TELEOP_MODE:
+                //
                 // Exiting competition, close the log with proper FMS info as the log file name.
+                //
                 robot.closeTraceLog(
                     String.format("%s_%s%03d.log", robot.eventName, robot.matchType, robot.matchNumber));
                 state = State.START;
@@ -84,13 +95,17 @@ public class FrcDisabled implements TrcRobot.RobotMode
             case ENTER_RUN_MODE:
                 if (nextMode == RunMode.AUTO_MODE && robot.ds.isFMSAttached())
                 {
+                    //
                     // Going into competition match, get FMS info.
+                    //
                     robot.getFMSInfo();
                     state = State.EXIT_TELEOP_MODE;
                 }
                 else
                 {
+                    //
                     // Going into test or practice mode.
+                    //
                     state = State.EXIT_RUN_MODE;
                 }
                 break;
