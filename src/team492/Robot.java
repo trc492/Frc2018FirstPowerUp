@@ -395,7 +395,7 @@ public class Robot extends FrcRobotBase
             new FrcDisabled(this));
     }   //robotInit
 
-    public void robotStartMode(RunMode runMode)
+    public void robotStartMode(RunMode runMode, RunMode prevMode)
     {
         final String funcName = "robotStartMode";
 
@@ -455,7 +455,7 @@ public class Robot extends FrcRobotBase
         }
     }   //robotStartMode
 
-    public void robotStopMode(RunMode runMode)
+    public void robotStopMode(RunMode runMode, RunMode nextMode)
     {
         final String funcName = "robotStopMode";
 

@@ -64,13 +64,19 @@ public abstract class FrcRobotBase extends RobotBase
 
     /**
      * This method is called to prepare the robot before a robot mode is about to start.
+     *
+     * @param runMode specifies the current run mode.
+     * @param prevMode specifies the previous run mode.
      */
-    public abstract void robotStartMode(RunMode runMode);
+    public abstract void robotStartMode(RunMode runMode, RunMode prevMode);
 
     /**
      * This method is called to prepare the robot right after a robot mode has been stopped.
+     *
+     * @param runMode specifies the current run mode.
+     * @param nextMode specifies the next run mode.
      */
-    public abstract void robotStopMode(RunMode runMode);
+    public abstract void robotStopMode(RunMode runMode, RunMode nextMode);
 
     public TrcDbgTrace globalTracer = TrcDbgTrace.getGlobalTracer();
 
@@ -305,13 +311,13 @@ public abstract class FrcRobotBase extends RobotBase
                     if (debugEnabled)
                     {
                         startTime = TrcUtil.getCurrentTime();
-                        robotStopMode(prevMode);
+                        robotStopMode(prevMode, currMode);
                         elapsedTime = TrcUtil.getCurrentTime() - startTime;
                         globalTracer.traceInfo(funcName, "%s.robotStopMode took %.3fs", prevMode, elapsedTime);
                     }
                     else
                     {
-                        robotStopMode(prevMode);
+                        robotStopMode(prevMode, currMode);
                     }
                 }
 
@@ -323,13 +329,13 @@ public abstract class FrcRobotBase extends RobotBase
                     if (debugEnabled)
                     {
                         startTime = TrcUtil.getCurrentTime();
-                        robotStartMode(currMode);
+                        robotStartMode(currMode, prevMode);
                         elapsedTime = TrcUtil.getCurrentTime() - startTime;
                         globalTracer.traceInfo(funcName, "%s.robotStartMode took %.3fs", currMode, elapsedTime);
                     }
                     else
                     {
-                        robotStartMode(currMode);
+                        robotStartMode(currMode, prevMode);
                     }
                     //
                     // Start current mode.
