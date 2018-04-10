@@ -155,8 +155,6 @@ public class FrcAuto implements TrcRobot.RobotMode
         final String funcName = moduleName + ".startMode";
 
         robot.getGameInfo();
-        robot.getFMSInfo();
-
         robot.globalTracer.traceInfo(funcName, "%s_%s%03d (%s%d) [FMSConnected=%b] msg=%s",
             robot.eventName, robot.matchType, robot.matchNumber, robot.alliance.toString(), robot.location,
             robot.ds.isFMSAttached(), robot.gameSpecificMessage);
