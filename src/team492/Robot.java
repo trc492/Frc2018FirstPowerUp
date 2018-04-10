@@ -479,7 +479,7 @@ public class Robot extends FrcRobotBase
                 if (channelName != null)
                 {
                     globalTracer.traceInfo(
-                        funcName, "[PDP-%02d] %s: EnergyUsed=%f Wh", i, channelName, pdp.getEnergyUsed(i));
+                        funcName, "[PDP-%02d] %s: EnergyUsed=%.3f Wh", i, channelName, pdp.getEnergyUsed(i));
                 }
             }
 

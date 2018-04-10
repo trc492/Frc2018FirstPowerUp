@@ -23,10 +23,13 @@
 package team492;
 
 import trclib.TrcRobot;
+import trclib.TrcUtil;
 import trclib.TrcRobot.RunMode;
 
 public class FrcDisabled implements TrcRobot.RobotMode
 {
+    private static final String moduleName = "FrcDisabled";
+
     private enum State
     {
         START,
@@ -51,6 +54,8 @@ public class FrcDisabled implements TrcRobot.RobotMode
     @Override
     public void startMode(RunMode prevMode)
     {
+        final String funcName = moduleName + ".startMode";
+
         switch (state)
         {
             case START:
@@ -61,7 +66,12 @@ public class FrcDisabled implements TrcRobot.RobotMode
                 // track of what run mode we are in so we can get the FMS info at appropriate time and rename the
                 // trace log file to its proper name when closing.
                 //
+                double startTime = TrcUtil.getCurrentTime();
                 robot.openTraceLog();
+                robot.setTraceLogEnabled(true);
+                robot.globalTracer.traceInfo(
+                    funcName, "OpenTraceLog elapsed time = %.3f", TrcUtil.getCurrentTime() - startTime);
+                robot.setTraceLogEnabled(false);
                 state = State.ENTER_RUN_MODE;
                 break;
 
@@ -96,7 +106,7 @@ public class FrcDisabled implements TrcRobot.RobotMode
                 if (nextMode == RunMode.AUTO_MODE && robot.ds.isFMSAttached())
                 {
                     //
-                    // Going into competition match, get FMS info.
+                    // Entering competition match, get FMS info.
                     //
                     robot.getFMSInfo();
                     state = State.EXIT_TELEOP_MODE;
@@ -104,7 +114,7 @@ public class FrcDisabled implements TrcRobot.RobotMode
                 else
                 {
                     //
-                    // Going into test or practice mode.
+                    // Entering test or practice mode.
                     //
                     state = State.EXIT_RUN_MODE;
                 }
