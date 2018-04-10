@@ -195,17 +195,51 @@ public class TrcDbgTrace
     }   //openTraceLog
 
     /**
-     * This method closes the trace log file.
+     * This method closes the trace log file. If newName is not null, the log will be renamed to the new name.
+     *
+     * @param newName specifies the new log file name, null if none given.
      */
-    public void closeTraceLog()
+    public void closeTraceLog(String newName)
     {
+        final String funcName = "closeTraceLog";
+
         if (traceLog != null)
         {
-            traceLog.close();
+            if (newName != null)
+            {
+                try
+                {
+                    String prefix = traceLogName.substring(0, traceLogName.indexOf('!'));
+                    String newFile = String.format("%s!%s", prefix, newName);
+                    traceLogEnabled = true;
+                    globalTracer.traceInfo(funcName, "Rename: %s -> %s", traceLogName, newFile);
+                    traceLog.close();
+                    File file = new File(traceLogName);
+                    file.renameTo(new File(newFile));
+                }
+                catch(Exception e)
+                {
+                    // We failed to rename the file, close the log anyway.
+                    traceLog.close();
+                }
+            }
+            else
+            {
+                traceLog.close();
+            }
+
             traceLog = null;
             traceLogName = null;
             traceLogEnabled = false;
         }
+    }   //closeTraceLog
+
+    /**
+     * This method closes the trace log file.
+     */
+    public void closeTraceLog()
+    {
+        closeTraceLog(null);
     }   //closeTraceLog
 
     /**

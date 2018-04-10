@@ -244,6 +244,7 @@ public abstract class FrcRobotBase extends RobotBase
             if (currMode != prevMode)
             {
                 globalTracer.traceInfo(funcName, "*** Transitioning from %s to %s ***", prevMode, currMode);
+                modeStartTime = TrcUtil.getCurrentTime();
                 //
                 // Detected mode transition.
                 //
@@ -278,19 +279,19 @@ public abstract class FrcRobotBase extends RobotBase
 
                     if (prevMode == RunMode.DISABLED_MODE && disabledMode != null)
                     {
-                        disabledMode.stopMode();
+                        disabledMode.stopMode(currMode);
                     }
                     else if (prevMode == RunMode.TEST_MODE && testMode != null)
                     {
-                        testMode.stopMode();
+                        testMode.stopMode(currMode);
                     }
                     else if (prevMode == RunMode.AUTO_MODE && autoMode != null)
                     {
-                        autoMode.stopMode();
+                        autoMode.stopMode(currMode);
                     }
                     else if (prevMode == RunMode.TELEOP_MODE && teleOpMode != null)
                     {
-                        teleOpMode.stopMode();
+                        teleOpMode.stopMode(currMode);
                     }
 
                     if (debugEnabled)
@@ -316,7 +317,6 @@ public abstract class FrcRobotBase extends RobotBase
 
                 if (currMode != RunMode.INVALID_MODE)
                 {
-                    modeStartTime = TrcUtil.getCurrentTime();
                     //
                     // Run robotStartMode for the current mode.
                     //
@@ -344,7 +344,7 @@ public abstract class FrcRobotBase extends RobotBase
                         liveWindowEnabled = false;
                         if (disabledMode != null)
                         {
-                            disabledMode.startMode();
+                            disabledMode.startMode(prevMode);
                         }
                     }
                     else if (currMode == RunMode.TEST_MODE)
@@ -352,7 +352,7 @@ public abstract class FrcRobotBase extends RobotBase
                         liveWindowEnabled = true;
                         if (testMode != null)
                         {
-                            testMode.startMode();
+                            testMode.startMode(prevMode);
                         }
                     }
                     else if (currMode == RunMode.AUTO_MODE)
@@ -360,7 +360,7 @@ public abstract class FrcRobotBase extends RobotBase
                         liveWindowEnabled = false;
                         if (autoMode != null)
                         {
-                            autoMode.startMode();
+                            autoMode.startMode(prevMode);
                         }
                     }
                     else if (currMode == RunMode.TELEOP_MODE)
@@ -368,7 +368,7 @@ public abstract class FrcRobotBase extends RobotBase
                         liveWindowEnabled = false;
                         if (teleOpMode != null)
                         {
-                            teleOpMode.startMode();
+                            teleOpMode.startMode(prevMode);
                         }
                     }
                     LiveWindow.setEnabled(liveWindowEnabled);

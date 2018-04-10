@@ -515,11 +515,11 @@ public class Robot extends FrcRobotBase
         }
     }
 
-    public void closeTraceLog()
+    public void closeTraceLog(String newName)
     {
         if (traceLogOpened)
         {
-            globalTracer.closeTraceLog();
+            globalTracer.closeTraceLog(newName);
             traceLogOpened = false;
         }
     }

@@ -28,6 +28,7 @@ import frclib.FrcChoiceMenu;
 import hallib.HalDashboard;
 import team492.RobotInfo.Position;
 import trclib.TrcRobot;
+import trclib.TrcRobot.RunMode;
 import trclib.TrcTaskMgr;
 
 public class FrcAuto implements TrcRobot.RobotMode
@@ -149,7 +150,7 @@ public class FrcAuto implements TrcRobot.RobotMode
     //
 
     @Override
-    public void startMode()
+    public void startMode(RunMode prevMode)
     {
         final String funcName = moduleName + ".startMode";
 
@@ -279,7 +280,7 @@ public class FrcAuto implements TrcRobot.RobotMode
     } // startMode
 
     @Override
-    public void stopMode()
+    public void stopMode(RunMode nextMode)
     {
         TrcTaskMgr.getInstance().printTaskPerformanceMetrics(robot.globalTracer);
     } // stopMode

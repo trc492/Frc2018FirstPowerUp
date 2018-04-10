@@ -53,7 +53,7 @@ public class FrcTeleOp implements TrcRobot.RobotMode
     //
 
     @Override
-    public void startMode()
+    public void startMode(RunMode prevMode)
     {
         //
         // Configure joysticks.
@@ -69,7 +69,7 @@ public class FrcTeleOp implements TrcRobot.RobotMode
     } // startMode
 
     @Override
-    public void stopMode()
+    public void stopMode(RunMode nextMode)
     {
     } // stopMode
 

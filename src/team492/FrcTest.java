@@ -30,6 +30,7 @@ import frclib.FrcJoystick;
 import team492.PixyVision.TargetInfo;
 import trclib.TrcEvent;
 import trclib.TrcRevBlinkin.LEDPattern;
+import trclib.TrcRobot.RunMode;
 import trclib.TrcStateMachine;
 import trclib.TrcTimer;
 
@@ -105,12 +106,12 @@ public class FrcTest extends FrcTeleOp
     //
 
     @Override
-    public void startMode()
+    public void startMode(RunMode prevMode)
     {
         //
         // Call TeleOp startMode.
         //
-        super.startMode();
+        super.startMode(prevMode);
 
         //
         // Retrieve menu choice values.
@@ -182,12 +183,12 @@ public class FrcTest extends FrcTeleOp
     } // startMode
 
     @Override
-    public void stopMode()
+    public void stopMode(RunMode nextMode)
     {
         //
         // Call TeleOp stopMode.
         //
-        super.stopMode();
+        super.stopMode(nextMode);
 
         if (robot.leftSonarArray != null) robot.leftSonarArray.stopRanging();
         if (robot.rightSonarArray != null) robot.rightSonarArray.stopRanging();
