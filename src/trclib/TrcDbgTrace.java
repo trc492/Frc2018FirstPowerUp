@@ -94,7 +94,6 @@ public class TrcDbgTrace
     private boolean traceEnabled;
     private TraceLevel traceLevel;
     private MsgLevel msgLevel;
-    private double nextTraceTime;
     private String traceLogName = null;
     private PrintStream traceLog = null;
     private boolean traceLogEnabled = false;
@@ -111,7 +110,6 @@ public class TrcDbgTrace
     {
         this.instanceName = instanceName;
         setDbgTraceConfig(traceEnabled, traceLevel, msgLevel);
-        this.nextTraceTime = TrcUtil.getCurrentTime();
     }   //TrcDbgTrace
 
     /**
@@ -405,21 +403,18 @@ public class TrcDbgTrace
     }   //traceVerbose
 
     /**
-     * This method is called to print a message only if the given time interval has been passed since the last
+     * This method is called to print a message only if the given interval timer has expired since the last
      * periodic message. This is useful to print out periodic status without overwhelming the debug console.
      *
      * @param funcName specifies the calling method name.
-     * @param traceInterval specifies the tracing interval.
+     * @param timer specifies the interval timer.
      * @param format specifies the format string of the message.
      * @param args specifies the message arguments.
      */
-    public void traceInfoAtInterval(final String funcName, double traceInterval, final String format, Object... args)
+    public void traceInfoAtInterval(final String funcName, TrcIntervalTimer timer, final String format, Object... args)
     {
-        double currTime = TrcUtil.getCurrentTime();
-
-        if (currTime >= nextTraceTime)
+        if (timer.hasExpired())
         {
-            nextTraceTime = currTime + traceInterval;
             traceMsg(funcName, MsgLevel.INFO, format, args);
         }
     }   //traceInfoAtInterval
