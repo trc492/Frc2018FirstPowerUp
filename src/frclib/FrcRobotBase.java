@@ -249,15 +249,11 @@ public abstract class FrcRobotBase extends RobotBase
 
             if (currMode != prevMode)
             {
-                globalTracer.traceInfo(funcName, "*** Transitioning from %s to %s ***", prevMode, currMode);
-                modeStartTime = TrcUtil.getCurrentTime();
                 //
                 // Detected mode transition.
                 //
-                if (debugEnabled)
-                {
-                    dbgTrace.traceInfo(funcName, "Mode Transition: %s->%s.", prevMode, currMode);
-                }
+                globalTracer.traceInfo(funcName, "*** Transitioning from %s to %s ***", prevMode, currMode);
+                modeStartTime = TrcUtil.getCurrentTime();
 
                 if (prevMode != RunMode.INVALID_MODE)
                 {
@@ -269,7 +265,7 @@ public abstract class FrcRobotBase extends RobotBase
                         startTime = TrcUtil.getCurrentTime();
                         taskMgr.executeTaskType(TrcTaskMgr.TaskType.STOP_TASK, prevMode);
                         elapsedTime = TrcUtil.getCurrentTime() - startTime;
-                        globalTracer.traceInfo(funcName, "%s.stopTask took %.3fs", prevMode, elapsedTime);
+                        dbgTrace.traceInfo(funcName, "%s.stopTask took %.3fs", prevMode, elapsedTime);
                     }
                     else
                     {
@@ -303,7 +299,7 @@ public abstract class FrcRobotBase extends RobotBase
                     if (debugEnabled)
                     {
                         elapsedTime = TrcUtil.getCurrentTime() - startTime;
-                        globalTracer.traceInfo(funcName, "%s.stopMode took %.3fs", prevMode, elapsedTime);
+                        dbgTrace.traceInfo(funcName, "%s.stopMode took %.3fs", prevMode, elapsedTime);
                     }
                     //
                     // Run robotStopMode for the previous mode.
@@ -313,7 +309,7 @@ public abstract class FrcRobotBase extends RobotBase
                         startTime = TrcUtil.getCurrentTime();
                         robotStopMode(prevMode, currMode);
                         elapsedTime = TrcUtil.getCurrentTime() - startTime;
-                        globalTracer.traceInfo(funcName, "%s.robotStopMode took %.3fs", prevMode, elapsedTime);
+                        dbgTrace.traceInfo(funcName, "%s.robotStopMode took %.3fs", prevMode, elapsedTime);
                     }
                     else
                     {
@@ -331,7 +327,7 @@ public abstract class FrcRobotBase extends RobotBase
                         startTime = TrcUtil.getCurrentTime();
                         robotStartMode(currMode, prevMode);
                         elapsedTime = TrcUtil.getCurrentTime() - startTime;
-                        globalTracer.traceInfo(funcName, "%s.robotStartMode took %.3fs", currMode, elapsedTime);
+                        dbgTrace.traceInfo(funcName, "%s.robotStartMode took %.3fs", currMode, elapsedTime);
                     }
                     else
                     {
@@ -382,7 +378,7 @@ public abstract class FrcRobotBase extends RobotBase
                     if (debugEnabled)
                     {
                         elapsedTime = TrcUtil.getCurrentTime() - startTime;
-                        globalTracer.traceInfo(funcName, "%s.startMode took %.3fs", currMode, elapsedTime);
+                        dbgTrace.traceInfo(funcName, "%s.startMode took %.3fs", currMode, elapsedTime);
                     }
                     //
                     // Execute all start tasks for current mode.
@@ -392,7 +388,7 @@ public abstract class FrcRobotBase extends RobotBase
                         startTime = TrcUtil.getCurrentTime();
                         taskMgr.executeTaskType(TrcTaskMgr.TaskType.START_TASK, currMode);
                         elapsedTime = TrcUtil.getCurrentTime() - startTime;
-                        globalTracer.traceInfo(funcName, "%s.startTask took %.3fs", currMode, elapsedTime);
+                        dbgTrace.traceInfo(funcName, "%s.startTask took %.3fs", currMode, elapsedTime);
                     }
                     else
                     {
@@ -414,7 +410,7 @@ public abstract class FrcRobotBase extends RobotBase
             elapsedTime = TrcUtil.getCurrentTime() - startTime;
             if (elapsedTime > taskTimeThreshold)
             {
-                globalTracer.traceWarn(funcName, "%s.preContinuousTasks take too long (%.3fs)",
+                globalTracer.traceWarn(funcName, "%s.preContinuousTasks took too long (%.3fs)",
                     currMode, elapsedTime);
             }
             //
@@ -427,7 +423,7 @@ public abstract class FrcRobotBase extends RobotBase
                 elapsedTime = TrcUtil.getCurrentTime() - startTime;
                 if (elapsedTime > taskTimeThreshold)
                 {
-                    globalTracer.traceWarn(funcName, "%s.prePeriodicTasks take too long (%.3fs)",
+                    globalTracer.traceWarn(funcName, "%s.prePeriodicTasks took too long (%.3fs)",
                         currMode, elapsedTime);
                 }
             }
@@ -454,7 +450,7 @@ public abstract class FrcRobotBase extends RobotBase
             elapsedTime = TrcUtil.getCurrentTime() - startTime;
             if (elapsedTime > taskTimeThreshold)
             {
-                globalTracer.traceWarn(funcName, "%s.runContinuous takes too long (%.3fs)",
+                globalTracer.traceWarn(funcName, "%s.runContinuous took too long (%.3fs)",
                     currMode, elapsedTime);
             }
             //
@@ -498,7 +494,7 @@ public abstract class FrcRobotBase extends RobotBase
                 elapsedTime = TrcUtil.getCurrentTime() - startTime;
                 if (elapsedTime > taskTimeThreshold)
                 {
-                    globalTracer.traceWarn(funcName, "%s.runPeriodic takes too long (%.3fs)",
+                    globalTracer.traceWarn(funcName, "%s.runPeriodic took too long (%.3fs)",
                         currMode, elapsedTime);
                 }
             }
@@ -510,7 +506,7 @@ public abstract class FrcRobotBase extends RobotBase
             elapsedTime = TrcUtil.getCurrentTime() - startTime;
             if (elapsedTime > taskTimeThreshold)
             {
-                globalTracer.traceWarn(funcName, "%s.postContinuousTasks take too long (%.3fs)",
+                globalTracer.traceWarn(funcName, "%s.postContinuousTasks took too long (%.3fs)",
                     currMode, elapsedTime);
             }
             //
@@ -523,7 +519,7 @@ public abstract class FrcRobotBase extends RobotBase
                 elapsedTime = TrcUtil.getCurrentTime() - startTime;
                 if (elapsedTime > taskTimeThreshold)
                 {
-                    globalTracer.traceWarn(funcName, "%s.postPeriodicTask takes too long (%.3fs)",
+                    globalTracer.traceWarn(funcName, "%s.postPeriodicTask took too long (%.3fs)",
                         currMode, elapsedTime);
                 }
             }
@@ -537,7 +533,7 @@ public abstract class FrcRobotBase extends RobotBase
             elapsedTime = TrcUtil.getCurrentTime() - startTime;
             if (elapsedTime > taskTimeThreshold)
             {
-                globalTracer.traceWarn(funcName, "%s.updates take too long (%.3fs)",
+                globalTracer.traceWarn(funcName, "%s.updates took too long (%.3fs)",
                     currMode, elapsedTime);
             }
 
@@ -553,7 +549,7 @@ public abstract class FrcRobotBase extends RobotBase
             double timeSliceUsed = TrcUtil.getCurrentTime() - timeSliceStart;
             if (timeSliceUsed > timesliceThreshold)
             {
-                globalTracer.traceWarn(funcName, "%s takes too long (%.3fs)", currMode, timeSliceUsed);
+                globalTracer.traceWarn(funcName, "%s took too long (%.3fs)", currMode, timeSliceUsed);
             }
         }
     }   //startCompetition
