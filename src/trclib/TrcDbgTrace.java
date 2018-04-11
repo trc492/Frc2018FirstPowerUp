@@ -353,7 +353,7 @@ public class TrcDbgTrace
      */
     public void traceFatal(final String funcName, final String format, Object... args)
     {
-        traceMsg(funcName, MsgLevel.FATAL, 0.0, format, args);
+        traceMsg(funcName, MsgLevel.FATAL, format, args);
     }   //traceFatal
 
     /**
@@ -365,7 +365,7 @@ public class TrcDbgTrace
      */
     public void traceErr(final String funcName, final String format, Object... args)
     {
-        traceMsg(funcName, MsgLevel.ERR, 0.0, format, args);
+        traceMsg(funcName, MsgLevel.ERR, format, args);
     }   //traceErr
 
     /**
@@ -377,7 +377,7 @@ public class TrcDbgTrace
      */
     public void traceWarn(final String funcName, final String format, Object... args)
     {
-        traceMsg(funcName, MsgLevel.WARN, 0.0, format, args);
+        traceMsg(funcName, MsgLevel.WARN, format, args);
     }   //traceWarn
 
     /**
@@ -389,7 +389,7 @@ public class TrcDbgTrace
      */
     public void traceInfo(final String funcName, final String format, Object... args)
     {
-        traceMsg(funcName, MsgLevel.INFO, 0.0, format, args);
+        traceMsg(funcName, MsgLevel.INFO, format, args);
     }   //traceInfo
 
     /**
@@ -401,7 +401,7 @@ public class TrcDbgTrace
      */
     public void traceVerbose(final String funcName, final String format, Object... args)
     {
-        traceMsg(funcName, MsgLevel.VERBOSE, 0.0, format, args);
+        traceMsg(funcName, MsgLevel.VERBOSE, format, args);
     }   //traceVerbose
 
     /**
@@ -409,13 +409,20 @@ public class TrcDbgTrace
      * periodic message. This is useful to print out periodic status without overwhelming the debug console.
      *
      * @param funcName specifies the calling method name.
+     * @param traceInterval specifies the tracing interval.
      * @param format specifies the format string of the message.
      * @param args specifies the message arguments.
      */
-    public void tracePeriodic(final String funcName, double traceInterval, final String format, Object... args)
+    public void traceInfoAtInterval(final String funcName, double traceInterval, final String format, Object... args)
     {
-        traceMsg(funcName, MsgLevel.INFO, traceInterval, format, args);
-    }   //tracePeriodic
+        double currTime = TrcUtil.getCurrentTime();
+
+        if (currTime >= nextTraceTime)
+        {
+            nextTraceTime = currTime + traceInterval;
+            traceMsg(funcName, MsgLevel.INFO, format, args);
+        }
+    }   //traceInfoAtInterval
 
     /**
      * This method prints a debug message to the debug console.
@@ -433,26 +440,19 @@ public class TrcDbgTrace
      *
      * @param funcName specifies the calling method name.
      * @param level specifies the message level.
-     * @param traceInterval specifies the tracing interval. If not periodic, this must be set to zero.
      * @param format specifies the format string of the message.
      * @param args specifies the message arguments.
      */
-    private void traceMsg(
-            final String funcName, MsgLevel level, double traceInterval, final String format, Object... args)
+    private void traceMsg(final String funcName, MsgLevel level, final String format, Object... args)
     {
         if (level.getValue() <= msgLevel.getValue())
         {
-            double currTime = TrcUtil.getCurrentTime();
-            if (currTime >= nextTraceTime)
+            String msg = msgPrefix(funcName, level) + String.format(format, args);
+            HalDbgLog.msg(level, msg + "\n");
+            if (traceLogEnabled)
             {
-                nextTraceTime = currTime + traceInterval;
-                String msg = msgPrefix(funcName, level) + String.format(format, args);
-                HalDbgLog.msg(level, msg + "\n");
-                if (traceLogEnabled)
-                {
-                    traceLog.print(msg + "\r\n");
-                    traceLog.flush();
-                }
+                traceLog.print(msg + "\r\n");
+                traceLog.flush();
             }
         }
     }   //traceMsg
