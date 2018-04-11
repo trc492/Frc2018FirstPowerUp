@@ -494,7 +494,11 @@ public class Robot extends FrcRobotBase
 
     public void getFMSInfo()
     {
-        eventName = ds.isFMSAttached()? ds.getEventName(): "Unknown";
+        eventName = ds.getEventName();
+        if (eventName.length() == 0)
+        {
+            eventName = "Unknown";
+        }
         matchType = ds.getMatchType();
         matchNumber = ds.getMatchNumber();
     }
@@ -506,12 +510,23 @@ public class Robot extends FrcRobotBase
         gameSpecificMessage = ds.getGameSpecificMessage();
     }
 
-    public void openTraceLog()
+    public void openTraceLog(String defaultName)
     {
         if (USE_TRACELOG && !traceLogOpened)
         {
-            traceLogOpened = globalTracer.openTraceLog(
-                "/home/lvuser/tracelog", String.format("%s_%s%03d", eventName, matchType, matchNumber));
+            String fileName;
+
+            if (ds.isFMSAttached())
+            {
+                getFMSInfo();
+                fileName = String.format("%s_%s%03d", eventName, matchType, matchNumber);
+            }
+            else
+            {
+                fileName = defaultName;
+            }
+
+            traceLogOpened = globalTracer.openTraceLog("/home/lvuser/tracelog", fileName);
         }
     }
 

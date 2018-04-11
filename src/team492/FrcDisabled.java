@@ -58,6 +58,29 @@ public class FrcDisabled implements TrcRobot.RobotMode
 
         switch (state)
         {
+            case EXIT_RUN_MODE:
+            case EXIT_TELEOP_MODE:
+                if (state == State.EXIT_TELEOP_MODE)
+                {
+                    //
+                    // Exiting competition, close the log with proper FMS info as the log file name.
+                    //
+                    robot.closeTraceLog(
+                        String.format("%s_%s%03d", robot.eventName, robot.matchType, robot.matchNumber));
+                }
+                else
+                {
+                    //
+                    // Exiting test or practice mode, close the log with appropriate mode name.
+                    //
+                    robot.closeTraceLog(prevMode.toString());
+                }
+                state = State.START;
+                //
+                // Let it fall through to the START state so it can open a new log file for the next run which
+                // may not happen if the robot will be turned off. In that case, we will leave an orphaned Temp.log
+                // file. That's okay. Just want to explain why the folder will be littered with Temp.log files.
+                //
             case START:
                 //
                 // Opening trace log at the start of Disabled mode to avoid the 0.5 second penalty to autonomous
@@ -67,29 +90,12 @@ public class FrcDisabled implements TrcRobot.RobotMode
                 // trace log file to its proper name when closing.
                 //
                 double startTime = TrcUtil.getCurrentTime();
-                robot.openTraceLog();
+                robot.openTraceLog("Temp");
                 robot.setTraceLogEnabled(true);
                 robot.globalTracer.traceInfo(
                     funcName, "OpenTraceLog elapsed time = %.3f", TrcUtil.getCurrentTime() - startTime);
                 robot.setTraceLogEnabled(false);
                 state = State.ENTER_RUN_MODE;
-                break;
-
-            case EXIT_RUN_MODE:
-                //
-                // Exiting test or practice mode, close the log with appropriate mode name.
-                //
-                robot.closeTraceLog(prevMode.toString() + ".log");
-                state = State.START;
-                break;
-
-            case EXIT_TELEOP_MODE:
-                //
-                // Exiting competition, close the log with proper FMS info as the log file name.
-                //
-                robot.closeTraceLog(
-                    String.format("%s_%s%03d.log", robot.eventName, robot.matchType, robot.matchNumber));
-                state = State.START;
                 break;
 
             default:

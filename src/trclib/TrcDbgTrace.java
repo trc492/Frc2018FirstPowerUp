@@ -25,9 +25,6 @@ package trclib;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.PrintStream;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Locale;
 
 import hallib.HalDbgLog;
 
@@ -153,7 +150,7 @@ public class TrcDbgTrace
     /**
      * This method opens a log file for writing all the trace messages to it.
      *
-     * @param traceLogName specifies the trace log file name.
+     * @param traceLogName specifies the full trace log file path name.
      * @return true if log file is successfully opened, false if it failed.
      */
     public boolean openTraceLog(final String traceLogName)
@@ -162,13 +159,13 @@ public class TrcDbgTrace
 
         try
         {
-            traceLog = new PrintStream(new File(traceLogName));
             this.traceLogName = traceLogName;
+            traceLog = new PrintStream(new File(traceLogName));
         }
         catch (FileNotFoundException e)
         {
-            traceLog = null;
             this.traceLogName = null;
+            traceLog = null;
             success = false;
         }
         traceLogEnabled = false;
@@ -181,17 +178,28 @@ public class TrcDbgTrace
      * folder. The file name will be formed by concatenating the date-time stamp with the specified file name.
      *
      * @param folderPath specifies the folder path.
-     * @param fileName specifies the file name.
+     * @param fileName specifies the file name, null if none provided.
      * @return true if log file is successfully opened, false if it failed.
      */
     public boolean openTraceLog(final String folderPath, final String fileName)
     {
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd@HHmmss", Locale.US);
-        String logFilePath = folderPath + File.separator + dateFormat.format(new Date()) + "!" + fileName + ".log";
+        //
+        // Create the folder if it doesn't exist.
+        //
         File folder = new File(folderPath);
         folder.mkdir();
+        //
+        // Create full log file path.
+        //
+        String logFileName = folderPath + File.separator + TrcUtil.getTimestamp();
 
-        return openTraceLog(logFilePath);
+        if (fileName != null)
+        {
+            logFileName += "!" + fileName;
+        }
+        logFileName += ".log";
+
+        return openTraceLog(logFileName);
     }   //openTraceLog
 
     /**
@@ -209,8 +217,8 @@ public class TrcDbgTrace
             {
                 try
                 {
-                    String prefix = traceLogName.substring(0, traceLogName.indexOf('!'));
-                    String newFile = String.format("%s!%s", prefix, newName);
+                    String path = traceLogName.substring(0, traceLogName.lastIndexOf(File.separatorChar) + 1);
+                    String newFile = path + TrcUtil.getTimestamp() + "!" + newName + ".log";
                     traceLogEnabled = true;
                     globalTracer.traceInfo(funcName, "Rename: %s -> %s", traceLogName, newFile);
                     traceLog.close();
