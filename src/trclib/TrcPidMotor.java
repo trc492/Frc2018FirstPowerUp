@@ -628,7 +628,7 @@ public class TrcPidMotor
 
                         if (msgTracer != null)
                         {
-                            msgTracer.traceInfo(funcName, "Motor stalled");
+                            msgTracer.traceInfo(funcName, "%s: stalled", instanceName);
                         }
                     }
                 }

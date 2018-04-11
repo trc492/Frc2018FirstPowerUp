@@ -743,7 +743,7 @@ public class TrcPidDrive
 
             if (msgTracer != null)
             {
-                msgTracer.traceInfo(funcName, "Stalled=%s, Expired=%s", stalled, expired);
+                msgTracer.traceInfo(funcName, "%s: Stalled=%s, Expired=%s", instanceName, stalled, expired);
             }
         }
 
