@@ -83,15 +83,15 @@ public abstract class FrcRobotBase extends RobotBase
     private TrcTaskMgr taskMgr = new TrcTaskMgr();
     private HalDashboard dashboard = new HalDashboard();
 
-    private static FrcRobotBase instance;
+    private static FrcRobotBase instance = null;
+    private static double modeStartTime = 0.0;
+    private static long loopCounter = 0;
+
     private final String progName;
     private RobotMode teleOpMode = null;
     private RobotMode autoMode = null;
     private RobotMode testMode = null;
     private RobotMode disabledMode = null;
-    private static double modeStartTime = 0.0;
-    private static double modeElapsedTime = 0.0;
-    private static long loopCounter = 0;
     private RunMode prevMode = RunMode.INVALID_MODE;
     private RunMode currMode = RunMode.INVALID_MODE;
 
@@ -109,8 +109,15 @@ public abstract class FrcRobotBase extends RobotBase
                 new TrcDbgTrace(moduleName, tracingEnabled, traceLevel, msgLevel);
         }
 
-        FrcRobotBase.instance = this;
+        if (FrcRobotBase.instance != null)
+        {
+            throw new RuntimeException("FrcRobotBase has already been instantiated.");
+        }
+
         this.progName = progName;
+        FrcRobotBase.instance = this;
+        // Initialize modeStartTime just in case somebody's calling getModeElapsedTime before it's initialized.
+        FrcRobotBase.modeStartTime = TrcUtil.getCurrentTime();
         dashboard.clearDisplay();
     }   //FrcRobotBase
 
@@ -134,8 +141,7 @@ public abstract class FrcRobotBase extends RobotBase
      */
     public static double getModeElapsedTime()
     {
-        modeElapsedTime = TrcUtil.getCurrentTime() - modeStartTime;
-        return modeElapsedTime;
+        return TrcUtil.getCurrentTime() - modeStartTime;
     }   //getModeElapsedTime
 
     /**
@@ -189,7 +195,7 @@ public abstract class FrcRobotBase extends RobotBase
     {
         final String funcName = "startCompetition";
 
-        System.out.printf(
+        globalTracer.tracePrintf(
             HalDbgLog.ESC_PREFIX + HalDbgLog.SGR_FG_BLACK +
             HalDbgLog.ESC_SEP + HalDbgLog.SGR_BG_WHITE +
             HalDbgLog.ESC_SUFFIX +
@@ -400,7 +406,7 @@ public abstract class FrcRobotBase extends RobotBase
             //
             // Run the time slice.
             //
-            modeElapsedTime = TrcUtil.getCurrentTime() - modeStartTime;
+            double modeElapsedTime = TrcUtil.getCurrentTime() - modeStartTime;
             boolean periodReady = nextPeriodReady();
             //
             // PreContinuous
@@ -525,22 +531,28 @@ public abstract class FrcRobotBase extends RobotBase
             }
 
             startTime = TrcUtil.getCurrentTime();
+
             SmartDashboard.updateValues();
+
             if (liveWindowEnabled)
             {
                 LiveWindow.updateValues();
             }
+
+            if (dashboardEnabled && periodReady)
+            {
+                //
+                // Only update dashboard running time at periodic rate.
+                //
+                dashboard.displayPrintf(0, "[%3d:%06.3f] %s",
+                    (int)(modeElapsedTime/60), modeElapsedTime%60, currMode);
+            }
+
             elapsedTime = TrcUtil.getCurrentTime() - startTime;
             if (elapsedTime > taskTimeThreshold)
             {
                 globalTracer.traceWarn(funcName, "%s.updates took too long (%.3fs)",
                     currMode, elapsedTime);
-            }
-
-            if (dashboardEnabled)
-            {
-                dashboard.displayPrintf(0, "[%3d:%06.3f] %s",
-                    (int)(modeElapsedTime/60), modeElapsedTime%60, currMode);
             }
 
             //
