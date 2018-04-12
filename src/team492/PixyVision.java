@@ -114,9 +114,10 @@ public class PixyVision
         return pixyCamera.isEnabled();
     }   //isEnabled
 
-    public boolean isTaskTerminatedAbnormally() {
+    public boolean isTaskTerminatedAbnormally()
+    {
         return pixyCamera.isTaskTerminatedAbnormally();
-    } //isTaskTerminatedAbnormally
+    }   //isTaskTerminatedAbnormally
 
     /**
      * This method gets the rectangle of the last detected target from the camera. If the camera does not have

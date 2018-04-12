@@ -169,11 +169,16 @@ public abstract class TrcSerialBusDevice implements Runnable
         this.instanceName = instanceName;
         requestQueue = new ConcurrentLinkedQueue<>();
         deviceTask = new Thread(this, instanceName);
-        deviceTask.setUncaughtExceptionHandler((thread, throwable) -> {
-            if (!(throwable.getClass().equals(InterruptedException.class))) {
+        deviceTask.setUncaughtExceptionHandler((thread, throwable) ->
+        {
+            if (!(throwable.getClass().equals(InterruptedException.class)))
+            {
                 taskTerminatedAbnormally = true;
-                System.err.println(String.format("Thread %s for %s had uncaught exception: %s",
-                        thread, instanceName, throwable));
+                if (debugEnabled)
+                {
+                    dbgTrace.traceWarn(moduleName, "Thread %s for %s had uncaught exception: %s",
+                        thread, instanceName, throwable);
+                }
             }
         });
         deviceTask.start();

@@ -188,12 +188,12 @@ public class FrcPixyCam extends TrcPixyCam
     }   //setEnabled
 
     /**
-     * Indicates whether the background task encountered a problem and terminated
-     * unexpectedly.
+     * Indicates whether the background task encountered a problem and terminated unexpectedly.
      *
-     * @return True if the background task has terminated unexpectedly.
+     * @return true if the background task has terminated unexpectedly, false otherwise.
      */
-    public boolean isTaskTerminatedAbnormally() {
+    public boolean isTaskTerminatedAbnormally()
+    {
         final String funcName = "isTaskTerminatedAbnormally";
         boolean taskTerminatedAbnormally = pixyCam.isTaskTerminatedAbnormally();
 
@@ -204,7 +204,7 @@ public class FrcPixyCam extends TrcPixyCam
         }
 
         return taskTerminatedAbnormally;
-    } //isTaskTerminatedAbnormally
+    }   //isTaskTerminatedAbnormally
 
     //
     // Implements TrcPixyCam abstract methods.

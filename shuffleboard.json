@@ -1,5 +1,5 @@
 {
-  "dividerPosition": 0.1327893175074184,
+  "dividerPosition": 0.14143007360672977,
   "tabPane": [
     {
       "title": "FMSInfo",
@@ -47,7 +47,7 @@
           "0,6": {
             "size": [
               8,
-              3
+              2
             ],
             "content": {
               "_type": "Boolean Box",
@@ -103,7 +103,7 @@
               "_title": "SmartDashboard/00"
             }
           },
-          "0,2": {
+          "0,3": {
             "size": [
               16,
               2
@@ -114,7 +114,7 @@
               "_title": "SmartDashboard/01"
             }
           },
-          "0,4": {
+          "0,6": {
             "size": [
               16,
               2
@@ -125,7 +125,7 @@
               "_title": "SmartDashboard/02"
             }
           },
-          "0,6": {
+          "0,9": {
             "size": [
               16,
               2
@@ -136,7 +136,7 @@
               "_title": "SmartDashboard/03"
             }
           },
-          "0,8": {
+          "0,12": {
             "size": [
               16,
               2
@@ -147,10 +147,10 @@
               "_title": "SmartDashboard/04"
             }
           },
-          "0,10": {
+          "0,15": {
             "size": [
               16,
-              2
+              3
             ],
             "content": {
               "_type": "Text View",
@@ -158,7 +158,7 @@
               "_title": "SmartDashboard/05"
             }
           },
-          "0,12": {
+          "0,18": {
             "size": [
               16,
               2
@@ -169,7 +169,7 @@
               "_title": "SmartDashboard/06"
             }
           },
-          "0,14": {
+          "0,21": {
             "size": [
               16,
               2
@@ -191,7 +191,7 @@
               "_title": "SmartDashboard/08"
             }
           },
-          "16,2": {
+          "16,3": {
             "size": [
               16,
               2
@@ -202,7 +202,7 @@
               "_title": "SmartDashboard/09"
             }
           },
-          "16,4": {
+          "16,6": {
             "size": [
               16,
               2
@@ -213,7 +213,7 @@
               "_title": "SmartDashboard/10"
             }
           },
-          "16,6": {
+          "16,9": {
             "size": [
               16,
               2
@@ -224,7 +224,7 @@
               "_title": "SmartDashboard/11"
             }
           },
-          "16,8": {
+          "16,12": {
             "size": [
               16,
               2
@@ -235,7 +235,7 @@
               "_title": "SmartDashboard/12"
             }
           },
-          "16,10": {
+          "16,15": {
             "size": [
               16,
               2
@@ -246,7 +246,7 @@
               "_title": "SmartDashboard/13"
             }
           },
-          "16,12": {
+          "16,18": {
             "size": [
               16,
               2
@@ -257,7 +257,7 @@
               "_title": "SmartDashboard/14"
             }
           },
-          "16,14": {
+          "16,21": {
             "size": [
               16,
               2
@@ -284,7 +284,7 @@
           "0,0": {
             "size": [
               4,
-              3
+              2
             ],
             "content": {
               "_type": "ComboBox Chooser",
@@ -292,10 +292,10 @@
               "_title": "AutoStrategies"
             }
           },
-          "5,0": {
+          "4,0": {
             "size": [
               4,
-              3
+              2
             ],
             "content": {
               "_type": "ComboBox Chooser",
@@ -303,10 +303,10 @@
               "_title": "StartPos"
             }
           },
-          "10,0": {
+          "8,0": {
             "size": [
               4,
-              3
+              2
             ],
             "content": {
               "_type": "ComboBox Chooser",
@@ -314,10 +314,10 @@
               "_title": "FastDelivery"
             }
           },
-          "15,0": {
+          "12,0": {
             "size": [
               4,
-              3
+              2
             ],
             "content": {
               "_type": "ComboBox Chooser",
@@ -325,10 +325,10 @@
               "_title": "Lanes"
             }
           },
-          "20,0": {
+          "16,0": {
             "size": [
               4,
-              3
+              2
             ],
             "content": {
               "_type": "ComboBox Chooser",
@@ -336,10 +336,10 @@
               "_title": "ScaleOrSwitch"
             }
           },
-          "10,4": {
+          "0,3": {
             "size": [
               4,
-              3
+              2
             ],
             "content": {
               "_type": "Text View",
@@ -347,10 +347,10 @@
               "_title": "Delay"
             }
           },
-          "0,4": {
+          "4,3": {
             "size": [
               4,
-              3
+              2
             ],
             "content": {
               "_type": "ComboBox Chooser",
@@ -358,10 +358,10 @@
               "_title": "GetSecondCube"
             }
           },
-          "15,4": {
+          "8,3": {
             "size": [
               4,
-              3
+              2
             ],
             "content": {
               "_type": "Text View",
@@ -369,10 +369,10 @@
               "_title": "FwdDistance"
             }
           },
-          "5,4": {
+          "12,3": {
             "size": [
               4,
-              3
+              2
             ],
             "content": {
               "_type": "ComboBox Chooser",
