@@ -60,7 +60,7 @@ public class FrcSketchyMotionProfile
     private TrcTaskMgr.TaskObject taskObject;
     private double[][][] points;
     private TrcStateMachine<State> sm;
-    private int fillIndex;
+    private int fillIndex = 0;
     private boolean filled = false;
     private Notifier notifier;
     private MotionProfileStatus[] statuses;
@@ -240,6 +240,15 @@ public class FrcSketchyMotionProfile
         return true;
     }
 
+    private boolean hasBufferRoom()
+    {
+        for(MotionProfileStatus status:statuses)
+        {
+            if(status.topBufferRem < PERIODIC_BUFFER_FILL_SIZE) return false;
+        }
+        return true;
+    }
+
     private void processPointBuffer()
     {
         for(FrcCANTalon talon:allMotors)
@@ -257,9 +266,20 @@ public class FrcSketchyMotionProfile
         int endIndex = points.length;
         if(points.length > MAX_POINT_BUFFER_SIZE)
         {
+            if(!hasBufferRoom()) return;
             startIndex = fillIndex;
             endIndex = Math.min(startIndex + PERIODIC_BUFFER_FILL_SIZE, points.length);
             fillIndex = endIndex;
+        }
+
+        // Cancel previous MP and clear underrun flag if this is the first time filling points
+        if(startIndex == 0)
+        {
+            for(FrcCANTalon talon:allMotors)
+            {
+                talon.motor.clearMotionProfileTrajectories();
+                talon.motor.clearMotionProfileHasUnderrun(0);
+            }
         }
 
         // TODO: Figure out how to set the TrajectoryPoint time duration. The methods aren't here for some reason.
@@ -268,9 +288,6 @@ public class FrcSketchyMotionProfile
         {
             for(FrcCANTalon talon:leftMotors)
             {
-                talon.motor.clearMotionProfileHasUnderrun(0);
-                talon.motor.clearMotionProfileTrajectories();
-
                 point.position = points[i][0][0];
                 point.velocity = points[i][0][1];
                 point.headingDeg = 0;
@@ -282,9 +299,6 @@ public class FrcSketchyMotionProfile
             }
             for(FrcCANTalon talon:rightMotors)
             {
-                talon.motor.clearMotionProfileHasUnderrun(0);
-                talon.motor.clearMotionProfileTrajectories();
-
                 point.position = points[i][1][0];
                 point.velocity = points[i][1][1];
                 point.headingDeg = 0;
@@ -295,7 +309,7 @@ public class FrcSketchyMotionProfile
                 talon.motor.pushMotionProfileTrajectory(point);
             }
         }
-        if(endIndex == points.length)
+        if(endIndex >= points.length)
         {
             filled = true;
         }
