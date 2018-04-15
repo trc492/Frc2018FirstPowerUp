@@ -78,7 +78,7 @@ public class TrcDiagnostics<T> implements Iterable<TrcDiagnostics.Test<T>>
         {
             this.testName = name;
             this.testGroup = group;
-            this.conditional = conditional;
+            this.conditional = conditional == null ? () -> true : conditional;
         }   //Test
 
         /**
@@ -89,7 +89,7 @@ public class TrcDiagnostics<T> implements Iterable<TrcDiagnostics.Test<T>>
          */
         public Test(String name, T group)
         {
-            this(name, group, null);
+            this(name, group, () -> true);
         }   //Test
 
         /**
@@ -150,7 +150,7 @@ public class TrcDiagnostics<T> implements Iterable<TrcDiagnostics.Test<T>>
          */
         public void runTestAndUpdateStatus()
         {
-            this.testError = conditional == null || conditional.get()? runTest(): null;
+            this.testError = conditional.get()? runTest(): null;
             this.testPassed = testError == null;
         }   //runTestAndUpdateStatus
 
