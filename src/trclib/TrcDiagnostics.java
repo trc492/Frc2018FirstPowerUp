@@ -26,6 +26,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 /**
@@ -61,8 +62,24 @@ public class TrcDiagnostics<T> implements Iterable<TrcDiagnostics.Test<T>>
 
         private final String testName;
         private T testGroup;
+        private Supplier<Boolean> conditional;
         private boolean testPassed = true;
         private String testError = null;
+
+        /**
+         * Constructor: Create an instance of the object.
+         *
+         * @param name specifies the name of the test.
+         * @param group specifies the test group the test is associated with.
+         * @param conditional specifies the conditional method that determines whether the test will be run,
+         *                    null if none specified in which case, the test will always run.
+         */
+        public Test(String name, T group, Supplier<Boolean> conditional)
+        {
+            this.testName = name;
+            this.testGroup = group;
+            this.conditional = conditional;
+        }   //Test
 
         /**
          * Constructor: Create an instance of the object.
@@ -72,8 +89,7 @@ public class TrcDiagnostics<T> implements Iterable<TrcDiagnostics.Test<T>>
          */
         public Test(String name, T group)
         {
-            this.testName = name;
-            this.testGroup = group;
+            this(name, group, null);
         }   //Test
 
         /**
@@ -134,7 +150,7 @@ public class TrcDiagnostics<T> implements Iterable<TrcDiagnostics.Test<T>>
          */
         public void runTestAndUpdateStatus()
         {
-            this.testError = runTest();
+            this.testError = conditional == null || conditional.get()? runTest(): null;
             this.testPassed = testError == null;
         }   //runTestAndUpdateStatus
 
