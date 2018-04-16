@@ -13,7 +13,7 @@ import team492.diagnostics.PneumaticsNotPressurizingTest;
 import trclib.TrcDiagnostics;
 import trclib.TrcDiagnostics.Test;
 import trclib.TrcTestAnalogSensorValueChange;
-import trclib.TrcTestDigitalSensorValueChange;
+import trclib.TrcTestDigitalSensorStateChange;
 
 public class OnBoardDiagnostics
 {
@@ -28,10 +28,12 @@ public class OnBoardDiagnostics
         GRABBER
     }
 
-    private static final double EXPECTED_DRIVEBASE_ENCODER_CHANGE_INCHES = 10.0;
-    private static final double EXPECTED_SONAR_CHANGE_INCHES = 6.0;
-    private static final double EXPECTED_ELEVATOR_ENCODER_CHANGE_INCHES = 1.0;
-    private static final double EXPECTED_GRABBER_CURRENT_CHANGE = 6.0; // 6A
+    private static final double DRIVEBASE_EXPECTED_ENCODER_CHANGE_INCHES = 10.0;
+    private static final double DRIVEBASE_MOTOR_MIN_POWER = 0.1;
+    private static final double SONAR_EXPECTED_CHANGE_INCHES = 6.0;
+    private static final double ELEVATOR_EXPECTED_ENCODER_CHANGE_INCHES = 1.0;
+    private static final double ELEVATOR_MOTOR_MIN_POWER = RobotInfo.ELEVATOR_STALL_MIN_POWER;
+    private static final double GRABBER_EXPECTED_CURRENT_CHANGE = 6.0; // 6A
     private static final String errMsgAnalogValueChange =
         "Value did not change enough, could be defective or disconnected.";
     private static final String errMsgDigitalStateChange =
@@ -47,17 +49,21 @@ public class OnBoardDiagnostics
         // DriveBase
         //
         testCollection.addTest(new TrcTestAnalogSensorValueChange<Subsystem>(
-            "lfEncoder", Subsystem.DRIVEBASE, robot.leftFrontWheel::getPosition,
-            EXPECTED_DRIVEBASE_ENCODER_CHANGE_INCHES, errMsgAnalogValueChange));
+            "lfEncoder", Subsystem.DRIVEBASE, () -> robot.leftFrontWheel.getPower() > DRIVEBASE_MOTOR_MIN_POWER, false,
+            robot.leftFrontWheel::getPosition, DRIVEBASE_EXPECTED_ENCODER_CHANGE_INCHES, errMsgAnalogValueChange,
+            true));
         testCollection.addTest(new TrcTestAnalogSensorValueChange<Subsystem>(
-            "rfEncoder", Subsystem.DRIVEBASE, robot.rightFrontWheel::getPosition,
-            EXPECTED_DRIVEBASE_ENCODER_CHANGE_INCHES, errMsgAnalogValueChange));
+            "rfEncoder", Subsystem.DRIVEBASE, () -> robot.rightFrontWheel.getPower() > DRIVEBASE_MOTOR_MIN_POWER, false,
+            robot.rightFrontWheel::getPosition, DRIVEBASE_EXPECTED_ENCODER_CHANGE_INCHES, errMsgAnalogValueChange,
+            true));
         testCollection.addTest(new TrcTestAnalogSensorValueChange<Subsystem>(
-            "lrEncoder", Subsystem.DRIVEBASE, robot.leftRearWheel::getPosition,
-            EXPECTED_DRIVEBASE_ENCODER_CHANGE_INCHES, errMsgAnalogValueChange));
+            "lrEncoder", Subsystem.DRIVEBASE, () -> robot.leftRearWheel.getPower() > DRIVEBASE_MOTOR_MIN_POWER, false,
+            robot.leftRearWheel::getPosition, DRIVEBASE_EXPECTED_ENCODER_CHANGE_INCHES, errMsgAnalogValueChange,
+            true));
         testCollection.addTest(new TrcTestAnalogSensorValueChange<Subsystem>(
-            "rrEncoder", Subsystem.DRIVEBASE, robot.rightRearWheel::getPosition,
-            EXPECTED_DRIVEBASE_ENCODER_CHANGE_INCHES, errMsgAnalogValueChange));
+            "rrEncoder", Subsystem.DRIVEBASE, () -> robot.rightRearWheel.getPower() > DRIVEBASE_MOTOR_MIN_POWER, false,
+            robot.rightRearWheel::getPosition, DRIVEBASE_EXPECTED_ENCODER_CHANGE_INCHES, errMsgAnalogValueChange,
+            true));
         testCollection.addTest(
             new HighTalonErrorRateTest("lfMotorErrors", Subsystem.DRIVEBASE, robot.leftFrontWheel));
         testCollection.addTest(
@@ -74,17 +80,17 @@ public class OnBoardDiagnostics
         // Elevator
         //
         testCollection.addTest(new TrcTestAnalogSensorValueChange<Subsystem>(
-            "elevatorEncoder", Subsystem.ELEVATOR, robot.elevator::getPosition,
-            EXPECTED_ELEVATOR_ENCODER_CHANGE_INCHES, errMsgAnalogValueChange));
+            "elevatorEncoder", Subsystem.ELEVATOR, () -> robot.elevator.getPower() > ELEVATOR_MOTOR_MIN_POWER, false,
+            robot.elevator::getPosition, ELEVATOR_EXPECTED_ENCODER_CHANGE_INCHES, errMsgAnalogValueChange, true));
         testCollection.addTest(
             new HighTalonErrorRateTest("elevatorMotorErrors", Subsystem.ELEVATOR, robot.elevator.elevatorMotor));
-        //CodeReview: Aren't ElevatorLimitSwitch tests redundant since you have the StuckTest already?
-        testCollection.addTest(new TrcTestDigitalSensorValueChange<Subsystem>(
+        //CodeReview: ElevatorLimitSwitch tests has no conditional, so they will always run but
+        testCollection.addTest(new TrcTestDigitalSensorStateChange<Subsystem>(
             "lowerElevatorLimitSwitch", Subsystem.ELEVATOR, robot.elevator.elevatorMotor::isLowerLimitSwitchActive,
-            errMsgDigitalStateChange));
-        testCollection.addTest(new TrcTestDigitalSensorValueChange<Subsystem>(
+            errMsgDigitalStateChange, true));
+        testCollection.addTest(new TrcTestDigitalSensorStateChange<Subsystem>(
             "upperElevatorLimitSwitch", Subsystem.ELEVATOR, robot.elevator.elevatorMotor::isUpperLimitSwitchActive,
-            errMsgDigitalStateChange));
+            errMsgDigitalStateChange, true));
         testCollection.addTest(
             new ElevatorLimitSwitchStuckTest(robot.elevator, ElevatorLimitSwitchStuckTest.ElevatorLimitSwitch.LOWER));
         testCollection.addTest(
@@ -95,15 +101,15 @@ public class OnBoardDiagnostics
         if (robot.leftSonarArray != null || robot.leftSonarSensor != null)
         {
             testCollection.addTest(new TrcTestAnalogSensorValueChange<Subsystem>(
-                "leftSonar", Subsystem.SENSORS, robot::getLeftSonarDistance,
-                EXPECTED_SONAR_CHANGE_INCHES, errMsgAnalogValueChange));
+                "leftSonar", Subsystem.SENSORS, () -> robot.leftSonarArray.isRanging(), true,
+                robot::getLeftSonarDistance, SONAR_EXPECTED_CHANGE_INCHES, errMsgAnalogValueChange, true));
         }
 
         if (robot.rightSonarArray != null || robot.rightSonarSensor != null)
         {
             testCollection.addTest(new TrcTestAnalogSensorValueChange<Subsystem>(
-                "rightSonar", Subsystem.SENSORS, robot::getRightSonarDistance,
-                EXPECTED_SONAR_CHANGE_INCHES, errMsgAnalogValueChange));
+                "rightSonar", Subsystem.SENSORS, () -> robot.rightSonarArray.isRanging(), true,
+                robot::getRightSonarDistance, SONAR_EXPECTED_CHANGE_INCHES, errMsgAnalogValueChange, true));
         }
 
         if (robot.pixy != null)
@@ -111,8 +117,9 @@ public class OnBoardDiagnostics
             testCollection.addTest(new PixyVisionTaskTerminatedTest("Pixy errors", robot.pixy));
         }
 
-        testCollection.addTest(new TrcTestDigitalSensorValueChange<Subsystem>(
-            "cubeProximitySensor", Subsystem.SENSORS, robot.cubePickup::cubeInProximity, errMsgDigitalStateChange));
+        testCollection.addTest(new TrcTestDigitalSensorStateChange<Subsystem>(
+            "cubeProximitySensor", Subsystem.SENSORS, robot.cubePickup::cubeInProximity, errMsgDigitalStateChange,
+            true));
         //
         // Pneumatics
         //
@@ -122,11 +129,13 @@ public class OnBoardDiagnostics
         // Grabber
         //
         testCollection.addTest(new TrcTestAnalogSensorValueChange<Subsystem>(
-            "leftGrabber", Subsystem.GRABBER, robot.cubePickup.controlMotor.motor::getOutputCurrent,
-            EXPECTED_GRABBER_CURRENT_CHANGE, errMsgAnalogValueChange));
+            "leftGrabber", Subsystem.GRABBER, () -> robot.cubePickup.getPickupPower() != 0.0, false,
+            robot.cubePickup.controlMotor.motor::getOutputCurrent,
+            GRABBER_EXPECTED_CURRENT_CHANGE, errMsgAnalogValueChange, null));
         testCollection.addTest(new TrcTestAnalogSensorValueChange<Subsystem>(
-            "rightGrabber", Subsystem.GRABBER, robot.cubePickup.slaveMotor.motor::getOutputCurrent,
-            EXPECTED_GRABBER_CURRENT_CHANGE, errMsgAnalogValueChange));
+            "rightGrabber", Subsystem.GRABBER, () -> robot.cubePickup.getPickupPower() != 0.0, false,
+            robot.cubePickup.slaveMotor.motor::getOutputCurrent,
+            GRABBER_EXPECTED_CURRENT_CHANGE, errMsgAnalogValueChange, null));
     }
 
     public void updateDiagnosticsAndDashboard()

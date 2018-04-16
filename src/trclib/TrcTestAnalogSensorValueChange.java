@@ -25,10 +25,10 @@ package trclib;
 import java.util.function.Supplier;
 
 /**
- * This class implements a diagnostics test to monitor if an analog sensor value has ever changed. If a sensor
- * value doesn't change, it could mean the sensor is malfunctioning or disconnected.
+ * This class implements a diagnostics test to monitor if an analog sensor value has changed. If a sensor value
+ * doesn't change, it could mean the sensor is malfunctioning or disconnected.
  * This class extends the TrcDiagnostics.Test class. It provides the runTest method that reads the sensor value
- * and compares to the initial sensor value to make sure the value has changed at least a specified minimum amount.
+ * and compares to the previous sensor value to make sure the value has changed at least a specified minimum amount.
  *
  * @param <T> specifies the group enum type.
  */
@@ -37,7 +37,37 @@ public class TrcTestAnalogSensorValueChange<T> extends TrcDiagnostics.Test<T>
     private final Supplier<Double> sensor;
     private final double minValueChange;
     private final String errorMsg;
-    private double firstReading;
+    private final Boolean stickyStatus;
+    private double prevValue;
+    private Boolean prevStatus = null;
+
+    /**
+     * Constructor: Creates an instance of the object.
+     *
+     * @param name specifies the test name.
+     * @param group specifies the test group.
+     * @param conditional specifies the conditional method that determines whether the test will be run,
+     *                    null if none specified in which case, the test will always run.
+     * @param defStatus specifies the default test status to be returned if the test is not run because
+     *                  conditional was false.
+     * @param sensor specifies the analog sensor object.
+     * @param minValueChange specifies the minimum value change to expect.
+     * @param errorMsg specifies the error message to return if sensor value didn't change the specified amount.
+     * @param stickyStatus specifies null if test status is not sticky (i.e. test status could be different every
+     *                     time runTest is called), otherwise stickyStatus specifies whether the test is true sticky
+     *                     or false sticky (i.e. true sticky: one success will make the test always return success).
+     */
+    public TrcTestAnalogSensorValueChange(
+        String name, T group, Supplier<Boolean> conditional, boolean defStatus,
+        Supplier<Double> sensor, double minValueChange, String errorMsg, Boolean stickyStatus)
+    {
+        super(name, group, conditional, defStatus);
+        this.sensor = sensor;
+        this.minValueChange = minValueChange;
+        this.errorMsg = errorMsg;
+        this.stickyStatus = stickyStatus;
+        this.prevValue = sensor.get();
+    }   //TrcTestAnalogSensorValueChange
 
     /**
      * Constructor: Creates an instance of the object.
@@ -47,31 +77,63 @@ public class TrcTestAnalogSensorValueChange<T> extends TrcDiagnostics.Test<T>
      * @param sensor specifies the analog sensor object.
      * @param minValueChange specifies the minimum value change to expect.
      * @param errorMsg specifies the error message to return if sensor value didn't change the specified amount.
+     * @param stickyStatus specifies null if test status is not sticky (i.e. test status could be different every
+     *                     time runTest is called), otherwise stickyStatus specifies whether the test is true sticky
+     *                     or false sticky (i.e. true sticky: one success will make the test always return success).
      */
     public TrcTestAnalogSensorValueChange(
-        String name, T group, Supplier<Double> sensor, double minValueChange, String errorMsg)
+        String name, T group, Supplier<Double> sensor, double minValueChange, String errorMsg, Boolean stickyStatus)
     {
-        super(name, group);
-        this.sensor = sensor;
-        this.minValueChange = minValueChange;
-        this.errorMsg = errorMsg;
-        this.firstReading = sensor.get();
+        this(name, group, null, false, sensor, minValueChange, errorMsg, stickyStatus);
     }   //TrcTestAnalogSensorValueChange
 
     /**
-     * This method is called periodically to check the sensor value. It compares to the initial value for a
+     * This method is called periodically to check the sensor value. It compares to the previous value for a
      * change of at least the specified minimum amount.
+     * Note: If stickyStatus is specified, a one-time success or failure will make this test always that stick status.
      *
      * @return error message if the change amount is less than the expected amount, null otherwise.
      */
     @Override
     public String runTest()
     {
+        final String funcName = "runTest";
         String msg = null;
 
-        if (Math.abs(sensor.get() - firstReading) < minValueChange)
+        if (debugEnabled)
         {
+            dbgTrace.traceEnter(funcName, TrcDbgTrace.TraceLevel.CALLBK);
+            dbgTrace.traceInfo(funcName, "sticky=%b,prev=%b", stickyStatus, prevStatus);
+        }
+
+        if (stickyStatus == null || prevStatus == null || prevStatus != stickyStatus)
+        {
+            double currValue = sensor.get();
+            //
+            // Only run the test if either:
+            // - no sticky status is specified
+            // - a sticky status is specified but there is no previous status (i.e. first time the test is run)
+            // - a sticky status is specified and there is a previous status and it is not the same as the sticky status
+            //
+            if (Math.abs(currValue - prevValue) < minValueChange)
+            {
+                msg = errorMsg;
+            }
+            prevStatus = msg == null;
+            prevValue = currValue;
+        }
+        else if (!stickyStatus)
+        {
+            //
+            // A stickyStatus is specified and prevStatus is the same as stickyStatus and prevStatus is false
+            // (i.e. test previously failed), return the error message.
+            //
             msg = errorMsg;
+        }
+
+        if (debugEnabled)
+        {
+            dbgTrace.traceExit(funcName, TrcDbgTrace.TraceLevel.CALLBK, "=%s", msg);
         }
 
         return msg;

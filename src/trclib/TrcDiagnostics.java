@@ -52,6 +52,14 @@ public class TrcDiagnostics<T> implements Iterable<TrcDiagnostics.Test<T>>
      */
     public static abstract class Test<T>
     {
+        protected static final String moduleName = "TrcDiagnostics.Test";
+        protected static final boolean debugEnabled = false;
+        protected static final boolean tracingEnabled = false;
+        protected static final boolean useGlobalTracer = false;
+        protected static final TrcDbgTrace.TraceLevel traceLevel = TrcDbgTrace.TraceLevel.API;
+        protected static final TrcDbgTrace.MsgLevel msgLevel = TrcDbgTrace.MsgLevel.INFO;
+        protected TrcDbgTrace dbgTrace = null;
+
         /**
          * This method is called to run the diagnostics test once. If the test passed, a null is return.
          * Otherwise, an error message is returned.
@@ -60,9 +68,12 @@ public class TrcDiagnostics<T> implements Iterable<TrcDiagnostics.Test<T>>
          */
         protected abstract String runTest();
 
+        private static final String defErrorMsg = "Test disabled by conditional.";
+
         private final String testName;
         private T testGroup;
         private Supplier<Boolean> conditional;
+        private boolean defStatus = false;
         private boolean testPassed = true;
         private String testError = null;
 
@@ -73,12 +84,23 @@ public class TrcDiagnostics<T> implements Iterable<TrcDiagnostics.Test<T>>
          * @param group specifies the test group the test is associated with.
          * @param conditional specifies the conditional method that determines whether the test will be run,
          *                    null if none specified in which case, the test will always run.
+         * @param defStatus specifies the default test status to be returned if the test is not run because
+         *                  conditional was false.
          */
-        public Test(String name, T group, Supplier<Boolean> conditional)
+        public Test(String name, T group, Supplier<Boolean> conditional, boolean defStatus)
         {
+            if (debugEnabled)
+            {
+                dbgTrace = useGlobalTracer?
+                    TrcDbgTrace.getGlobalTracer():
+                    new TrcDbgTrace(moduleName, tracingEnabled, traceLevel, msgLevel);
+            }
+
             this.testName = name;
             this.testGroup = group;
-            this.conditional = conditional == null ? () -> true : conditional;
+            this.conditional = conditional == null? () -> true: conditional;
+            this.conditional = conditional;
+            this.defStatus = defStatus;
         }   //Test
 
         /**
@@ -89,7 +111,7 @@ public class TrcDiagnostics<T> implements Iterable<TrcDiagnostics.Test<T>>
          */
         public Test(String name, T group)
         {
-            this(name, group, () -> true);
+            this(name, group, () -> true, false);
         }   //Test
 
         /**
@@ -100,7 +122,7 @@ public class TrcDiagnostics<T> implements Iterable<TrcDiagnostics.Test<T>>
         @Override
         public String toString()
         {
-            String str = "Test: " + testGroup + "." + testName;
+            String str = "Test:" + testGroup + "/" + testName;
             str += testPassed? " passed": " failed (" + testError + ")";
             return str; 
         }   //toString
@@ -112,6 +134,14 @@ public class TrcDiagnostics<T> implements Iterable<TrcDiagnostics.Test<T>>
          */
         public String getTestName()
         {
+            final String funcName = "getTestName";
+
+            if (debugEnabled)
+            {
+                dbgTrace.traceEnter(funcName, TrcDbgTrace.TraceLevel.API);
+                dbgTrace.traceExit(funcName, TrcDbgTrace.TraceLevel.API, "=%s", testName);
+            }
+
             return testName;
         }   //getTestName
 
@@ -122,6 +152,14 @@ public class TrcDiagnostics<T> implements Iterable<TrcDiagnostics.Test<T>>
          */
         public T getTestGroup()
         {
+            final String funcName = "getTestGroup";
+
+            if (debugEnabled)
+            {
+                dbgTrace.traceEnter(funcName, TrcDbgTrace.TraceLevel.API);
+                dbgTrace.traceExit(funcName, TrcDbgTrace.TraceLevel.API, "=%s", testGroup);
+            }
+
             return testGroup;
         }   //getTestGroup
 
@@ -132,6 +170,14 @@ public class TrcDiagnostics<T> implements Iterable<TrcDiagnostics.Test<T>>
          */
         public boolean hasPassed()
         {
+            final String funcName = "hasPassed";
+
+            if (debugEnabled)
+            {
+                dbgTrace.traceEnter(funcName, TrcDbgTrace.TraceLevel.API);
+                dbgTrace.traceExit(funcName, TrcDbgTrace.TraceLevel.API, "=%b", testPassed);
+            }
+
             return testPassed;
         }   //hasPassed
 
@@ -142,6 +188,14 @@ public class TrcDiagnostics<T> implements Iterable<TrcDiagnostics.Test<T>>
          */
         public String getTestError()
         {
+            final String funcName = "getTestError";
+
+            if (debugEnabled)
+            {
+                dbgTrace.traceEnter(funcName, TrcDbgTrace.TraceLevel.API);
+                dbgTrace.traceExit(funcName, TrcDbgTrace.TraceLevel.API, "=%s", testError);
+            }
+
             return testError;
         }   //getTestError
 
@@ -150,8 +204,24 @@ public class TrcDiagnostics<T> implements Iterable<TrcDiagnostics.Test<T>>
          */
         public void runTestAndUpdateStatus()
         {
-            this.testError = conditional.get()? runTest(): null;
+            final String funcName = "runTestAndUpdateStatus";
+
+            if (debugEnabled)
+            {
+                dbgTrace.traceEnter(funcName, TrcDbgTrace.TraceLevel.API);
+            }
+
+            //
+            // Call runTest only if we don't have a conditional or if conditional returned true.
+            // If runTest was not called, then use defStatus as the default test status.
+            //
+            this.testError = conditional.get()? runTest(): defStatus? null: defErrorMsg;
             this.testPassed = testError == null;
+
+            if (debugEnabled)
+            {
+                dbgTrace.traceExit(funcName, TrcDbgTrace.TraceLevel.API);
+            }
         }   //runTestAndUpdateStatus
 
     }   //class Test

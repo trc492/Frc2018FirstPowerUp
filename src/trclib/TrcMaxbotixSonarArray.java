@@ -57,6 +57,7 @@ public class TrcMaxbotixSonarArray
     private final TrcTimer timer;
     private final TrcEvent event;
     private boolean autoRepeat = false;
+    private boolean rangingStarted = false;
 
     /**
      * Constructor: Creates an instance of the object.
@@ -123,6 +124,24 @@ public class TrcMaxbotixSonarArray
     }   //toString
 
     /**
+     * This method checks if the sonar array is ranging.
+     *
+     * @return true if the sonar array is ranging, false otherwise.
+     */
+    public boolean isRanging()
+    {
+        final String funcName = "isRanging";
+
+        if (debugEnabled)
+        {
+            dbgTrace.traceEnter(funcName, TrcDbgTrace.TraceLevel.API);
+            dbgTrace.traceExit(funcName, TrcDbgTrace.TraceLevel.API, "=%b", rangingStarted);
+        }
+
+        return rangingStarted;
+    }   //isRanging
+
+    /**
      * This method is called to start the ranging cycle.
      *
      * @param autoRepeat specifies true to auto repeat the ranging cycle, false otherwise. autoRepeat is ignored
@@ -143,6 +162,7 @@ public class TrcMaxbotixSonarArray
             this.autoRepeat = autoRepeat;
         }
         setTaskEnabled(true);
+        rangingStarted = true;
 
         if (debugEnabled)
         {
@@ -173,10 +193,17 @@ public class TrcMaxbotixSonarArray
             dbgTrace.traceExit(funcName, TrcDbgTrace.TraceLevel.API);
         }
 
-        if (!loopConfig && autoRepeat)
+        //
+        // In loop config mode, ranging will never stop once started.
+        //
+        if (!loopConfig)
         {
-            autoRepeat = false;
-            setTaskEnabled(false);
+            if (autoRepeat)
+            {
+                autoRepeat = false;
+                setTaskEnabled(false);
+            }
+            rangingStarted = false;
         }
     }   //stopRanging
 
