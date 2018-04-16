@@ -291,7 +291,7 @@ public class FrcSketchyMotionProfile
                 point.position = points[i][0][0];
                 point.velocity = points[i][0][1];
                 point.headingDeg = 0;
-                point.profileSlotSelect = pidSlot;
+                point.profileSlotSelect0 = pidSlot;
                 point.zeroPos = (i == 0);
                 point.isLastPoint = (i == points.length-1);
 
@@ -302,7 +302,7 @@ public class FrcSketchyMotionProfile
                 point.position = points[i][1][0];
                 point.velocity = points[i][1][1];
                 point.headingDeg = 0;
-                point.profileSlotSelect = pidSlot;
+                point.profileSlotSelect0 = pidSlot;
                 point.zeroPos = (i == 0);
                 point.isLastPoint = (i == points.length-1);
 

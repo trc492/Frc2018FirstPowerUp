@@ -99,7 +99,6 @@ public class TrcDiagnostics<T> implements Iterable<TrcDiagnostics.Test<T>>
             this.testName = name;
             this.testGroup = group;
             this.conditional = conditional == null? () -> true: conditional;
-            this.conditional = conditional;
             this.defStatus = defStatus;
         }   //Test
 
