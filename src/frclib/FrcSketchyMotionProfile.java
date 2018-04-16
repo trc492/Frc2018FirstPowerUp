@@ -69,6 +69,7 @@ public class FrcSketchyMotionProfile
     private boolean filled = false;
     private Notifier notifier;
     private MotionProfileStatus[] statuses;
+    private boolean cancelled = false;
 
     public FrcSketchyMotionProfile(String instanceName, PidCoefficients pidCoefficients, int pidSlot, double inchesPerEncoderTick)
     {
@@ -163,15 +164,33 @@ public class FrcSketchyMotionProfile
                 this.points[i][j][2] = points[i][j][2];
             }
         }
+
         double duration = points[0][0][0];
         double updatePeriod = duration/2; // 2x as fast as trajectory duration
         notifier.startPeriodic(updatePeriod/1000d); // Convert from milliseconds to seconds
+
         setTaskEnabled(true);
         leftMaster.motor.changeMotionControlFramePeriod((int)updatePeriod);
         rightMaster.motor.changeMotionControlFramePeriod((int)updatePeriod);
     }
 
+    public boolean isActive()
+    {
+        return sm.isEnabled();
+    }
+
+    public boolean isCancelled()
+    {
+        return cancelled;
+    }
+
     public void cancel()
+    {
+        cancelled = true;
+        stop();
+    }
+
+    private void stop()
     {
         notifier.stop();
         sm.stop();
@@ -200,7 +219,9 @@ public class FrcSketchyMotionProfile
 
         switch(state){
             case START:
+                // Fill the top buffer. If points.length < MAX_POINT_BUFFER_SIZE, fill completely.
                 filled = false;
+                cancelled = false;
                 fillPointBuffer();
                 sm.setState(State.WAIT_FOR_POINTS);
                 break;
@@ -214,7 +235,7 @@ public class FrcSketchyMotionProfile
                 break;
 
             case MONITOR_PATH:
-                fillPointBuffer();
+                fillPointBuffer(); // Keep filling points into top buffer. (only useful if points.length > MAX_POINT_BUFFER_SIZE)
                 setTalonValue(SetValueMotionProfile.Enable); // Keep sending the enable signal
                 if(isDone())
                 {
@@ -223,7 +244,7 @@ public class FrcSketchyMotionProfile
                 break;
 
             case DONE:
-                cancel();
+                stop();
                 break;
         }
     }
