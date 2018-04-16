@@ -57,7 +57,6 @@ public class FrcSketchyMotionProfile
         START, WAIT_FOR_POINTS, MONITOR_PATH, DONE
     }
 
-    private String instanceName;
     private PidCoefficients pidCoefficients;
     private int pidSlot;
     private double inchesPerEncoderTick;
@@ -73,7 +72,6 @@ public class FrcSketchyMotionProfile
 
     public FrcSketchyMotionProfile(String instanceName, PidCoefficients pidCoefficients, int pidSlot, double inchesPerEncoderTick)
     {
-        this.instanceName = instanceName;
         this.pidCoefficients = pidCoefficients;
         this.pidSlot = pidSlot;
         this.inchesPerEncoderTick = inchesPerEncoderTick;
