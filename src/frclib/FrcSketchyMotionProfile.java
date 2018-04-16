@@ -35,6 +35,8 @@ import trclib.TrcRobot;
 import trclib.TrcStateMachine;
 import trclib.TrcTaskMgr;
 
+import java.security.InvalidParameterException;
+
 /**
  * This is a super sketchy implementation of motion profiling. It streams the points to the buffer, and then executes
  * it. Also, the points are processed 2x as fast as the first point.
@@ -59,7 +61,7 @@ public class FrcSketchyMotionProfile
     private PidCoefficients pidCoefficients;
     private int pidSlot;
     private double inchesPerEncoderTick;
-    private FrcCANTalon[] leftMotors, rightMotors, allMotors;
+    private FrcCANTalon leftMaster, rightMaster;
     private TrcTaskMgr.TaskObject taskObject;
     private double[][][] points;
     private TrcStateMachine<State> sm;
@@ -83,30 +85,52 @@ public class FrcSketchyMotionProfile
 
     public void setLeftMotors(FrcCANTalon...leftMotors)
     {
-        for(FrcCANTalon talon:leftMotors)
+        if(leftMotors.length == 0)
         {
-            talon.motor.config_kP(pidSlot, pidCoefficients.kP, 10);
-            talon.motor.config_kI(pidSlot, pidCoefficients.kI, 10);
-            talon.motor.config_kD(pidSlot, pidCoefficients.kD, 10);
-            talon.motor.config_kF(pidSlot, pidCoefficients.kF, 10);
-
-            talon.motor.changeMotionControlFramePeriod(5);
+            throw new InvalidParameterException("Cannot pass empty array of motors!");
         }
-        this.leftMotors = leftMotors;
+
+        this.leftMaster = leftMotors[0];
+
+        leftMaster.motor.config_kP(pidSlot, pidCoefficients.kP, 10);
+        leftMaster.motor.config_kI(pidSlot, pidCoefficients.kI, 10);
+        leftMaster.motor.config_kD(pidSlot, pidCoefficients.kD, 10);
+        leftMaster.motor.config_kF(pidSlot, pidCoefficients.kF, 10);
+
+        leftMaster.motor.changeMotionControlFramePeriod(5);
+
+        if(leftMotors.length > 1)
+        {
+            for(int i = 1; i < leftMotors.length; i++)
+            {
+                leftMotors[i].motor.set(ControlMode.Follower, leftMaster.motor.getDeviceID());
+            }
+        }
     }
 
     public void setRightMotors(FrcCANTalon...rightMotors)
     {
-        for(FrcCANTalon talon:rightMotors)
+        if(rightMotors.length == 0)
         {
-            talon.motor.config_kP(pidSlot, pidCoefficients.kP, 10);
-            talon.motor.config_kI(pidSlot, pidCoefficients.kI, 10);
-            talon.motor.config_kD(pidSlot, pidCoefficients.kD, 10);
-            talon.motor.config_kF(pidSlot, pidCoefficients.kF, 10);
-
-            talon.motor.changeMotionControlFramePeriod(5);
+            throw new InvalidParameterException("Cannot pass empty array of motors!");
         }
-        this.rightMotors = rightMotors;
+
+        this.rightMaster = rightMotors[0];
+
+        rightMaster.motor.config_kP(pidSlot, pidCoefficients.kP, 10);
+        rightMaster.motor.config_kI(pidSlot, pidCoefficients.kI, 10);
+        rightMaster.motor.config_kD(pidSlot, pidCoefficients.kD, 10);
+        rightMaster.motor.config_kF(pidSlot, pidCoefficients.kF, 10);
+
+        rightMaster.motor.changeMotionControlFramePeriod(5);
+
+        if(rightMotors.length > 1)
+        {
+            for(int i = 1; i < rightMotors.length; i++)
+            {
+                rightMotors[i].motor.set(ControlMode.Follower, rightMaster.motor.getDeviceID());
+            }
+        }
     }
 
     /**
@@ -122,18 +146,12 @@ public class FrcSketchyMotionProfile
             throw new IllegalArgumentException("path must be 3d array with size [numPoints, 2, 3]!");
         }
 
-        if(leftMotors == null || rightMotors == null)
+        if(leftMaster == null || rightMaster == null)
         {
             throw new IllegalStateException("Left and right motors must be set before calling start()!");
         }
 
-        allMotors = new FrcCANTalon[leftMotors.length + rightMotors.length];
-        int index = 0;
-        for(FrcCANTalon talon:leftMotors) allMotors[index++] = talon;
-        for(FrcCANTalon talon:rightMotors) allMotors[index++] = talon;
-
-        statuses = new MotionProfileStatus[allMotors.length];
-        for(int i = 0; i < statuses.length; i++) statuses[i] = new MotionProfileStatus();
+        statuses = new MotionProfileStatus[]{new MotionProfileStatus(), new MotionProfileStatus()};
 
         this.points = new double[points.length][points[0].length][points[1].length];
         for(int i = 0; i < points.length; i++)
@@ -149,10 +167,8 @@ public class FrcSketchyMotionProfile
         double updatePeriod = duration/2; // 2x as fast as trajectory duration
         notifier.startPeriodic(updatePeriod/1000d); // Convert from milliseconds to seconds
         setTaskEnabled(true);
-        for(FrcCANTalon talon:allMotors)
-        {
-            talon.motor.changeMotionControlFramePeriod((int)updatePeriod);
-        }
+        leftMaster.motor.changeMotionControlFramePeriod((int)updatePeriod);
+        rightMaster.motor.changeMotionControlFramePeriod((int)updatePeriod);
     }
 
     public void cancel()
@@ -160,10 +176,7 @@ public class FrcSketchyMotionProfile
         notifier.stop();
         sm.stop();
         setTaskEnabled(false);
-        if(allMotors != null)
-        {
-            setTalonValue(SetValueMotionProfile.Disable);
-        }
+        setTalonValue(SetValueMotionProfile.Disable);
     }
 
     private void setTaskEnabled(boolean enabled)
@@ -226,18 +239,14 @@ public class FrcSketchyMotionProfile
 
     private void setTalonValue(SetValueMotionProfile value)
     {
-        for(FrcCANTalon talon:allMotors)
-        {
-            talon.motor.set(ControlMode.MotionProfile, value.value);
-        }
+        if(leftMaster != null) leftMaster.motor.set(ControlMode.MotionProfile, value.value);
+        if(rightMaster != null) rightMaster.motor.set(ControlMode.MotionProfile, value.value);
     }
 
     private void fillStatuses()
     {
-        for(int i = 0; i < statuses.length; i++)
-        {
-            allMotors[i].motor.getMotionProfileStatus(statuses[i]);
-        }
+        leftMaster.motor.getMotionProfileStatus(statuses[0]);
+        rightMaster.motor.getMotionProfileStatus(statuses[1]);
     }
 
     private boolean hasEnoughPoints()
@@ -260,10 +269,8 @@ public class FrcSketchyMotionProfile
 
     private void processPointBuffer()
     {
-        for(FrcCANTalon talon:allMotors)
-        {
-            talon.motor.processMotionProfileBuffer();
-        }
+        leftMaster.motor.processMotionProfileBuffer();
+        rightMaster.motor.processMotionProfileBuffer();
     }
     
     /**
@@ -303,41 +310,37 @@ public class FrcSketchyMotionProfile
         // Cancel previous MP and clear underrun flag if this is the first time filling points
         if(startIndex == 0)
         {
-            for(FrcCANTalon talon:allMotors)
-            {
-                talon.motor.clearMotionProfileTrajectories();
-                talon.motor.clearMotionProfileHasUnderrun(0);
-                talon.motor.configMotionProfileTrajectoryPeriod(0, 0); // Set the base trajectory period to 0
-            }
+            leftMaster.motor.clearMotionProfileTrajectories();
+            leftMaster.motor.clearMotionProfileHasUnderrun(0);
+            leftMaster.motor.configMotionProfileTrajectoryPeriod(0, 0); // Set the base trajectory period to 0
+
+            rightMaster.motor.clearMotionProfileTrajectories();
+            rightMaster.motor.clearMotionProfileHasUnderrun(0);
+            rightMaster.motor.configMotionProfileTrajectoryPeriod(0, 0); // Set the base trajectory period to 0
         }
 
         TrajectoryPoint point = new TrajectoryPoint();
         for(int i = startIndex; i < endIndex; i++)
         {
-            for(FrcCANTalon talon:leftMotors)
-            {
-                point.position = points[i][0][0];
-                point.velocity = points[i][0][1];
-                point.timeDur = getTrajectoryDuration((int)points[i][0][2]);
-                point.profileSlotSelect0 = pidSlot;
-                point.profileSlotSelect1 = pidSlot;
-                point.zeroPos = (i == 0);
-                point.isLastPoint = (i == points.length-1);
-                
-                talon.motor.pushMotionProfileTrajectory(point);
-            }
-            for(FrcCANTalon talon:rightMotors)
-            {
-                point.position = points[i][1][0];
-                point.velocity = points[i][1][1];
-                point.timeDur = getTrajectoryDuration((int)points[i][1][2]);
-                point.profileSlotSelect0 = pidSlot;
-                point.profileSlotSelect1 = pidSlot;
-                point.zeroPos = (i == 0);
-                point.isLastPoint = (i == points.length-1);
+            point.position = points[i][0][0];
+            point.velocity = points[i][0][1];
+            point.timeDur = getTrajectoryDuration((int)points[i][0][2]);
+            point.profileSlotSelect0 = pidSlot;
+            point.profileSlotSelect1 = pidSlot;
+            point.zeroPos = (i == 0);
+            point.isLastPoint = (i == points.length-1);
 
-                talon.motor.pushMotionProfileTrajectory(point);
-            }
+            leftMaster.motor.pushMotionProfileTrajectory(point);
+
+            point.position = points[i][1][0];
+            point.velocity = points[i][1][1];
+            point.timeDur = getTrajectoryDuration((int)points[i][1][2]);
+            point.profileSlotSelect0 = pidSlot;
+            point.profileSlotSelect1 = pidSlot;
+            point.zeroPos = (i == 0);
+            point.isLastPoint = (i == points.length-1);
+
+            rightMaster.motor.pushMotionProfileTrajectory(point);
         }
         if(endIndex >= points.length)
         {
