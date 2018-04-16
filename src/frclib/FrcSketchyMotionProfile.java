@@ -25,7 +25,10 @@ package frclib;
 import com.ctre.phoenix.motion.MotionProfileStatus;
 import com.ctre.phoenix.motion.SetValueMotionProfile;
 import com.ctre.phoenix.motion.TrajectoryPoint;
+import com.ctre.phoenix.motion.TrajectoryPoint.TrajectoryDuration;
 import com.ctre.phoenix.motorcontrol.ControlMode;
+
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Notifier;
 import trclib.TrcPidController.PidCoefficients;
 import trclib.TrcRobot;
@@ -34,8 +37,7 @@ import trclib.TrcTaskMgr;
 
 /**
  * This is a super sketchy implementation of motion profiling. It streams the points to the buffer, and then executes
- * it. For some reason, I couldn't find any way to set the TrajectoryPoint time duration, even though it's there in the
- * examples. I guess we'll find out. Also, the points are processed every 5ms, since the usual time duration is 10ms.
+ * it. Also, the points are processed 2x as fast as the first point.
  * This was written by using these resources:
  * https://github.com/CrossTheRoadElec/Phoenix-Examples-Languages/tree/master/Java/MotionProfile/src/org/usfirst/frc/team217/robot
  * https://github.com/CrossTheRoadElec/Phoenix-Documentation/blob/master/Talon%20SRX%20Motion%20Profile%20Reference%20Manual.pdf
@@ -142,8 +144,14 @@ public class FrcSketchyMotionProfile
                 this.points[i][j][2] = points[i][j][2];
             }
         }
-        notifier.startPeriodic(0.005);
+        double duration = points[0][0][0];
+        double updatePeriod = duration/2; // 2x as fast as trajectory duration
+        notifier.startPeriodic(updatePeriod/1000d); // Convert from milliseconds to seconds
         setTaskEnabled(true);
+        for(FrcCANTalon talon:allMotors)
+        {
+            talon.motor.changeMotionControlFramePeriod((int)updatePeriod);
+        }
     }
 
     public void cancel()
@@ -256,6 +264,24 @@ public class FrcSketchyMotionProfile
             talon.motor.processMotionProfileBuffer();
         }
     }
+    
+    /**
+     * Get a TrajectoryDuration object with the specified time
+     * @param duration Milliseconds for the duration
+     * @return TrajectoryDuration object representing the supplied time, if available
+     */
+    private TrajectoryDuration getTrajectoryDuration(int duration)
+    {
+        TrajectoryDuration dur = TrajectoryDuration.Trajectory_Duration_0ms;
+        dur = dur.valueOf(duration);
+        
+        if(dur.value != duration)
+        {
+            DriverStation.reportError("Duration not supported!", false);
+        }
+        
+        return dur;
+    }
 
     private void fillPointBuffer()
     {
@@ -279,10 +305,10 @@ public class FrcSketchyMotionProfile
             {
                 talon.motor.clearMotionProfileTrajectories();
                 talon.motor.clearMotionProfileHasUnderrun(0);
+                talon.motor.configMotionProfileTrajectoryPeriod(0, 0); // Set the base trajectory period to 0
             }
         }
 
-        // TODO: Figure out how to set the TrajectoryPoint time duration. The methods aren't here for some reason.
         TrajectoryPoint point = new TrajectoryPoint();
         for(int i = startIndex; i < endIndex; i++)
         {
@@ -290,19 +316,23 @@ public class FrcSketchyMotionProfile
             {
                 point.position = points[i][0][0];
                 point.velocity = points[i][0][1];
+                point.timeDur = getTrajectoryDuration((int)points[i][0][2]);
                 point.headingDeg = 0;
                 point.profileSlotSelect0 = pidSlot;
+                point.profileSlotSelect1 = pidSlot;
                 point.zeroPos = (i == 0);
                 point.isLastPoint = (i == points.length-1);
-
+                
                 talon.motor.pushMotionProfileTrajectory(point);
             }
             for(FrcCANTalon talon:rightMotors)
             {
                 point.position = points[i][1][0];
                 point.velocity = points[i][1][1];
+                point.timeDur = getTrajectoryDuration((int)points[i][0][2]);
                 point.headingDeg = 0;
                 point.profileSlotSelect0 = pidSlot;
+                point.profileSlotSelect1 = pidSlot;
                 point.zeroPos = (i == 0);
                 point.isLastPoint = (i == points.length-1);
 
