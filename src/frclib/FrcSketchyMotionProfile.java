@@ -48,6 +48,7 @@ public class FrcSketchyMotionProfile
     private static final int MAX_POINT_BUFFER_SIZE = 2048; // Max number of points talon buffer can hold
     private static final int PERIODIC_BUFFER_FILL_SIZE = 512; // Number of points to add to buffer periodically
     private static final int MIN_POINTS_IN_TALON = 10;
+    private static final TrajectoryDuration DEFAULT_TRAJECTORY_DURATION = TrajectoryDuration.Trajectory_Duration_10ms;
 
     private enum State
     {
@@ -278,6 +279,7 @@ public class FrcSketchyMotionProfile
         if(dur.value != duration)
         {
             DriverStation.reportError("Duration not supported!", false);
+            dur = DEFAULT_TRAJECTORY_DURATION;
         }
         
         return dur;
@@ -317,7 +319,6 @@ public class FrcSketchyMotionProfile
                 point.position = points[i][0][0];
                 point.velocity = points[i][0][1];
                 point.timeDur = getTrajectoryDuration((int)points[i][0][2]);
-                point.headingDeg = 0;
                 point.profileSlotSelect0 = pidSlot;
                 point.profileSlotSelect1 = pidSlot;
                 point.zeroPos = (i == 0);
@@ -329,8 +330,7 @@ public class FrcSketchyMotionProfile
             {
                 point.position = points[i][1][0];
                 point.velocity = points[i][1][1];
-                point.timeDur = getTrajectoryDuration((int)points[i][0][2]);
-                point.headingDeg = 0;
+                point.timeDur = getTrajectoryDuration((int)points[i][1][2]);
                 point.profileSlotSelect0 = pidSlot;
                 point.profileSlotSelect1 = pidSlot;
                 point.zeroPos = (i == 0);
