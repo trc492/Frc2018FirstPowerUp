@@ -70,6 +70,11 @@ public class FrcSketchyMotionProfile
     private MotionProfileStatus[] statuses;
     private boolean cancelled = false;
 
+    public FrcSketchyMotionProfile(String instanceName, PidCoefficients pidCoefficients, double inchesPerEncoderTick)
+    {
+        this(instanceName, pidCoefficients, 0, inchesPerEncoderTick);
+    }
+
     public FrcSketchyMotionProfile(String instanceName, PidCoefficients pidCoefficients, int pidSlot, double inchesPerEncoderTick)
     {
         this.pidCoefficients = pidCoefficients;
