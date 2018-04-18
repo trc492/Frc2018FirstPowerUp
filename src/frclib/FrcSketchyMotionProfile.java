@@ -62,7 +62,7 @@ public class FrcSketchyMotionProfile
 
     private PidCoefficients pidCoefficients;
     private int pidSlot;
-    private double inchesPerEncoderTick;
+    private double worldUnitsPerEncoderTick;
     private FrcCANTalon leftMaster, rightMaster;
     private TrcTaskMgr.TaskObject taskObject;
     private double[][][] points;
@@ -75,16 +75,16 @@ public class FrcSketchyMotionProfile
     private TrcEvent onFinishedEvent;
     private double timedOutTime;
 
-    public FrcSketchyMotionProfile(String instanceName, PidCoefficients pidCoefficients, double inchesPerEncoderTick)
+    public FrcSketchyMotionProfile(String instanceName, PidCoefficients pidCoefficients, double worldUnitsPerEncoderTick)
     {
-        this(instanceName, pidCoefficients, 0, inchesPerEncoderTick);
+        this(instanceName, pidCoefficients, 0, worldUnitsPerEncoderTick);
     }
 
-    public FrcSketchyMotionProfile(String instanceName, PidCoefficients pidCoefficients, int pidSlot, double inchesPerEncoderTick)
+    public FrcSketchyMotionProfile(String instanceName, PidCoefficients pidCoefficients, int pidSlot, double worldUnitsPerEncoderTick)
     {
         this.pidCoefficients = pidCoefficients;
         this.pidSlot = pidSlot;
-        this.inchesPerEncoderTick = inchesPerEncoderTick;
+        this.worldUnitsPerEncoderTick = worldUnitsPerEncoderTick;
 
         sm = new TrcStateMachine<>(instanceName);
         notifier = new Notifier(this::processPointBuffer);
@@ -157,6 +157,7 @@ public class FrcSketchyMotionProfile
      * @param points 2d array of points of dimension [numPoints, 2, 3].
      *               In the 2nd dimension, index 0 is left motors, index 1 is right motors.
      *               In the 3rd dimension, index 0 is position, index 1 is velocity, and index 2 is timestep
+     *               Remember to match units with worldUnitsPerEncoderTick!
      */
     public void start(double[][][] points)
     {
@@ -168,6 +169,7 @@ public class FrcSketchyMotionProfile
      * @param points 2d array of points of dimension [numPoints, 2, 3].
      *               In the 2nd dimension, index 0 is left motors, index 1 is right motors.
      *               In the 3rd dimension, index 0 is position, index 1 is velocity, and index 2 is timestep
+     *               Remember to match units with worldUnitsPerEncoderTick!
      * @param event Event to signal when path has been followed
      */
     public void start(double[][][] points, TrcEvent event)
@@ -180,6 +182,7 @@ public class FrcSketchyMotionProfile
      * @param points 2d array of points of dimension [numPoints, 2, 3].
      *               In the 2nd dimension, index 0 is left motors, index 1 is right motors.
      *               In the 3rd dimension, index 0 is position, index 1 is velocity, and index 2 is timestep
+     *               Remember to match units with worldUnitsPerEncoderTick!
      * @param event Event to signal when path has been followed
      * @param timeout Maximum number of seconds to spend following the path. 0.0 means no timeout.
      */
@@ -210,17 +213,21 @@ public class FrcSketchyMotionProfile
         statuses = new MotionProfileStatus[]{new MotionProfileStatus(), new MotionProfileStatus()};
 
         this.points = new double[points.length][points[0].length][points[1].length];
+        double duration = points[0][0][2];
         for(int i = 0; i < points.length; i++)
         {
-            for(int j = 0; j < 2; j++)
+            for(int j = 0; j < points[0].length; j++)
             {
-                this.points[i][j][0] = points[i][j][0] / inchesPerEncoderTick;
-                this.points[i][j][1] = points[i][j][1] / inchesPerEncoderTick;
+                this.points[i][j][0] = points[i][j][0] / worldUnitsPerEncoderTick;
+                this.points[i][j][1] = points[i][j][1] / worldUnitsPerEncoderTick;
                 this.points[i][j][2] = points[i][j][2];
+                if(points[i][j][2] < duration)
+                {
+                    duration = points[i][j][2];
+                }
             }
         }
 
-        double duration = points[0][0][0];
         double updatePeriod = duration/2; // 2x as fast as trajectory duration
         notifier.startPeriodic(updatePeriod/1000d); // Convert from milliseconds to seconds
 
