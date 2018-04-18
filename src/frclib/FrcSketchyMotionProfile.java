@@ -30,10 +30,13 @@ import com.ctre.phoenix.motorcontrol.ControlMode;
 
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Notifier;
+
+import trclib.TrcEvent;
 import trclib.TrcPidController.PidCoefficients;
 import trclib.TrcRobot;
 import trclib.TrcStateMachine;
 import trclib.TrcTaskMgr;
+import trclib.TrcUtil;
 
 import java.security.InvalidParameterException;
 
@@ -69,6 +72,8 @@ public class FrcSketchyMotionProfile
     private Notifier notifier;
     private MotionProfileStatus[] statuses;
     private boolean cancelled = false;
+    private TrcEvent onFinishedEvent;
+    private double timedOutTime;
 
     public FrcSketchyMotionProfile(String instanceName, PidCoefficients pidCoefficients, double inchesPerEncoderTick)
     {
@@ -87,6 +92,11 @@ public class FrcSketchyMotionProfile
         taskObject = TrcTaskMgr.getInstance().createTask(instanceName + ".postContinuousTask", this::postContinuousTask);
     }
 
+    /**
+     * Sets the motors on the left side of the drive train.
+     * @param leftMotors List of motors on the left side of the drive train. The first motor in the list will be used
+     *                   as the master motor, and all others will be set as slaves.
+     */
     public void setLeftMotors(FrcCANTalon...leftMotors)
     {
         if(leftMotors.length == 0)
@@ -112,6 +122,11 @@ public class FrcSketchyMotionProfile
         }
     }
 
+    /**
+     * Sets the motors on the right side of the drive train.
+     * @param rightMotors List of motors on the right side of the drive train. The first motor in the list will be used
+     *                    as the master motor, and all others will be set as slaves.
+     */
     public void setRightMotors(FrcCANTalon...rightMotors)
     {
         if(rightMotors.length == 0)
@@ -145,6 +160,31 @@ public class FrcSketchyMotionProfile
      */
     public void start(double[][][] points)
     {
+        start(points, null, 0.0);
+    }
+
+    /**
+     * Follow the supplied path using motion profiling.
+     * @param points 2d array of points of dimension [numPoints, 2, 3].
+     *               In the 2nd dimension, index 0 is left motors, index 1 is right motors.
+     *               In the 3rd dimension, index 0 is position, index 1 is velocity, and index 2 is timestep
+     * @param event Event to signal when path has been followed
+     */
+    public void start(double[][][] points, TrcEvent event)
+    {
+        start(points, event, 0.0);
+    }
+
+    /**
+     * Follow the supplied path using motion profiling.
+     * @param points 2d array of points of dimension [numPoints, 2, 3].
+     *               In the 2nd dimension, index 0 is left motors, index 1 is right motors.
+     *               In the 3rd dimension, index 0 is position, index 1 is velocity, and index 2 is timestep
+     * @param event Event to signal when path has been followed
+     * @param timeout Maximum number of seconds to spend following the path. 0.0 means no timeout.
+     */
+    public void start(double[][][] points, TrcEvent event, double timeout)
+    {
         if(points[0].length != 2 || points[0][0].length != 3)
         {
             throw new IllegalArgumentException("path must be 3d array with size [numPoints, 2, 3]!");
@@ -153,6 +193,18 @@ public class FrcSketchyMotionProfile
         if(leftMaster == null || rightMaster == null)
         {
             throw new IllegalStateException("Left and right motors must be set before calling start()!");
+        }
+
+        this.onFinishedEvent = event;
+        if(event != null)
+        {
+            event.clear();
+        }
+
+        this.timedOutTime = -1;
+        if(timeout > 0.0)
+        {
+            this.timedOutTime = TrcUtil.getCurrentTime() + timeout;
         }
 
         statuses = new MotionProfileStatus[]{new MotionProfileStatus(), new MotionProfileStatus()};
@@ -177,19 +229,31 @@ public class FrcSketchyMotionProfile
         rightMaster.motor.changeMotionControlFramePeriod((int)updatePeriod);
     }
 
+    /**
+     * Is path currently being followed?
+     * @return True if yes, false otherwise
+     */
     public boolean isActive()
     {
         return sm.isEnabled();
     }
 
+    /**
+     * Has this task been cancelled?
+     * @return True if someone has called the cancel() method while it was running, false otherwise
+     */
     public boolean isCancelled()
     {
         return cancelled;
     }
 
+    /**
+     * Stop following the path and cancel the event.
+     */
     public void cancel()
     {
         cancelled = true;
+        if(onFinishedEvent != null) onFinishedEvent.cancel();
         stop();
     }
 
@@ -216,6 +280,11 @@ public class FrcSketchyMotionProfile
     private void postContinuousTask(TrcTaskMgr.TaskType taskType, TrcRobot.RunMode runMode)
     {
         if(!sm.isEnabled()) return;
+
+        if(timedOutTime != -1 && TrcUtil.getCurrentTime() >= timedOutTime)
+        {
+            sm.setState(State.DONE);
+        }
 
         State state = sm.getState();
         fillStatuses();
@@ -248,6 +317,7 @@ public class FrcSketchyMotionProfile
 
             case DONE:
                 stop();
+                if(onFinishedEvent != null) onFinishedEvent.set(true);
                 break;
         }
     }
