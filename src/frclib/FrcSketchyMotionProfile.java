@@ -216,7 +216,7 @@ public class FrcSketchyMotionProfile
         double duration = points[0][0][2];
         for(int i = 0; i < points.length; i++)
         {
-            for(int j = 0; j < points[0].length; j++)
+            for(int j = 0; j < points[i].length; j++)
             {
                 this.points[i][j][0] = points[i][j][0] / worldUnitsPerEncoderTick;
                 this.points[i][j][1] = points[i][j][1] / worldUnitsPerEncoderTick;
