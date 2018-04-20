@@ -254,13 +254,8 @@ public class RobotInfo
     //
     public static final double PICKUP_FREE_SPIN_CURRENT         = 10.0;
     public static final double PICKUP_STALL_CURRENT             = 45.0;
-    public static final double PICKUP_TELEOP_POWER              = 0.6; // TODO: This needs to be calibrated
+    public static final double PICKUP_TELEOP_POWER              = 0.6;
     public static final double PICKUP_HOLD_CUBE_POWER           = 0.1;
-
-    //
-    // Winch subsystem.
-    //
-    public static final double WINCH_TELEOP_POWER               = 1.0; // TODO: This needs to be calibrated
 
     //
     // Flipper subsystem.
@@ -277,7 +272,7 @@ public class RobotInfo
     public static final double AUTO_PICKUP_MOVE_POWER           = 0.6;      // 60% power
     public static final double FIND_CUBE_X_TOLERANCE            = 1.0;      // 1-in
     public static final double FIND_CUBE_STRAFE_POWER           = 0.6;      // 60% power
-    public static final double AUTO_PICKUP_CUBE_DISTANCE        = 60.0;//24.0;     // TODO: tune this.
+    public static final double AUTO_PICKUP_CUBE_DISTANCE        = 60.0;//24.0;
 
     //
     // CmdPowerUpAuto variables.
