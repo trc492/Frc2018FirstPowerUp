@@ -95,177 +95,105 @@
           "0,0": {
             "size": [
               16,
-              2
+              26
             ],
             "content": {
-              "_type": "Text View",
-              "_source0": "network_table:///SmartDashboard/00",
-              "_title": "SmartDashboard/00"
-            }
-          },
-          "0,3": {
-            "size": [
-              16,
-              2
-            ],
-            "content": {
-              "_type": "Text View",
-              "_source0": "network_table:///SmartDashboard/01",
-              "_title": "SmartDashboard/01"
-            }
-          },
-          "0,6": {
-            "size": [
-              16,
-              2
-            ],
-            "content": {
-              "_type": "Text View",
-              "_source0": "network_table:///SmartDashboard/02",
-              "_title": "SmartDashboard/02"
-            }
-          },
-          "0,9": {
-            "size": [
-              16,
-              2
-            ],
-            "content": {
-              "_type": "Text View",
-              "_source0": "network_table:///SmartDashboard/03",
-              "_title": "SmartDashboard/03"
-            }
-          },
-          "0,12": {
-            "size": [
-              16,
-              2
-            ],
-            "content": {
-              "_type": "Text View",
-              "_source0": "network_table:///SmartDashboard/04",
-              "_title": "SmartDashboard/04"
-            }
-          },
-          "0,15": {
-            "size": [
-              16,
-              3
-            ],
-            "content": {
-              "_type": "Text View",
-              "_source0": "network_table:///SmartDashboard/05",
-              "_title": "SmartDashboard/05"
-            }
-          },
-          "0,18": {
-            "size": [
-              16,
-              2
-            ],
-            "content": {
-              "_type": "Text View",
-              "_source0": "network_table:///SmartDashboard/06",
-              "_title": "SmartDashboard/06"
-            }
-          },
-          "0,21": {
-            "size": [
-              16,
-              2
-            ],
-            "content": {
-              "_type": "Text View",
-              "_source0": "network_table:///SmartDashboard/07",
-              "_title": "SmartDashboard/07"
+              "_type": "List Layout",
+              "_title": "SmartDashboard 0-7",
+              "_children": [
+                {
+                  "_type": "Text View",
+                  "_source0": "network_table:///SmartDashboard/00",
+                  "_title": "SmartDashboard/00"
+                },
+                {
+                  "_type": "Text View",
+                  "_source0": "network_table:///SmartDashboard/01",
+                  "_title": "SmartDashboard/01"
+                },
+                {
+                  "_type": "Text View",
+                  "_source0": "network_table:///SmartDashboard/02",
+                  "_title": "SmartDashboard/02"
+                },
+                {
+                  "_type": "Text View",
+                  "_source0": "network_table:///SmartDashboard/03",
+                  "_title": "SmartDashboard/03"
+                },
+                {
+                  "_type": "Text View",
+                  "_source0": "network_table:///SmartDashboard/04",
+                  "_title": "SmartDashboard/04"
+                },
+                {
+                  "_type": "Text View",
+                  "_source0": "network_table:///SmartDashboard/05",
+                  "_title": "SmartDashboard/05"
+                },
+                {
+                  "_type": "Text View",
+                  "_source0": "network_table:///SmartDashboard/06",
+                  "_title": "SmartDashboard/06"
+                },
+                {
+                  "_type": "Text View",
+                  "_source0": "network_table:///SmartDashboard/07",
+                  "_title": "SmartDashboard/07"
+                }
+              ]
             }
           },
           "16,0": {
             "size": [
               16,
-              2
+              26
             ],
             "content": {
-              "_type": "Text View",
-              "_source0": "network_table:///SmartDashboard/08",
-              "_title": "SmartDashboard/08"
-            }
-          },
-          "16,3": {
-            "size": [
-              16,
-              2
-            ],
-            "content": {
-              "_type": "Text View",
-              "_source0": "network_table:///SmartDashboard/09",
-              "_title": "SmartDashboard/09"
-            }
-          },
-          "16,6": {
-            "size": [
-              16,
-              2
-            ],
-            "content": {
-              "_type": "Text View",
-              "_source0": "network_table:///SmartDashboard/10",
-              "_title": "SmartDashboard/10"
-            }
-          },
-          "16,9": {
-            "size": [
-              16,
-              2
-            ],
-            "content": {
-              "_type": "Text View",
-              "_source0": "network_table:///SmartDashboard/11",
-              "_title": "SmartDashboard/11"
-            }
-          },
-          "16,12": {
-            "size": [
-              16,
-              2
-            ],
-            "content": {
-              "_type": "Text View",
-              "_source0": "network_table:///SmartDashboard/12",
-              "_title": "SmartDashboard/12"
-            }
-          },
-          "16,15": {
-            "size": [
-              16,
-              2
-            ],
-            "content": {
-              "_type": "Text View",
-              "_source0": "network_table:///SmartDashboard/13",
-              "_title": "SmartDashboard/13"
-            }
-          },
-          "16,18": {
-            "size": [
-              16,
-              2
-            ],
-            "content": {
-              "_type": "Text View",
-              "_source0": "network_table:///SmartDashboard/14",
-              "_title": "SmartDashboard/14"
-            }
-          },
-          "16,21": {
-            "size": [
-              16,
-              2
-            ],
-            "content": {
-              "_type": "Text View",
-              "_source0": "network_table:///SmartDashboard/15",
-              "_title": "SmartDashboard/15"
+              "_type": "List Layout",
+              "_title": "SmartDashboard 8-15",
+              "_children": [
+                {
+                  "_type": "Text View",
+                  "_source0": "network_table:///SmartDashboard/08",
+                  "_title": "SmartDashboard/08"
+                },
+                {
+                  "_type": "Text View",
+                  "_source0": "network_table:///SmartDashboard/09",
+                  "_title": "SmartDashboard/09"
+                },
+                {
+                  "_type": "Text View",
+                  "_source0": "network_table:///SmartDashboard/10",
+                  "_title": "SmartDashboard/10"
+                },
+                {
+                  "_type": "Text View",
+                  "_source0": "network_table:///SmartDashboard/11",
+                  "_title": "SmartDashboard/11"
+                },
+                {
+                  "_type": "Text View",
+                  "_source0": "network_table:///SmartDashboard/12",
+                  "_title": "SmartDashboard/12"
+                },
+                {
+                  "_type": "Text View",
+                  "_source0": "network_table:///SmartDashboard/13",
+                  "_title": "SmartDashboard/13"
+                },
+                {
+                  "_type": "Text View",
+                  "_source0": "network_table:///SmartDashboard/14",
+                  "_title": "SmartDashboard/14"
+                },
+                {
+                  "_type": "Text View",
+                  "_source0": "network_table:///SmartDashboard/15",
+                  "_title": "SmartDashboard/15"
+                }
+              ]
             }
           }
         }
@@ -594,57 +522,34 @@
         "tiles": {
           "0,0": {
             "size": [
-              8,
-              6
+              13,
+              14
             ],
             "content": {
-              "_type": "Text View",
-              "_source0": "network_table:///SmartDashboard/Power/totalEnergy",
-              "_title": "totalEnergy"
-            }
-          },
-          "8,0": {
-            "size": [
-              8,
-              6
-            ],
-            "content": {
-              "_type": "Text View",
-              "_source0": "network_table:///SmartDashboard/Power/pdpTotalCurrent",
-              "_title": "pdpTotalCurrent"
-            }
-          },
-          "0,8": {
-            "size": [
-              8,
-              6
-            ],
-            "content": {
-              "_type": "Text View",
-              "_source0": "network_table:///SmartDashboard/Power/elevatorCurrent",
-              "_title": "elevatorCurrent"
-            }
-          },
-          "8,8": {
-            "size": [
-              8,
-              6
-            ],
-            "content": {
-              "_type": "Text View",
-              "_source0": "network_table:///SmartDashboard/Power/pickupCurrent",
-              "_title": "pickupCurrent"
-            }
-          },
-          "16,8": {
-            "size": [
-              8,
-              6
-            ],
-            "content": {
-              "_type": "Text View",
-              "_source0": "network_table:///SmartDashboard/Power/winchCurrent",
-              "_title": "winchCurrent"
+              "_type": "List Layout",
+              "_title": "List",
+              "_children": [
+                {
+                  "_type": "Text View",
+                  "_source0": "network_table:///SmartDashboard/Power/totalEnergy",
+                  "_title": "totalEnergy"
+                },
+                {
+                  "_type": "Text View",
+                  "_source0": "network_table:///SmartDashboard/Power/elevatorCurrent",
+                  "_title": "elevatorCurrent"
+                },
+                {
+                  "_type": "Text View",
+                  "_source0": "network_table:///SmartDashboard/Power/pickupCurrent",
+                  "_title": "pickupCurrent"
+                },
+                {
+                  "_type": "Text View",
+                  "_source0": "network_table:///SmartDashboard/Power/winchCurrent",
+                  "_title": "winchCurrent"
+                }
+              ]
             }
           }
         }

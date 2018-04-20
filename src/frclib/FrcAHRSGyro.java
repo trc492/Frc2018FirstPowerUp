@@ -25,6 +25,8 @@ package frclib;
 import com.kauailabs.navx.frc.AHRS;
 
 import edu.wpi.first.wpilibj.SPI.Port;
+import edu.wpi.first.wpilibj.Sendable;
+import edu.wpi.first.wpilibj.smartdashboard.SendableBuilder;
 import trclib.TrcDbgTrace;
 import trclib.TrcGyro;
 import trclib.TrcUtil;
@@ -35,10 +37,12 @@ public class FrcAHRSGyro extends TrcGyro
     private double xSign = 1.0;
     private double ySign = 1.0;
     private double zSign = 1.0;
+    private String instanceName;
 
     public FrcAHRSGyro(final String instanceName, Port port)
     {
         super(instanceName, 3, GYRO_HAS_X_AXIS | GYRO_HAS_Y_AXIS | GYRO_HAS_Z_AXIS, null);
+        this.instanceName = instanceName;
         this.ahrs = new AHRS(port);
     }   //FrcAHRSGyro
 
@@ -273,5 +277,46 @@ public class FrcAHRSGyro extends TrcGyro
     {
         ahrs.reset();
     }   //resetZIntegrator
+
+    public GyroInfo getGyroInfo()
+    {
+        return new GyroInfo(instanceName);
+    }
+
+    private class GyroInfo implements Sendable
+    {
+        private String subsystem;
+        private String name;
+        public GyroInfo(String name)
+        {
+            this.name = name;
+        }
+
+        @Override
+        public String getName() {
+            return name;
+        }
+
+        @Override
+        public void setName(String name) {
+            this.name = name;
+        }
+
+        @Override
+        public String getSubsystem() {
+            return subsystem;
+        }
+
+        @Override
+        public void setSubsystem(String subsystem) {
+            this.subsystem = subsystem;
+        }
+
+        @Override
+        public void initSendable(SendableBuilder builder) {
+            builder.setSmartDashboardType("Gyro");
+            builder.addDoubleProperty("Value", () -> FrcAHRSGyro.this.getZHeading().value, null);
+        }
+    }
 
 }   //class FrcAHRSGyro

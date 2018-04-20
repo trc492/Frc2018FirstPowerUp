@@ -23,6 +23,8 @@
 package frclib;
 
 import edu.wpi.first.wpilibj.PowerDistributionPanel;
+import edu.wpi.first.wpilibj.Sendable;
+import edu.wpi.first.wpilibj.smartdashboard.SendableBuilder;
 import trclib.TrcDbgTrace;
 import trclib.TrcRobot;
 import trclib.TrcTaskMgr;
@@ -246,5 +248,57 @@ public class FrcPdp extends PowerDistributionPanel
             dbgTrace.traceExit(funcName, TrcDbgTrace.TraceLevel.TASK);
         }
     }   //pdpEnergyTask
+
+    public PdpInfo getPdpInfo()
+    {
+        return new PdpInfo(moduleName);
+    }
+
+    private class PdpInfo implements Sendable
+    {
+        private String name;
+        private String subsystem;
+
+        public PdpInfo(String name)
+        {
+            this.name = name;
+        }
+
+        @Override
+        public String getName()
+        {
+            return name;
+        }
+
+        @Override
+        public void setName(String name)
+        {
+            this.name = name;
+        }
+
+        @Override
+        public String getSubsystem()
+        {
+            return subsystem;
+        }
+
+        @Override
+        public void setSubsystem(String subsystem)
+        {
+            this.subsystem = subsystem;
+        }
+
+        @Override
+        public void initSendable(SendableBuilder builder)
+        {
+            builder.setSmartDashboardType("PowerDistributionPanel");
+            for (int i = 0; i < kPDPChannels; ++i) {
+                final int chan = i;
+                builder.addDoubleProperty("Chan" + i, () -> FrcPdp.this.getCurrent(chan), null);
+            }
+            builder.addDoubleProperty("Voltage", FrcPdp.this::getVoltage, null);
+            builder.addDoubleProperty("TotalCurrent", FrcPdp.this::getTotalCurrent, null);
+        }
+    }
 
 }   //class FrcPdp

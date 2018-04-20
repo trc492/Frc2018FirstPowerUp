@@ -590,6 +590,7 @@ public class Robot extends FrcRobotBase
                 HalDashboard.putNumber("Power/winchCurrent", winch.getCurrent());
                 HalDashboard.putNumber("Power/pickupCurrent", cubePickup.getPickupCurrent());
                 HalDashboard.putNumber("Power/totalEnergy", battery.getTotalEnergy());
+                HalDashboard.putData("Power/pdpInfo", pdp.getPdpInfo());
                 if (runMode == RunMode.TELEOP_MODE)
                 {
                     globalTracer.traceInfo(funcName, "[%.3f] Battery: currVoltage=%.2f, lowestVoltage=%.2f",
@@ -612,7 +613,7 @@ public class Robot extends FrcRobotBase
 
                 HalDashboard.putNumber("DriveBase/xPos", xPos);
                 HalDashboard.putNumber("DriveBase/yPos", yPos);
-                HalDashboard.putNumber("DriveBase/heading", heading);
+                HalDashboard.putData("DriveBase/heading", gyro.getGyroInfo());
                 //
                 // DriveBase debug info.
                 //
