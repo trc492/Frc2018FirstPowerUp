@@ -398,6 +398,23 @@ public class Robot extends FrcRobotBase
     {
         final String funcName = "robotStartMode";
 
+        if (tts != null)
+        {
+            if (runMode == RunMode.DISABLED_MODE)
+            {
+                // Robot is safe.
+                // Note: "disaibled" is not a typo. It forces the speech board to pronounce it correctly.
+                tts.speak("Robot disaibled");
+                nextTimeToSpeakInSeconds = TrcUtil.getCurrentTime() + IDLE_PERIOD_SECONDS;
+            }
+            else
+            {
+                // Robot is unsafe
+                tts.speak("Robot enabled, stand clear");
+                nextTimeToSpeakInSeconds = TrcUtil.getCurrentTime() + SPEAK_PERIOD_SECONDS;
+            }
+        }
+
         if (runMode != RunMode.DISABLED_MODE)
         {
             setTraceLogEnabled(true);
@@ -413,23 +430,6 @@ public class Robot extends FrcRobotBase
             targetHeading = 0.0;
 
             dashboard.clearDisplay();
-
-            if (tts != null)
-            {
-                if (runMode == RunMode.DISABLED_MODE)
-                {
-                    // Robot is safe.
-                    // Note: "disaibled" is not a typo. It forces the speech board to pronounce it correctly.
-                    tts.speak("Robot disaibled");
-                    nextTimeToSpeakInSeconds = TrcUtil.getCurrentTime() + IDLE_PERIOD_SECONDS;
-                }
-                else
-                {
-                    // Robot is unsafe
-                    tts.speak("Robot enabled, stand clear");
-                    nextTimeToSpeakInSeconds = TrcUtil.getCurrentTime() + SPEAK_PERIOD_SECONDS;
-                }
-            }
 
             if (frontRanger != null)
             {
