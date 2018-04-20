@@ -50,7 +50,7 @@ public class TrcAnalogTrigger<D>
          *
          * @param currZone specifies the zone it is going into.
          * @param prevZone specifies the zone it is coming out of.
-         * @param sensorValue specifies the actual sensor value.
+         * @param zoneValue specifies the actual sensor value.
          */
         void triggerEvent(int currZone, int prevZone, double zoneValue);
 

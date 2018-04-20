@@ -269,6 +269,36 @@ public class TrcPidMotor
     }   //setMsgTracer
 
     /**
+     * This method returns the specified motor object.
+     *
+     * @param primary specifies true to get the primary motor object, false to get the secondary.
+     * @return specified motor object.
+     */
+    public TrcMotor getMotor(boolean primary)
+    {
+        final String funcName = "getMotor";
+        TrcMotor motor = primary? motor1: motor2;
+
+        if (debugEnabled)
+        {
+            dbgTrace.traceEnter(funcName, TrcDbgTrace.TraceLevel.API, "primary=%b", primary);
+            dbgTrace.traceExit(funcName, TrcDbgTrace.TraceLevel.API, "=%s", motor);
+        }
+
+        return motor;
+    }   //getMotor
+
+    /**
+     * This method returns the primary motor object.
+     *
+     * @return primary motor object.
+     */
+    public TrcMotor getMotor()
+    {
+        return getMotor(true);
+    }   //getMotor
+
+    /**
      * This method returns the state of the PID motor.
      *
      * @return true if PID motor is active, false otherwise.
