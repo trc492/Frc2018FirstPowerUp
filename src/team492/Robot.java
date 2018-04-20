@@ -98,8 +98,6 @@ public class Robot extends FrcRobotBase
     public HalDashboard dashboard = HalDashboard.getInstance();
 
     public double targetHeading = 0.0;
-    public double xPowerLimit = 0.7;
-    public double yPowerLimit = 0.7;
 
     private double nextUpdateTime = TrcUtil.getCurrentTime();
 
@@ -596,7 +594,6 @@ public class Robot extends FrcRobotBase
                 {
                     globalTracer.traceInfo(funcName, "[%.3f] Battery: currVoltage=%.2f, lowestVoltage=%.2f",
                         currTime, battery.getVoltage(), battery.getLowestVoltage());
-                    double totalEnergy = battery.getTotalEnergy();
                     globalTracer.traceInfo(
                         funcName, "[%.3f] Total=%.2fA: Elevator=%.2fA, Winch=%.2fA, Pickup=%.2fA",
                         currTime,
