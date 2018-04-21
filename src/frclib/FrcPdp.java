@@ -249,7 +249,7 @@ public class FrcPdp extends PowerDistributionPanel
         }
     }   //pdpEnergyTask
 
-    public PdpInfo getPdpInfo()
+    public Sendable getPdpSendable()
     {
         return new PdpInfo(moduleName);
     }
