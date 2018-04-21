@@ -22,10 +22,7 @@
 
 package team492;
 
-import java.util.Date;
-
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
-
 import edu.wpi.cscore.UsbCamera;
 import edu.wpi.first.wpilibj.AnalogInput;
 import edu.wpi.first.wpilibj.CameraServer;
@@ -34,7 +31,9 @@ import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.DriverStation.MatchType;
 import edu.wpi.first.wpilibj.I2C;
 import edu.wpi.first.wpilibj.SPI;
+import edu.wpi.first.wpilibj.Sendable;
 import edu.wpi.first.wpilibj.SerialPort;
+import edu.wpi.first.wpilibj.smartdashboard.SendableBuilder;
 import frclib.FrcAHRSGyro;
 import frclib.FrcAnalogInput;
 import frclib.FrcCANTalon;
@@ -59,6 +58,8 @@ import trclib.TrcPidDrive;
 import trclib.TrcRobot.RunMode;
 import trclib.TrcRobotBattery;
 import trclib.TrcUtil;
+
+import java.util.Date;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -618,6 +619,9 @@ public class Robot extends FrcRobotBase
                 HalDashboard.putData("DriveBase/rf_wheel", rightFrontWheel.getEncoderSendable());
                 HalDashboard.putData("DriveBase/lr_wheel", leftRearWheel.getEncoderSendable());
                 HalDashboard.putData("DriveBase/rr_wheel", rightRearWheel.getEncoderSendable());
+
+                HalDashboard.putData("DriveBase/Mecanum_Drive", createMecanumDriveInfo());
+
                 //
                 // DriveBase debug info.
                 //
@@ -671,6 +675,31 @@ public class Robot extends FrcRobotBase
             }
         }
     }   //updateDashboard
+
+    private Sendable createMecanumDriveInfo()
+    {
+        return new Sendable() {
+            private String name, subsystem;
+            @Override
+            public String getName() { return name; }
+            @Override
+            public void setName(String name) { this.name = name;}
+            @Override
+            public String getSubsystem() { return subsystem; }
+            @Override
+            public void setSubsystem(String subsystem) { this.subsystem = subsystem; }
+
+            @Override
+            public void initSendable(SendableBuilder builder)
+            {
+                builder.setSmartDashboardType("MecanumDrive");
+                builder.addDoubleProperty("Front Left Motor Speed", leftFrontWheel::getPower, null);
+                builder.addDoubleProperty("Front Right Motor Speed", rightFrontWheel::getPower, null);
+                builder.addDoubleProperty("Rear Left Motor Speed", leftRearWheel::getPower, null);
+                builder.addDoubleProperty("Rear Right Motor Speed", rightRearWheel::getPower, null);
+            }
+        };
+    }
 
     public void announceSafety()
     {
