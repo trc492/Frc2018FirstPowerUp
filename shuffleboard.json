@@ -527,7 +527,7 @@
             ],
             "content": {
               "_type": "List Layout",
-              "_title": "List",
+              "_title": "Power Consumption",
               "_children": [
                 {
                   "_type": "Text View",

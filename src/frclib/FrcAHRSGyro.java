@@ -278,7 +278,7 @@ public class FrcAHRSGyro extends TrcGyro
         ahrs.reset();
     }   //resetZIntegrator
 
-    public GyroInfo getGyroInfo()
+    public Sendable getGyroSendable()
     {
         return new GyroInfo(instanceName);
     }

@@ -30,6 +30,9 @@ import com.ctre.phoenix.motorcontrol.LimitSwitchSource;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 
+import edu.wpi.first.wpilibj.Sendable;
+import edu.wpi.first.wpilibj.smartdashboard.SendableBuilder;
+import sun.plugin.dom.exception.InvalidStateException;
 import trclib.TrcDbgTrace;
 import trclib.TrcMotor;
 
@@ -49,6 +52,8 @@ public class FrcCANTalon extends TrcMotor
     private boolean softUpperLimitEnabled = false;
     private double softLowerLimit = 0.0;
     private double softUpperLimit = 0.0;
+    private FeedbackDevice feedbackDeviceType;
+    private String instanceName;
 
     /**
      * The number of non-success error codes reported by the device after sending a command.
@@ -64,6 +69,7 @@ public class FrcCANTalon extends TrcMotor
     public FrcCANTalon(final String instanceName, int deviceNumber)
     {
         super(instanceName);
+        this.instanceName = instanceName;
         motor = new TalonSRX(deviceNumber);
         resetPosition(true);
     }   //FrcCANTalon
@@ -165,6 +171,7 @@ public class FrcCANTalon extends TrcMotor
             dbgTrace.traceExit(funcName, TrcDbgTrace.TraceLevel.API);
         }
 
+        this.feedbackDeviceType = devType;
         recordResponseCode(motor.configSelectedFeedbackSensor(devType, 0, 0));
         feedbackDeviceIsPot = devType == FeedbackDevice.Analog;
     }   //setFeedbackDevice
@@ -507,5 +514,56 @@ public class FrcCANTalon extends TrcMotor
 
         softUpperLimit = position;
     }   //setSoftUpperLimit
+
+    public Sendable getEncoderSendable()
+    {
+        return new EncoderInfo(instanceName);
+    }
+
+    private class EncoderInfo implements Sendable
+    {
+        private String name, subsystem;
+        public EncoderInfo(String name)
+        {
+            this.name = name;
+        }
+
+        @Override
+        public String getName()
+        {
+            return name;
+        }
+
+        @Override
+        public void setName(String s)
+        {
+            this.name = s;
+        }
+
+        @Override
+        public String getSubsystem()
+        {
+            return this.subsystem;
+        }
+
+        @Override
+        public void setSubsystem(String s)
+        {
+            this.subsystem = s;
+        }
+
+        @Override
+        public void initSendable(SendableBuilder builder)
+        {
+            if(FrcCANTalon.this.feedbackDeviceType != FeedbackDevice.QuadEncoder)
+            {
+                throw new InvalidStateException("Only QuadEncoder supported for Shuffleboard!");
+            }
+            builder.setSmartDashboardType("Quadrature Encoder");
+            builder.addDoubleProperty("Speed", FrcCANTalon.this::getSpeed, null);
+            builder.addDoubleProperty("Distance", FrcCANTalon.this::getPosition, null);
+            builder.addDoubleProperty("Distance per Tick", ()->1, null);
+        }
+    }
 
 }   //class FrcCANTalon
