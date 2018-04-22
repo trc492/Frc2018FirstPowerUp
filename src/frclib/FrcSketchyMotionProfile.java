@@ -64,7 +64,7 @@ public class FrcSketchyMotionProfile
     private int pidSlot;
     private double worldUnitsPerEncoderTick;
     private FrcCANTalon leftMaster, rightMaster;
-    private TrcTaskMgr.TaskObject taskObject;
+    private TrcTaskMgr.TaskObject motionProfileTaskObject;
     private double[][][] points;
     private TrcStateMachine<State> sm;
     private int fillIndex = 0;
@@ -89,7 +89,7 @@ public class FrcSketchyMotionProfile
         sm = new TrcStateMachine<>(instanceName);
         notifier = new Notifier(this::processPointBuffer);
 
-        taskObject = TrcTaskMgr.getInstance().createTask(instanceName + ".postContinuousTask", this::postContinuousTask);
+        motionProfileTaskObject = TrcTaskMgr.getInstance().createTask(instanceName + ".motionProfileTask", this::motionProfileTask);
     }
 
     /**
@@ -276,15 +276,15 @@ public class FrcSketchyMotionProfile
     {
         if(enabled)
         {
-            taskObject.registerTask(TrcTaskMgr.TaskType.POSTCONTINUOUS_TASK);
+            motionProfileTaskObject.registerTask(TrcTaskMgr.TaskType.POSTCONTINUOUS_TASK);
         }
         else
         {
-            taskObject.unregisterTask(TrcTaskMgr.TaskType.POSTCONTINUOUS_TASK);
+            motionProfileTaskObject.unregisterTask(TrcTaskMgr.TaskType.POSTCONTINUOUS_TASK);
         }
     }
 
-    private void postContinuousTask(TrcTaskMgr.TaskType taskType, TrcRobot.RunMode runMode)
+    private void motionProfileTask(TrcTaskMgr.TaskType taskType, TrcRobot.RunMode runMode)
     {
         if(!sm.isEnabled()) return;
 

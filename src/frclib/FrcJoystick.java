@@ -152,9 +152,9 @@ public class FrcJoystick extends Joystick
         ds = DriverStation.getInstance();
         prevButtons = ds.getStickButtons(port);
 
-        TrcTaskMgr.TaskObject prePeriodicTaskObj = TrcTaskMgr.getInstance().createTask(
-            instanceName + ".prePeriodic", this::prePeriodicTask);
-        prePeriodicTaskObj.registerTask(TrcTaskMgr.TaskType.PREPERIODIC_TASK);
+        TrcTaskMgr.TaskObject buttonEventTaskObj = TrcTaskMgr.getInstance().createTask(
+            instanceName + ".buttonEvent", this::buttonEventTask);
+        buttonEventTaskObj.registerTask(TrcTaskMgr.TaskType.PREPERIODIC_TASK);
     }   //FrcJoystick
 
     /**
@@ -549,10 +549,6 @@ public class FrcJoystick extends Joystick
         return getDirectionDegreesWithDeadband(squared, deadbandThreshold);
     }   //getDirectionDegreesWithDeadband
 
-    //
-    // Implements TrcTaskMgr.Task interface.
-    //
-
     /**
      * This method runs periodically and checks for changes in the button states. If any button changed state,
      * the button handler is called if one exists.
@@ -560,9 +556,9 @@ public class FrcJoystick extends Joystick
      * @param taskType specifies the type of task being run.
      * @param runMode specifies the current robot run mode.
      */
-    public void prePeriodicTask(TrcTaskMgr.TaskType taskType, TrcRobot.RunMode runMode)
+    public void buttonEventTask(TrcTaskMgr.TaskType taskType, TrcRobot.RunMode runMode)
     {
-        final String funcName = "prePeriodic";
+        final String funcName = "buttonEventTask";
         double currTime = TrcUtil.getCurrentTime();
 
         if (debugEnabled)
@@ -621,7 +617,7 @@ public class FrcJoystick extends Joystick
         {
             dbgTrace.traceExit(funcName, TrcDbgTrace.TraceLevel.TASK);
         }
-    }   //prePeriodicTask
+    }   //buttonEventTask
 
     /**
      * This method applies deadband to the value and squared the output if necessary.

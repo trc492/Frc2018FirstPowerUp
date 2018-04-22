@@ -82,8 +82,7 @@ public class TrcPidDrive
     private final TrcPidController xPidCtrl;
     private final TrcPidController yPidCtrl;
     private final TrcPidController turnPidCtrl;
-    private final TrcTaskMgr.TaskObject stopTaskObj;
-    private final TrcTaskMgr.TaskObject postContinuousTaskObj;
+    private final TrcTaskMgr.TaskObject pidDriveTaskObj;
     private TrcWarpSpace warpSpace = null;
     private StuckWheelHandler stuckWheelHandler = null;
     private double stuckTimeout = 0.0;
@@ -128,8 +127,7 @@ public class TrcPidDrive
         this.yPidCtrl = yPidCtrl;
         this.turnPidCtrl = turnPidCtrl;
         TrcTaskMgr taskMgr = TrcTaskMgr.getInstance();
-        stopTaskObj = taskMgr.createTask(instanceName + ".stop", this::stopTask);
-        postContinuousTaskObj = taskMgr.createTask(instanceName + ".postContinuous", this::postContinuousTask);
+        pidDriveTaskObj = taskMgr.createTask(instanceName + ".pidDriveTask", this::pidDriveTask);
 
         if (turnPidCtrl != null && turnPidCtrl.hasAbsoluteSetPoint())
         {
@@ -640,13 +638,13 @@ public class TrcPidDrive
 
         if (enabled)
         {
-            stopTaskObj.registerTask(TaskType.STOP_TASK);
-            postContinuousTaskObj.registerTask(TaskType.POSTCONTINUOUS_TASK);
+            pidDriveTaskObj.registerTask(TaskType.STOP_TASK);
+            pidDriveTaskObj.registerTask(TaskType.POSTCONTINUOUS_TASK);
         }
         else
         {
-            stopTaskObj.unregisterTask(TaskType.STOP_TASK);
-            postContinuousTaskObj.unregisterTask(TaskType.POSTCONTINUOUS_TASK);
+            pidDriveTaskObj.unregisterTask(TaskType.STOP_TASK);
+            pidDriveTaskObj.unregisterTask(TaskType.POSTCONTINUOUS_TASK);
         }
         active = enabled;
 
@@ -656,178 +654,159 @@ public class TrcPidDrive
         }
     }   //setTaskEnabled
 
-    //
-    // Implements TrcTaskMgr.Task
-    //
-
     /**
-     * This method is called before the competition mode is about the end to stop the PID drive operation if any.
+     * This method is called periodically to execute the PID drive operation or when the competition mode is about
+     * to end to stop the PID drive operation if any.
      *
      * @param taskType specifies the type of task being run.
      * @param runMode specifies the competition mode that is about to end (e.g. Autonomous, TeleOp, Test).
      */
-    public void stopTask(TrcTaskMgr.TaskType taskType, TrcRobot.RunMode runMode)
+    public void pidDriveTask(TrcTaskMgr.TaskType taskType, TrcRobot.RunMode runMode)
     {
-        final String funcName = "stopTask";
+        final String funcName = "pidDriveTask";
 
         if (debugEnabled)
         {
             dbgTrace.traceEnter(funcName, TrcDbgTrace.TraceLevel.TASK, "taskType=%s,runMode=%s", taskType, runMode);
         }
 
-        stop();
-
-        if (debugEnabled)
+        if (taskType == TaskType.POSTCONTINUOUS_TASK)
         {
-            dbgTrace.traceExit(funcName, TrcDbgTrace.TraceLevel.TASK);
-        }
-    }   //stopTask
+            double xPower = turnOnly || xPidCtrl == null? 0.0: xPidCtrl.getOutput();
+            double yPower = turnOnly || yPidCtrl == null? 0.0: yPidCtrl.getOutput();
+            double turnPower = turnPidCtrl == null? 0.0: turnPidCtrl.getOutput();
 
-    /**
-     * This method is called periodically to execute the PID drive operation.
-     *
-     * @param taskType specifies the type of task being run.
-     * @param runMode specifies the competition mode that is running. (e.g. Autonomous, TeleOp, Test).
-     */
-    public void postContinuousTask(TrcTaskMgr.TaskType taskType, TrcRobot.RunMode runMode)
-    {
-        final String funcName = "postContinuousTask";
+            boolean expired = expiredTime != 0.0 && TrcUtil.getCurrentTime() >= expiredTime;
+            boolean stalled = stallTimeout != 0.0 && driveBase.isStalled(stallTimeout);
+            boolean xOnTarget = xPidCtrl == null || xPidCtrl.isOnTarget();
+            boolean yOnTarget = yPidCtrl == null || yPidCtrl.isOnTarget();
+            boolean turnOnTarget = turnPidCtrl == null || turnPidCtrl.isOnTarget();
 
-        if (debugEnabled)
-        {
-            dbgTrace.traceEnter(funcName, TrcDbgTrace.TraceLevel.TASK, "taskType=%s,runMode=%s", taskType, runMode);
-        }
-
-        double xPower = turnOnly || xPidCtrl == null? 0.0: xPidCtrl.getOutput();
-        double yPower = turnOnly || yPidCtrl == null? 0.0: yPidCtrl.getOutput();
-        double turnPower = turnPidCtrl == null? 0.0: turnPidCtrl.getOutput();
-
-        boolean expired = expiredTime != 0.0 && TrcUtil.getCurrentTime() >= expiredTime;
-        boolean stalled = stallTimeout != 0.0 && driveBase.isStalled(stallTimeout);
-        boolean xOnTarget = xPidCtrl == null || xPidCtrl.isOnTarget();
-        boolean yOnTarget = yPidCtrl == null || yPidCtrl.isOnTarget();
-        boolean turnOnTarget = turnPidCtrl == null || turnPidCtrl.isOnTarget();
-
-        if (stuckWheelHandler != null)
-        {
-            if (driveBase.getNumMotors() > 2)
+            if (stuckWheelHandler != null)
             {
-                if (driveBase.isStalled(TrcDriveBase.MotorType.LEFT_FRONT, stuckTimeout))
+                if (driveBase.getNumMotors() > 2)
                 {
-                    stuckWheelHandler.stuckWheel(this, TrcDriveBase.MotorType.LEFT_FRONT);
+                    if (driveBase.isStalled(TrcDriveBase.MotorType.LEFT_FRONT, stuckTimeout))
+                    {
+                        stuckWheelHandler.stuckWheel(this, TrcDriveBase.MotorType.LEFT_FRONT);
+                    }
+
+                    if (driveBase.isStalled(TrcDriveBase.MotorType.RIGHT_FRONT, stuckTimeout))
+                    {
+                        stuckWheelHandler.stuckWheel(this, TrcDriveBase.MotorType.RIGHT_FRONT);
+                    }
                 }
 
-                if (driveBase.isStalled(TrcDriveBase.MotorType.RIGHT_FRONT, stuckTimeout))
+                if (driveBase.isStalled(TrcDriveBase.MotorType.LEFT_REAR, stuckTimeout))
                 {
-                    stuckWheelHandler.stuckWheel(this, TrcDriveBase.MotorType.RIGHT_FRONT);
+                    stuckWheelHandler.stuckWheel(this, TrcDriveBase.MotorType.LEFT_REAR);
+                }
+
+                if (driveBase.isStalled(TrcDriveBase.MotorType.RIGHT_REAR, stuckTimeout))
+                {
+                    stuckWheelHandler.stuckWheel(this, TrcDriveBase.MotorType.RIGHT_REAR);
                 }
             }
 
-            if (driveBase.isStalled(TrcDriveBase.MotorType.LEFT_REAR, stuckTimeout))
+            if ((stalled || expired) && (beepDevice != null || msgTracer != null))
             {
-                stuckWheelHandler.stuckWheel(this, TrcDriveBase.MotorType.LEFT_REAR);
-            }
-
-            if (driveBase.isStalled(TrcDriveBase.MotorType.RIGHT_REAR, stuckTimeout))
-            {
-                stuckWheelHandler.stuckWheel(this, TrcDriveBase.MotorType.RIGHT_REAR);
-            }
-        }
-
-        if ((stalled || expired) && (beepDevice != null || msgTracer != null))
-        {
-            if (beepDevice != null)
-            {
-                beepDevice.playTone(beepFrequency, beepDuration);
-            }
-
-            if (msgTracer != null)
-            {
-                msgTracer.traceInfo(funcName, "%s: Stalled=%s, Expired=%s", instanceName, stalled, expired);
-            }
-        }
-
-        if (maintainHeading)
-        {
-            driveBase.mecanumDrive_Cartesian(manualX, manualY, turnPower, false, 0.0);
-        }
-        else if (expired || stalled || turnOnTarget && (turnOnly || xOnTarget && yOnTarget))
-        {
-            if (!holdTarget)
-            {
-                stop();
-                if (notifyEvent != null)
+                if (beepDevice != null)
                 {
-                    notifyEvent.set(true);
-                    notifyEvent = null;
+                    beepDevice.playTone(beepFrequency, beepDuration);
+                }
+
+                if (msgTracer != null)
+                {
+                    msgTracer.traceInfo(funcName, "%s: Stalled=%s, Expired=%s", instanceName, stalled, expired);
+                }
+            }
+
+            if (maintainHeading)
+            {
+                driveBase.mecanumDrive_Cartesian(manualX, manualY, turnPower, false, 0.0);
+            }
+            else if (expired || stalled || turnOnTarget && (turnOnly || xOnTarget && yOnTarget))
+            {
+                if (!holdTarget)
+                {
+                    stop();
+                    if (notifyEvent != null)
+                    {
+                        notifyEvent.set(true);
+                        notifyEvent = null;
+                    }
+                }
+                else if (xPidCtrl != null)
+                {
+                    driveBase.mecanumDrive_Cartesian(0.0, 0.0, 0.0, false, 0.0);
+                }
+                else
+                {
+                    driveBase.drive(0.0, 0.0);
+                }
+            }
+            else if (turnOnly)
+            {
+                switch (turnMode)
+                {
+                    case IN_PLACE:
+                        driveBase.arcadeDrive(0.0, turnPower);
+                        break;
+
+                    case PIVOT_FORWARD:
+                    case CURVE:
+                        if (turnPower < 0.0)
+                        {
+                            driveBase.tankDrive(0.0, -turnPower);
+                        }
+                        else
+                        {
+                            driveBase.tankDrive(turnPower, 0.0);
+                        }
+                        break;
+
+                    case PIVOT_BACKWARD:
+                        if (turnPower < 0.0)
+                        {
+                            driveBase.tankDrive(turnPower, 0.0);
+                        }
+                        else
+                        {
+                            driveBase.tankDrive(0.0, -turnPower);
+                        }
+                        break;
                 }
             }
             else if (xPidCtrl != null)
             {
-                driveBase.mecanumDrive_Cartesian(0.0, 0.0, 0.0, false, 0.0);
+                driveBase.mecanumDrive_Cartesian(xPower, yPower, turnPower, false, 0.0);
+            }
+            else if (turnMode == TurnMode.IN_PLACE)
+            {
+                driveBase.arcadeDrive(yPower, turnPower);
             }
             else
             {
-                driveBase.drive(0.0, 0.0);
+               driveBase.drive(yPower, turnPower);
             }
-        }
-        else if (turnOnly)
-        {
-            switch (turnMode)
+
+            if (msgTracer != null && tracePidInfo)
             {
-                case IN_PLACE:
-                    driveBase.arcadeDrive(0.0, turnPower);
-                    break;
-
-                case PIVOT_FORWARD:
-                case CURVE:
-                    if (turnPower < 0.0)
-                    {
-                        driveBase.tankDrive(0.0, -turnPower);
-                    }
-                    else
-                    {
-                        driveBase.tankDrive(turnPower, 0.0);
-                    }
-                    break;
-
-                case PIVOT_BACKWARD:
-                    if (turnPower < 0.0)
-                    {
-                        driveBase.tankDrive(turnPower, 0.0);
-                    }
-                    else
-                    {
-                        driveBase.tankDrive(0.0, -turnPower);
-                    }
-                    break;
+                double currTime = TrcUtil.getCurrentTime();
+                if (xPidCtrl != null) xPidCtrl.printPidInfo(msgTracer, currTime, battery);
+                if (yPidCtrl != null) yPidCtrl.printPidInfo(msgTracer, currTime, battery);
+                if (turnPidCtrl != null) turnPidCtrl.printPidInfo(msgTracer, currTime, battery);
             }
         }
-        else if (xPidCtrl != null)
+        else if (taskType == TaskType.STOP_TASK)
         {
-            driveBase.mecanumDrive_Cartesian(xPower, yPower, turnPower, false, 0.0);
-        }
-        else if (turnMode == TurnMode.IN_PLACE)
-        {
-            driveBase.arcadeDrive(yPower, turnPower);
-        }
-        else
-        {
-           driveBase.drive(yPower, turnPower);
-        }
-
-        if (msgTracer != null && tracePidInfo)
-        {
-            double currTime = TrcUtil.getCurrentTime();
-            if (xPidCtrl != null) xPidCtrl.printPidInfo(msgTracer, currTime, battery);
-            if (yPidCtrl != null) yPidCtrl.printPidInfo(msgTracer, currTime, battery);
-            if (turnPidCtrl != null) turnPidCtrl.printPidInfo(msgTracer, currTime, battery);
+            stop();
         }
 
         if (debugEnabled)
         {
             dbgTrace.traceExit(funcName, TrcDbgTrace.TraceLevel.TASK);
         }
-    }   //postContinuousTask
+    }   //pidDriveTask
 
 }   //class TrcPidDrive

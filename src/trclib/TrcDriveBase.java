@@ -22,6 +22,8 @@
 
 package trclib;
 
+import trclib.TrcTaskMgr.TaskType;
+
 /**
  * This class implements a platform independent drive base. The drive base class implements a drive train that may
  * consist of 2 to 6 motors. It supports tank drive, arcade drive and mecanum drive with motor stalled detection and
@@ -150,11 +152,9 @@ public class TrcDriveBase
         this.gyro = gyro;
 
         TrcTaskMgr taskMgr = TrcTaskMgr.getInstance();
-        TrcTaskMgr.TaskObject stopTaskObj = taskMgr.createTask(moduleName + ".stop", this::stopTask);
-        TrcTaskMgr.TaskObject preContinuousTaskObj = taskMgr.createTask(
-            moduleName + ".preContinuous", this::preContinuousTask);
-        stopTaskObj.registerTask(TrcTaskMgr.TaskType.STOP_TASK);
-        preContinuousTaskObj.registerTask(TrcTaskMgr.TaskType.PRECONTINUOUS_TASK);
+        TrcTaskMgr.TaskObject driveBaseTaskObj = taskMgr.createTask(moduleName + ".driveBaseTask", this::driveBaseTask);
+        driveBaseTaskObj.registerTask(TrcTaskMgr.TaskType.STOP_TASK);
+        driveBaseTaskObj.registerTask(TrcTaskMgr.TaskType.PRECONTINUOUS_TASK);
 
         xScale = 1.0;
         yScale = 1.0;
@@ -1319,26 +1319,158 @@ public class TrcDriveBase
         }
     }   //normalize
 
-    //
-    // Implements TrcTaskMgr.Task
-    //
-
     /**
-     * This method is called when the competition mode is about to end.
-     *
+     * This method is called periodically to monitor the encoders and gyro to update the odometry data or when
+     * the competition mode is about to end.
+=     *
      * @param taskType specifies the type of task being run.
      * @param runMode specifies the competition mode that is about to end (e.g. Autonomous, TeleOp, Test).
      */
-    public void stopTask(TrcTaskMgr.TaskType taskType, TrcRobot.RunMode runMode)
+    public void driveBaseTask(TrcTaskMgr.TaskType taskType, TrcRobot.RunMode runMode)
     {
-        final String funcName = "stopTask";
+        final String funcName = "driveBaseTask";
 
         if (debugEnabled)
         {
             dbgTrace.traceEnter(funcName, TrcDbgTrace.TraceLevel.TASK, "taskType=%s,runMode=%s", taskType, runMode);
         }
 
-        if (runMode != TrcRobot.RunMode.DISABLED_MODE)
+        if (taskType == TaskType.PRECONTINUOUS_TASK)
+        {
+            //
+            // According to RobotDrive.mecanumDrive_Cartesian in WPILib:
+            //
+            // LF =  x + y + rot    RF = -x + y - rot
+            // LR = -x + y + rot    RR =  x + y - rot
+            //
+            // (LF + RR) - (RF + LR) = (2x + 2y) - (-2x + 2y)
+            // => (LF + RR) - (RF + LR) = 4x
+            // => x = ((LF + RR) - (RF + LR))/4
+            //
+            // LF + RF + LR + RR = 4y
+            // => y = (LF + RF + LR + RR)/4
+            //
+            // (LF + LR) - (RF + RR) = (2y + 2rot) - (2y - 2rot)
+            // => (LF + LR) - (RF + RR) = 4rot
+            // => rot = ((LF + LR) - (RF + RR))/4
+            //
+            double lfEnc = 0.0, lrEnc = 0.0, rfEnc = 0.0, rrEnc = 0.0;
+            double lfSpeed = 0.0, lrSpeed = 0.0, rfSpeed = 0.0, rrSpeed = 0.0;
+            if (leftFrontMotor != null)
+            {
+                try
+                {
+                    lfEnc = leftFrontMotor.getPosition();
+                }
+                catch (UnsupportedOperationException e)
+                {
+                }
+
+                try
+                {
+                    lfSpeed = leftFrontMotor.getSpeed();
+                }
+                catch (UnsupportedOperationException e)
+                {
+                }
+            }
+            if (leftRearMotor != null)
+            {
+                try
+                {
+                    lrEnc = leftRearMotor.getPosition();
+                }
+                catch (UnsupportedOperationException e)
+                {
+                }
+
+                try
+                {
+                    lrSpeed = leftRearMotor.getSpeed();
+                }
+                catch (UnsupportedOperationException e)
+                {
+                }
+            }
+            if (rightFrontMotor != null)
+            {
+                try
+                {
+                    rfEnc = rightFrontMotor.getPosition();
+                }
+                catch (UnsupportedOperationException e)
+                {
+                }
+
+                try
+                {
+                    rfSpeed = rightFrontMotor.getSpeed();
+                }
+                catch (UnsupportedOperationException e)
+                {
+                }
+            }
+            if (rightRearMotor != null)
+            {
+                try
+                {
+                    rrEnc = rightRearMotor.getPosition();
+                }
+                catch (UnsupportedOperationException e)
+                {
+                }
+
+                try
+                {
+                    rrSpeed = rightRearMotor.getSpeed();
+                }
+                catch (UnsupportedOperationException e)
+                {
+                }
+            }
+
+            if (numMotors == 4)
+            {
+                xPos = ((lfEnc + rrEnc) - (rfEnc + lrEnc))*xScale/4.0;
+                yPos = (lfEnc + lrEnc + rfEnc + rrEnc)*yScale/4.0;
+                rotPos = ((lfEnc + lrEnc) - (rfEnc + rrEnc))*rotScale/4.0;
+                xSpeed = ((lfSpeed + rrSpeed) - (rfSpeed + lrSpeed))*xScale/4.0;
+                ySpeed = (lfSpeed + lrSpeed + rfSpeed + rrSpeed)*yScale/4.0;
+            }
+            else
+            {
+                yPos = (lrEnc + rrEnc)*yScale/2.0;
+                rotPos = (lrEnc - rrEnc)*rotScale/2.0;
+                ySpeed = (lrSpeed + rrSpeed)*yScale/2.0;
+            }
+
+            if (gyro != null)
+            {
+                heading = gyro.getZHeading().value;
+                turnSpeed = gyro.getZRotationRate().value;
+            }
+            else
+            {
+                heading = rotPos;
+            }
+
+            double currTime = TrcUtil.getCurrentTime();
+            double lfPower = leftFrontMotor != null? leftFrontMotor.getPower(): 0.0;
+            double rfPower = rightFrontMotor != null? rightFrontMotor.getPower(): 0.0;
+            double lrPower = leftRearMotor != null? leftRearMotor.getPower(): 0.0;
+            double rrPower = rightRearMotor != null? rightRearMotor.getPower(): 0.0;
+
+            if (lfEnc != prevLeftFrontPos || lfPower == 0.0) lfStallStartTime = currTime;
+            if (rfEnc != prevRightFrontPos || rfPower == 0.0) rfStallStartTime = currTime;
+            if (lrEnc != prevLeftRearPos || lrPower == 0.0) lrStallStartTime = currTime;
+            if (rrEnc != prevRightRearPos || rrPower == 0.0) rrStallStartTime = currTime;
+
+            prevLeftFrontPos = lfEnc;
+            prevRightFrontPos = rfEnc;
+            prevLeftRearPos = lrEnc;
+            prevRightRearPos = rrEnc;
+        }
+        else if (taskType == TaskType.STOP_TASK && runMode != TrcRobot.RunMode.DISABLED_MODE)
         {
             stop();
         }
@@ -1347,160 +1479,6 @@ public class TrcDriveBase
         {
             dbgTrace.traceExit(funcName, TrcDbgTrace.TraceLevel.TASK);
         }
-    }   //stopTask
-
-    /**
-     * This method is called periodically to monitor the encoders and gyro to update the odometry data.
-     *
-     * @param taskType specifies the type of task being run.
-     * @param runMode specifies the competition mode that is running. (e.g. Autonomous, TeleOp, Test).
-     */
-    public void preContinuousTask(TrcTaskMgr.TaskType taskType, TrcRobot.RunMode runMode)
-    {
-        final String funcName = "preContinuousTask";
-
-        if (debugEnabled)
-        {
-            dbgTrace.traceEnter(funcName, TrcDbgTrace.TraceLevel.TASK, "taskType=%s,runMode=%s", taskType, runMode);
-        }
-
-        //
-        // According to RobotDrive.mecanumDrive_Cartesian in WPILib:
-        //
-        // LF =  x + y + rot    RF = -x + y - rot
-        // LR = -x + y + rot    RR =  x + y - rot
-        //
-        // (LF + RR) - (RF + LR) = (2x + 2y) - (-2x + 2y)
-        // => (LF + RR) - (RF + LR) = 4x
-        // => x = ((LF + RR) - (RF + LR))/4
-        //
-        // LF + RF + LR + RR = 4y
-        // => y = (LF + RF + LR + RR)/4
-        //
-        // (LF + LR) - (RF + RR) = (2y + 2rot) - (2y - 2rot)
-        // => (LF + LR) - (RF + RR) = 4rot
-        // => rot = ((LF + LR) - (RF + RR))/4
-        //
-        double lfEnc = 0.0, lrEnc = 0.0, rfEnc = 0.0, rrEnc = 0.0;
-        double lfSpeed = 0.0, lrSpeed = 0.0, rfSpeed = 0.0, rrSpeed = 0.0;
-        if (leftFrontMotor != null)
-        {
-            try
-            {
-                lfEnc = leftFrontMotor.getPosition();
-            }
-            catch (UnsupportedOperationException e)
-            {
-            }
-
-            try
-            {
-                lfSpeed = leftFrontMotor.getSpeed();
-            }
-            catch (UnsupportedOperationException e)
-            {
-            }
-        }
-        if (leftRearMotor != null)
-        {
-            try
-            {
-                lrEnc = leftRearMotor.getPosition();
-            }
-            catch (UnsupportedOperationException e)
-            {
-            }
-
-            try
-            {
-                lrSpeed = leftRearMotor.getSpeed();
-            }
-            catch (UnsupportedOperationException e)
-            {
-            }
-        }
-        if (rightFrontMotor != null)
-        {
-            try
-            {
-                rfEnc = rightFrontMotor.getPosition();
-            }
-            catch (UnsupportedOperationException e)
-            {
-            }
-
-            try
-            {
-                rfSpeed = rightFrontMotor.getSpeed();
-            }
-            catch (UnsupportedOperationException e)
-            {
-            }
-        }
-        if (rightRearMotor != null)
-        {
-            try
-            {
-                rrEnc = rightRearMotor.getPosition();
-            }
-            catch (UnsupportedOperationException e)
-            {
-            }
-
-            try
-            {
-                rrSpeed = rightRearMotor.getSpeed();
-            }
-            catch (UnsupportedOperationException e)
-            {
-            }
-        }
-
-        if (numMotors == 4)
-        {
-            xPos = ((lfEnc + rrEnc) - (rfEnc + lrEnc))*xScale/4.0;
-            yPos = (lfEnc + lrEnc + rfEnc + rrEnc)*yScale/4.0;
-            rotPos = ((lfEnc + lrEnc) - (rfEnc + rrEnc))*rotScale/4.0;
-            xSpeed = ((lfSpeed + rrSpeed) - (rfSpeed + lrSpeed))*xScale/4.0;
-            ySpeed = (lfSpeed + lrSpeed + rfSpeed + rrSpeed)*yScale/4.0;
-        }
-        else
-        {
-            yPos = (lrEnc + rrEnc)*yScale/2.0;
-            rotPos = (lrEnc - rrEnc)*rotScale/2.0;
-            ySpeed = (lrSpeed + rrSpeed)*yScale/2.0;
-        }
-
-        if (gyro != null)
-        {
-            heading = gyro.getZHeading().value;
-            turnSpeed = gyro.getZRotationRate().value;
-        }
-        else
-        {
-            heading = rotPos;
-        }
-
-        double currTime = TrcUtil.getCurrentTime();
-        double lfPower = leftFrontMotor != null? leftFrontMotor.getPower(): 0.0;
-        double rfPower = rightFrontMotor != null? rightFrontMotor.getPower(): 0.0;
-        double lrPower = leftRearMotor != null? leftRearMotor.getPower(): 0.0;
-        double rrPower = rightRearMotor != null? rightRearMotor.getPower(): 0.0;
-
-        if (lfEnc != prevLeftFrontPos || lfPower == 0.0) lfStallStartTime = currTime;
-        if (rfEnc != prevRightFrontPos || rfPower == 0.0) rfStallStartTime = currTime;
-        if (lrEnc != prevLeftRearPos || lrPower == 0.0) lrStallStartTime = currTime;
-        if (rrEnc != prevRightRearPos || rrPower == 0.0) rrStallStartTime = currTime;
-
-        prevLeftFrontPos = lfEnc;
-        prevRightFrontPos = rfEnc;
-        prevLeftRearPos = lrEnc;
-        prevRightRearPos = rrEnc;
-
-        if (debugEnabled)
-        {
-            dbgTrace.traceExit(funcName, TrcDbgTrace.TraceLevel.TASK);
-        }
-    }   //preContinuousTask
+    }   //driveBaseTask
 
 }   //class TrcDriveBase

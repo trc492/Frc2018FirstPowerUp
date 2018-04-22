@@ -96,7 +96,7 @@ public class CubePickup
             "PickupCurrentTrigger", currentSensor, 0, TrcAnalogSensor.DataType.RAW_DATA, currentThresholds,
             this::currentTriggerEvent);
 
-        pickupTaskObj = TrcTaskMgr.getInstance().createTask("pickupTask", this::pickupTask);
+        pickupTaskObj = TrcTaskMgr.getInstance().createTask("cubePickupTask", this::pickupTask);
         sm = new TrcStateMachine<>("pickupStateMachine");
         timer = new TrcTimer("pickupTimer");
         timerEvent = new TrcEvent("TimerEvent");

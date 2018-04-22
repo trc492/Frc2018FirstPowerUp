@@ -46,7 +46,7 @@ public class FrcPdp extends PowerDistributionPanel
 
     public static final int NUM_PDP_CHANNELS = 16;
 
-    private final TrcTaskMgr.TaskObject pdpEnergyTaskObj;
+    private final TrcTaskMgr.TaskObject energyUsedTaskObj;
     private String[] channelNames = new String[NUM_PDP_CHANNELS];
     private double[] channelEnergyUsed = new double[NUM_PDP_CHANNELS];
     private double lastTimestamp = 0.0;
@@ -67,7 +67,7 @@ public class FrcPdp extends PowerDistributionPanel
                 new TrcDbgTrace(moduleName, tracingEnabled, traceLevel, msgLevel);
         }
 
-        pdpEnergyTaskObj = TrcTaskMgr.getInstance().createTask(moduleName + ".preContinuous", this::pdpEnergyTask);
+        energyUsedTaskObj = TrcTaskMgr.getInstance().createTask(moduleName + ".energyUsedTask", this::energyUsedTask);
 
         for (int i = 0; i < NUM_PDP_CHANNELS; i++)
         {
@@ -99,11 +99,11 @@ public class FrcPdp extends PowerDistributionPanel
             }
 
             lastTimestamp = TrcUtil.getCurrentTime();
-            pdpEnergyTaskObj.registerTask(TrcTaskMgr.TaskType.PRECONTINUOUS_TASK);
+            energyUsedTaskObj.registerTask(TrcTaskMgr.TaskType.PRECONTINUOUS_TASK);
         }
         else
         {
-            pdpEnergyTaskObj.unregisterTask(TrcTaskMgr.TaskType.PRECONTINUOUS_TASK);
+            energyUsedTaskObj.unregisterTask(TrcTaskMgr.TaskType.PRECONTINUOUS_TASK);
         }
 
         if (debugEnabled)
@@ -212,19 +212,15 @@ public class FrcPdp extends PowerDistributionPanel
         return channelNames[channel];
     }   //getChannelName
 
-    //
-    // Implements TrcTaskMgr.Task
-    //
-
     /**
      * This method is called periodically to integrate the power consumption of each channel.
      *
      * @param taskType specifies the type of task being run.
      * @param runMode specifies the competition mode that is running.
      */
-    public void pdpEnergyTask(TrcTaskMgr.TaskType taskType, TrcRobot.RunMode runMode)
+    public void energyUsedTask(TrcTaskMgr.TaskType taskType, TrcRobot.RunMode runMode)
     {
-        final String funcName = "pdpEnergyTask";
+        final String funcName = "energyUsedTask";
         double currTime = TrcUtil.getCurrentTime();
         double voltage = getVoltage();
 
@@ -247,7 +243,7 @@ public class FrcPdp extends PowerDistributionPanel
         {
             dbgTrace.traceExit(funcName, TrcDbgTrace.TraceLevel.TASK);
         }
-    }   //pdpEnergyTask
+    }   //energyUsedTask
 
     public PdpInfo getPdpInfo()
     {
