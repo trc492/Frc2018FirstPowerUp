@@ -33,6 +33,48 @@ import trclib.TrcUtil;
 
 public class FrcAHRSGyro extends TrcGyro
 {
+    private class GyroInfo implements Sendable
+    {
+        private String subsystem;
+        private String name;
+
+        public GyroInfo(String name)
+        {
+            this.name = name;
+        }
+
+        @Override
+        public String getName()
+        {
+            return name;
+        }
+
+        @Override
+        public void setName(String name)
+        {
+            this.name = name;
+        }
+
+        @Override
+        public String getSubsystem()
+        {
+            return subsystem;
+        }
+
+        @Override
+        public void setSubsystem(String subsystem)
+        {
+            this.subsystem = subsystem;
+        }
+
+        @Override
+        public void initSendable(SendableBuilder builder)
+        {
+            builder.setSmartDashboardType("Gyro");
+            builder.addDoubleProperty("Value", () -> FrcAHRSGyro.this.getZHeading().value, null);
+        }
+    }
+
     public AHRS ahrs;
     private double xSign = 1.0;
     private double ySign = 1.0;
@@ -45,6 +87,11 @@ public class FrcAHRSGyro extends TrcGyro
         this.instanceName = instanceName;
         this.ahrs = new AHRS(port);
     }   //FrcAHRSGyro
+
+    public Sendable getGyroSendable()
+    {
+        return new GyroInfo(instanceName);
+    }
 
     //
     // Implements TrcGyro abstract methods.
@@ -277,46 +324,5 @@ public class FrcAHRSGyro extends TrcGyro
     {
         ahrs.reset();
     }   //resetZIntegrator
-
-    public Sendable getGyroSendable()
-    {
-        return new GyroInfo(instanceName);
-    }
-
-    private class GyroInfo implements Sendable
-    {
-        private String subsystem;
-        private String name;
-        public GyroInfo(String name)
-        {
-            this.name = name;
-        }
-
-        @Override
-        public String getName() {
-            return name;
-        }
-
-        @Override
-        public void setName(String name) {
-            this.name = name;
-        }
-
-        @Override
-        public String getSubsystem() {
-            return subsystem;
-        }
-
-        @Override
-        public void setSubsystem(String subsystem) {
-            this.subsystem = subsystem;
-        }
-
-        @Override
-        public void initSendable(SendableBuilder builder) {
-            builder.setSmartDashboardType("Gyro");
-            builder.addDoubleProperty("Value", () -> FrcAHRSGyro.this.getZHeading().value, null);
-        }
-    }
 
 }   //class FrcAHRSGyro

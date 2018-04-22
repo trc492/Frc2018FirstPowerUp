@@ -32,7 +32,6 @@ import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 
 import edu.wpi.first.wpilibj.Sendable;
 import edu.wpi.first.wpilibj.smartdashboard.SendableBuilder;
-import sun.plugin.dom.exception.InvalidStateException;
 import trclib.TrcDbgTrace;
 import trclib.TrcMotor;
 
@@ -42,6 +41,53 @@ import trclib.TrcMotor;
  */
 public class FrcCANTalon extends TrcMotor
 {
+    private class EncoderInfo implements Sendable
+    {
+        private String name, subsystem;
+
+        public EncoderInfo(String name)
+        {
+            this.name = name;
+        }
+
+        @Override
+        public String getName()
+        {
+            return name;
+        }
+
+        @Override
+        public void setName(String name)
+        {
+            this.name = name;
+        }
+
+        @Override
+        public String getSubsystem()
+        {
+            return this.subsystem;
+        }
+
+        @Override
+        public void setSubsystem(String subsystem)
+        {
+            this.subsystem = subsystem;
+        }
+
+        @Override
+        public void initSendable(SendableBuilder builder)
+        {
+            if(FrcCANTalon.this.feedbackDeviceType != FeedbackDevice.QuadEncoder)
+            {
+                throw new IllegalStateException("Only QuadEncoder supported for Shuffleboard!");
+            }
+            builder.setSmartDashboardType("Quadrature Encoder");
+            builder.addDoubleProperty("Speed", FrcCANTalon.this::getSpeed, null);
+            builder.addDoubleProperty("Distance", FrcCANTalon.this::getPosition, null);
+            builder.addDoubleProperty("Distance per Tick", ()->1, null);
+        }
+    }
+
     public TalonSRX motor;
     private boolean feedbackDeviceIsPot = false;
     private boolean limitSwitchesSwapped = false;
@@ -73,6 +119,11 @@ public class FrcCANTalon extends TrcMotor
         motor = new TalonSRX(deviceNumber);
         resetPosition(true);
     }   //FrcCANTalon
+
+    public Sendable getEncoderSendable()
+    {
+        return new EncoderInfo(instanceName);
+    }
 
     /**
      * This method swaps the forward and reverse limit switches. By default, the lower limit switch is associated
@@ -514,56 +565,5 @@ public class FrcCANTalon extends TrcMotor
 
         softUpperLimit = position;
     }   //setSoftUpperLimit
-
-    public Sendable getEncoderSendable()
-    {
-        return new EncoderInfo(instanceName);
-    }
-
-    private class EncoderInfo implements Sendable
-    {
-        private String name, subsystem;
-        public EncoderInfo(String name)
-        {
-            this.name = name;
-        }
-
-        @Override
-        public String getName()
-        {
-            return name;
-        }
-
-        @Override
-        public void setName(String s)
-        {
-            this.name = s;
-        }
-
-        @Override
-        public String getSubsystem()
-        {
-            return this.subsystem;
-        }
-
-        @Override
-        public void setSubsystem(String s)
-        {
-            this.subsystem = s;
-        }
-
-        @Override
-        public void initSendable(SendableBuilder builder)
-        {
-            if(FrcCANTalon.this.feedbackDeviceType != FeedbackDevice.QuadEncoder)
-            {
-                throw new InvalidStateException("Only QuadEncoder supported for Shuffleboard!");
-            }
-            builder.setSmartDashboardType("Quadrature Encoder");
-            builder.addDoubleProperty("Speed", FrcCANTalon.this::getSpeed, null);
-            builder.addDoubleProperty("Distance", FrcCANTalon.this::getPosition, null);
-            builder.addDoubleProperty("Distance per Tick", ()->1, null);
-        }
-    }
 
 }   //class FrcCANTalon
