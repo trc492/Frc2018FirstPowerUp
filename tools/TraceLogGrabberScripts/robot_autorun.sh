@@ -8,4 +8,4 @@ mkdir -p /home/lvuser/tracelogbackup
 cp /home/lvuser/tracelog/* /media/sda1/TraceLog
 mv /home/lvuser/tracelog/* /home/lvuser/tracelogbackup
 
-echo "Robt script done"
+echo "Robot script done"
