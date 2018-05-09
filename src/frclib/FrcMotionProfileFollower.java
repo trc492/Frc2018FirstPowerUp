@@ -37,21 +37,23 @@ import trclib.TrcRobot;
 import trclib.TrcStateMachine;
 import trclib.TrcTaskMgr;
 import trclib.TrcUtil;
+import frclib.FrcMotionProfile.FrcMotionProfilePoint;
 
 import java.security.InvalidParameterException;
+import java.util.Arrays;
 
 /**
- * This is a super sketchy implementation of motion profiling. It streams the points to the buffer, and then executes
- * it. Also, the points are processed 2x as fast as the first point.
+ * This is a super sketchy implementation of motion profiling. It streams the profiles to the buffer, and then executes
+ * it. Also, the profiles are processed 2x as fast as the first point.
  * This was written by using these resources:
  * https://github.com/CrossTheRoadElec/Phoenix-Examples-Languages/tree/master/Java/MotionProfile/src/org/usfirst/frc/team217/robot
  * https://github.com/CrossTheRoadElec/Phoenix-Documentation/blob/master/Talon%20SRX%20Motion%20Profile%20Reference%20Manual.pdf
  */
 
-public class FrcSketchyMotionProfile
+public class FrcMotionProfileFollower
 {
-    private static final int MAX_POINT_BUFFER_SIZE = 2048; // Max number of points talon buffer can hold
-    private static final int PERIODIC_BUFFER_FILL_SIZE = 512; // Number of points to add to buffer periodically
+    private static final int MAX_POINT_BUFFER_SIZE = 2048; // Max number of profiles talon buffer can hold
+    private static final int PERIODIC_BUFFER_FILL_SIZE = 512; // Number of profiles to add to buffer periodically
     private static final int MIN_POINTS_IN_TALON = 10;
     private static final TrajectoryDuration DEFAULT_TRAJECTORY_DURATION = TrajectoryDuration.Trajectory_Duration_10ms;
 
@@ -65,7 +67,8 @@ public class FrcSketchyMotionProfile
     private double worldUnitsPerEncoderTick;
     private FrcCANTalon leftMaster, rightMaster;
     private TrcTaskMgr.TaskObject motionProfileTaskObject;
-    private double[][][] points;
+    private FrcMotionProfile[] profiles;
+    private int numPoints;
     private TrcStateMachine<State> sm;
     private int fillIndex = 0;
     private boolean filled = false;
@@ -75,12 +78,12 @@ public class FrcSketchyMotionProfile
     private TrcEvent onFinishedEvent;
     private double timedOutTime;
 
-    public FrcSketchyMotionProfile(String instanceName, PidCoefficients pidCoefficients, double worldUnitsPerEncoderTick)
+    public FrcMotionProfileFollower(String instanceName, PidCoefficients pidCoefficients, double worldUnitsPerEncoderTick)
     {
         this(instanceName, pidCoefficients, 0, worldUnitsPerEncoderTick);
     }
 
-    public FrcSketchyMotionProfile(String instanceName, PidCoefficients pidCoefficients, int pidSlot, double worldUnitsPerEncoderTick)
+    public FrcMotionProfileFollower(String instanceName, PidCoefficients pidCoefficients, int pidSlot, double worldUnitsPerEncoderTick)
     {
         this.pidCoefficients = pidCoefficients;
         this.pidSlot = pidSlot;
@@ -154,43 +157,40 @@ public class FrcSketchyMotionProfile
 
     /**
      * Follow the supplied path using motion profiling.
-     * @param points 2d array of points of dimension [numPoints, 2, 3].
-     *               In the 2nd dimension, index 0 is left motors, index 1 is right motors.
-     *               In the 3rd dimension, index 0 is position, index 1 is velocity, and index 2 is timestep
+     * @param profiles Array of profiles of size 2.
+     *               Index 0 is left motors, index 1 is right motors
      *               Remember to match units with worldUnitsPerEncoderTick!
      */
-    public void start(double[][][] points)
+    public void start(FrcMotionProfile[] profiles)
     {
-        start(points, null, 0.0);
+        start(profiles, null, 0.0);
     }
 
     /**
      * Follow the supplied path using motion profiling.
-     * @param points 2d array of points of dimension [numPoints, 2, 3].
-     *               In the 2nd dimension, index 0 is left motors, index 1 is right motors.
-     *               In the 3rd dimension, index 0 is position, index 1 is velocity, and index 2 is timestep
+     * @param profiles Array of profiles of size 2.
+     *               Index 0 is left motors, index 1 is right motors
      *               Remember to match units with worldUnitsPerEncoderTick!
      * @param event Event to signal when path has been followed
      */
-    public void start(double[][][] points, TrcEvent event)
+    public void start(FrcMotionProfile[] profiles, TrcEvent event)
     {
-        start(points, event, 0.0);
+        start(profiles, event, 0.0);
     }
 
     /**
      * Follow the supplied path using motion profiling.
-     * @param points 2d array of points of dimension [numPoints, 2, 3].
-     *               In the 2nd dimension, index 0 is left motors, index 1 is right motors.
-     *               In the 3rd dimension, index 0 is position, index 1 is velocity, and index 2 is timestep
+     * @param profiles Array of profiles of size 2.
+     *               Index 0 is left motors, index 1 is right motors
      *               Remember to match units with worldUnitsPerEncoderTick!
      * @param event Event to signal when path has been followed
      * @param timeout Maximum number of seconds to spend following the path. 0.0 means no timeout.
      */
-    public void start(double[][][] points, TrcEvent event, double timeout)
+    public void start(FrcMotionProfile[] profiles, TrcEvent event, double timeout)
     {
-        if(points[0].length != 2 || points[0][0].length != 3)
+        if(profiles.length != 2)
         {
-            throw new IllegalArgumentException("path must be 3d array with size [numPoints, 2, 3]!");
+            throw new IllegalArgumentException("path must be an array with size 2!");
         }
 
         if(leftMaster == null || rightMaster == null)
@@ -210,26 +210,18 @@ public class FrcSketchyMotionProfile
             this.timedOutTime = TrcUtil.getCurrentTime() + timeout;
         }
 
+        numPoints = this.profiles[0].getPoints().length;
+        this.profiles = profiles;
+        this.profiles[0].scale(worldUnitsPerEncoderTick);
+        this.profiles[1].scale(worldUnitsPerEncoderTick);
+
         statuses = new MotionProfileStatus[]{new MotionProfileStatus(), new MotionProfileStatus()};
 
-        this.points = new double[points.length][points[0].length][points[1].length];
-        double duration = points[0][0][2];
-        for(int i = 0; i < points.length; i++)
-        {
-            for(int j = 0; j < points[i].length; j++)
-            {
-                this.points[i][j][0] = points[i][j][0] / worldUnitsPerEncoderTick;
-                this.points[i][j][1] = points[i][j][1] / worldUnitsPerEncoderTick;
-                this.points[i][j][2] = points[i][j][2];
-                if(points[i][j][2] < duration)
-                {
-                    duration = points[i][j][2];
-                }
-            }
-        }
+        this.profiles = profiles;
+        double minDuration = Arrays.stream(this.profiles[0].getTimeSteps()).min(Double::compareTo).get();
 
-        double updatePeriod = duration/2; // 2x as fast as trajectory duration
-        notifier.startPeriodic(updatePeriod/1000d); // Convert from milliseconds to seconds
+        double updatePeriod = minDuration/2; // 2x as fast as trajectory duration
+        notifier.startPeriodic(updatePeriod); // Convert from milliseconds to seconds
 
         setTaskEnabled(true);
         leftMaster.motor.changeMotionControlFramePeriod((int)updatePeriod);
@@ -298,7 +290,7 @@ public class FrcSketchyMotionProfile
 
         switch(state){
             case START:
-                // Fill the top buffer. If points.length < MAX_POINT_BUFFER_SIZE, fill completely.
+                // Fill the top buffer. If numPoints < MAX_POINT_BUFFER_SIZE, fill completely.
                 filled = false;
                 cancelled = false;
                 fillPointBuffer();
@@ -306,7 +298,7 @@ public class FrcSketchyMotionProfile
                 break;
 
             case WAIT_FOR_POINTS:
-                // Wait for the bottom buffer to get enough trajectory points
+                // Wait for the bottom buffer to get enough trajectory profiles
                 if(hasEnoughPoints())
                 {
                     sm.setState(State.MONITOR_PATH);
@@ -314,7 +306,7 @@ public class FrcSketchyMotionProfile
                 break;
 
             case MONITOR_PATH:
-                fillPointBuffer(); // Keep filling points into top buffer. (only useful if points.length > MAX_POINT_BUFFER_SIZE)
+                fillPointBuffer(); // Keep filling profiles into top buffer. (only useful if numPoints > MAX_POINT_BUFFER_SIZE)
                 setTalonValue(SetValueMotionProfile.Enable); // Keep sending the enable signal
                 if(isDone())
                 {
@@ -346,8 +338,8 @@ public class FrcSketchyMotionProfile
 
     private void fillStatuses()
     {
-        leftMaster.motor.getMotionProfileStatus(statuses[0]);
-        rightMaster.motor.getMotionProfileStatus(statuses[1]);
+        if(leftMaster != null) leftMaster.motor.getMotionProfileStatus(statuses[0]);
+        if(rightMaster != null) rightMaster.motor.getMotionProfileStatus(statuses[1]);
     }
 
     private boolean hasEnoughPoints()
@@ -370,8 +362,8 @@ public class FrcSketchyMotionProfile
 
     private void processPointBuffer()
     {
-        leftMaster.motor.processMotionProfileBuffer();
-        rightMaster.motor.processMotionProfileBuffer();
+        if(leftMaster != null) leftMaster.motor.processMotionProfileBuffer();
+        if(rightMaster != null) rightMaster.motor.processMotionProfileBuffer();
     }
     
     /**
@@ -399,16 +391,16 @@ public class FrcSketchyMotionProfile
 
         // Fills range [startIndex, endIndex)
         int startIndex = 0;
-        int endIndex = points.length;
-        if(points.length > MAX_POINT_BUFFER_SIZE)
+        int endIndex = numPoints;
+        if(numPoints > MAX_POINT_BUFFER_SIZE)
         {
             if(!hasBufferRoom()) return;
             startIndex = fillIndex;
-            endIndex = Math.min(startIndex + PERIODIC_BUFFER_FILL_SIZE, points.length);
+            endIndex = Math.min(startIndex + PERIODIC_BUFFER_FILL_SIZE, numPoints);
             fillIndex = endIndex;
         }
 
-        // Cancel previous MP and clear underrun flag if this is the first time filling points
+        // Cancel previous MP and clear underrun flag if this is the first time filling profiles
         if(startIndex == 0)
         {
             leftMaster.motor.clearMotionProfileTrajectories();
@@ -423,27 +415,29 @@ public class FrcSketchyMotionProfile
         TrajectoryPoint point = new TrajectoryPoint();
         for(int i = startIndex; i < endIndex; i++)
         {
-            point.position = points[i][0][0];
-            point.velocity = points[i][0][1];
-            point.timeDur = getTrajectoryDuration((int)points[i][0][2]);
+            FrcMotionProfilePoint profilePoint = profiles[0].getPoints()[i];
+            point.position = profilePoint.encoderPosition;
+            point.velocity = profilePoint.velocity;
+            point.timeDur = getTrajectoryDuration((int)(profilePoint.timeStep*1000)); // Convert from sec to ms
             point.profileSlotSelect0 = pidSlot;
             point.profileSlotSelect1 = pidSlot;
             point.zeroPos = (i == 0);
-            point.isLastPoint = (i == points.length-1);
+            point.isLastPoint = (i == numPoints-1);
 
             leftMaster.motor.pushMotionProfileTrajectory(point);
 
-            point.position = points[i][1][0];
-            point.velocity = points[i][1][1];
-            point.timeDur = getTrajectoryDuration((int)points[i][1][2]);
+            profilePoint = profiles[1].getPoints()[i];
+            point.position = profilePoint.encoderPosition;
+            point.velocity = profilePoint.velocity;
+            point.timeDur = getTrajectoryDuration((int)(profilePoint.timeStep*1000)); // Convert from sec to ms
             point.profileSlotSelect0 = pidSlot;
             point.profileSlotSelect1 = pidSlot;
             point.zeroPos = (i == 0);
-            point.isLastPoint = (i == points.length-1);
+            point.isLastPoint = (i == numPoints-1);
 
             rightMaster.motor.pushMotionProfileTrajectory(point);
         }
-        if(endIndex >= points.length)
+        if(endIndex >= numPoints)
         {
             filled = true;
         }
