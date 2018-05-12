@@ -28,12 +28,19 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.OptionalDouble;
+import java.util.stream.Stream;
 
 public class FrcMotionProfile
 {
-    public static FrcMotionProfile loadFromCsv(String path)
+    public static FrcMotionProfile loadProfileFromCsv(String leftPath, String rightPath)
     {
-        if(!path.endsWith(".csv")) throw new IllegalArgumentException("path must be a csv file!");
+        return new FrcMotionProfile(loadPointsFromCsv(leftPath), loadPointsFromCsv(rightPath));
+    }
+
+    public static FrcMotionProfilePoint[] loadPointsFromCsv(String path)
+    {
+        if(!path.endsWith(".csv")) throw new IllegalArgumentException(String.format("%s is not a csv file!", path));
 
         try(BufferedReader in = new BufferedReader(new FileReader(path)))
         {
@@ -42,13 +49,13 @@ public class FrcMotionProfile
             in.readLine(); // Get rid of the first line
             while((line = in.readLine()) != null)
             {
-                Double[] parts = Arrays.stream(line.split(",")).map(Double::parseDouble).toArray(Double[]::new);
+                double[] parts = Arrays.stream(line.split(",")).mapToDouble(Double::parseDouble).toArray();
                 if(parts.length != 8) throw new IllegalArgumentException("There must be 8 columns in the csv file!");
                 FrcMotionProfilePoint point = new FrcMotionProfilePoint(parts[0], parts[1], parts[2], parts[3], parts[4],
                         parts[5], parts[6], parts[7]);
                 points.add(point);
             }
-            return new FrcMotionProfile(points.toArray(new FrcMotionProfilePoint[0]));
+            return points.toArray(new FrcMotionProfilePoint[0]);
         }
         catch(IOException e)
         {
@@ -56,62 +63,65 @@ public class FrcMotionProfile
         }
     }
 
-    private FrcMotionProfilePoint[] points;
-    public FrcMotionProfile(FrcMotionProfilePoint[] points)
+    private FrcMotionProfilePoint[] leftPoints, rightPoints;
+    public FrcMotionProfile(FrcMotionProfilePoint[] leftPoints, FrcMotionProfilePoint[] rightPoints)
     {
-        this.points = points;
+        if(leftPoints.length != rightPoints.length)
+        {
+            throw new IllegalArgumentException("leftPoints and rightPoints must have the same length!");
+        }
+        this.leftPoints = leftPoints;
+        this.rightPoints = rightPoints;
     }
 
-    public FrcMotionProfilePoint[] getPoints()
+    public FrcMotionProfilePoint[] getLeftPoints()
     {
-        return points;
+        return leftPoints;
     }
 
-    public void scale(double worldUnitsPerEncoderTick) {
-        for(FrcMotionProfilePoint point:points)
+    public FrcMotionProfilePoint[] getRightPoints()
+    {
+        return rightPoints;
+    }
+
+    public void scale(double worldUnitsPerEncoderTick)
+    {
+        for(FrcMotionProfilePoint point:leftPoints)
+        {
+            point.encoderPosition /= worldUnitsPerEncoderTick;
+        }
+
+        for(FrcMotionProfilePoint point:rightPoints)
         {
             point.encoderPosition /= worldUnitsPerEncoderTick;
         }
     }
 
-    public Double[] getTimeSteps()
+    public int getNumPoints()
     {
-        return Arrays.stream(points).map(e -> e.timeStep).toArray(Double[]::new);
+        return leftPoints.length;
     }
 
-    public Double[] getXPositions()
+    public double getMinTimeStep()
     {
-        return Arrays.stream(points).map(e -> e.x).toArray(Double[]::new);
+        OptionalDouble minTimeStep = Stream.concat(Arrays.stream(leftPoints), Arrays.stream(rightPoints))
+                .mapToDouble(p -> p.timeStep).min();
+        if(minTimeStep.isPresent())
+        {
+            return minTimeStep.getAsDouble();
+        }
+        throw new IllegalStateException("For some reason the streaming returned a null! I don't know why!");
     }
 
-    public Double[] getYPositions()
+    public FrcMotionProfile copy()
     {
-        return Arrays.stream(points).map(e -> e.y).toArray(Double[]::new);
-    }
-
-    public Double[] getEncoderPositions()
-    {
-        return Arrays.stream(points).map(e -> e.encoderPosition).toArray(Double[]::new);
-    }
-
-    public Double[] getVelocities()
-    {
-        return Arrays.stream(points).map(e -> e.velocity).toArray(Double[]::new);
-    }
-
-    public Double[] getAccelerations()
-    {
-        return Arrays.stream(points).map(e -> e.acceleration).toArray(Double[]::new);
-    }
-
-    public Double[] getJerks()
-    {
-        return Arrays.stream(points).map(e -> e.jerk).toArray(Double[]::new);
-    }
-
-    public Double[] getHeadings()
-    {
-        return Arrays.stream(points).map(e -> e.heading).toArray(Double[]::new);
+        FrcMotionProfilePoint[] left = Arrays.stream(leftPoints)
+                .map(FrcMotionProfilePoint::new)
+                .toArray(FrcMotionProfilePoint[]::new);
+        FrcMotionProfilePoint[] right = Arrays.stream(rightPoints)
+                .map(FrcMotionProfilePoint::new)
+                .toArray(FrcMotionProfilePoint[]::new);
+        return new FrcMotionProfile(left, right);
     }
 
     public static class FrcMotionProfilePoint
@@ -128,6 +138,18 @@ public class FrcMotionProfile
             this.acceleration = acceleration;
             this.jerk = jerk;
             this.heading = heading;
+        }
+
+        public FrcMotionProfilePoint(FrcMotionProfilePoint other)
+        {
+            this.timeStep = other.timeStep;
+            this.x = other.x;
+            this.y = other.y;
+            this.encoderPosition = other.encoderPosition;
+            this.velocity = other.velocity;
+            this.acceleration = other.acceleration;
+            this.jerk = other.jerk;
+            this.heading = other.heading;
         }
     }
 }

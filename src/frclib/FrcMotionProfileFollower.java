@@ -67,7 +67,7 @@ public class FrcMotionProfileFollower
     private double worldUnitsPerEncoderTick;
     private FrcCANTalon leftMaster, rightMaster;
     private TrcTaskMgr.TaskObject motionProfileTaskObject;
-    private FrcMotionProfile[] profiles;
+    private FrcMotionProfile profile;
     private int numPoints;
     private TrcStateMachine<State> sm;
     private int fillIndex = 0;
@@ -157,42 +157,31 @@ public class FrcMotionProfileFollower
 
     /**
      * Follow the supplied path using motion profiling.
-     * @param profiles Array of profiles of size 2.
-     *               Index 0 is left motors, index 1 is right motors
-     *               Remember to match units with worldUnitsPerEncoderTick!
+     * @param profile FrcMotionProfile object representing the path to follow. Remember to match units with worldUnitsPerEncoderTick!
      */
-    public void start(FrcMotionProfile[] profiles)
+    public void start(FrcMotionProfile profile)
     {
-        start(profiles, null, 0.0);
+        start(profile, null, 0.0);
     }
 
     /**
      * Follow the supplied path using motion profiling.
-     * @param profiles Array of profiles of size 2.
-     *               Index 0 is left motors, index 1 is right motors
-     *               Remember to match units with worldUnitsPerEncoderTick!
+     * @param profile FrcMotionProfile object representing the path to follow. Remember to match units with worldUnitsPerEncoderTick!
      * @param event Event to signal when path has been followed
      */
-    public void start(FrcMotionProfile[] profiles, TrcEvent event)
+    public void start(FrcMotionProfile profile, TrcEvent event)
     {
-        start(profiles, event, 0.0);
+        start(profile, event, 0.0);
     }
 
     /**
      * Follow the supplied path using motion profiling.
-     * @param profiles Array of profiles of size 2.
-     *               Index 0 is left motors, index 1 is right motors
-     *               Remember to match units with worldUnitsPerEncoderTick!
+     * @param profile FrcMotionProfile object representing the path to follow. Remember to match units with worldUnitsPerEncoderTick!
      * @param event Event to signal when path has been followed
      * @param timeout Maximum number of seconds to spend following the path. 0.0 means no timeout.
      */
-    public void start(FrcMotionProfile[] profiles, TrcEvent event, double timeout)
+    public void start(FrcMotionProfile profile, TrcEvent event, double timeout)
     {
-        if(profiles.length != 2)
-        {
-            throw new IllegalArgumentException("path must be an array with size 2!");
-        }
-
         if(leftMaster == null || rightMaster == null)
         {
             throw new IllegalStateException("Left and right motors must be set before calling start()!");
@@ -210,15 +199,13 @@ public class FrcMotionProfileFollower
             this.timedOutTime = TrcUtil.getCurrentTime() + timeout;
         }
 
-        numPoints = this.profiles[0].getPoints().length;
-        this.profiles = profiles;
-        this.profiles[0].scale(worldUnitsPerEncoderTick);
-        this.profiles[1].scale(worldUnitsPerEncoderTick);
+        this.profile = profile.copy();
+        numPoints = this.profile.getNumPoints();
+        this.profile.scale(worldUnitsPerEncoderTick);
 
         statuses = new MotionProfileStatus[]{new MotionProfileStatus(), new MotionProfileStatus()};
 
-        this.profiles = profiles;
-        double minDuration = Arrays.stream(this.profiles[0].getTimeSteps()).min(Double::compareTo).get();
+        double minDuration = this.profile.getMinTimeStep();
 
         double updatePeriod = minDuration/2; // 2x as fast as trajectory duration
         notifier.startPeriodic(updatePeriod); // Convert from milliseconds to seconds
@@ -415,7 +402,7 @@ public class FrcMotionProfileFollower
         TrajectoryPoint point = new TrajectoryPoint();
         for(int i = startIndex; i < endIndex; i++)
         {
-            FrcMotionProfilePoint profilePoint = profiles[0].getPoints()[i];
+            FrcMotionProfilePoint profilePoint = profile.getLeftPoints()[i];
             point.position = profilePoint.encoderPosition;
             point.velocity = profilePoint.velocity;
             point.timeDur = getTrajectoryDuration((int)(profilePoint.timeStep*1000)); // Convert from sec to ms
@@ -426,7 +413,7 @@ public class FrcMotionProfileFollower
 
             leftMaster.motor.pushMotionProfileTrajectory(point);
 
-            profilePoint = profiles[1].getPoints()[i];
+            profilePoint = profile.getRightPoints()[i];
             point.position = profilePoint.encoderPosition;
             point.velocity = profilePoint.velocity;
             point.timeDur = getTrajectoryDuration((int)(profilePoint.timeStep*1000)); // Convert from sec to ms
