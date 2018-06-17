@@ -143,7 +143,6 @@ public class FrcFaceDetector extends FrcOpenCVDetector<MatOfRect>
      * This method is called to detect objects in the image frame.
      *
      * @param image specifies the image to be processed.
-     * @param detectedTargets specifies the preallocated buffer to hold the detected targets.
      * @param detectedObjects specifies the object rectangle array to hold the detected objects.
      * @return detected objects, null if none detected.
      */

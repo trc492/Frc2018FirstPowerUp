@@ -138,8 +138,6 @@ public abstract class FrcVisionTarget extends FrcOpenCVDetector<Rect[]>
      * This method is called to detect objects in the acquired image frame.
      *
      * @param image specifies the image to be processed.
-     * @param detectedTargets specifies the preallocated buffer to hold the detected targets (not used since no
-     *        preallocated buffer required).
      * @return detected objects, null if none detected.
      */
     @Override

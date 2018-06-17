@@ -179,8 +179,6 @@ public abstract class TrcMotor implements TrcMotorController
      * This method returns the speed of the motor rotation. It keeps track of the rotation speed by using a periodic
      * task to monitor the position sensor value. If the motor controller has hardware monitoring speed, it should
      * override this method and access the hardware instead.
-     *
-     * @throws UnsupportedOperationException.
      */
     @Override
     public double getSpeed()

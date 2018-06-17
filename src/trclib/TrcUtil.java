@@ -67,6 +67,7 @@ public class TrcUtil
     /**
      * This method returns the current time stamp with the specified format.
      *
+     * @param format specifies the time stamp format.
      * @return current time stamp string with the specified format.
      */
     public static String getTimestamp(String format)

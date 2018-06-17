@@ -24,6 +24,7 @@ package team492;
 
 import common.CmdPidDrive;
 import common.CmdTimedDrive;
+import edu.wpi.first.wpilibj.I2C;
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 import frclib.FrcChoiceMenu;
 import frclib.FrcJoystick;
@@ -177,7 +178,7 @@ public class FrcTest extends FrcTeleOp
                 break;
         }
 
-//        robot.lidar = new Lidar("Lidar", I2C.Port.kMXP, (byte)0x62);
+        robot.lidar = new Lidar("Lidar", I2C.Port.kMXP, (byte)0x62);
         LiveWindow.setEnabled(liveWindowEnabled);
         sm.start(State.START);
     } // startMode

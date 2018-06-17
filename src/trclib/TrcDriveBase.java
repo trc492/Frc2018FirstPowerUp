@@ -799,14 +799,15 @@ public class TrcDriveBase
 
     /**
      * This method drives the motors at "magnitude" and "curve". Both magnitude and curve are -1.0 to +1.0 values,
-     * where 0.0 represents stopped and not turning. curve < 0 will turn left and curve > 0 will turn right. The
-     * algorithm for steering provides a constant turn radius for any normal speed range, both forward and backward.
-     * Increasing sensitivity causes sharper turns for fixed values of curve.
+     * where 0.0 represents stopped and not turning. curve less than 0 will turn left and curve greater than 0 will
+     * turn right. The algorithm for steering provides a constant turn radius for any normal speed range, both
+     * forward and backward. Increasing sensitivity causes sharper turns for fixed values of curve.
      *
      * @param magnitude specifies the speed setting for the outside wheel in a turn, forward or backwards, +1 to -1.
-     * @param curve specifies the rate of turn, constant for different forward speeds. Set curve < 0 for left turn or
-     *              curve > 0 for right turn. Set curve = e^(-r/w) to get a turn radius r for wheelbase w of your
-     *              robot. Conversely, turn radius r = -ln(curve)*w for a given value of curve and wheelbase w.
+     * @param curve specifies the rate of turn, constant for different forward speeds. Set curve less than 0 for left
+     *              turn or curve greater than 0 for right turn. Set curve = e^(-r/w) to get a turn radius r for
+     *              wheel base w of your robot. Conversely, turn radius r = -ln(curve)*w for a given value of curve
+     *              and wheel base w.
      * @param inverted specifies true to invert control (i.e. robot front becomes robot back).
      */
     public void drive(double magnitude, double curve, boolean inverted)

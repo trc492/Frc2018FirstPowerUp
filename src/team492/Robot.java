@@ -555,7 +555,6 @@ public class Robot extends FrcRobotBase
             globalTracer.traceInfo(funcName, "Pixy is %s!", enabled? "enabled": "disabled");
         }
     }   //setVisionEnabled
-    
 
     public void cancelAutoAssist()
     {
@@ -778,11 +777,14 @@ public class Robot extends FrcRobotBase
     {
         double value = 0.0;
 
-//        if (frontRanger != null)
-//        {
-//            value = frontRanger.getDistance().value;
-//        }
-//        value = lidar.getDistance();//*TrcUtil.INCHES_PER_CM;
+        if (frontRanger != null)
+        {
+            value = frontRanger.getDistance().value;
+        }
+        else if (lidar != null)
+        {
+            value = lidar.getDistance();//*TrcUtil.INCHES_PER_CM;
+        }
 
         return value;
     }

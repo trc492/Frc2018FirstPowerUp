@@ -34,7 +34,7 @@ import trclib.TrcTaskMgr;
 public class FrcAuto implements TrcRobot.RobotMode
 {
     private static final String moduleName = "FrcAuto";
-//    private static final boolean DO_UPDATES = false;
+    private static final boolean DO_UPDATES = false;
 
     public static enum AutoStrategy
     {
@@ -286,12 +286,12 @@ public class FrcAuto implements TrcRobot.RobotMode
     @Override
     public void runPeriodic(double elapsedTime)
     {
-//        if (DO_UPDATES)
-//        {
-//            robot.updateDashboard(RunMode.AUTO_MODE);
-//            robot.announceSafety();
-//            robot.diagnostics.updateDiagnosticsAndDashboard();
-//        }
+        if (DO_UPDATES)
+        {
+            robot.updateDashboard(RunMode.AUTO_MODE);
+            robot.announceSafety();
+            robot.diagnostics.updateDiagnosticsAndDashboard();
+        }
     } // runPeriodic
 
     @Override

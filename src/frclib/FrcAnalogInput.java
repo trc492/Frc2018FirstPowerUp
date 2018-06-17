@@ -42,7 +42,7 @@ public class FrcAnalogInput extends TrcAnalogInput
      * Constructor: Creates an instance of the object.
      *
      * @param instanceName specifies the instance name.
-     * @param specifies the analog input channel.
+     * @param channel specifies the analog input channel.
      * @param filters specifies an array of filter objects, one for each axis, to filter sensor data. If no filter
      *                is used, this can be set to null.
      */
@@ -56,7 +56,7 @@ public class FrcAnalogInput extends TrcAnalogInput
      * Constructor: Creates an instance of the object.
      *
      * @param instanceName specifies the instance name.
-     * @param specifies the analog input channel.
+     * @param channel specifies the analog input channel.
      */
     public FrcAnalogInput(String instanceName, int channel)
     {
