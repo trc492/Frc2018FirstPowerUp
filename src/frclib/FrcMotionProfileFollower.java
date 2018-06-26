@@ -49,9 +49,7 @@ import frclib.FrcMotionProfile.FrcMotionProfilePoint;
 
 public class FrcMotionProfileFollower
 {
-    private static final int MAX_POINT_BUFFER_SIZE = 2048; // Max number of profiles talon buffer can hold
-    private static final int PERIODIC_BUFFER_FILL_SIZE = 512; // Number of profiles to add to buffer periodically
-    private static final int MIN_POINTS_IN_TALON = 10;
+    private static final int MIN_POINTS_IN_TALON = 50;
     private static final TrajectoryDuration DEFAULT_TRAJECTORY_DURATION = TrajectoryDuration.Trajectory_Duration_10ms;
 
     private enum State
@@ -388,15 +386,6 @@ public class FrcMotionProfileFollower
         return true;
     }
 
-    private boolean hasBufferRoom()
-    {
-        for(MotionProfileStatus status:statuses)
-        {
-            if(status.topBufferRem < PERIODIC_BUFFER_FILL_SIZE) return false;
-        }
-        return true;
-    }
-
     private void processPointBuffer()
     {
         if(leftMaster != null) leftMaster.motor.processMotionProfileBuffer();
@@ -410,8 +399,7 @@ public class FrcMotionProfileFollower
      */
     private TrajectoryDuration getTrajectoryDuration(int duration)
     {
-        TrajectoryDuration dur = TrajectoryDuration.Trajectory_Duration_0ms;
-        dur = dur.valueOf(duration);
+        TrajectoryDuration dur = TrajectoryDuration.valueOf(duration);
         
         if(dur.value != duration)
         {
@@ -427,15 +415,9 @@ public class FrcMotionProfileFollower
         if(filled) return;
 
         // Fills range [startIndex, endIndex)
-        int startIndex = 0;
-        int endIndex = numPoints;
-        if(numPoints > MAX_POINT_BUFFER_SIZE)
-        {
-            if(!hasBufferRoom()) return;
-            startIndex = fillIndex;
-            endIndex = Math.min(startIndex + PERIODIC_BUFFER_FILL_SIZE, numPoints);
-            fillIndex = endIndex;
-        }
+        int startIndex = fillIndex;
+        int endIndex = Math.min(numPoints, startIndex + Math.min(statuses[0].topBufferRem, statuses[1].topBufferRem));
+        fillIndex = endIndex;
 
         // Cancel previous MP and clear underrun flag if this is the first time filling profiles
         if(startIndex == 0)
