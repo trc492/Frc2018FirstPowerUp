@@ -10,7 +10,7 @@ public class MotionProfileTest implements TrcRobot.RobotCommand
     private static final double kP = 0.0;
     private static final double kI = 0.0;
     private static final double kD = 0.0;
-    private static final double kF = 0.0;
+    private static final double kF = 0.0; // TODO: Calculate this according to Phoenix docs
 
     private String instanceName;
     private FrcMotionProfile profile;
@@ -33,12 +33,12 @@ public class MotionProfileTest implements TrcRobot.RobotCommand
     public void start()
     {
         follower.start(profile);
+        robot.globalTracer.traceInfo(instanceName + ".start","Starting following path!");
     }
 
     @Override
     public boolean cmdPeriodic(double elapsedTime)
     {
-        String funcName = instanceName + ".cmdPeriodic";
         String message = String.format(
             "MotionProfile - Running: %b, Bottom Buffer: [%d,%d], Top Buffer: [%d,%d], Target Positions: [%.2f,%.2f], Target Velocities: [%.2f,%.2f]",
             follower.isActive(),
@@ -48,7 +48,7 @@ public class MotionProfileTest implements TrcRobot.RobotCommand
             follower.leftTargetVelocity(), follower.rightTargetVelocity());
 
         robot.dashboard.displayPrintf(1, message);
-        robot.globalTracer.traceInfo(funcName, message);
+        robot.globalTracer.traceInfo(instanceName + ".cmdPeriodic", message);
         return !follower.isActive();
     }
 }
