@@ -399,7 +399,8 @@ public class FrcMotionProfileFollower
      */
     private TrajectoryDuration getTrajectoryDuration(int duration)
     {
-        TrajectoryDuration dur = TrajectoryDuration.valueOf(duration);
+        TrajectoryDuration dur = TrajectoryDuration.Trajectory_Duration_10ms;
+        dur = dur.valueOf(duration);
         
         if(dur.value != duration)
         {
