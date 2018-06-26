@@ -39,6 +39,7 @@ public class FrcAuto implements TrcRobot.RobotMode
     public static enum AutoStrategy
     {
         // Different choices for autonomous
+        MOTION_PROFILE_TEST,
         X_TIMED_DRIVE,
         Y_TIMED_DRIVE,
         X_DISTANCE_DRIVE,
@@ -92,7 +93,8 @@ public class FrcAuto implements TrcRobot.RobotMode
         // Populate Autonomous Mode menus.
         //
         //
-        autoStrategyMenu.addChoice("X Timed Drive", AutoStrategy.X_TIMED_DRIVE, true, false);
+        autoStrategyMenu.addChoice("Motion Profile", AutoStrategy.MOTION_PROFILE_TEST, true, false);
+        autoStrategyMenu.addChoice("X Timed Drive", AutoStrategy.X_TIMED_DRIVE, false, false);
         autoStrategyMenu.addChoice("Y Timed Drive", AutoStrategy.Y_TIMED_DRIVE, false, false);
         autoStrategyMenu.addChoice("X Distance Drive", AutoStrategy.X_DISTANCE_DRIVE, false, false);
         autoStrategyMenu.addChoice("Y Distance Drive", AutoStrategy.Y_DISTANCE_DRIVE, false, false);
@@ -126,6 +128,10 @@ public class FrcAuto implements TrcRobot.RobotMode
 
         switch (autoStrategy)
         {
+            case MOTION_PROFILE_TEST:
+                MotionProfileTest test = new MotionProfileTest("MP", robot);
+                test.start();
+                break;
             case X_TIMED_DRIVE:
                 autoCommand = new CmdTimedDrive(robot, delay, robot.driveTime, robot.drivePower, 0.0, 0.0);
                 break;
