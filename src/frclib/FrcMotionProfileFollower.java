@@ -75,11 +75,24 @@ public class FrcMotionProfileFollower
     private TrcEvent onFinishedEvent;
     private double timedOutTime;
 
+    /**
+     * Create FrcMotionProfileFollower object. Uses default pid slot 0.
+     * @param instanceName Name of the instance, duh.
+     * @param pidCoefficients PidCoefficients object storing the PIDF constants.
+     * @param worldUnitsPerEncoderTick Number of word units per encoder tick. For example, inches per encoder tick.
+     */
     public FrcMotionProfileFollower(String instanceName, PidCoefficients pidCoefficients, double worldUnitsPerEncoderTick)
     {
         this(instanceName, pidCoefficients, 0, worldUnitsPerEncoderTick);
     }
 
+    /**
+     * Create FrcMotionProfileFollower object
+     * @param instanceName Name of the instance, duh.
+     * @param pidCoefficients PidCoefficients object storing the PIDF constants.
+     * @param pidSlot Index of the pid slot to store the pid constants
+     * @param worldUnitsPerEncoderTick Number of word units per encoder tick. For example, inches per encoder tick.
+     */
     public FrcMotionProfileFollower(String instanceName, PidCoefficients pidCoefficients, int pidSlot, double worldUnitsPerEncoderTick)
     {
         this.pidCoefficients = pidCoefficients;
@@ -153,7 +166,7 @@ public class FrcMotionProfileFollower
     }
 
     /**
-     * Follow the supplied path using motion profiling.
+     * Start following the supplied motion profile.
      * @param profile FrcMotionProfile object representing the path to follow. Remember to match units with worldUnitsPerEncoderTick!
      */
     public void start(FrcMotionProfile profile)
@@ -162,7 +175,7 @@ public class FrcMotionProfileFollower
     }
 
     /**
-     * Follow the supplied path using motion profiling.
+     * Start following the supplied motion profile.
      * @param profile FrcMotionProfile object representing the path to follow. Remember to match units with worldUnitsPerEncoderTick!
      * @param event Event to signal when path has been followed
      */
@@ -172,7 +185,7 @@ public class FrcMotionProfileFollower
     }
 
     /**
-     * Follow the supplied path using motion profiling.
+     * Start following the supplied motion profile.
      * @param profile FrcMotionProfile object representing the path to follow. Remember to match units with worldUnitsPerEncoderTick!
      * @param event Event to signal when path has been followed
      * @param timeout Maximum number of seconds to spend following the path. 0.0 means no timeout.
