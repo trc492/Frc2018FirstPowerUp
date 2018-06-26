@@ -39,9 +39,6 @@ import trclib.TrcTaskMgr;
 import trclib.TrcUtil;
 import frclib.FrcMotionProfile.FrcMotionProfilePoint;
 
-import java.security.InvalidParameterException;
-import java.util.Arrays;
-
 /**
  * This is a super sketchy implementation of motion profiling. It streams the profiles to the buffer, and then executes
  * it. Also, the profiles are processed 2x as fast as the first point.
@@ -104,7 +101,7 @@ public class FrcMotionProfileFollower
     {
         if(leftMotors.length == 0)
         {
-            throw new InvalidParameterException("Cannot pass empty array of motors!");
+            throw new IllegalArgumentException("Cannot pass empty array of motors!");
         }
 
         this.leftMaster = leftMotors[0];
@@ -134,7 +131,7 @@ public class FrcMotionProfileFollower
     {
         if(rightMotors.length == 0)
         {
-            throw new InvalidParameterException("Cannot pass empty array of motors!");
+            throw new IllegalArgumentException("Cannot pass empty array of motors!");
         }
 
         this.rightMaster = rightMotors[0];
@@ -210,9 +207,9 @@ public class FrcMotionProfileFollower
         double updatePeriod = minDuration/2; // 2x as fast as trajectory duration
         notifier.startPeriodic(updatePeriod);
 
-        setTaskEnabled(true);
         leftMaster.motor.changeMotionControlFramePeriod((int)(updatePeriod*1000.0)); // convert seconds to ms
         rightMaster.motor.changeMotionControlFramePeriod((int)(updatePeriod*1000.0)); // convert seconds to ms
+        setTaskEnabled(true);
     }
 
     /**
