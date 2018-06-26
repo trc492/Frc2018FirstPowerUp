@@ -5,8 +5,7 @@ import frclib.FrcMotionProfileFollower;
 import trclib.TrcPidController;
 import trclib.TrcRobot;
 
-
-public class MotionProfileTest
+public class MotionProfileTest implements TrcRobot.RobotCommand
 {
     private static final double kP = 0.0;
     private static final double kI = 0.0;
@@ -16,9 +15,11 @@ public class MotionProfileTest
     private String instanceName;
     private FrcMotionProfile profile;
     private FrcMotionProfileFollower follower;
+    private Robot robot;
     public MotionProfileTest(String instanceName, Robot robot)
     {
         this.instanceName = instanceName;
+        this.robot = robot;
         profile = FrcMotionProfile.loadProfileFromCsv("test_left.csv",
                 "test_right.csv",
                 true);
@@ -32,5 +33,22 @@ public class MotionProfileTest
     public void start()
     {
         follower.start(profile);
+    }
+
+    @Override
+    public boolean cmdPeriodic(double elapsedTime)
+    {
+        String funcName = instanceName + ".cmdPeriodic";
+        String message = String.format(
+            "MotionProfile - Running: %b, Bottom Buffer: [%d,%d], Top Buffer: [%d,%d], Target Positions: [%.2f,%.2f], Target Velocities: [%.2f,%.2f]",
+            follower.isActive(),
+            follower.leftBottomBufferCount(), follower.rightBottomBufferCount(),
+            follower.leftTopBufferCount(), follower.rightTopBufferCount(),
+            follower.leftTargetPosition(), follower.rightTargetPosition(),
+            follower.leftTargetVelocity(), follower.rightTargetVelocity());
+
+        robot.dashboard.displayPrintf(1, message);
+        robot.globalTracer.traceInfo(funcName, message);
+        return !follower.isActive();
     }
 }

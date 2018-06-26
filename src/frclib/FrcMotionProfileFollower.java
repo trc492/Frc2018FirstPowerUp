@@ -253,6 +253,46 @@ public class FrcMotionProfileFollower
         stop();
     }
 
+    public int leftBottomBufferCount()
+    {
+        return statuses[0].btmBufferCnt;
+    }
+
+    public int rightBottomBufferCount()
+    {
+        return statuses[1].btmBufferCnt;
+    }
+
+    public int leftTopBufferCount()
+    {
+        return statuses[0].topBufferCnt;
+    }
+
+    public int rightTopBufferCount()
+    {
+        return statuses[1].topBufferCnt;
+    }
+
+    public double leftTargetPosition()
+    {
+        return leftMaster.motor.getActiveTrajectoryPosition() * worldUnitsPerEncoderTick; // convert from ticks to worldUnits
+    }
+
+    public double rightTargetPosition()
+    {
+        return rightMaster.motor.getActiveTrajectoryPosition() * worldUnitsPerEncoderTick; // convert from ticks to worldUnits
+    }
+
+    public double leftTargetVelocity()
+    {
+        return leftMaster.motor.getActiveTrajectoryVelocity() * worldUnitsPerEncoderTick * 10; // convert from ticks/100ms -> worldUnits/sec
+    }
+
+    public double rightTargetVelocity()
+    {
+        return rightMaster.motor.getActiveTrajectoryVelocity() * worldUnitsPerEncoderTick * 10; // convert from ticks/100ms -> worldUnits/sec
+    }
+
     private void stop()
     {
         notifier.stop();

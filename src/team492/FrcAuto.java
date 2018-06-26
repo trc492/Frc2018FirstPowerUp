@@ -131,6 +131,7 @@ public class FrcAuto implements TrcRobot.RobotMode
             case MOTION_PROFILE_TEST:
                 MotionProfileTest test = new MotionProfileTest("MP", robot);
                 test.start();
+                autoCommand = test;
                 break;
             case X_TIMED_DRIVE:
                 autoCommand = new CmdTimedDrive(robot, delay, robot.driveTime, robot.drivePower, 0.0, 0.0);
