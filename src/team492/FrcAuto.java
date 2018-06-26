@@ -74,22 +74,10 @@ public class FrcAuto implements TrcRobot.RobotMode
     // Menus.
     //
     private FrcChoiceMenu<AutoStrategy> autoStrategyMenu;
-    private FrcChoiceMenu<Position> startPositionMenu;
-    private FrcChoiceMenu<YesOrNo> fastDeliveryMenu;
-    private FrcChoiceMenu<YesOrNo> getSecondCubeMenu;
-    private FrcChoiceMenu<Lane> laneMenu;
-    private FrcChoiceMenu<ScaleOrSwitch> preferenceMenu;
-    private FrcChoiceMenu<YesOrNo> useSonarMenu;
 
     private AutoStrategy autoStrategy;
-    private Position startPosition;
-    private boolean fastDelivery;
-    private boolean getSecondCube;
-    private Lane lane;
-    private double delay;
-    
-    private double forwardDriveDistance;
 
+    private double delay;
     private TrcRobot.RobotCommand autoCommand;
 
     public FrcAuto(Robot robot)
@@ -99,12 +87,6 @@ public class FrcAuto implements TrcRobot.RobotMode
         // Create Autonomous Mode specific menus.
         //
         autoStrategyMenu = new FrcChoiceMenu<>("Auto/AutoStrategies");
-        startPositionMenu = new FrcChoiceMenu<>("Auto/StartPos");
-        fastDeliveryMenu = new FrcChoiceMenu<>("Auto/FastDelivery");
-        getSecondCubeMenu = new FrcChoiceMenu<>("Auto/GetSecondCube");
-        laneMenu = new FrcChoiceMenu<>("Auto/Lanes");
-        preferenceMenu = new FrcChoiceMenu<>("Auto/ScaleOrSwitch");
-        useSonarMenu = new FrcChoiceMenu<>("Auto/UseSonar");
 
         //
         // Populate Autonomous Mode menus.
@@ -116,27 +98,6 @@ public class FrcAuto implements TrcRobot.RobotMode
         autoStrategyMenu.addChoice("Y Distance Drive", AutoStrategy.Y_DISTANCE_DRIVE, false, false);
         autoStrategyMenu.addChoice("Turn Degrees", AutoStrategy.TURN_DEGREES, false, false);
         autoStrategyMenu.addChoice("Do Nothing", AutoStrategy.DO_NOTHING, false, true);
-
-        startPositionMenu.addChoice("Left Side Start", Position.LEFT_POS, false, false);
-        startPositionMenu.addChoice("Middle Start", Position.MID_POS, true, false);
-        startPositionMenu.addChoice("Right Side Start", Position.RIGHT_POS, false, true);
-
-        fastDeliveryMenu.addChoice("Yes", YesOrNo.YES, true, false);
-        fastDeliveryMenu.addChoice("No", YesOrNo.NO, false, true);
-
-        getSecondCubeMenu.addChoice("Yes", YesOrNo.YES, true, false);
-        getSecondCubeMenu.addChoice("No", YesOrNo.NO, false, true);
-
-        laneMenu.addChoice("Lane 1", Lane.LANE1, false, false);
-        laneMenu.addChoice("Lane 2", Lane.LANE2, true, false);
-        laneMenu.addChoice("Lane 3", Lane.LANE3, false, false);
-        laneMenu.addChoice("Custom Distance", Lane.CUSTOM, false, true);
-        
-        preferenceMenu.addChoice("Switch", ScaleOrSwitch.SWITCH, true, false);
-        preferenceMenu.addChoice("Scale", ScaleOrSwitch.SCALE, false, true);
-        
-        useSonarMenu.addChoice("Yes", YesOrNo.YES, true, false);
-        useSonarMenu.addChoice("No", YesOrNo.NO, false, true);
     } // FrcAuto
 
     //
@@ -161,36 +122,7 @@ public class FrcAuto implements TrcRobot.RobotMode
         //
         autoStrategy = autoStrategyMenu.getCurrentChoiceObject();
 
-        startPosition = startPositionMenu.getCurrentChoiceObject();
-
-        fastDelivery = fastDeliveryMenu.getCurrentChoiceObject() == YesOrNo.YES;
-        getSecondCube = getSecondCubeMenu.getCurrentChoiceObject() == YesOrNo.YES;
-
-        // CodeReview: Why do it here again? You already initialized forwardDriveDistance below.
-        forwardDriveDistance = HalDashboard.getNumber("Auto/FwdDistance", RobotInfo.FWD_DISTANCE_3);
-
-        lane = laneMenu.getCurrentChoiceObject();
-        switch (lane)
-        {
-            case LANE1:
-                forwardDriveDistance = RobotInfo.FWD_DISTANCE_1;
-                break;
-
-            case LANE2:
-                forwardDriveDistance = RobotInfo.FWD_DISTANCE_2;
-                break;
-
-            case LANE3:
-                forwardDriveDistance = RobotInfo.FWD_DISTANCE_3;
-                break;
-
-            case CUSTOM:
-                forwardDriveDistance = HalDashboard.getNumber("Auto/FwdDistance", RobotInfo.FWD_DISTANCE_3);
-                break;
-        }
-
         delay = HalDashboard.getNumber("Auto/Delay", 0.0);
-        boolean useSonar = useSonarMenu.getCurrentChoiceObject() == YesOrNo.YES;
 
         switch (autoStrategy)
         {
