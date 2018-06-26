@@ -208,11 +208,11 @@ public class FrcMotionProfileFollower
         double minDuration = this.profile.getMinTimeStep();
 
         double updatePeriod = minDuration/2; // 2x as fast as trajectory duration
-        notifier.startPeriodic(updatePeriod); // Convert from milliseconds to seconds
+        notifier.startPeriodic(updatePeriod);
 
         setTaskEnabled(true);
-        leftMaster.motor.changeMotionControlFramePeriod((int)updatePeriod);
-        rightMaster.motor.changeMotionControlFramePeriod((int)updatePeriod);
+        leftMaster.motor.changeMotionControlFramePeriod((int)(updatePeriod*1000.0)); // convert seconds to ms
+        rightMaster.motor.changeMotionControlFramePeriod((int)(updatePeriod*1000.0)); // convert seconds to ms
     }
 
     /**
