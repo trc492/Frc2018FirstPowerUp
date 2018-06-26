@@ -173,8 +173,6 @@ public class Robot extends FrcRobotBase
     public FrcPneumatic rightFlipper;
 
     public CmdCubePickup cmdAutoCubePickup;
-    public CmdStrafeUntilCube cmdStrafeUntilCube;
-    public CmdExchangeAlign cmdExchangeAlign;
     public OnBoardDiagnostics diagnostics;
 
     public double driveTime;
@@ -378,8 +376,6 @@ public class Robot extends FrcRobotBase
         // AutoAssist commands.
         //
         cmdAutoCubePickup = new CmdCubePickup(this);
-        cmdStrafeUntilCube = new CmdStrafeUntilCube(this);
-        cmdExchangeAlign = new CmdExchangeAlign(this);
 
         diagnostics = new OnBoardDiagnostics(this);
 
@@ -562,16 +558,6 @@ public class Robot extends FrcRobotBase
         {
             cmdAutoCubePickup.stop();
         }
-
-        if(cmdExchangeAlign.isEnabled())
-        {
-            cmdExchangeAlign.stop();
-        }
-
-        if(cmdStrafeUntilCube.isEnabled())
-        {
-            cmdStrafeUntilCube.stop();
-        }
     }
 
     public void updateDashboard(RunMode runMode)
@@ -651,7 +637,7 @@ public class Robot extends FrcRobotBase
                 dashboard.displayPrintf(9, "Winch: power=%.1f", winch.getPower());
                 dashboard.displayPrintf(10, "CubePickup: power=%.1f, current=%.1f, cubeDetected=%b, exchangeAlign=%b",
                     cubePickup.getPickupPower(), cubePickup.getPickupCurrent(), cubePickup.cubeInProximity(),
-                    cmdExchangeAlign.proximitySensor.isActive());
+                    cubePickup.cubeInProximity());
 
                 if (DEBUG_PIXY)
                 {

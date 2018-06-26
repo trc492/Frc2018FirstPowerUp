@@ -71,10 +71,8 @@ public class FrcTest extends FrcTeleOp
 
     private CmdTimedDrive timedDriveCommand = null;
     private CmdPidDrive pidDriveCommand = null;
-    private CmdAutoDiagnostics autoDiagnostics = null;
 
     private int motorIndex = 0;
-    private boolean pickupOverride = false;
 
     public FrcTest(Robot robot)
     {
@@ -147,7 +145,6 @@ public class FrcTest extends FrcTeleOp
                 break;
 
             case AUTO_DIAGNOSTICS:
-                autoDiagnostics = new CmdAutoDiagnostics(robot);
                 break;
 
             case X_TIMED_DRIVE:
@@ -237,7 +234,6 @@ public class FrcTest extends FrcTeleOp
                 break;
 
             case AUTO_DIAGNOSTICS:
-                autoDiagnostics.cmdPeriodic(elapsedTime);
                 break;
 
             case X_TIMED_DRIVE:
@@ -290,36 +286,12 @@ public class FrcTest extends FrcTeleOp
         switch (button)
         {
             case FrcJoystick.LOGITECH_TRIGGER:
-                if (pickupOverride)
-                {
-                    if (pressed)
-                    {
-                        robot.cubePickup.setPickupPower(RobotInfo.PICKUP_TELEOP_POWER);
-                    }
-                    else
-                    {
-                        robot.cubePickup.stopPickup();
-                    }
-                    processedInput = true;
-                }
                 break;
 
             case FrcJoystick.LOGITECH_BUTTON2:
                 break;
 
             case FrcJoystick.LOGITECH_BUTTON3:
-                if (pickupOverride)
-                {
-                    if (pressed)
-                    {
-                        robot.cubePickup.dropCube(RobotInfo.PICKUP_TELEOP_POWER);
-                    }
-                    else
-                    {
-                        robot.cubePickup.stopPickup();
-                    }
-                    processedInput = true;
-                }
                 break;
 
             case FrcJoystick.LOGITECH_BUTTON4:
@@ -381,9 +353,8 @@ public class FrcTest extends FrcTeleOp
         robot.dashboard.displayPrintf(4, "Sensors: pressure=%.1f,lSonar=%.1f,rSonar=%.1f,lidar=%.1f",
             robot.getPressure(), robot.getLeftSonarDistance(), robot.getRightSonarDistance(),
             robot.getLidarDistane());
-        robot.dashboard.displayPrintf(5, "CubePickup: proximity=%b,current=%.1f Exchange: openSpace=%b",
-            robot.cubePickup.cubeInProximity(), robot.cubePickup.getPickupCurrent(),
-            robot.cmdExchangeAlign.isOpenSpace());
+        robot.dashboard.displayPrintf(5, "CubePickup: proximity=%b,current=%.1f",
+            robot.cubePickup.cubeInProximity(), robot.cubePickup.getPickupCurrent());
         TargetInfo targetInfo = robot.pixy.getTargetInfo();
         if (targetInfo == null)
         {

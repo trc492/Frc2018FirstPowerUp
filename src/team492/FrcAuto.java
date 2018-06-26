@@ -39,9 +39,6 @@ public class FrcAuto implements TrcRobot.RobotMode
     public static enum AutoStrategy
     {
         // Different choices for autonomous
-        AUTO_SIDE,
-        AUTO_SWITCH,
-        AUTO_SCALE,
         X_TIMED_DRIVE,
         Y_TIMED_DRIVE,
         X_DISTANCE_DRIVE,
@@ -112,11 +109,8 @@ public class FrcAuto implements TrcRobot.RobotMode
         //
         // Populate Autonomous Mode menus.
         //
-        // CodeReview: I thought AutoSwitch is still the default. We still like center start.
-        autoStrategyMenu.addChoice("Auto Side", AutoStrategy.AUTO_SIDE, true, false);
-        autoStrategyMenu.addChoice("Auto Switch", AutoStrategy.AUTO_SWITCH, false, false);
-        autoStrategyMenu.addChoice("Auto Scale", AutoStrategy.AUTO_SCALE, false, false);
-        autoStrategyMenu.addChoice("X Timed Drive", AutoStrategy.X_TIMED_DRIVE, false, false);
+        //
+        autoStrategyMenu.addChoice("X Timed Drive", AutoStrategy.X_TIMED_DRIVE, true, false);
         autoStrategyMenu.addChoice("Y Timed Drive", AutoStrategy.Y_TIMED_DRIVE, false, false);
         autoStrategyMenu.addChoice("X Distance Drive", AutoStrategy.X_DISTANCE_DRIVE, false, false);
         autoStrategyMenu.addChoice("Y Distance Drive", AutoStrategy.Y_DISTANCE_DRIVE, false, false);
@@ -200,51 +194,6 @@ public class FrcAuto implements TrcRobot.RobotMode
 
         switch (autoStrategy)
         {
-            case AUTO_SIDE:
-                if (startPosition != Position.MID_POS)
-                {
-                    boolean switchRight = robot.gameSpecificMessage.charAt(0) == 'R';
-                    boolean scaleRight = robot.gameSpecificMessage.charAt(1) == 'R';
-                    boolean startRight = startPosition == Position.RIGHT_POS;
-                    ScaleOrSwitch preference = preferenceMenu.getCurrentChoiceObject();
-
-                    if (startRight == scaleRight && scaleRight == switchRight)
-                    {
-                        switch(preference)
-                        {
-                            case SWITCH:
-                                autoCommand = new CmdAutoSideSwitch(robot, delay, getSecondCube, useSonar);
-                                break;
-
-                            case SCALE:
-                                autoCommand = new CmdAutoScale(robot, delay, startPosition, forwardDriveDistance, useSonar);
-                                break;
-                        }
-                    }
-                    else if (startRight == switchRight)
-                    {
-                        autoCommand = new CmdAutoSideSwitch(robot, delay, getSecondCube, useSonar);
-                    }
-                    else if (startRight == scaleRight)
-                    {
-                        autoCommand = new CmdAutoScale(robot, delay, startPosition, forwardDriveDistance, useSonar);
-                    }
-                    else
-                    {
-                        autoCommand = new CmdAutoMoveToCrossField(robot, delay, startPosition);
-                    }
-                    break;
-                }
-
-            case AUTO_SWITCH:
-                autoCommand = new CmdAutoSwitch(
-                    robot, delay, forwardDriveDistance, startPosition, fastDelivery, getSecondCube);
-                break;
-
-            case AUTO_SCALE:
-                autoCommand = new CmdAutoScale(robot, delay, startPosition, forwardDriveDistance, useSonar);
-                break;
-
             case X_TIMED_DRIVE:
                 autoCommand = new CmdTimedDrive(robot, delay, robot.driveTime, robot.drivePower, 0.0, 0.0);
                 break;
