@@ -23,6 +23,7 @@
 package frclib;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -33,16 +34,24 @@ import java.util.stream.Stream;
 
 public class FrcMotionProfile
 {
+
     public static FrcMotionProfile loadProfileFromCsv(String leftPath, String rightPath)
     {
-        return new FrcMotionProfile(loadPointsFromCsv(leftPath), loadPointsFromCsv(rightPath));
+        return loadProfileFromCsv(leftPath, rightPath, false);
     }
 
-    public static FrcMotionProfilePoint[] loadPointsFromCsv(String path)
+    public static FrcMotionProfile loadProfileFromCsv(String leftPath, String rightPath, boolean loadFromResources)
+    {
+        return new FrcMotionProfile(loadPointsFromCsv(leftPath, loadFromResources), loadPointsFromCsv(rightPath, loadFromResources));
+    }
+
+    public static FrcMotionProfilePoint[] loadPointsFromCsv(String path, boolean loadFromResources)
     {
         if(!path.endsWith(".csv")) throw new IllegalArgumentException(String.format("%s is not a csv file!", path));
-
-        try(BufferedReader in = new BufferedReader(new FileReader(path)))
+        File file = loadFromResources ?
+                new File(FrcMotionProfile.class.getClassLoader().getResource(path).getFile()) :
+                new File(path);
+        try(BufferedReader in = new BufferedReader(new FileReader(file)))
         {
             List<FrcMotionProfilePoint> points = new ArrayList<>();
             String line;
