@@ -57,6 +57,7 @@ public class FrcMotionProfileFollower
         START, WAIT_FOR_POINTS, MONITOR_PATH, DONE
     }
 
+    private String instanceName;
     private PidCoefficients pidCoefficients;
     private int pidSlot;
     private double worldUnitsPerEncoderTick;
@@ -96,6 +97,7 @@ public class FrcMotionProfileFollower
         this.pidCoefficients = pidCoefficients;
         this.pidSlot = pidSlot;
         this.worldUnitsPerEncoderTick = worldUnitsPerEncoderTick;
+        this.instanceName = instanceName;
 
         sm = new TrcStateMachine<>(instanceName);
         notifier = new Notifier(this::processPointBuffer);
@@ -221,6 +223,15 @@ public class FrcMotionProfileFollower
         leftMaster.motor.changeMotionControlFramePeriod((int)(updatePeriod*1000.0)); // convert seconds to ms
         rightMaster.motor.changeMotionControlFramePeriod((int)(updatePeriod*1000.0)); // convert seconds to ms
         setTaskEnabled(true);
+    }
+
+    /**
+     * Get the instance name of this object
+     * @return Instance name
+     */
+    public String getInstanceName()
+    {
+        return instanceName;
     }
 
     /**

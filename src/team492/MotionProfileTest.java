@@ -40,8 +40,8 @@ public class MotionProfileTest implements TrcRobot.RobotCommand
     public boolean cmdPeriodic(double elapsedTime)
     {
         String message = String.format(
-            "MotionProfile - Running: %b, Bottom Buffer: [%d,%d], Top Buffer: [%d,%d], Target Positions: [%.2f,%.2f], Target Velocities: [%.2f,%.2f]",
-            follower.isActive(),
+            "MotionProfile: %s - Running: %b, Bottom Buffer: [%d,%d], Top Buffer: [%d,%d], Target Positions: [%.2f,%.2f], Target Velocities: [%.2f,%.2f]",
+            follower.getInstanceName(), follower.isActive(),
             follower.leftBottomBufferCount(), follower.rightBottomBufferCount(),
             follower.leftTopBufferCount(), follower.rightTopBufferCount(),
             follower.leftTargetPosition(), follower.rightTargetPosition(),
