@@ -212,6 +212,8 @@ public class FrcMotionProfileFollower
         this.profile = profile.copy();
         numPoints = this.profile.getNumPoints();
         this.profile.scale(worldUnitsPerEncoderTick);
+        
+        sm.start(State.START);
 
         statuses = new MotionProfileStatus[]{new MotionProfileStatus(), new MotionProfileStatus()};
 
