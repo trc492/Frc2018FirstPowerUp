@@ -219,7 +219,7 @@ public class FrcMotionProfileFollower
 
         double minDuration = this.profile.getMinTimeStep();
 
-        double updatePeriod = minDuration/2; // 2x as fast as trajectory duration
+        double updatePeriod = minDuration/2.0; // 2x as fast as trajectory duration
         notifier.startPeriodic(updatePeriod);
 
         leftMaster.motor.changeMotionControlFramePeriod((int)(updatePeriod*1000.0)); // convert seconds to ms
@@ -412,15 +412,13 @@ public class FrcMotionProfileFollower
      */
     private TrajectoryDuration getTrajectoryDuration(int duration)
     {
-        TrajectoryDuration dur = TrajectoryDuration.Trajectory_Duration_10ms;
-        dur = dur.valueOf(duration);
+        TrajectoryDuration dur = TrajectoryDuration.valueOf(duration);
         
         if(dur.value != duration)
         {
-            DriverStation.reportError("Duration not supported!", false);
+            DriverStation.reportError("Duration " + duration + "ms not supported!", false);
             dur = DEFAULT_TRAJECTORY_DURATION;
         }
-        
         return dur;
     }
 

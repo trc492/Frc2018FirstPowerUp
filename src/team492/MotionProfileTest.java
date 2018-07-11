@@ -10,7 +10,7 @@ public class MotionProfileTest implements TrcRobot.RobotCommand
     private static final double kP = RobotInfo.ENCODER_Y_KP / RobotInfo.ENCODER_Y_INCHES_PER_COUNT;
     private static final double kI = RobotInfo.ENCODER_Y_KI / RobotInfo.ENCODER_Y_INCHES_PER_COUNT;
     private static final double kD = RobotInfo.ENCODER_Y_KD / RobotInfo.ENCODER_Y_INCHES_PER_COUNT;
-    private static final double kF = 0.008525; // TODO: Calculate this according to Phoenix docs
+    private static final double kF = 0.8525; // TODO: Calculate this according to Phoenix docs
 
     private String instanceName;
     private FrcMotionProfile profile;
