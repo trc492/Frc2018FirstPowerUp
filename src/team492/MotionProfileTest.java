@@ -7,9 +7,9 @@ import trclib.TrcRobot;
 
 public class MotionProfileTest implements TrcRobot.RobotCommand
 {
-    private static final double kP = RobotInfo.ENCODER_Y_KP / RobotInfo.ENCODER_Y_INCHES_PER_COUNT;
-    private static final double kI = RobotInfo.ENCODER_Y_KI / RobotInfo.ENCODER_Y_INCHES_PER_COUNT;
-    private static final double kD = RobotInfo.ENCODER_Y_KD / RobotInfo.ENCODER_Y_INCHES_PER_COUNT;
+    private static final double kP = 1.275;
+    private static final double kI = 0.0;
+    private static final double kD = 0.0956;
     private static final double kF = 0.8525; // TODO: Calculate this according to Phoenix docs
 
     private String instanceName;
@@ -20,8 +20,8 @@ public class MotionProfileTest implements TrcRobot.RobotCommand
     {
         this.instanceName = instanceName;
         this.robot = robot;
-        profile = FrcMotionProfile.loadProfileFromCsv("/home/lvuser/test_left.csv",
-                "/home/lvuser/test_right.csv");
+        profile = FrcMotionProfile.loadProfileFromCsv("/home/lvuser/test_left_Jaci.csv",
+                "/home/lvuser/test_right_Jaci.csv");
         TrcPidController.PidCoefficients pidCoefficients = new TrcPidController.PidCoefficients(kP,kI,kD,kF);
         follower = new FrcMotionProfileFollower(instanceName + ".profileFollower",
                 pidCoefficients, RobotInfo.ENCODER_Y_INCHES_PER_COUNT);

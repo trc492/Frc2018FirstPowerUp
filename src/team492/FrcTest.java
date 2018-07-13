@@ -44,6 +44,7 @@ public class FrcTest extends FrcTeleOp
         SENSORS_TEST,
         SUBSYSTEMS_TEST,
         DRIVE_MOTORS_TEST,
+        TALON_PID_TUNE,
         AUTO_DIAGNOSTICS,
         X_TIMED_DRIVE,
         Y_TIMED_DRIVE,
@@ -71,6 +72,7 @@ public class FrcTest extends FrcTeleOp
 
     private CmdTimedDrive timedDriveCommand = null;
     private CmdPidDrive pidDriveCommand = null;
+    private TalonPidTuner talonPidTuner = null;
 
     private int motorIndex = 0;
 
@@ -91,6 +93,7 @@ public class FrcTest extends FrcTeleOp
         testMenu.addChoice("Sensors Test", FrcTest.Test.SENSORS_TEST, true, false);
         testMenu.addChoice("Subsystems Test", FrcTest.Test.SUBSYSTEMS_TEST, false, false);
         testMenu.addChoice("Drive Motors Test", FrcTest.Test.DRIVE_MOTORS_TEST, false, false);
+        testMenu.addChoice("TalonPIDTuner", FrcTest.Test.TALON_PID_TUNE, false, false);
         testMenu.addChoice("Diagnostics", FrcTest.Test.AUTO_DIAGNOSTICS, false, false);
         testMenu.addChoice("X Timed Drive", FrcTest.Test.X_TIMED_DRIVE, false, false);
         testMenu.addChoice("Y Timed Drive", FrcTest.Test.Y_TIMED_DRIVE, false, false);
@@ -98,6 +101,9 @@ public class FrcTest extends FrcTeleOp
         testMenu.addChoice("Y Distance Drive", FrcTest.Test.Y_DISTANCE_DRIVE, false, false);
         testMenu.addChoice("Turn Degrees", FrcTest.Test.TURN_DEGREES, false, false);
         testMenu.addChoice("Live Window", FrcTest.Test.LIVE_WINDOW, false, true);
+        
+        
+        talonPidTuner = new TalonPidTuner(robot);
     } // FrcTest
 
     //
@@ -143,6 +149,10 @@ public class FrcTest extends FrcTeleOp
             case DRIVE_MOTORS_TEST:
                 motorIndex = 0;
                 break;
+                
+            case TALON_PID_TUNE:
+            	talonPidTuner.start();
+            	break;
 
             case AUTO_DIAGNOSTICS:
                 break;
@@ -235,6 +245,10 @@ public class FrcTest extends FrcTeleOp
 
             case AUTO_DIAGNOSTICS:
                 break;
+                
+            case TALON_PID_TUNE:
+            	talonPidTuner.cmdPeriodic(elapsedTime);
+            	break;
 
             case X_TIMED_DRIVE:
             case Y_TIMED_DRIVE:
