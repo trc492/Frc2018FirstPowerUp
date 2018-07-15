@@ -32,17 +32,17 @@ import java.util.List;
 import java.util.OptionalDouble;
 import java.util.stream.Stream;
 
-public class TrcMotionProfile
+public class TrcTankMotionProfile
 {
 
-    public static TrcMotionProfile loadProfileFromCsv(String leftPath, String rightPath)
+    public static TrcTankMotionProfile loadProfileFromCsv(String leftPath, String rightPath)
     {
         return loadProfileFromCsv(leftPath, rightPath, false);
     }
 
-    public static TrcMotionProfile loadProfileFromCsv(String leftPath, String rightPath, boolean loadFromResources)
+    public static TrcTankMotionProfile loadProfileFromCsv(String leftPath, String rightPath, boolean loadFromResources)
     {
-        return new TrcMotionProfile(loadPointsFromCsv(leftPath, loadFromResources),
+        return new TrcTankMotionProfile(loadPointsFromCsv(leftPath, loadFromResources),
             loadPointsFromCsv(rightPath, loadFromResources));
     }
 
@@ -54,7 +54,7 @@ public class TrcMotionProfile
         {
             BufferedReader in = loadFromResources ?
                 new BufferedReader(
-                    new InputStreamReader(TrcMotionProfile.class.getClassLoader().getResourceAsStream(path))) :
+                    new InputStreamReader(TrcTankMotionProfile.class.getClassLoader().getResourceAsStream(path))) :
                 new BufferedReader(new FileReader(path));
 
             List<TrcMotionProfilePoint> points = new ArrayList<>();
@@ -80,7 +80,7 @@ public class TrcMotionProfile
 
     private TrcMotionProfilePoint[] leftPoints, rightPoints;
 
-    public TrcMotionProfile(TrcMotionProfilePoint[] leftPoints, TrcMotionProfilePoint[] rightPoints)
+    public TrcTankMotionProfile(TrcMotionProfilePoint[] leftPoints, TrcMotionProfilePoint[] rightPoints)
     {
         if (leftPoints.length != rightPoints.length)
         {
@@ -129,13 +129,13 @@ public class TrcMotionProfile
         throw new IllegalStateException("For some reason the streaming returned a null! I don't know why!");
     }
 
-    public TrcMotionProfile copy()
+    public TrcTankMotionProfile copy()
     {
         TrcMotionProfilePoint[] left = Arrays.stream(leftPoints).map(TrcMotionProfilePoint::new)
             .toArray(TrcMotionProfilePoint[]::new);
         TrcMotionProfilePoint[] right = Arrays.stream(rightPoints).map(TrcMotionProfilePoint::new)
             .toArray(TrcMotionProfilePoint[]::new);
-        return new TrcMotionProfile(left, right);
+        return new TrcTankMotionProfile(left, right);
     }
 
     public static class TrcMotionProfilePoint

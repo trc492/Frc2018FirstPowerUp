@@ -32,8 +32,8 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Notifier;
 
 import trclib.TrcEvent;
-import trclib.TrcMotionProfile;
-import trclib.TrcMotionProfile.TrcMotionProfilePoint;
+import trclib.TrcTankMotionProfile;
+import trclib.TrcTankMotionProfile.TrcMotionProfilePoint;
 import trclib.TrcPidController.PidCoefficients;
 import trclib.TrcRobot;
 import trclib.TrcStateMachine;
@@ -48,7 +48,7 @@ import trclib.TrcUtil;
  * https://github.com/CrossTheRoadElec/Phoenix-Documentation/blob/master/Talon%20SRX%20Motion%20Profile%20Reference%20Manual.pdf
  */
 
-public class FrcMotionProfileFollower
+public class FrcTankMotionProfileFollower
 {
     private static final double MIN_TRAJ_SECONDS = 1.0; // How many seconds of points to buffer before beginning?
     private static final TrajectoryDuration DEFAULT_TRAJECTORY_DURATION = TrajectoryDuration.Trajectory_Duration_10ms;
@@ -64,7 +64,7 @@ public class FrcMotionProfileFollower
     private double worldUnitsPerEncoderTick;
     private FrcCANTalon leftMaster, rightMaster;
     private TrcTaskMgr.TaskObject motionProfileTaskObject;
-    private TrcMotionProfile profile;
+    private TrcTankMotionProfile profile;
     private int numPoints;
     private TrcStateMachine<State> sm;
     private int fillIndex = 0;
@@ -77,27 +77,27 @@ public class FrcMotionProfileFollower
     private int requiredTrajectoryPoints;
 
     /**
-     * Create FrcMotionProfileFollower object. Uses default pid slot 0.
+     * Create FrcTankMotionProfileFollower object. Uses default pid slot 0.
      *
      * @param instanceName             Name of the instance, duh.
      * @param pidCoefficients          PidCoefficients object storing the PIDF constants.
      * @param worldUnitsPerEncoderTick Number of word units per encoder tick. For example, inches per encoder tick.
      */
-    public FrcMotionProfileFollower(String instanceName, PidCoefficients pidCoefficients,
+    public FrcTankMotionProfileFollower(String instanceName, PidCoefficients pidCoefficients,
         double worldUnitsPerEncoderTick)
     {
         this(instanceName, pidCoefficients, 0, worldUnitsPerEncoderTick);
     }
 
     /**
-     * Create FrcMotionProfileFollower object
+     * Create FrcTankMotionProfileFollower object
      *
      * @param instanceName             Name of the instance, duh.
      * @param pidCoefficients          PidCoefficients object storing the PIDF constants.
      * @param pidSlot                  Index of the pid slot to store the pid constants
      * @param worldUnitsPerEncoderTick Number of word units per encoder tick. For example, inches per encoder tick.
      */
-    public FrcMotionProfileFollower(String instanceName, PidCoefficients pidCoefficients, int pidSlot,
+    public FrcTankMotionProfileFollower(String instanceName, PidCoefficients pidCoefficients, int pidSlot,
         double worldUnitsPerEncoderTick)
     {
         this.pidCoefficients = pidCoefficients;
@@ -177,9 +177,9 @@ public class FrcMotionProfileFollower
     /**
      * Start following the supplied motion profile.
      *
-     * @param profile TrcMotionProfile object representing the path to follow. Remember to match units with worldUnitsPerEncoderTick!
+     * @param profile TrcTankMotionProfile object representing the path to follow. Remember to match units with worldUnitsPerEncoderTick!
      */
-    public void start(TrcMotionProfile profile)
+    public void start(TrcTankMotionProfile profile)
     {
         start(profile, null, 0.0);
     }
@@ -187,10 +187,10 @@ public class FrcMotionProfileFollower
     /**
      * Start following the supplied motion profile.
      *
-     * @param profile TrcMotionProfile object representing the path to follow. Remember to match units with worldUnitsPerEncoderTick!
+     * @param profile TrcTankMotionProfile object representing the path to follow. Remember to match units with worldUnitsPerEncoderTick!
      * @param event   Event to signal when path has been followed
      */
-    public void start(TrcMotionProfile profile, TrcEvent event)
+    public void start(TrcTankMotionProfile profile, TrcEvent event)
     {
         start(profile, event, 0.0);
     }
@@ -198,11 +198,11 @@ public class FrcMotionProfileFollower
     /**
      * Start following the supplied motion profile.
      *
-     * @param profile TrcMotionProfile object representing the path to follow. Remember to match units with worldUnitsPerEncoderTick!
+     * @param profile TrcTankMotionProfile object representing the path to follow. Remember to match units with worldUnitsPerEncoderTick!
      * @param event   Event to signal when path has been followed
      * @param timeout Maximum number of seconds to spend following the path. 0.0 means no timeout.
      */
-    public void start(TrcMotionProfile profile, TrcEvent event, double timeout)
+    public void start(TrcTankMotionProfile profile, TrcEvent event, double timeout)
     {
         if (leftMaster == null || rightMaster == null)
         {

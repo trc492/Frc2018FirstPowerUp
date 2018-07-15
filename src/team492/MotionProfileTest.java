@@ -1,7 +1,7 @@
 package team492;
 
-import trclib.TrcMotionProfile;
-import frclib.FrcMotionProfileFollower;
+import trclib.TrcTankMotionProfile;
+import frclib.FrcTankMotionProfileFollower;
 import trclib.TrcPidController;
 import trclib.TrcRobot;
 
@@ -13,17 +13,17 @@ public class MotionProfileTest implements TrcRobot.RobotCommand
     private static final double kF = 0.8525; // TODO: Calculate this according to Phoenix docs
 
     private String instanceName;
-    private TrcMotionProfile profile;
-    private FrcMotionProfileFollower follower;
+    private TrcTankMotionProfile profile;
+    private FrcTankMotionProfileFollower follower;
     private Robot robot;
     public MotionProfileTest(String instanceName, Robot robot)
     {
         this.instanceName = instanceName;
         this.robot = robot;
-        profile = TrcMotionProfile.loadProfileFromCsv("/home/lvuser/test_left_Jaci.csv",
+        profile = TrcTankMotionProfile.loadProfileFromCsv("/home/lvuser/test_left_Jaci.csv",
                 "/home/lvuser/test_right_Jaci.csv");
         TrcPidController.PidCoefficients pidCoefficients = new TrcPidController.PidCoefficients(kP,kI,kD,kF);
-        follower = new FrcMotionProfileFollower(instanceName + ".profileFollower",
+        follower = new FrcTankMotionProfileFollower(instanceName + ".profileFollower",
                 pidCoefficients, RobotInfo.ENCODER_Y_INCHES_PER_COUNT);
         follower.setLeftMotors(robot.leftFrontWheel,robot.leftRearWheel);
         follower.setRightMotors(robot.rightFrontWheel,robot.rightRearWheel);
