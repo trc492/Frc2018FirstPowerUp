@@ -42,7 +42,7 @@ import trclib.TrcTaskMgr;
 import trclib.TrcUtil;
 
 /**
- * This is a super sketchy implementation of motion profiling. It streams the profiles to the buffer, and then executes
+ * This is an implementation of motion profiling. It streams the profiles to the buffer, and then executes
  * it. Also, the profiles are processed 2x as fast as the first point.
  * This was written by using these resources:
  * https://github.com/CrossTheRoadElec/Phoenix-Examples-Languages/tree/master/Java/MotionProfile/src/org/usfirst/frc/team217/robot
@@ -128,12 +128,10 @@ public class FrcTankMotionProfileFollower extends TrcTankMotionProfileFollower
 
         this.leftMaster = leftMotors[0];
 
-        leftMaster.motor.config_kP(pidSlot, pidCoefficients.kP, 10);
-        leftMaster.motor.config_kI(pidSlot, pidCoefficients.kI, 10);
-        leftMaster.motor.config_kD(pidSlot, pidCoefficients.kD, 10);
-        leftMaster.motor.config_kF(pidSlot, pidCoefficients.kF, 10);
-
-        leftMaster.motor.changeMotionControlFramePeriod(5);
+        leftMaster.motor.config_kP(pidSlot, pidCoefficients.kP);
+        leftMaster.motor.config_kI(pidSlot, pidCoefficients.kI);
+        leftMaster.motor.config_kD(pidSlot, pidCoefficients.kD);
+        leftMaster.motor.config_kF(pidSlot, pidCoefficients.kF);
 
         if (leftMotors.length > 1)
         {
@@ -159,12 +157,10 @@ public class FrcTankMotionProfileFollower extends TrcTankMotionProfileFollower
 
         this.rightMaster = rightMotors[0];
 
-        rightMaster.motor.config_kP(pidSlot, pidCoefficients.kP, 10);
-        rightMaster.motor.config_kI(pidSlot, pidCoefficients.kI, 10);
-        rightMaster.motor.config_kD(pidSlot, pidCoefficients.kD, 10);
-        rightMaster.motor.config_kF(pidSlot, pidCoefficients.kF, 10);
-
-        rightMaster.motor.changeMotionControlFramePeriod(5);
+        rightMaster.motor.config_kP(pidSlot, pidCoefficients.kP);
+        rightMaster.motor.config_kI(pidSlot, pidCoefficients.kI);
+        rightMaster.motor.config_kD(pidSlot, pidCoefficients.kD);
+        rightMaster.motor.config_kF(pidSlot, pidCoefficients.kF);
 
         if (rightMotors.length > 1)
         {
@@ -211,7 +207,8 @@ public class FrcTankMotionProfileFollower extends TrcTankMotionProfileFollower
 
         double minDuration = this.profile.getMinTimeStep();
 
-        requiredTrajectoryPoints = (int)(MIN_TRAJ_SECONDS/minDuration); // Number of points to buffer before beginning
+        // Number of points to buffer before beginning MP
+        requiredTrajectoryPoints = (int) (MIN_TRAJ_SECONDS / minDuration);
 
         double updatePeriod = minDuration / 2.0; // 2x as fast as trajectory duration
         notifier.startPeriodic(updatePeriod);
@@ -252,48 +249,92 @@ public class FrcTankMotionProfileFollower extends TrcTankMotionProfileFollower
         stop();
     }
 
+    /**
+     * How many trajectory points are in the bottom buffer of the left talon?
+     *
+     * @return Number of trajectory points in bottom buffer of left talon. -1 if MP hasn't started.
+     */
     public int leftBottomBufferCount()
     {
-        return statuses[0].btmBufferCnt;
+        return statuses != null ? statuses[0].btmBufferCnt : -1;
     }
 
+    /**
+     * How many trajectory points are in the bottom buffer of the right talon?
+     *
+     * @return Number of trajectory points in bottom buffer of right talon. -1 if MP hasn't started.
+     */
     public int rightBottomBufferCount()
     {
-        return statuses[1].btmBufferCnt;
+        return statuses != null ? statuses[1].btmBufferCnt : -1;
     }
 
+    /**
+     * How many trajectory points are in the top buffer of the left talon?
+     *
+     * @return Number of trajectory points in top buffer of left talon. -1 if MP hasn't started.
+     */
     public int leftTopBufferCount()
     {
-        return statuses[0].topBufferCnt;
+        return statuses != null ? statuses[0].topBufferCnt : -1;
     }
 
+    /**
+     * How many trajectory points are in the top buffer of the right talon?
+     *
+     * @return Number of trajectory points in top buffer of right talon. -1 if MP hasn't started.
+     */
     public int rightTopBufferCount()
     {
-        return statuses[1].topBufferCnt;
+        return statuses != null ? statuses[1].topBufferCnt : -1;
     }
 
+    /**
+     * Position target for left motor.
+     *
+     * @return Position target, in world units, for left motor. 0 if MP hasn't started.
+     */
     public double leftTargetPosition()
     {
-        return leftMaster.motor.getActiveTrajectoryPosition()
-            * worldUnitsPerEncoderTick; // convert from ticks to worldUnits
+        // convert from ticks to worldUnits
+        return leftMaster == null ? 0.0 : leftMaster.motor.getActiveTrajectoryPosition() * worldUnitsPerEncoderTick;
     }
 
+    /**
+     * Position target for right motor.
+     *
+     * @return Position target, in world units, for right motor. 0 if MP hasn't started.
+     */
     public double rightTargetPosition()
     {
-        return rightMaster.motor.getActiveTrajectoryPosition()
-            * worldUnitsPerEncoderTick; // convert from ticks to worldUnits
+        // convert from ticks to worldUnits
+        return rightMaster == null ? 0.0 : rightMaster.motor.getActiveTrajectoryPosition() * worldUnitsPerEncoderTick;
     }
 
+    /**
+     * Velocity target for left motor.
+     *
+     * @return Velocity target, in world units per second, for left motor. 0 if MP hasn't started.
+     */
     public double leftTargetVelocity()
     {
-        return leftMaster.motor.getActiveTrajectoryVelocity() * worldUnitsPerEncoderTick
-            * 10; // convert from ticks/100ms -> worldUnits/sec
+        // convert from ticks/100ms -> worldUnits/sec
+        return leftMaster == null ?
+            0.0 :
+            leftMaster.motor.getActiveTrajectoryVelocity() * worldUnitsPerEncoderTick * 10;
     }
 
+    /**
+     * Velocity target for right motor.
+     *
+     * @return Velocity target, in world units per second, for right motor. 0 if MP hasn't started.
+     */
     public double rightTargetVelocity()
     {
-        return rightMaster.motor.getActiveTrajectoryVelocity() * worldUnitsPerEncoderTick
-            * 10; // convert from ticks/100ms -> worldUnits/sec
+        // convert from ticks/100ms -> worldUnits/sec
+        return rightMaster == null ?
+            0.0 :
+            rightMaster.motor.getActiveTrajectoryVelocity() * worldUnitsPerEncoderTick * 10;
     }
 
     private void stop()
