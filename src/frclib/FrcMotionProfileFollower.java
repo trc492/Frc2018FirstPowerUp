@@ -76,23 +76,27 @@ public class FrcMotionProfileFollower
 
     /**
      * Create FrcMotionProfileFollower object. Uses default pid slot 0.
-     * @param instanceName Name of the instance, duh.
-     * @param pidCoefficients PidCoefficients object storing the PIDF constants.
+     *
+     * @param instanceName             Name of the instance, duh.
+     * @param pidCoefficients          PidCoefficients object storing the PIDF constants.
      * @param worldUnitsPerEncoderTick Number of word units per encoder tick. For example, inches per encoder tick.
      */
-    public FrcMotionProfileFollower(String instanceName, PidCoefficients pidCoefficients, double worldUnitsPerEncoderTick)
+    public FrcMotionProfileFollower(String instanceName, PidCoefficients pidCoefficients,
+        double worldUnitsPerEncoderTick)
     {
         this(instanceName, pidCoefficients, 0, worldUnitsPerEncoderTick);
     }
 
     /**
      * Create FrcMotionProfileFollower object
-     * @param instanceName Name of the instance, duh.
-     * @param pidCoefficients PidCoefficients object storing the PIDF constants.
-     * @param pidSlot Index of the pid slot to store the pid constants
+     *
+     * @param instanceName             Name of the instance, duh.
+     * @param pidCoefficients          PidCoefficients object storing the PIDF constants.
+     * @param pidSlot                  Index of the pid slot to store the pid constants
      * @param worldUnitsPerEncoderTick Number of word units per encoder tick. For example, inches per encoder tick.
      */
-    public FrcMotionProfileFollower(String instanceName, PidCoefficients pidCoefficients, int pidSlot, double worldUnitsPerEncoderTick)
+    public FrcMotionProfileFollower(String instanceName, PidCoefficients pidCoefficients, int pidSlot,
+        double worldUnitsPerEncoderTick)
     {
         this.pidCoefficients = pidCoefficients;
         this.pidSlot = pidSlot;
@@ -102,17 +106,19 @@ public class FrcMotionProfileFollower
         sm = new TrcStateMachine<>(instanceName);
         notifier = new Notifier(this::processPointBuffer);
 
-        motionProfileTaskObject = TrcTaskMgr.getInstance().createTask(instanceName + ".motionProfileTask", this::motionProfileTask);
+        motionProfileTaskObject = TrcTaskMgr.getInstance()
+            .createTask(instanceName + ".motionProfileTask", this::motionProfileTask);
     }
 
     /**
      * Sets the motors on the left side of the drive train.
+     *
      * @param leftMotors List of motors on the left side of the drive train. The first motor in the list will be used
      *                   as the master motor, and all others will be set as slaves.
      */
-    public void setLeftMotors(FrcCANTalon...leftMotors)
+    public void setLeftMotors(FrcCANTalon... leftMotors)
     {
-        if(leftMotors.length == 0)
+        if (leftMotors.length == 0)
         {
             throw new IllegalArgumentException("Cannot pass empty array of motors!");
         }
@@ -126,9 +132,9 @@ public class FrcMotionProfileFollower
 
         leftMaster.motor.changeMotionControlFramePeriod(5);
 
-        if(leftMotors.length > 1)
+        if (leftMotors.length > 1)
         {
-            for(int i = 1; i < leftMotors.length; i++)
+            for (int i = 1; i < leftMotors.length; i++)
             {
                 leftMotors[i].motor.set(ControlMode.Follower, leftMaster.motor.getDeviceID());
             }
@@ -137,12 +143,13 @@ public class FrcMotionProfileFollower
 
     /**
      * Sets the motors on the right side of the drive train.
+     *
      * @param rightMotors List of motors on the right side of the drive train. The first motor in the list will be used
      *                    as the master motor, and all others will be set as slaves.
      */
-    public void setRightMotors(FrcCANTalon...rightMotors)
+    public void setRightMotors(FrcCANTalon... rightMotors)
     {
-        if(rightMotors.length == 0)
+        if (rightMotors.length == 0)
         {
             throw new IllegalArgumentException("Cannot pass empty array of motors!");
         }
@@ -156,9 +163,9 @@ public class FrcMotionProfileFollower
 
         rightMaster.motor.changeMotionControlFramePeriod(5);
 
-        if(rightMotors.length > 1)
+        if (rightMotors.length > 1)
         {
-            for(int i = 1; i < rightMotors.length; i++)
+            for (int i = 1; i < rightMotors.length; i++)
             {
                 rightMotors[i].motor.set(ControlMode.Follower, rightMaster.motor.getDeviceID());
             }
@@ -167,6 +174,7 @@ public class FrcMotionProfileFollower
 
     /**
      * Start following the supplied motion profile.
+     *
      * @param profile FrcMotionProfile object representing the path to follow. Remember to match units with worldUnitsPerEncoderTick!
      */
     public void start(FrcMotionProfile profile)
@@ -176,8 +184,9 @@ public class FrcMotionProfileFollower
 
     /**
      * Start following the supplied motion profile.
+     *
      * @param profile FrcMotionProfile object representing the path to follow. Remember to match units with worldUnitsPerEncoderTick!
-     * @param event Event to signal when path has been followed
+     * @param event   Event to signal when path has been followed
      */
     public void start(FrcMotionProfile profile, TrcEvent event)
     {
@@ -186,25 +195,26 @@ public class FrcMotionProfileFollower
 
     /**
      * Start following the supplied motion profile.
+     *
      * @param profile FrcMotionProfile object representing the path to follow. Remember to match units with worldUnitsPerEncoderTick!
-     * @param event Event to signal when path has been followed
+     * @param event   Event to signal when path has been followed
      * @param timeout Maximum number of seconds to spend following the path. 0.0 means no timeout.
      */
     public void start(FrcMotionProfile profile, TrcEvent event, double timeout)
     {
-        if(leftMaster == null || rightMaster == null)
+        if (leftMaster == null || rightMaster == null)
         {
             throw new IllegalStateException("Left and right motors must be set before calling start()!");
         }
 
         this.onFinishedEvent = event;
-        if(event != null)
+        if (event != null)
         {
             event.clear();
         }
 
         this.timedOutTime = -1;
-        if(timeout > 0.0)
+        if (timeout > 0.0)
         {
             this.timedOutTime = TrcUtil.getCurrentTime() + timeout;
         }
@@ -212,23 +222,24 @@ public class FrcMotionProfileFollower
         this.profile = profile.copy();
         numPoints = this.profile.getNumPoints();
         this.profile.scale(worldUnitsPerEncoderTick);
-        
+
         sm.start(State.START);
 
-        statuses = new MotionProfileStatus[]{new MotionProfileStatus(), new MotionProfileStatus()};
+        statuses = new MotionProfileStatus[] { new MotionProfileStatus(), new MotionProfileStatus() };
 
         double minDuration = this.profile.getMinTimeStep();
 
-        double updatePeriod = minDuration/2.0; // 2x as fast as trajectory duration
+        double updatePeriod = minDuration / 2.0; // 2x as fast as trajectory duration
         notifier.startPeriodic(updatePeriod);
 
-        leftMaster.motor.changeMotionControlFramePeriod((int)(updatePeriod*1000.0)); // convert seconds to ms
-        rightMaster.motor.changeMotionControlFramePeriod((int)(updatePeriod*1000.0)); // convert seconds to ms
+        leftMaster.motor.changeMotionControlFramePeriod((int) (updatePeriod * 1000.0)); // convert seconds to ms
+        rightMaster.motor.changeMotionControlFramePeriod((int) (updatePeriod * 1000.0)); // convert seconds to ms
         setTaskEnabled(true);
     }
 
     /**
      * Get the instance name of this object
+     *
      * @return Instance name
      */
     public String getInstanceName()
@@ -238,6 +249,7 @@ public class FrcMotionProfileFollower
 
     /**
      * Is path currently being followed?
+     *
      * @return True if yes, false otherwise
      */
     public boolean isActive()
@@ -247,6 +259,7 @@ public class FrcMotionProfileFollower
 
     /**
      * Has this task been cancelled?
+     *
      * @return True if someone has called the cancel() method while it was running, false otherwise
      */
     public boolean isCancelled()
@@ -260,7 +273,8 @@ public class FrcMotionProfileFollower
     public void cancel()
     {
         cancelled = true;
-        if(onFinishedEvent != null) onFinishedEvent.cancel();
+        if (onFinishedEvent != null)
+            onFinishedEvent.cancel();
         stop();
     }
 
@@ -286,22 +300,26 @@ public class FrcMotionProfileFollower
 
     public double leftTargetPosition()
     {
-        return leftMaster.motor.getActiveTrajectoryPosition() * worldUnitsPerEncoderTick; // convert from ticks to worldUnits
+        return leftMaster.motor.getActiveTrajectoryPosition()
+            * worldUnitsPerEncoderTick; // convert from ticks to worldUnits
     }
 
     public double rightTargetPosition()
     {
-        return rightMaster.motor.getActiveTrajectoryPosition() * worldUnitsPerEncoderTick; // convert from ticks to worldUnits
+        return rightMaster.motor.getActiveTrajectoryPosition()
+            * worldUnitsPerEncoderTick; // convert from ticks to worldUnits
     }
 
     public double leftTargetVelocity()
     {
-        return leftMaster.motor.getActiveTrajectoryVelocity() * worldUnitsPerEncoderTick * 10; // convert from ticks/100ms -> worldUnits/sec
+        return leftMaster.motor.getActiveTrajectoryVelocity() * worldUnitsPerEncoderTick
+            * 10; // convert from ticks/100ms -> worldUnits/sec
     }
 
     public double rightTargetVelocity()
     {
-        return rightMaster.motor.getActiveTrajectoryVelocity() * worldUnitsPerEncoderTick * 10; // convert from ticks/100ms -> worldUnits/sec
+        return rightMaster.motor.getActiveTrajectoryVelocity() * worldUnitsPerEncoderTick
+            * 10; // convert from ticks/100ms -> worldUnits/sec
     }
 
     private void stop()
@@ -314,7 +332,7 @@ public class FrcMotionProfileFollower
 
     private void setTaskEnabled(boolean enabled)
     {
-        if(enabled)
+        if (enabled)
         {
             motionProfileTaskObject.registerTask(TrcTaskMgr.TaskType.POSTCONTINUOUS_TASK);
         }
@@ -326,9 +344,10 @@ public class FrcMotionProfileFollower
 
     private void motionProfileTask(TrcTaskMgr.TaskType taskType, TrcRobot.RunMode runMode)
     {
-        if(!sm.isEnabled()) return;
+        if (!sm.isEnabled())
+            return;
 
-        if(timedOutTime != -1 && TrcUtil.getCurrentTime() >= timedOutTime)
+        if (timedOutTime != -1 && TrcUtil.getCurrentTime() >= timedOutTime)
         {
             sm.setState(State.DONE);
         }
@@ -336,7 +355,8 @@ public class FrcMotionProfileFollower
         State state = sm.getState();
         fillStatuses();
 
-        switch(state){
+        switch (state)
+        {
             case START:
                 // Fill the top buffer. If numPoints < MAX_POINT_BUFFER_SIZE, fill completely.
                 filled = false;
@@ -347,7 +367,7 @@ public class FrcMotionProfileFollower
 
             case WAIT_FOR_POINTS:
                 // Wait for the bottom buffer to get enough trajectory profiles
-                if(hasEnoughPoints())
+                if (hasEnoughPoints())
                 {
                     sm.setState(State.MONITOR_PATH);
                 }
@@ -356,7 +376,7 @@ public class FrcMotionProfileFollower
             case MONITOR_PATH:
                 fillPointBuffer(); // Keep filling profiles into top buffer. (only useful if numPoints > MAX_POINT_BUFFER_SIZE)
                 setTalonValue(SetValueMotionProfile.Enable); // Keep sending the enable signal
-                if(isDone())
+                if (isDone())
                 {
                     sm.setState(State.DONE);
                 }
@@ -364,57 +384,67 @@ public class FrcMotionProfileFollower
 
             case DONE:
                 stop();
-                if(onFinishedEvent != null) onFinishedEvent.set(true);
+                if (onFinishedEvent != null)
+                    onFinishedEvent.set(true);
                 break;
         }
     }
 
     private boolean isDone()
     {
-        for(MotionProfileStatus status:statuses)
+        for (MotionProfileStatus status : statuses)
         {
-            if(!status.activePointValid || !status.isLast) return false;
+            if (!status.activePointValid || !status.isLast)
+                return false;
         }
         return true;
     }
 
     private void setTalonValue(SetValueMotionProfile value)
     {
-        if(leftMaster != null) leftMaster.motor.set(ControlMode.MotionProfile, value.value);
-        if(rightMaster != null) rightMaster.motor.set(ControlMode.MotionProfile, value.value);
+        if (leftMaster != null)
+            leftMaster.motor.set(ControlMode.MotionProfile, value.value);
+        if (rightMaster != null)
+            rightMaster.motor.set(ControlMode.MotionProfile, value.value);
     }
 
     private void fillStatuses()
     {
-        if(leftMaster != null) leftMaster.motor.getMotionProfileStatus(statuses[0]);
-        if(rightMaster != null) rightMaster.motor.getMotionProfileStatus(statuses[1]);
+        if (leftMaster != null)
+            leftMaster.motor.getMotionProfileStatus(statuses[0]);
+        if (rightMaster != null)
+            rightMaster.motor.getMotionProfileStatus(statuses[1]);
     }
 
     private boolean hasEnoughPoints()
     {
-        for(MotionProfileStatus status:statuses)
+        for (MotionProfileStatus status : statuses)
         {
-            if(status.btmBufferCnt < MIN_POINTS_IN_TALON) return false;
+            if (status.btmBufferCnt < MIN_POINTS_IN_TALON)
+                return false;
         }
         return true;
     }
 
     private void processPointBuffer()
     {
-        if(leftMaster != null) leftMaster.motor.processMotionProfileBuffer();
-        if(rightMaster != null) rightMaster.motor.processMotionProfileBuffer();
+        if (leftMaster != null)
+            leftMaster.motor.processMotionProfileBuffer();
+        if (rightMaster != null)
+            rightMaster.motor.processMotionProfileBuffer();
     }
-    
+
     /**
      * Get a TrajectoryDuration object with the specified time
+     *
      * @param duration Milliseconds for the duration
      * @return TrajectoryDuration object representing the supplied time, if available
      */
     private TrajectoryDuration getTrajectoryDuration(int duration)
     {
         TrajectoryDuration dur = TrajectoryDuration.valueOf(duration);
-        
-        if(dur.value != duration)
+
+        if (dur.value != duration)
         {
             DriverStation.reportError("Duration " + duration + "ms not supported!", false);
             dur = DEFAULT_TRAJECTORY_DURATION;
@@ -424,7 +454,8 @@ public class FrcMotionProfileFollower
 
     private void fillPointBuffer()
     {
-        if(filled) return;
+        if (filled)
+            return;
 
         // Fills range [startIndex, endIndex)
         int startIndex = fillIndex;
@@ -432,7 +463,7 @@ public class FrcMotionProfileFollower
         fillIndex = endIndex;
 
         // Cancel previous MP and clear underrun flag if this is the first time filling profiles
-        if(startIndex == 0)
+        if (startIndex == 0)
         {
             leftMaster.motor.clearMotionProfileTrajectories();
             leftMaster.motor.clearMotionProfileHasUnderrun(0);
@@ -444,31 +475,31 @@ public class FrcMotionProfileFollower
         }
 
         TrajectoryPoint point = new TrajectoryPoint();
-        for(int i = startIndex; i < endIndex; i++)
+        for (int i = startIndex; i < endIndex; i++)
         {
             FrcMotionProfilePoint profilePoint = profile.getLeftPoints()[i];
             point.position = profilePoint.encoderPosition;
             point.velocity = profilePoint.velocity;
-            point.timeDur = getTrajectoryDuration((int)(profilePoint.timeStep*1000)); // Convert from sec to ms
+            point.timeDur = getTrajectoryDuration((int) (profilePoint.timeStep * 1000)); // Convert from sec to ms
             point.profileSlotSelect0 = pidSlot;
             point.profileSlotSelect1 = pidSlot;
             point.zeroPos = (i == 0);
-            point.isLastPoint = (i == numPoints-1);
+            point.isLastPoint = (i == numPoints - 1);
 
             leftMaster.motor.pushMotionProfileTrajectory(point);
 
             profilePoint = profile.getRightPoints()[i];
             point.position = profilePoint.encoderPosition;
             point.velocity = profilePoint.velocity;
-            point.timeDur = getTrajectoryDuration((int)(profilePoint.timeStep*1000)); // Convert from sec to ms
+            point.timeDur = getTrajectoryDuration((int) (profilePoint.timeStep * 1000)); // Convert from sec to ms
             point.profileSlotSelect0 = pidSlot;
             point.profileSlotSelect1 = pidSlot;
             point.zeroPos = (i == 0);
-            point.isLastPoint = (i == numPoints-1);
+            point.isLastPoint = (i == numPoints - 1);
 
             rightMaster.motor.pushMotionProfileTrajectory(point);
         }
-        if(endIndex >= numPoints)
+        if (endIndex >= numPoints)
         {
             filled = true;
         }
