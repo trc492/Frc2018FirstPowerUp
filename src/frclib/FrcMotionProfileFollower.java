@@ -32,12 +32,13 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Notifier;
 
 import trclib.TrcEvent;
+import trclib.TrcMotionProfile;
+import trclib.TrcMotionProfile.TrcMotionProfilePoint;
 import trclib.TrcPidController.PidCoefficients;
 import trclib.TrcRobot;
 import trclib.TrcStateMachine;
 import trclib.TrcTaskMgr;
 import trclib.TrcUtil;
-import frclib.FrcMotionProfile.FrcMotionProfilePoint;
 
 /**
  * This is a super sketchy implementation of motion profiling. It streams the profiles to the buffer, and then executes
@@ -63,7 +64,7 @@ public class FrcMotionProfileFollower
     private double worldUnitsPerEncoderTick;
     private FrcCANTalon leftMaster, rightMaster;
     private TrcTaskMgr.TaskObject motionProfileTaskObject;
-    private FrcMotionProfile profile;
+    private TrcMotionProfile profile;
     private int numPoints;
     private TrcStateMachine<State> sm;
     private int fillIndex = 0;
@@ -175,9 +176,9 @@ public class FrcMotionProfileFollower
     /**
      * Start following the supplied motion profile.
      *
-     * @param profile FrcMotionProfile object representing the path to follow. Remember to match units with worldUnitsPerEncoderTick!
+     * @param profile TrcMotionProfile object representing the path to follow. Remember to match units with worldUnitsPerEncoderTick!
      */
-    public void start(FrcMotionProfile profile)
+    public void start(TrcMotionProfile profile)
     {
         start(profile, null, 0.0);
     }
@@ -185,10 +186,10 @@ public class FrcMotionProfileFollower
     /**
      * Start following the supplied motion profile.
      *
-     * @param profile FrcMotionProfile object representing the path to follow. Remember to match units with worldUnitsPerEncoderTick!
+     * @param profile TrcMotionProfile object representing the path to follow. Remember to match units with worldUnitsPerEncoderTick!
      * @param event   Event to signal when path has been followed
      */
-    public void start(FrcMotionProfile profile, TrcEvent event)
+    public void start(TrcMotionProfile profile, TrcEvent event)
     {
         start(profile, event, 0.0);
     }
@@ -196,11 +197,11 @@ public class FrcMotionProfileFollower
     /**
      * Start following the supplied motion profile.
      *
-     * @param profile FrcMotionProfile object representing the path to follow. Remember to match units with worldUnitsPerEncoderTick!
+     * @param profile TrcMotionProfile object representing the path to follow. Remember to match units with worldUnitsPerEncoderTick!
      * @param event   Event to signal when path has been followed
      * @param timeout Maximum number of seconds to spend following the path. 0.0 means no timeout.
      */
-    public void start(FrcMotionProfile profile, TrcEvent event, double timeout)
+    public void start(TrcMotionProfile profile, TrcEvent event, double timeout)
     {
         if (leftMaster == null || rightMaster == null)
         {
@@ -477,7 +478,7 @@ public class FrcMotionProfileFollower
         TrajectoryPoint point = new TrajectoryPoint();
         for (int i = startIndex; i < endIndex; i++)
         {
-            FrcMotionProfilePoint profilePoint = profile.getLeftPoints()[i];
+            TrcMotionProfilePoint profilePoint = profile.getLeftPoints()[i];
             point.position = profilePoint.encoderPosition;
             point.velocity = profilePoint.velocity;
             point.timeDur = getTrajectoryDuration((int) (profilePoint.timeStep * 1000)); // Convert from sec to ms

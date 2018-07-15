@@ -20,7 +20,7 @@
  * SOFTWARE.
  */
 
-package frclib;
+package trclib;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
@@ -32,21 +32,21 @@ import java.util.List;
 import java.util.OptionalDouble;
 import java.util.stream.Stream;
 
-public class FrcMotionProfile
+public class TrcMotionProfile
 {
 
-    public static FrcMotionProfile loadProfileFromCsv(String leftPath, String rightPath)
+    public static TrcMotionProfile loadProfileFromCsv(String leftPath, String rightPath)
     {
         return loadProfileFromCsv(leftPath, rightPath, false);
     }
 
-    public static FrcMotionProfile loadProfileFromCsv(String leftPath, String rightPath, boolean loadFromResources)
+    public static TrcMotionProfile loadProfileFromCsv(String leftPath, String rightPath, boolean loadFromResources)
     {
-        return new FrcMotionProfile(loadPointsFromCsv(leftPath, loadFromResources),
+        return new TrcMotionProfile(loadPointsFromCsv(leftPath, loadFromResources),
             loadPointsFromCsv(rightPath, loadFromResources));
     }
 
-    public static FrcMotionProfilePoint[] loadPointsFromCsv(String path, boolean loadFromResources)
+    private static TrcMotionProfilePoint[] loadPointsFromCsv(String path, boolean loadFromResources)
     {
         if (!path.endsWith(".csv"))
             throw new IllegalArgumentException(String.format("%s is not a csv file!", path));
@@ -54,10 +54,10 @@ public class FrcMotionProfile
         {
             BufferedReader in = loadFromResources ?
                 new BufferedReader(
-                    new InputStreamReader(FrcMotionProfile.class.getClassLoader().getResourceAsStream(path))) :
+                    new InputStreamReader(TrcMotionProfile.class.getClassLoader().getResourceAsStream(path))) :
                 new BufferedReader(new FileReader(path));
 
-            List<FrcMotionProfilePoint> points = new ArrayList<>();
+            List<TrcMotionProfilePoint> points = new ArrayList<>();
             String line;
             in.readLine(); // Get rid of the first line
             while ((line = in.readLine()) != null)
@@ -65,12 +65,12 @@ public class FrcMotionProfile
                 double[] parts = Arrays.stream(line.split(",")).mapToDouble(Double::parseDouble).toArray();
                 if (parts.length != 8)
                     throw new IllegalArgumentException("There must be 8 columns in the csv file!");
-                FrcMotionProfilePoint point = new FrcMotionProfilePoint(parts[0], parts[1], parts[2], parts[3],
+                TrcMotionProfilePoint point = new TrcMotionProfilePoint(parts[0], parts[1], parts[2], parts[3],
                     parts[4], parts[5], parts[6], parts[7]);
                 points.add(point);
             }
             in.close();
-            return points.toArray(new FrcMotionProfilePoint[0]);
+            return points.toArray(new TrcMotionProfilePoint[0]);
         }
         catch (IOException e)
         {
@@ -78,9 +78,9 @@ public class FrcMotionProfile
         }
     }
 
-    private FrcMotionProfilePoint[] leftPoints, rightPoints;
+    private TrcMotionProfilePoint[] leftPoints, rightPoints;
 
-    public FrcMotionProfile(FrcMotionProfilePoint[] leftPoints, FrcMotionProfilePoint[] rightPoints)
+    public TrcMotionProfile(TrcMotionProfilePoint[] leftPoints, TrcMotionProfilePoint[] rightPoints)
     {
         if (leftPoints.length != rightPoints.length)
         {
@@ -90,24 +90,24 @@ public class FrcMotionProfile
         this.rightPoints = rightPoints;
     }
 
-    public FrcMotionProfilePoint[] getLeftPoints()
+    public TrcMotionProfilePoint[] getLeftPoints()
     {
         return leftPoints;
     }
 
-    public FrcMotionProfilePoint[] getRightPoints()
+    public TrcMotionProfilePoint[] getRightPoints()
     {
         return rightPoints;
     }
 
     public void scale(double worldUnitsPerEncoderTick)
     {
-        for (FrcMotionProfilePoint point : leftPoints)
+        for (TrcMotionProfilePoint point : leftPoints)
         {
             point.encoderPosition /= worldUnitsPerEncoderTick;
         }
 
-        for (FrcMotionProfilePoint point : rightPoints)
+        for (TrcMotionProfilePoint point : rightPoints)
         {
             point.encoderPosition /= worldUnitsPerEncoderTick;
         }
@@ -129,20 +129,20 @@ public class FrcMotionProfile
         throw new IllegalStateException("For some reason the streaming returned a null! I don't know why!");
     }
 
-    public FrcMotionProfile copy()
+    public TrcMotionProfile copy()
     {
-        FrcMotionProfilePoint[] left = Arrays.stream(leftPoints).map(FrcMotionProfilePoint::new)
-            .toArray(FrcMotionProfilePoint[]::new);
-        FrcMotionProfilePoint[] right = Arrays.stream(rightPoints).map(FrcMotionProfilePoint::new)
-            .toArray(FrcMotionProfilePoint[]::new);
-        return new FrcMotionProfile(left, right);
+        TrcMotionProfilePoint[] left = Arrays.stream(leftPoints).map(TrcMotionProfilePoint::new)
+            .toArray(TrcMotionProfilePoint[]::new);
+        TrcMotionProfilePoint[] right = Arrays.stream(rightPoints).map(TrcMotionProfilePoint::new)
+            .toArray(TrcMotionProfilePoint[]::new);
+        return new TrcMotionProfile(left, right);
     }
 
-    public static class FrcMotionProfilePoint
+    public static class TrcMotionProfilePoint
     {
         public double timeStep, x, y, encoderPosition, velocity, acceleration, jerk, heading;
 
-        public FrcMotionProfilePoint(double timeStep, double x, double y, double position, double velocity,
+        public TrcMotionProfilePoint(double timeStep, double x, double y, double position, double velocity,
             double acceleration, double jerk, double heading)
         {
             this.timeStep = timeStep;
@@ -155,7 +155,7 @@ public class FrcMotionProfile
             this.heading = heading;
         }
 
-        public FrcMotionProfilePoint(FrcMotionProfilePoint other)
+        public TrcMotionProfilePoint(TrcMotionProfilePoint other)
         {
             this.timeStep = other.timeStep;
             this.x = other.x;
