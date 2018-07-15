@@ -50,7 +50,7 @@ import trclib.TrcUtil;
 
 public class FrcMotionProfileFollower
 {
-    private static final int MIN_POINTS_IN_TALON = 50;
+    private static final double MIN_TRAJ_SECONDS = 1.0; // How many seconds of points to buffer before beginning?
     private static final TrajectoryDuration DEFAULT_TRAJECTORY_DURATION = TrajectoryDuration.Trajectory_Duration_10ms;
 
     private enum State
@@ -74,6 +74,7 @@ public class FrcMotionProfileFollower
     private boolean cancelled = false;
     private TrcEvent onFinishedEvent;
     private double timedOutTime;
+    private int requiredTrajectoryPoints;
 
     /**
      * Create FrcMotionProfileFollower object. Uses default pid slot 0.
@@ -229,6 +230,8 @@ public class FrcMotionProfileFollower
         statuses = new MotionProfileStatus[] { new MotionProfileStatus(), new MotionProfileStatus() };
 
         double minDuration = this.profile.getMinTimeStep();
+
+        requiredTrajectoryPoints = (int)(MIN_TRAJ_SECONDS/minDuration); // Number of points to buffer before beginning
 
         double updatePeriod = minDuration / 2.0; // 2x as fast as trajectory duration
         notifier.startPeriodic(updatePeriod);
@@ -421,7 +424,7 @@ public class FrcMotionProfileFollower
     {
         for (MotionProfileStatus status : statuses)
         {
-            if (status.btmBufferCnt < MIN_POINTS_IN_TALON)
+            if (status.btmBufferCnt < requiredTrajectoryPoints)
                 return false;
         }
         return true;
