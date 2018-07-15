@@ -37,6 +37,7 @@ import trclib.TrcTankMotionProfile.TrcMotionProfilePoint;
 import trclib.TrcPidController.PidCoefficients;
 import trclib.TrcRobot;
 import trclib.TrcStateMachine;
+import trclib.TrcTankMotionProfileFollower;
 import trclib.TrcTaskMgr;
 import trclib.TrcUtil;
 
@@ -48,7 +49,7 @@ import trclib.TrcUtil;
  * https://github.com/CrossTheRoadElec/Phoenix-Documentation/blob/master/Talon%20SRX%20Motion%20Profile%20Reference%20Manual.pdf
  */
 
-public class FrcTankMotionProfileFollower
+public class FrcTankMotionProfileFollower extends TrcTankMotionProfileFollower
 {
     private static final double MIN_TRAJ_SECONDS = 1.0; // How many seconds of points to buffer before beginning?
     private static final TrajectoryDuration DEFAULT_TRAJECTORY_DURATION = TrajectoryDuration.Trajectory_Duration_10ms;
@@ -58,7 +59,6 @@ public class FrcTankMotionProfileFollower
         START, WAIT_FOR_POINTS, MONITOR_PATH, DONE
     }
 
-    private String instanceName;
     private PidCoefficients pidCoefficients;
     private int pidSlot;
     private double worldUnitsPerEncoderTick;
@@ -100,10 +100,11 @@ public class FrcTankMotionProfileFollower
     public FrcTankMotionProfileFollower(String instanceName, PidCoefficients pidCoefficients, int pidSlot,
         double worldUnitsPerEncoderTick)
     {
+        super(instanceName);
+
         this.pidCoefficients = pidCoefficients;
         this.pidSlot = pidSlot;
         this.worldUnitsPerEncoderTick = worldUnitsPerEncoderTick;
-        this.instanceName = instanceName;
 
         sm = new TrcStateMachine<>(instanceName);
         notifier = new Notifier(this::processPointBuffer);
@@ -178,27 +179,6 @@ public class FrcTankMotionProfileFollower
      * Start following the supplied motion profile.
      *
      * @param profile TrcTankMotionProfile object representing the path to follow. Remember to match units with worldUnitsPerEncoderTick!
-     */
-    public void start(TrcTankMotionProfile profile)
-    {
-        start(profile, null, 0.0);
-    }
-
-    /**
-     * Start following the supplied motion profile.
-     *
-     * @param profile TrcTankMotionProfile object representing the path to follow. Remember to match units with worldUnitsPerEncoderTick!
-     * @param event   Event to signal when path has been followed
-     */
-    public void start(TrcTankMotionProfile profile, TrcEvent event)
-    {
-        start(profile, event, 0.0);
-    }
-
-    /**
-     * Start following the supplied motion profile.
-     *
-     * @param profile TrcTankMotionProfile object representing the path to follow. Remember to match units with worldUnitsPerEncoderTick!
      * @param event   Event to signal when path has been followed
      * @param timeout Maximum number of seconds to spend following the path. 0.0 means no timeout.
      */
@@ -239,16 +219,6 @@ public class FrcTankMotionProfileFollower
         leftMaster.motor.changeMotionControlFramePeriod((int) (updatePeriod * 1000.0)); // convert seconds to ms
         rightMaster.motor.changeMotionControlFramePeriod((int) (updatePeriod * 1000.0)); // convert seconds to ms
         setTaskEnabled(true);
-    }
-
-    /**
-     * Get the instance name of this object
-     *
-     * @return Instance name
-     */
-    public String getInstanceName()
-    {
-        return instanceName;
     }
 
     /**
