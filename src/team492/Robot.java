@@ -195,6 +195,10 @@ public class Robot extends FrcRobotBase
         super(programName);
     }   //Robot
 
+    
+    public AdbBridge adbBridge;
+    public AwooCommunicator awooCommunicator;
+    
     /**
      * This function is run when the robot is first started up and should be used for any initialization code.
      */
@@ -383,6 +387,33 @@ public class Robot extends FrcRobotBase
 
         diagnostics = new OnBoardDiagnostics(this);
 
+        
+        // ayyioasjfasfdjisagoibdsaofisajo;bas;ofjsaiojfasiojgisaofj
+        adbBridge = new AdbBridge();
+        adbBridge.portForward(13970, 13970);
+        
+        awooCommunicator = new AwooCommunicator(13970);
+        awooCommunicator.initCommunicator();
+        
+        awooCommunicator.sendMessage("Test message from RoboRIO");
+        
+        Thread t = new Thread(() -> {
+            while (!Thread.interrupted()) 
+            {
+                awooCommunicator.sendMessage("RoboRIO Test: " + (System.currentTimeMillis() / 1000.0));
+                try
+                {
+                    Thread.sleep(1000);
+                }
+                catch (InterruptedException e)
+                {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
+            }
+        });
+        t.start();
+        
         //
         // Create Robot Modes.
         //
@@ -873,3 +904,4 @@ public class Robot extends FrcRobotBase
     }
 
 }   //class Robot
+
