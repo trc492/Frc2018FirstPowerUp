@@ -397,7 +397,8 @@ public class Robot extends FrcRobotBase
         
         awooCommunicator.sendMessage("Test message from RoboRIO");
         
-        Thread t = new Thread(() -> {
+        Thread t = new Thread(() ->
+        {
             while (!Thread.interrupted()) 
             {
                 awooCommunicator.sendMessage("RoboRIO Test: " + (System.currentTimeMillis() / 1000.0));
@@ -411,7 +412,9 @@ public class Robot extends FrcRobotBase
                     e.printStackTrace();
                 }
             }
-        });
+        }
+        );
+        
         t.start();
         
         //
