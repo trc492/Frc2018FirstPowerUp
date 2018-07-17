@@ -1,5 +1,6 @@
 package team492;
 
+import hallib.HalDashboard;
 import trclib.TrcTankMotionProfile;
 import frclib.FrcTankMotionProfileFollower;
 import trclib.TrcPidController;
@@ -74,14 +75,24 @@ public class MotionProfileTest implements TrcRobot.RobotCommand
         boolean isActive = follower.isActive();
 
         double targetPosLeft = follower.leftTargetPosition();
-        double actualPosLeft = follower.getLeftMaster().getPosition() * RobotInfo.ENCODER_Y_INCHES_PER_COUNT;
+        double actualPosLeft = follower.leftActualPosition();
         double targetVelLeft = follower.leftTargetVelocity();
-        double actualVelLeft = follower.getLeftMaster().getSpeed() * 10 * RobotInfo.ENCODER_Y_INCHES_PER_COUNT;
+        double actualVelLeft = follower.leftActualVelocity();
 
         double targetPosRight = follower.rightTargetPosition();
-        double actualPosRight = follower.getRightMaster().getPosition() * RobotInfo.ENCODER_Y_INCHES_PER_COUNT;
+        double actualPosRight = follower.rightActualPosition();
         double targetVelRight = follower.rightTargetVelocity();
-        double actualVelRight = follower.getRightMaster().getSpeed() * 10 * RobotInfo.ENCODER_Y_INCHES_PER_COUNT;
+        double actualVelRight = follower.rightActualVelocity();
+
+        HalDashboard.putNumber("Test/TargetPosLeft",targetPosLeft);
+        HalDashboard.putNumber("Test/ActualPosLeft",actualPosLeft);
+        HalDashboard.putNumber("Test/TargetVelLeft",targetVelLeft);
+        HalDashboard.putNumber("Test/ActualVelLeft",actualVelLeft);
+
+        HalDashboard.putNumber("Test/TargetPosRight",targetPosRight);
+        HalDashboard.putNumber("Test/ActualPosRight",actualPosRight);
+        HalDashboard.putNumber("Test/TargetVelRight",targetVelRight);
+        HalDashboard.putNumber("Test/ActualVelRight",actualVelRight);
 
         String message = String.format(
             "MotionProfile: %s - Running: %b, Bottom Buffer: [%d,%d], Top Buffer: [%d,%d], Target Positions: [%.2f,%.2f], Target Velocities: [%.2f,%.2f]",

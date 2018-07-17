@@ -128,10 +128,10 @@ public class FrcTankMotionProfileFollower extends TrcTankMotionProfileFollower
 
         this.leftMaster = leftMotors[0];
 
-        leftMaster.motor.config_kP(pidSlot, pidCoefficients.kP);
-        leftMaster.motor.config_kI(pidSlot, pidCoefficients.kI);
-        leftMaster.motor.config_kD(pidSlot, pidCoefficients.kD);
-        leftMaster.motor.config_kF(pidSlot, pidCoefficients.kF);
+        leftMaster.motor.config_kP(pidSlot, pidCoefficients.kP, 0);
+        leftMaster.motor.config_kI(pidSlot, pidCoefficients.kI, 0);
+        leftMaster.motor.config_kD(pidSlot, pidCoefficients.kD, 0);
+        leftMaster.motor.config_kF(pidSlot, pidCoefficients.kF, 0);
 
         if (leftMotors.length > 1)
         {
@@ -157,10 +157,10 @@ public class FrcTankMotionProfileFollower extends TrcTankMotionProfileFollower
 
         this.rightMaster = rightMotors[0];
 
-        rightMaster.motor.config_kP(pidSlot, pidCoefficients.kP);
-        rightMaster.motor.config_kI(pidSlot, pidCoefficients.kI);
-        rightMaster.motor.config_kD(pidSlot, pidCoefficients.kD);
-        rightMaster.motor.config_kF(pidSlot, pidCoefficients.kF);
+        rightMaster.motor.config_kP(pidSlot, pidCoefficients.kP, 0);
+        rightMaster.motor.config_kI(pidSlot, pidCoefficients.kI, 0);
+        rightMaster.motor.config_kD(pidSlot, pidCoefficients.kD, 0);
+        rightMaster.motor.config_kF(pidSlot, pidCoefficients.kF, 0);
 
         if (rightMotors.length > 1)
         {
@@ -301,6 +301,16 @@ public class FrcTankMotionProfileFollower extends TrcTankMotionProfileFollower
     }
 
     /**
+     * Position of left motor.
+     *
+     * @return Current position of left motor, in world units. 0 if motor isn't set.
+     */
+    public double leftActualPosition()
+    {
+        return leftMaster == null ? 0.0 : leftMaster.getPosition() * worldUnitsPerEncoderTick * 10;
+    }
+
+    /**
      * Position target for right motor.
      *
      * @return Position target, in world units, for right motor. 0 if MP hasn't started.
@@ -312,9 +322,19 @@ public class FrcTankMotionProfileFollower extends TrcTankMotionProfileFollower
     }
 
     /**
+     * Position of right motor.
+     *
+     * @return Current position of right motor, in world units. 0 if motor isn't set.
+     */
+    public double rightActualPosition()
+    {
+        return rightMaster == null ? 0.0 : rightMaster.getPosition() * worldUnitsPerEncoderTick * 10;
+    }
+
+    /**
      * Velocity target for left motor.
      *
-     * @return Velocity target, in world units per second, for left motor. 0 if MP hasn't started.
+     * @return Velocity target, in world units per second, for left motor. 0 if motor isn't set.
      */
     public double leftTargetVelocity()
     {
@@ -325,9 +345,19 @@ public class FrcTankMotionProfileFollower extends TrcTankMotionProfileFollower
     }
 
     /**
+     * Velocity of left motor.
+     *
+     * @return Current velocity of left motor, in world units per second. 0 if motor isn't set.
+     */
+    public double leftActualVelocity()
+    {
+        return leftMaster == null ? 0.0 : leftMaster.getSpeed() * worldUnitsPerEncoderTick * 10;
+    }
+
+    /**
      * Velocity target for right motor.
      *
-     * @return Velocity target, in world units per second, for right motor. 0 if MP hasn't started.
+     * @return Velocity target, in world units per second, for right motor. 0 if motor isn't set.
      */
     public double rightTargetVelocity()
     {
@@ -337,6 +367,16 @@ public class FrcTankMotionProfileFollower extends TrcTankMotionProfileFollower
             rightMaster.motor.getActiveTrajectoryVelocity() * worldUnitsPerEncoderTick * 10;
     }
 
+    /**
+     * Velocity of right motor.
+     *
+     * @return Current velocity of right motor, in world units per seconds. 0 if motor isn't set.
+     */
+    public double rightActualVelocity()
+    {
+        return rightMaster == null ? 0.0 : rightMaster.getSpeed() * worldUnitsPerEncoderTick * 10;
+    }
+
     public FrcCANTalon getLeftMaster()
     {
         return leftMaster;
@@ -344,7 +384,7 @@ public class FrcTankMotionProfileFollower extends TrcTankMotionProfileFollower
 
     public FrcCANTalon getRightMaster()
     {
-        return  rightMaster;
+        return rightMaster;
     }
 
     private void stop()
