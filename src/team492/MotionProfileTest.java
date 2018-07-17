@@ -5,6 +5,12 @@ import frclib.FrcTankMotionProfileFollower;
 import trclib.TrcPidController;
 import trclib.TrcRobot;
 
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.PrintStream;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 public class MotionProfileTest implements TrcRobot.RobotCommand
 {
     private static final double kP = 1.275;
@@ -12,10 +18,13 @@ public class MotionProfileTest implements TrcRobot.RobotCommand
     private static final double kD = 0.0956;
     private static final double kF = 0.8525; // TODO: Calculate this according to Phoenix docs
 
+    private static final boolean WRITE_CSV = true;
+
     private String instanceName;
     private TrcTankMotionProfile profile;
     private FrcTankMotionProfileFollower follower;
     private Robot robot;
+    private PrintStream fileOut;
     public MotionProfileTest(String instanceName, Robot robot)
     {
         this.instanceName = instanceName;
@@ -33,21 +42,57 @@ public class MotionProfileTest implements TrcRobot.RobotCommand
     {
         follower.start(profile);
         robot.globalTracer.traceInfo(instanceName + ".start","Starting following path!");
+
+        if(WRITE_CSV)
+        {
+            try
+            {
+                String timeStamp = new SimpleDateFormat("dd-MM-yy_HHmm").format(new Date());
+                fileOut = new PrintStream(new FileOutputStream(timeStamp + "_profilelog.csv"));
+                fileOut.println("TargetPosLeft,ActualPosLeft,TargetVelLeft,ActualVelLeft,"
+                    + "TargetPosRight,ActualPosRight,TargetVelRight,ActualVelRight");
+            }
+            catch (FileNotFoundException e)
+            {
+                e.printStackTrace();
+            }
+        }
     }
 
     @Override
     public boolean cmdPeriodic(double elapsedTime)
     {
+        boolean isActive = follower.isActive();
+
+        double targetPosLeft = follower.leftTargetPosition();
+        double actualPosLeft = follower.getLeftMaster().getPosition() * RobotInfo.ENCODER_Y_INCHES_PER_COUNT;
+        double targetVelLeft = follower.leftTargetVelocity();
+        double actualVelLeft = follower.getLeftMaster().getSpeed() * 10 * RobotInfo.ENCODER_Y_INCHES_PER_COUNT;
+
+        double targetPosRight = follower.rightTargetPosition();
+        double actualPosRight = follower.getRightMaster().getPosition() * RobotInfo.ENCODER_Y_INCHES_PER_COUNT;
+        double targetVelRight = follower.rightTargetVelocity();
+        double actualVelRight = follower.getRightMaster().getSpeed() * 10 * RobotInfo.ENCODER_Y_INCHES_PER_COUNT;
+
         String message = String.format(
             "MotionProfile: %s - Running: %b, Bottom Buffer: [%d,%d], Top Buffer: [%d,%d], Target Positions: [%.2f,%.2f], Target Velocities: [%.2f,%.2f]",
-            follower.getInstanceName(), follower.isActive(),
+            follower.getInstanceName(), isActive,
             follower.leftBottomBufferCount(), follower.rightBottomBufferCount(),
             follower.leftTopBufferCount(), follower.rightTopBufferCount(),
-            follower.leftTargetPosition(), follower.rightTargetPosition(),
-            follower.leftTargetVelocity(), follower.rightTargetVelocity());
+            targetPosLeft, targetPosRight,
+            targetVelLeft, targetVelRight);
 
         robot.dashboard.displayPrintf(1, message);
         robot.globalTracer.traceInfo(instanceName + ".cmdPeriodic", message);
-        return !follower.isActive();
+
+        if(WRITE_CSV && isActive)
+        {
+            String line = String.format("%s,%s,%s,%s,%s,%s,%s,%s",
+                targetPosLeft, actualPosLeft, targetVelLeft, actualVelLeft,
+                targetPosRight, actualPosRight, targetVelLeft, actualVelRight);
+            fileOut.println(line);
+        }
+
+        return !isActive;
     }
 }

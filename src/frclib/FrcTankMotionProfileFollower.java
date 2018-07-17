@@ -337,6 +337,16 @@ public class FrcTankMotionProfileFollower extends TrcTankMotionProfileFollower
             rightMaster.motor.getActiveTrajectoryVelocity() * worldUnitsPerEncoderTick * 10;
     }
 
+    public FrcCANTalon getLeftMaster()
+    {
+        return leftMaster;
+    }
+
+    public FrcCANTalon getRightMaster()
+    {
+        return  rightMaster;
+    }
+
     private void stop()
     {
         notifier.stop();
