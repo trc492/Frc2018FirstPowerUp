@@ -4,9 +4,12 @@ import trclib.TrcTankMotionProfile;
 import frclib.FrcTankMotionProfileFollower;
 import trclib.TrcPidController;
 import trclib.TrcRobot;
+import trclib.TrcUtil;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.PrintStream;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -18,13 +21,14 @@ public class MotionProfileTest implements TrcRobot.RobotCommand
     private static final double kD = 0.0956;
     private static final double kF = 0.8525; // TODO: Calculate this according to Phoenix docs
 
-    private static final boolean WRITE_CSV = true;
+    private static final boolean WRITE_CSV = false;
 
     private String instanceName;
     private TrcTankMotionProfile profile;
     private FrcTankMotionProfileFollower follower;
     private Robot robot;
     private PrintStream fileOut;
+    private double startTime;
     public MotionProfileTest(String instanceName, Robot robot)
     {
         this.instanceName = instanceName;
@@ -47,12 +51,15 @@ public class MotionProfileTest implements TrcRobot.RobotCommand
         {
             try
             {
+                startTime = TrcUtil.getCurrentTime();
                 String timeStamp = new SimpleDateFormat("dd-MM-yy_HHmm").format(new Date());
-                fileOut = new PrintStream(new FileOutputStream(timeStamp + "_profilelog.csv"));
-                fileOut.println("TargetPosLeft,ActualPosLeft,TargetVelLeft,ActualVelLeft,"
+                File dir = new File("/home/lvuser/MP_logs");
+                dir.mkdir();
+                fileOut = new PrintStream(new FileOutputStream(dir.getCanonicalPath() + "/" + timeStamp + "_profilelog.csv"));
+                fileOut.println("Time,TargetPosLeft,ActualPosLeft,TargetVelLeft,ActualVelLeft,"
                     + "TargetPosRight,ActualPosRight,TargetVelRight,ActualVelRight");
             }
-            catch (FileNotFoundException e)
+            catch (IOException e)
             {
                 e.printStackTrace();
             }
@@ -85,9 +92,10 @@ public class MotionProfileTest implements TrcRobot.RobotCommand
         robot.dashboard.displayPrintf(1, message);
         robot.globalTracer.traceInfo(instanceName + ".cmdPeriodic", message);
 
-        if(WRITE_CSV && isActive)
+        if(fileOut != null && isActive)
         {
-            String line = String.format("%s,%s,%s,%s,%s,%s,%s,%s",
+            String line = String.format("%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f",
+                TrcUtil.getCurrentTime() - startTime,
                 targetPosLeft, actualPosLeft, targetVelLeft, actualVelLeft,
                 targetPosRight, actualPosRight, targetVelLeft, actualVelRight);
             fileOut.println(line);
