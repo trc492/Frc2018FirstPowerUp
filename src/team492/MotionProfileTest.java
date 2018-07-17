@@ -7,7 +7,6 @@ import trclib.TrcRobot;
 import trclib.TrcUtil;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
@@ -29,39 +28,42 @@ public class MotionProfileTest implements TrcRobot.RobotCommand
     private Robot robot;
     private PrintStream fileOut;
     private double startTime;
+
     public MotionProfileTest(String instanceName, Robot robot)
     {
         this.instanceName = instanceName;
         this.robot = robot;
-        profile = TrcTankMotionProfile.loadProfileFromCsv("/home/lvuser/test_left_Jaci.csv",
-                "/home/lvuser/test_right_Jaci.csv");
-        TrcPidController.PidCoefficients pidCoefficients = new TrcPidController.PidCoefficients(kP,kI,kD,kF);
-        follower = new FrcTankMotionProfileFollower(instanceName + ".profileFollower",
-                pidCoefficients, RobotInfo.ENCODER_Y_INCHES_PER_COUNT);
-        follower.setLeftMotors(robot.leftFrontWheel,robot.leftRearWheel);
-        follower.setRightMotors(robot.rightFrontWheel,robot.rightRearWheel);
+        profile = TrcTankMotionProfile
+            .loadProfileFromCsv("/home/lvuser/test_left_Jaci.csv", "/home/lvuser/test_right_Jaci.csv");
+        TrcPidController.PidCoefficients pidCoefficients = new TrcPidController.PidCoefficients(kP, kI, kD, kF);
+        follower = new FrcTankMotionProfileFollower(instanceName + ".profileFollower", pidCoefficients,
+            RobotInfo.ENCODER_Y_INCHES_PER_COUNT);
+        follower.setLeftMotors(robot.leftFrontWheel, robot.leftRearWheel);
+        follower.setRightMotors(robot.rightFrontWheel, robot.rightRearWheel);
     }
 
     public void start()
     {
         follower.start(profile);
-        robot.globalTracer.traceInfo(instanceName + ".start","Starting following path!");
+        robot.globalTracer.traceInfo(instanceName + ".start", "Started following path!");
 
-        if(WRITE_CSV)
+        if (WRITE_CSV)
         {
             try
             {
                 startTime = TrcUtil.getCurrentTime();
                 String timeStamp = new SimpleDateFormat("dd-MM-yy_HHmm").format(new Date());
                 File dir = new File("/home/lvuser/MP_logs");
-                dir.mkdir();
-                fileOut = new PrintStream(new FileOutputStream(dir.getCanonicalPath() + "/" + timeStamp + "_profilelog.csv"));
-                fileOut.println("Time,TargetPosLeft,ActualPosLeft,TargetVelLeft,ActualVelLeft,"
-                    + "TargetPosRight,ActualPosRight,TargetVelRight,ActualVelRight");
+                if (dir.isDirectory() || dir.mkdir())
+                {
+                    fileOut = new PrintStream(new FileOutputStream(new File(dir, timeStamp + "_profilelog.csv")));
+                    fileOut.println("Time," + "TargetPosLeft,ActualPosLeft,TargetVelLeft,ActualVelLeft,"
+                        + "TargetPosRight,ActualPosRight,TargetVelRight,ActualVelRight");
+                }
             }
             catch (IOException e)
             {
-                e.printStackTrace();
+                robot.globalTracer.traceErr(instanceName + ".start", e.toString());
             }
         }
     }
@@ -83,21 +85,19 @@ public class MotionProfileTest implements TrcRobot.RobotCommand
 
         String message = String.format(
             "MotionProfile: %s - Running: %b, Bottom Buffer: [%d,%d], Top Buffer: [%d,%d], Target Positions: [%.2f,%.2f], Target Velocities: [%.2f,%.2f]",
-            follower.getInstanceName(), isActive,
-            follower.leftBottomBufferCount(), follower.rightBottomBufferCount(),
-            follower.leftTopBufferCount(), follower.rightTopBufferCount(),
-            targetPosLeft, targetPosRight,
-            targetVelLeft, targetVelRight);
+            follower.getInstanceName(), isActive, follower.leftBottomBufferCount(), follower.rightBottomBufferCount(),
+            follower.leftTopBufferCount(), follower.rightTopBufferCount(), targetPosLeft, targetPosRight, targetVelLeft,
+            targetVelRight);
 
         robot.dashboard.displayPrintf(1, message);
         robot.globalTracer.traceInfo(instanceName + ".cmdPeriodic", message);
 
-        if(fileOut != null && isActive)
+        if (fileOut != null && isActive)
         {
-            String line = String.format("%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f",
-                TrcUtil.getCurrentTime() - startTime,
-                targetPosLeft, actualPosLeft, targetVelLeft, actualVelLeft,
-                targetPosRight, actualPosRight, targetVelLeft, actualVelRight);
+            String line = String
+                .format("%.2f," + "%.2f,%.2f,%.2f,%.2f," + "%.2f,%.2f,%.2f,%.2f", TrcUtil.getCurrentTime() - startTime,
+                    targetPosLeft, actualPosLeft, targetVelLeft, actualVelLeft, targetPosRight, actualPosRight,
+                    targetVelLeft, actualVelRight);
             fileOut.println(line);
         }
 
