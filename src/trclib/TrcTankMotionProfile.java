@@ -100,16 +100,28 @@ public class TrcTankMotionProfile
         return rightPoints;
     }
 
-    public void scale(double worldUnitsPerEncoderTick)
+    /**
+     * Scale the motion profile by distance and time
+     * 
+     * @param worldUnitsPerEncoderTick Number of world units in a single encoder tick
+     * @param timeStep Speed denomination in seconds. inches/second? inches/100ms?
+     */
+    public void scale(double worldUnitsPerEncoderTick, double timeStep)
     {
         for (TrcMotionProfilePoint point : leftPoints)
         {
             point.encoderPosition /= worldUnitsPerEncoderTick;
+            point.velocity /= worldUnitsPerEncoderTick / timeStep;
+            point.acceleration /= worldUnitsPerEncoderTick / Math.pow(timeStep, 2);
+            point.jerk /= worldUnitsPerEncoderTick / Math.pow(timeStep, 3);
         }
 
         for (TrcMotionProfilePoint point : rightPoints)
         {
             point.encoderPosition /= worldUnitsPerEncoderTick;
+            point.velocity /= worldUnitsPerEncoderTick / timeStep;
+            point.acceleration /= worldUnitsPerEncoderTick / Math.pow(timeStep, 2);
+            point.jerk /= worldUnitsPerEncoderTick / Math.pow(timeStep, 3);
         }
     }
 

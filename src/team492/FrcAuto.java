@@ -26,7 +26,6 @@ import common.CmdPidDrive;
 import common.CmdTimedDrive;
 import frclib.FrcChoiceMenu;
 import hallib.HalDashboard;
-import team492.RobotInfo.Position;
 import trclib.TrcRobot;
 import trclib.TrcRobot.RunMode;
 import trclib.TrcTaskMgr;
@@ -80,6 +79,7 @@ public class FrcAuto implements TrcRobot.RobotMode
 
     private double delay;
     private TrcRobot.RobotCommand autoCommand;
+    private MotionProfileTest test;
 
     public FrcAuto(Robot robot)
     {
@@ -100,6 +100,8 @@ public class FrcAuto implements TrcRobot.RobotMode
         autoStrategyMenu.addChoice("Y Distance Drive", AutoStrategy.Y_DISTANCE_DRIVE, false, false);
         autoStrategyMenu.addChoice("Turn Degrees", AutoStrategy.TURN_DEGREES, false, false);
         autoStrategyMenu.addChoice("Do Nothing", AutoStrategy.DO_NOTHING, false, true);
+        
+        test = new MotionProfileTest("MP", robot);
     } // FrcAuto
 
     //
@@ -129,7 +131,6 @@ public class FrcAuto implements TrcRobot.RobotMode
         switch (autoStrategy)
         {
             case MOTION_PROFILE_TEST:
-                MotionProfileTest test = new MotionProfileTest("MP", robot);
                 test.start();
                 autoCommand = test;
                 break;
@@ -168,6 +169,15 @@ public class FrcAuto implements TrcRobot.RobotMode
     @Override
     public void stopMode(RunMode nextMode)
     {
+    	switch(autoStrategy)
+    	{
+            case MOTION_PROFILE_TEST:
+                test.stop();
+                break;
+                
+            default:
+                break;
+    	}
         TrcTaskMgr.getInstance().printTaskPerformanceMetrics(robot.globalTracer);
     } // stopMode
 

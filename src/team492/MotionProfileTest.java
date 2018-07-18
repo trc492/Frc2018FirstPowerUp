@@ -21,7 +21,7 @@ public class MotionProfileTest implements TrcRobot.RobotCommand
     private static final double kD = 0.0956;
     private static final double kF = 0.8525; // TODO: Calculate this according to Phoenix docs
 
-    private static final boolean WRITE_CSV = false;
+    private static final boolean WRITE_CSV = true;
 
     private String instanceName;
     private TrcTankMotionProfile profile;
@@ -41,7 +41,22 @@ public class MotionProfileTest implements TrcRobot.RobotCommand
             RobotInfo.ENCODER_Y_INCHES_PER_COUNT);
         follower.setLeftMotors(robot.leftFrontWheel, robot.leftRearWheel);
         follower.setRightMotors(robot.rightFrontWheel, robot.rightRearWheel);
+        
+        refreshData("Test/TargetPosLeft",0.0);
+        refreshData("Test/ActualPosLeft",0.0);
+        refreshData("Test/TargetVelLeft",0.0);
+        refreshData("Test/ActualVelLeft",0.0);
+
+        refreshData("Test/TargetPosRight",0.0);
+        refreshData("Test/ActualPosRight",0.0);
+        refreshData("Test/TargetVelRight",0.0);
+        refreshData("Test/ActualVelRight",0.0);
     }
+    
+    private void refreshData(String name, double defaultValue)
+	{
+		HalDashboard.putNumber(name, HalDashboard.getNumber(name, defaultValue));		
+	}
 
     public void start()
     {
@@ -67,6 +82,11 @@ public class MotionProfileTest implements TrcRobot.RobotCommand
                 robot.globalTracer.traceErr(instanceName + ".start", e.toString());
             }
         }
+    }
+    
+    public void stop()
+    {
+    	follower.cancel();
     }
 
     @Override

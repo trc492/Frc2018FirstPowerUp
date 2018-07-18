@@ -107,7 +107,6 @@ public class FrcTankMotionProfileFollower extends TrcTankMotionProfileFollower
         this.worldUnitsPerEncoderTick = worldUnitsPerEncoderTick;
 
         sm = new TrcStateMachine<>(instanceName);
-        notifier = new Notifier(this::processPointBuffer);
 
         motionProfileTaskObject = TrcTaskMgr.getInstance()
             .createTask(instanceName + ".motionProfileTask", this::motionProfileTask);
@@ -199,7 +198,7 @@ public class FrcTankMotionProfileFollower extends TrcTankMotionProfileFollower
 
         this.profile = profile.copy();
         numPoints = this.profile.getNumPoints();
-        this.profile.scale(worldUnitsPerEncoderTick);
+        this.profile.scale(worldUnitsPerEncoderTick, 0.1); // Scale to worldUnits and time frame of 100ms
 
         sm.start(State.START);
 
@@ -211,6 +210,7 @@ public class FrcTankMotionProfileFollower extends TrcTankMotionProfileFollower
         requiredTrajectoryPoints = (int) (MIN_TRAJ_SECONDS / minDuration);
 
         double updatePeriod = minDuration / 2.0; // 2x as fast as trajectory duration
+        notifier = new Notifier(this::processPointBuffer);
         notifier.startPeriodic(updatePeriod);
 
         leftMaster.motor.changeMotionControlFramePeriod((int) (updatePeriod * 1000.0)); // convert seconds to ms
@@ -307,7 +307,7 @@ public class FrcTankMotionProfileFollower extends TrcTankMotionProfileFollower
      */
     public double leftActualPosition()
     {
-        return leftMaster == null ? 0.0 : leftMaster.getPosition() * worldUnitsPerEncoderTick * 10;
+        return leftMaster == null ? 0.0 : leftMaster.getPosition() * worldUnitsPerEncoderTick;
     }
 
     /**
@@ -328,7 +328,7 @@ public class FrcTankMotionProfileFollower extends TrcTankMotionProfileFollower
      */
     public double rightActualPosition()
     {
-        return rightMaster == null ? 0.0 : rightMaster.getPosition() * worldUnitsPerEncoderTick * 10;
+        return rightMaster == null ? 0.0 : rightMaster.getPosition() * worldUnitsPerEncoderTick;
     }
 
     /**
@@ -351,7 +351,7 @@ public class FrcTankMotionProfileFollower extends TrcTankMotionProfileFollower
      */
     public double leftActualVelocity()
     {
-        return leftMaster == null ? 0.0 : leftMaster.getSpeed() * worldUnitsPerEncoderTick * 10;
+        return leftMaster == null ? 0.0 : leftMaster.getSpeed() * worldUnitsPerEncoderTick;
     }
 
     /**
@@ -374,7 +374,7 @@ public class FrcTankMotionProfileFollower extends TrcTankMotionProfileFollower
      */
     public double rightActualVelocity()
     {
-        return rightMaster == null ? 0.0 : rightMaster.getSpeed() * worldUnitsPerEncoderTick * 10;
+        return rightMaster == null ? 0.0 : rightMaster.getSpeed() * worldUnitsPerEncoderTick;
     }
 
     public FrcCANTalon getLeftMaster()
@@ -389,7 +389,7 @@ public class FrcTankMotionProfileFollower extends TrcTankMotionProfileFollower
 
     private void stop()
     {
-        notifier.stop();
+        if(notifier != null) notifier.stop();
         sm.stop();
         setTaskEnabled(false);
         setTalonValue(SetValueMotionProfile.Disable);
