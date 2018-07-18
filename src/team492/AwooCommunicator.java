@@ -20,6 +20,7 @@ public class AwooCommunicator
     {
         try
         {
+        	System.out.println("Attempting communication to port " + port);
             kemono = new Socket("127.0.0.1", port);
             bw = new BufferedWriter(new OutputStreamWriter(kemono.getOutputStream()));
         }
@@ -42,6 +43,7 @@ public class AwooCommunicator
                 try
                 {
                     bw.write(msg+"\n");
+                    bw.flush();
                 }
                 catch (IOException ioe)
                 {

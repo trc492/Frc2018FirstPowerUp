@@ -390,32 +390,13 @@ public class Robot extends FrcRobotBase
         
         // ayyioasjfasfdjisagoibdsaofisajo;bas;ofjsaiojfasiojgisaofj
         adbBridge = new AdbBridge();
+        adbBridge.start();
         adbBridge.portForward(13970, 13970);
         
         awooCommunicator = new AwooCommunicator(13970);
         awooCommunicator.initCommunicator();
         
         awooCommunicator.sendMessage("Test message from RoboRIO");
-        
-        Thread t = new Thread(() ->
-        {
-            while (!Thread.interrupted()) 
-            {
-                awooCommunicator.sendMessage("RoboRIO Test: " + (System.currentTimeMillis() / 1000.0));
-                try
-                {
-                    Thread.sleep(1000);
-                }
-                catch (InterruptedException e)
-                {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
-                }
-            }
-        }
-        );
-        
-        t.start();
         
         //
         // Create Robot Modes.
@@ -437,12 +418,14 @@ public class Robot extends FrcRobotBase
             {
                 // Robot is safe.
                 // Note: "disaibled" is not a typo. It forces the speech board to pronounce it correctly.
+            	awooCommunicator.sendMessage("Robot disabled");
                 tts.speak("Robot disaibled");
                 nextTimeToSpeakInSeconds = TrcUtil.getCurrentTime() + IDLE_PERIOD_SECONDS;
             }
             else
             {
                 // Robot is unsafe
+            	awooCommunicator.sendMessage("Robot enabled, stand clear.");
                 tts.speak("Robot enabled, stand clear");
                 nextTimeToSpeakInSeconds = TrcUtil.getCurrentTime() + SPEAK_PERIOD_SECONDS;
             }
