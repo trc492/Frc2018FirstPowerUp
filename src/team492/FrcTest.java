@@ -43,6 +43,7 @@ public class FrcTest extends FrcTeleOp
     {
         SENSORS_TEST,
         SUBSYSTEMS_TEST,
+        CALC_DRIVE_BASE_WIDTH,
         DRIVE_MOTORS_TEST,
         AUTO_DIAGNOSTICS,
         X_TIMED_DRIVE,
@@ -71,6 +72,7 @@ public class FrcTest extends FrcTeleOp
 
     private CmdTimedDrive timedDriveCommand = null;
     private CmdPidDrive pidDriveCommand = null;
+    private DriveBaseWidth calcDriveBaseWidth = null;
 
     private int motorIndex = 0;
 
@@ -84,12 +86,15 @@ public class FrcTest extends FrcTeleOp
         event = new TrcEvent(moduleName);
         timer = new TrcTimer(moduleName);
         sm = new TrcStateMachine<>(moduleName);
+
+        calcDriveBaseWidth = new DriveBaseWidth(robot);
         //
         // Create and populate Test Mode specific menus.
         //
         testMenu = new FrcChoiceMenu<>("Test/Tests");
         testMenu.addChoice("Sensors Test", FrcTest.Test.SENSORS_TEST, true, false);
         testMenu.addChoice("Subsystems Test", FrcTest.Test.SUBSYSTEMS_TEST, false, false);
+        testMenu.addChoice("Drive Base Width", Test.CALC_DRIVE_BASE_WIDTH, false, false);
         testMenu.addChoice("Drive Motors Test", FrcTest.Test.DRIVE_MOTORS_TEST, false, false);
         testMenu.addChoice("Diagnostics", FrcTest.Test.AUTO_DIAGNOSTICS, false, false);
         testMenu.addChoice("X Timed Drive", FrcTest.Test.X_TIMED_DRIVE, false, false);
@@ -138,6 +143,10 @@ public class FrcTest extends FrcTeleOp
                 if (robot.leftSonarArray != null) robot.leftSonarArray.startRanging(true);
                 if (robot.rightSonarArray != null) robot.rightSonarArray.startRanging(true);
                 if (robot.frontSonarArray != null) robot.frontSonarArray.startRanging(true);
+                break;
+
+            case CALC_DRIVE_BASE_WIDTH:
+                calcDriveBaseWidth.reset();
                 break;
 
             case DRIVE_MOTORS_TEST:
@@ -211,6 +220,11 @@ public class FrcTest extends FrcTeleOp
                 //
                 super.runPeriodic(elapsedTime);
                 doSensorsTest();
+                break;
+
+            case CALC_DRIVE_BASE_WIDTH:
+                super.runPeriodic(elapsedTime);
+                calcDriveBaseWidth.cmdPeriodic(elapsedTime);
                 break;
 
             case DRIVE_MOTORS_TEST:
