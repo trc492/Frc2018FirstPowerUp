@@ -29,7 +29,7 @@ public class DriveBaseWidth implements TrcRobot.RobotCommand
     {
         // C = pi*d
         // R*C = R*pi*d
-        // (R*C)/(R*pi) = d where R = numRotations and C = encoder distance
+        // (R*C)/(R*pi) = d where R = numRotations and R*C = encoder distance
         double numRotations = Math.abs(cumulativeAngle) / 360.0;
         if(numRotations == 0.0)
             return 0.0;
