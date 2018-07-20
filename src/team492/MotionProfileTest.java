@@ -24,7 +24,6 @@ public class MotionProfileTest implements TrcRobot.RobotCommand
     private static final boolean WRITE_CSV = true;
 
     private String instanceName;
-    private TrcTankMotionProfile profile;
     private FrcTankMotionProfileFollower follower;
     private Robot robot;
     private PrintStream fileOut;
@@ -34,8 +33,6 @@ public class MotionProfileTest implements TrcRobot.RobotCommand
     {
         this.instanceName = instanceName;
         this.robot = robot;
-        profile = TrcTankMotionProfile
-            .loadProfileFromCsv("/home/lvuser/test_left_Jaci.csv", "/home/lvuser/test_right_Jaci.csv");
         TrcPidController.PidCoefficients pidCoefficients = new TrcPidController.PidCoefficients(kP, kI, kD, kF);
         follower = new FrcTankMotionProfileFollower(instanceName + ".profileFollower", pidCoefficients,
             RobotInfo.ENCODER_Y_INCHES_PER_COUNT);
@@ -60,6 +57,8 @@ public class MotionProfileTest implements TrcRobot.RobotCommand
 
     public void start()
     {
+        TrcTankMotionProfile profile = TrcTankMotionProfile
+            .loadProfileFromCsv("/home/lvuser/loop_left_Jaci.csv", "/home/lvuser/loop_right_Jaci.csv");
         follower.start(profile);
         robot.globalTracer.traceInfo(instanceName + ".start", "Started following path!");
 
@@ -128,7 +127,7 @@ public class MotionProfileTest implements TrcRobot.RobotCommand
             String line = String
                 .format("%.2f," + "%.2f,%.2f,%.2f,%.2f," + "%.2f,%.2f,%.2f,%.2f", TrcUtil.getCurrentTime() - startTime,
                     targetPosLeft, actualPosLeft, targetVelLeft, actualVelLeft, targetPosRight, actualPosRight,
-                    targetVelLeft, actualVelRight);
+                    targetVelRight, actualVelRight);
             fileOut.println(line);
         }
 

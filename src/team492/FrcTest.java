@@ -44,6 +44,7 @@ public class FrcTest extends FrcTeleOp
         SENSORS_TEST,
         SUBSYSTEMS_TEST,
         CALC_DRIVE_BASE_WIDTH,
+        MEASURE_ROBOT_STATS,
         DRIVE_MOTORS_TEST,
         AUTO_DIAGNOSTICS,
         X_TIMED_DRIVE,
@@ -73,6 +74,7 @@ public class FrcTest extends FrcTeleOp
     private CmdTimedDrive timedDriveCommand = null;
     private CmdPidDrive pidDriveCommand = null;
     private DriveBaseWidth calcDriveBaseWidth = null;
+    private RobotStats robotStats = null;
 
     private int motorIndex = 0;
 
@@ -88,6 +90,7 @@ public class FrcTest extends FrcTeleOp
         sm = new TrcStateMachine<>(moduleName);
 
         calcDriveBaseWidth = new DriveBaseWidth(robot);
+        robotStats = new RobotStats(robot);
         //
         // Create and populate Test Mode specific menus.
         //
@@ -95,6 +98,7 @@ public class FrcTest extends FrcTeleOp
         testMenu.addChoice("Sensors Test", FrcTest.Test.SENSORS_TEST, true, false);
         testMenu.addChoice("Subsystems Test", FrcTest.Test.SUBSYSTEMS_TEST, false, false);
         testMenu.addChoice("Drive Base Width", Test.CALC_DRIVE_BASE_WIDTH, false, false);
+        testMenu.addChoice("Measure Robot Stats", FrcTest.Test.MEASURE_ROBOT_STATS, false, false);
         testMenu.addChoice("Drive Motors Test", FrcTest.Test.DRIVE_MOTORS_TEST, false, false);
         testMenu.addChoice("Diagnostics", FrcTest.Test.AUTO_DIAGNOSTICS, false, false);
         testMenu.addChoice("X Timed Drive", FrcTest.Test.X_TIMED_DRIVE, false, false);
@@ -146,7 +150,11 @@ public class FrcTest extends FrcTeleOp
                 break;
 
             case CALC_DRIVE_BASE_WIDTH:
-                calcDriveBaseWidth.reset();
+                calcDriveBaseWidth.start();
+                break;
+                
+            case MEASURE_ROBOT_STATS:
+                robotStats.start();
                 break;
 
             case DRIVE_MOTORS_TEST:
@@ -196,6 +204,16 @@ public class FrcTest extends FrcTeleOp
         // Call TeleOp stopMode.
         //
         super.stopMode(nextMode);
+        
+        switch(test)
+        {
+            case MEASURE_ROBOT_STATS:
+                robotStats.stop();
+                break;
+             
+            default:
+                break;
+        }
 
         if (robot.leftSonarArray != null) robot.leftSonarArray.stopRanging();
         if (robot.rightSonarArray != null) robot.rightSonarArray.stopRanging();
@@ -222,11 +240,6 @@ public class FrcTest extends FrcTeleOp
                 doSensorsTest();
                 break;
 
-            case CALC_DRIVE_BASE_WIDTH:
-                super.runPeriodic(elapsedTime);
-                calcDriveBaseWidth.cmdPeriodic(elapsedTime);
-                break;
-
             case DRIVE_MOTORS_TEST:
                 doDriveMotorsTest();
                 break;
@@ -248,6 +261,14 @@ public class FrcTest extends FrcTeleOp
                 break;
 
             case AUTO_DIAGNOSTICS:
+                break;
+                
+            case CALC_DRIVE_BASE_WIDTH:
+                calcDriveBaseWidth.cmdPeriodic(elapsedTime);
+                break;
+                
+            case MEASURE_ROBOT_STATS:
+                robotStats.cmdPeriodic(elapsedTime);
                 break;
 
             case X_TIMED_DRIVE:

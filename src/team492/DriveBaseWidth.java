@@ -1,5 +1,6 @@
 package team492;
 
+import common.CmdTimedDrive;
 import hallib.HalDashboard;
 import trclib.TrcRobot;
 
@@ -7,7 +8,7 @@ public class DriveBaseWidth implements TrcRobot.RobotCommand
 {
     private Robot robot;
     private double cumulativeAngle;
-    private double lastTime = -1;
+    private CmdTimedDrive timedDrive;
 
     public DriveBaseWidth(Robot robot)
     {
@@ -17,7 +18,14 @@ public class DriveBaseWidth implements TrcRobot.RobotCommand
 
     public void reset()
     {
+        robot.driveBase.resetPosition(true);
         this.cumulativeAngle = 0.0;
+    }
+    
+    public void start()
+    {
+        timedDrive = new CmdTimedDrive(robot, 0.0, 8.0, 0.0, 0.0, 0.7);
+        reset();
     }
 
     public double getCumulativeAngle()
@@ -46,16 +54,10 @@ public class DriveBaseWidth implements TrcRobot.RobotCommand
     @Override
     public boolean cmdPeriodic(double elapsedTime)
     {
-        if (lastTime != -1)
-        {
-            double rotateRate = robot.driveBase.getTurnSpeed();
-            double dt = elapsedTime - lastTime;
-            if (dt > 0.0)
-                cumulativeAngle += rotateRate / dt;
-
-            HalDashboard.putNumber("Test/EffectiveDriveBaseWidth", getEffectiveDriveBaseWidth());
-        }
-        lastTime = elapsedTime;
+        cumulativeAngle = robot.driveBase.getHeading();
+        timedDrive.cmdPeriodic(elapsedTime);
+        
+        HalDashboard.putNumber("Test/EffectiveDriveBaseWidth", getEffectiveDriveBaseWidth());
         return false;
     }
 }

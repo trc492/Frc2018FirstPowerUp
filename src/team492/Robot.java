@@ -72,14 +72,14 @@ public class Robot extends FrcRobotBase
 {
     public static final String programName = "FirstPowerUp";
 
-    public static final boolean USE_TRACELOG = true;
-    public static final boolean USE_NAV_X = true;
-    public static final boolean USE_SONAR = true;
-    public static final boolean USE_MAXBOTIX_SONAR_ARRAY = true;
+    public static final boolean USE_TRACELOG = false;
+    public static final boolean USE_NAV_X = false;
+    public static final boolean USE_SONAR = false;
+    public static final boolean USE_MAXBOTIX_SONAR_ARRAY = false;
     public static final boolean USE_LIDAR = false;
     public static final boolean USE_USB_CAM = false;
     public static final boolean USE_PIXY_SPI = false;
-    public static final boolean USE_PIXY_I2C = true;
+    public static final boolean USE_PIXY_I2C = false;
     public static final boolean USE_TEXT_TO_SPEECH = false;
     public static final boolean USE_MESSAGE_BOARD = false;
     public static final boolean USE_TORQUE_BASED_DRIVING = false;
@@ -88,7 +88,7 @@ public class Robot extends FrcRobotBase
     private static final boolean DEBUG_POWER_CONSUMPTION = false;
     private static final boolean DEBUG_DRIVE_BASE = false;
     private static final boolean DEBUG_PID_DRIVE = false;
-    private static final boolean DEBUG_SUBSYSTEMS = true;
+    private static final boolean DEBUG_SUBSYSTEMS = false;
     private static final boolean DEBUG_PIXY = false;
 
     private static final double DASHBOARD_UPDATE_INTERVAL = 0.1;
