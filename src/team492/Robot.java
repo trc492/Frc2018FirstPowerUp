@@ -23,6 +23,8 @@
 package team492;
 
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
+import com.github.arteam.simplejsonrpc.client.JsonRpcClient;
+
 import edu.wpi.cscore.UsbCamera;
 import edu.wpi.first.wpilibj.AnalogInput;
 import edu.wpi.first.wpilibj.CameraServer;
@@ -198,6 +200,7 @@ public class Robot extends FrcRobotBase
     
     public AdbBridge adbBridge;
     public AwooCommunicator awooCommunicator;
+    public JsonRpcClient rpcClient;
     
     /**
      * This function is run when the robot is first started up and should be used for any initialization code.
@@ -396,7 +399,20 @@ public class Robot extends FrcRobotBase
         awooCommunicator = new AwooCommunicator(13970);
         awooCommunicator.initCommunicator();
         
+        rpcClient = new JsonRpcClient(awooCommunicator);
+        
         awooCommunicator.sendMessage("Test message from RoboRIO");
+        
+        @SuppressWarnings("unused")
+		TestRPCClass remoteInitializationInstance = rpcClient.createRequest()
+                .method("initTime")
+                .id(43121)
+                .param("firstName", "Majira")
+                .param("lastName", "Strawberry")
+                .returnAs(TestRPCClass.class)
+                .execute();
+        
+        System.out.println(remoteInitializationInstance);
         
         //
         // Create Robot Modes.

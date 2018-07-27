@@ -96,7 +96,7 @@ public class AwooCommunicator implements Transport
 		receiveMessage = receiveRead.readLine();
 		while(receiveMessage != null)
 		{
-			toRet += receiveMessage;
+			toRet += (receiveMessage + "\n");
 		}
 		return toRet;
 	}
