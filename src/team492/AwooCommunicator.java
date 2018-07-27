@@ -1,11 +1,16 @@
 package team492;
 
+import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.net.Socket;
 
-public class AwooCommunicator
+import com.github.arteam.simplejsonrpc.client.Transport;
+
+public class AwooCommunicator implements Transport
 {
     private int port;
     private BufferedWriter bw;
@@ -79,5 +84,21 @@ public class AwooCommunicator
         kemono = null;
         port = -1;
     }
+
+	@Override
+	public String pass(String request) throws IOException
+	{
+		sendMessage(request);
+		String toRet = "";
+		InputStream istream = kemono.getInputStream();
+		BufferedReader receiveRead = new BufferedReader(new InputStreamReader(istream));
+		String receiveMessage;
+		receiveMessage = receiveRead.readLine();
+		while(receiveMessage != null)
+		{
+			toRet += receiveMessage;
+		}
+		return toRet;
+	}
 }
 
