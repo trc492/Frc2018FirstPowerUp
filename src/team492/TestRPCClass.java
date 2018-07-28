@@ -2,13 +2,18 @@ package team492;
 
 import java.util.Date;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 public class TestRPCClass 
 {
+	@JsonProperty
 	private String firstName;
 	private String lastName;
 	private long timeInitialized = 0;
 	
-	public TestRPCClass(String firstName, String lastName)
+	@JsonCreator
+	public TestRPCClass(@JsonProperty("firstName") String firstName, @JsonProperty("lastName") String lastName)
 	{
 		this.firstName = firstName;
 		this.lastName = lastName;
