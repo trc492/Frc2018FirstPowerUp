@@ -432,14 +432,14 @@ public class Robot extends FrcRobotBase
             {
                 // Robot is safe.
                 // Note: "disaibled" is not a typo. It forces the speech board to pronounce it correctly.
-            	awooCommunicator.sendMessage("Robot disabled");
+            	// awooCommunicator.sendMessage("Robot disabled");
                 tts.speak("Robot disaibled");
                 nextTimeToSpeakInSeconds = TrcUtil.getCurrentTime() + IDLE_PERIOD_SECONDS;
             }
             else
             {
                 // Robot is unsafe
-            	awooCommunicator.sendMessage("Robot enabled, stand clear.");
+            	// awooCommunicator.sendMessage("Robot enabled, stand clear.");
                 tts.speak("Robot enabled, stand clear");
                 nextTimeToSpeakInSeconds = TrcUtil.getCurrentTime() + SPEAK_PERIOD_SECONDS;
             }
