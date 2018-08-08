@@ -405,10 +405,8 @@ public class Robot extends FrcRobotBase
         
         @SuppressWarnings("unused")
 		TestRPCClass remoteInitializationInstance = rpcClient.createRequest()
-                .method("initTime")
+                .method("getMajiraInstance")
                 .id(43121)
-                .param("firstName", "Majira")
-                .param("lastName", "Strawberry")
                 .returnAs(TestRPCClass.class)
                 .execute();
         
