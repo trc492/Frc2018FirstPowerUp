@@ -401,16 +401,12 @@ public class Robot extends FrcRobotBase
         
         rpcClient = new JsonRpcClient(awooCommunicator);
         
-        awooCommunicator.sendMessage("Test message from RoboRIO");
+        // awooCommunicator.sendMessage("Test message from RoboRIO");
         
         @SuppressWarnings("unused")
-		TestRPCClass remoteInitializationInstance = rpcClient.createRequest()
-                .method("getMajiraInstance")
-                .id(43121)
-                .returnAs(TestRPCClass.class)
-                .execute();
+		TestRPCClass remoteInitializationInstance = rpcClient.createRequest().method("getMajiraInstance").id(1).returnAs(TestRPCClass.class).execute();
         
-        System.out.println(remoteInitializationInstance);
+        System.out.println(remoteInitializationInstance.toString());
         
         //
         // Create Robot Modes.

@@ -92,11 +92,10 @@ public class AwooCommunicator implements Transport
 		String toRet = "";
 		InputStream istream = kemono.getInputStream();
 		BufferedReader receiveRead = new BufferedReader(new InputStreamReader(istream));
-		String receiveMessage;
-		receiveMessage = receiveRead.readLine();
-		while(receiveMessage != null)
+		String receiveMessage = "";
+		if((receiveMessage = receiveRead.readLine()) != null)
 		{
-			toRet += (receiveMessage + "\n");
+			toRet = (receiveMessage + "\n");
 		}
 		return toRet;
 	}

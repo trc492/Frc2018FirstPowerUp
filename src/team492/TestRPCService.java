@@ -7,6 +7,6 @@ import com.github.arteam.simplejsonrpc.core.annotation.JsonRpcService;
 @JsonRpcService
 public interface TestRPCService 
 {
-	@JsonRpcMethod
+	@JsonRpcMethod("getMajiraInstance")
 	public TestRPCClass getMajiraInstance();
 }
