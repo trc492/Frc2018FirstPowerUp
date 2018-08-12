@@ -784,12 +784,12 @@ public class TrcDriveBase
             dbgTrace.traceEnter(funcName, TrcDbgTrace.TraceLevel.API);
         }
 
-        if (leftFrontMotor != null) leftFrontMotor.setPower(0.0);
-        if (rightFrontMotor != null) rightFrontMotor.setPower(0.0);
-        if (leftRearMotor != null) leftRearMotor.setPower(0.0);
-        if (rightRearMotor != null) rightRearMotor.setPower(0.0);
-        if (leftMidMotor != null) leftMidMotor.setPower(0.0);
-        if (rightMidMotor != null) rightMidMotor.setPower(0.0);
+        if (leftFrontMotor != null) leftFrontMotor.set(0.0);
+        if (rightFrontMotor != null) rightFrontMotor.set(0.0);
+        if (leftRearMotor != null) leftRearMotor.set(0.0);
+        if (rightRearMotor != null) rightRearMotor.set(0.0);
+        if (leftMidMotor != null) leftMidMotor.set(0.0);
+        if (rightMidMotor != null) rightMidMotor.set(0.0);
 
         if (debugEnabled)
         {
@@ -925,7 +925,7 @@ public class TrcDriveBase
             {
                 wheelPower = motorPowerMapper.translateMotorPower(wheelPower, leftFrontMotor.getSpeed());
             }
-            leftFrontMotor.setPower(wheelPower);
+            leftFrontMotor.set(wheelPower);
         }
 
         if (rightFrontMotor != null)
@@ -935,7 +935,7 @@ public class TrcDriveBase
             {
                 wheelPower = motorPowerMapper.translateMotorPower(wheelPower, rightFrontMotor.getSpeed());
             }
-            rightFrontMotor.setPower(wheelPower);
+            rightFrontMotor.set(wheelPower);
         }
 
         if (leftRearMotor != null)
@@ -945,7 +945,7 @@ public class TrcDriveBase
             {
                 wheelPower = motorPowerMapper.translateMotorPower(wheelPower, leftRearMotor.getSpeed());
             }
-            leftRearMotor.setPower(wheelPower);
+            leftRearMotor.set(wheelPower);
         }
 
         if (rightRearMotor != null)
@@ -955,7 +955,7 @@ public class TrcDriveBase
             {
                 wheelPower = motorPowerMapper.translateMotorPower(wheelPower, rightRearMotor.getSpeed());
             }
-            rightRearMotor.setPower(wheelPower);
+            rightRearMotor.set(wheelPower);
         }
 
         if (leftMidMotor != null)
@@ -965,7 +965,7 @@ public class TrcDriveBase
             {
                 wheelPower = motorPowerMapper.translateMotorPower(wheelPower, leftMidMotor.getSpeed());
             }
-            leftMidMotor.setPower(wheelPower);
+            leftMidMotor.set(wheelPower);
         }
 
         if (rightMidMotor != null)
@@ -975,7 +975,7 @@ public class TrcDriveBase
             {
                 wheelPower = motorPowerMapper.translateMotorPower(wheelPower, rightMidMotor.getSpeed());
             }
-            rightMidMotor.setPower(wheelPower);
+            rightMidMotor.set(wheelPower);
         }
 
         if (debugEnabled)
@@ -1119,7 +1119,7 @@ public class TrcDriveBase
             {
                 wheelPower = motorPowerMapper.translateMotorPower(wheelPower, leftFrontMotor.getSpeed());
             }
-            leftFrontMotor.setPower(wheelPower);
+            leftFrontMotor.set(wheelPower);
         }
 
         if (rightFrontMotor != null)
@@ -1129,7 +1129,7 @@ public class TrcDriveBase
             {
                 wheelPower = motorPowerMapper.translateMotorPower(wheelPower, rightFrontMotor.getSpeed());
             }
-            rightFrontMotor.setPower(wheelPower);
+            rightFrontMotor.set(wheelPower);
         }
 
         if (leftRearMotor != null)
@@ -1139,7 +1139,7 @@ public class TrcDriveBase
             {
                 wheelPower = motorPowerMapper.translateMotorPower(wheelPower, leftRearMotor.getSpeed());
             }
-            leftRearMotor.setPower(wheelPower);
+            leftRearMotor.set(wheelPower);
         }
 
         if (rightRearMotor != null)
@@ -1149,7 +1149,7 @@ public class TrcDriveBase
             {
                 wheelPower = motorPowerMapper.translateMotorPower(wheelPower, rightRearMotor.getSpeed());
             }
-            rightRearMotor.setPower(wheelPower);
+            rightRearMotor.set(wheelPower);
         }
 
         if (debugEnabled)
@@ -1242,7 +1242,7 @@ public class TrcDriveBase
             {
                 wheelPower = motorPowerMapper.translateMotorPower(wheelPower, leftFrontMotor.getSpeed());
             }
-            leftFrontMotor.setPower(wheelPower);
+            leftFrontMotor.set(wheelPower);
         }
 
         if (rightFrontMotor != null)
@@ -1252,7 +1252,7 @@ public class TrcDriveBase
             {
                 wheelPower = motorPowerMapper.translateMotorPower(wheelPower, rightFrontMotor.getSpeed());
             }
-            rightFrontMotor.setPower(wheelPower);
+            rightFrontMotor.set(wheelPower);
         }
 
         if (leftRearMotor != null)
@@ -1262,7 +1262,7 @@ public class TrcDriveBase
             {
                 wheelPower = motorPowerMapper.translateMotorPower(wheelPower, leftRearMotor.getSpeed());
             }
-            leftRearMotor.setPower(wheelPower);
+            leftRearMotor.set(wheelPower);
         }
 
         if (rightRearMotor != null)
@@ -1272,7 +1272,7 @@ public class TrcDriveBase
             {
                 wheelPower = motorPowerMapper.translateMotorPower(wheelPower, rightRearMotor.getSpeed());
             }
-            rightRearMotor.setPower(wheelPower);
+            rightRearMotor.set(wheelPower);
         }
 
         if (debugEnabled)
