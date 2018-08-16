@@ -44,9 +44,8 @@ public class TrcMecanumDriveBase extends TrcSimpleDriveBase
      * @param gyro specifies the gyro. If none, it can be set to null.
      */
     public TrcMecanumDriveBase(
-        final TrcMotorController leftFrontMotor, final TrcMotorController leftRearMotor,
-        final TrcMotorController rightFrontMotor, final TrcMotorController rightRearMotor,
-        final TrcGyro gyro)
+        TrcMotor leftFrontMotor, TrcMotor leftRearMotor, TrcMotor rightFrontMotor, TrcMotor rightRearMotor,
+        TrcGyro gyro)
     {
         super(leftFrontMotor, leftRearMotor, rightFrontMotor, rightRearMotor, gyro);
     }   //TrcMecanumDriveBase
@@ -60,8 +59,7 @@ public class TrcMecanumDriveBase extends TrcSimpleDriveBase
      * @param rightRearMotor specifies the right rear motor of the drive base.
      */
     public TrcMecanumDriveBase(
-        final TrcMotorController leftFrontMotor, final TrcMotorController leftRearMotor,
-        final TrcMotorController rightFrontMotor, final TrcMotorController rightRearMotor)
+        TrcMotor leftFrontMotor, TrcMotor leftRearMotor, TrcMotor rightFrontMotor, TrcMotor rightRearMotor)
     {
         super(leftFrontMotor, leftRearMotor, rightFrontMotor, rightRearMotor, null);
     }   //TrcMecanumDriveBase
