@@ -838,10 +838,10 @@ public class TrcPidMotor
             // If we are not sync'ing or is in zero calibration mode, just set the motor power. If we are stopping
             // the motor, even if we are sync'ing, we should just stop. But we should still observe the limit switches.
             //
-            motor1.setPower(power);
+            motor1.set(power);
             if (motor2 != null)
             {
-                motor2.setPower(power);
+                motor2.set(power);
             }
         }
         else
@@ -870,8 +870,8 @@ public class TrcPidMotor
                 power2 = TrcUtil.clipRange(power2, MIN_MOTOR_POWER, 0.0);
             }
 
-            motor1.setPower(power1);
-            motor2.setPower(power2);
+            motor1.set(power1);
+            motor2.set(power2);
 
             if (debugEnabled)
             {

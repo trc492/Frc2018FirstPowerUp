@@ -48,47 +48,50 @@ public class FrcCANTalon extends TrcMotor
         public EncoderInfo(String name)
         {
             this.name = name;
-        }
+        }   //EncoderInfo
 
         @Override
         public String getName()
         {
             return name;
-        }
+        }   //getName
 
         @Override
         public void setName(String name)
         {
             this.name = name;
-        }
+        }   //setName
 
         @Override
         public String getSubsystem()
         {
-            return this.subsystem;
-        }
+            return subsystem;
+        }   //getSubsystem
 
         @Override
         public void setSubsystem(String subsystem)
         {
             this.subsystem = subsystem;
-        }
+        }   //setSubsystem
 
         @Override
         public void initSendable(SendableBuilder builder)
         {
-            if(FrcCANTalon.this.feedbackDeviceType != FeedbackDevice.QuadEncoder)
+            if (feedbackDeviceType != FeedbackDevice.QuadEncoder)
             {
                 throw new IllegalStateException("Only QuadEncoder supported for Shuffleboard!");
             }
+
             builder.setSmartDashboardType("Quadrature Encoder");
             builder.addDoubleProperty("Speed", FrcCANTalon.this::getSpeed, null);
             builder.addDoubleProperty("Distance", FrcCANTalon.this::getPosition, null);
-            builder.addDoubleProperty("Distance per Tick", ()->1, null);
-        }
+            builder.addDoubleProperty("DistancePerCount", ()->1, null);
+        }   //initSendable
     }
 
+    private String instanceName;
     public TalonSRX motor;
+    private double maxVelocity = 0.0;
     private boolean feedbackDeviceIsPot = false;
     private boolean limitSwitchesSwapped = false;
     private boolean revLimitSwitchNormalOpen = false;
@@ -99,12 +102,12 @@ public class FrcCANTalon extends TrcMotor
     private double softLowerLimit = 0.0;
     private double softUpperLimit = 0.0;
     private FeedbackDevice feedbackDeviceType;
-    private String instanceName;
 
     /**
      * The number of non-success error codes reported by the device after sending a command.
      */
     private int errorCount = 0;
+    private ErrorCode lastError = null;
 
     /**
      * Constructor: Create an instance of the object.
@@ -123,7 +126,81 @@ public class FrcCANTalon extends TrcMotor
     public Sendable getEncoderSendable()
     {
         return new EncoderInfo(instanceName);
-    }
+    }   //getEncoderSendable
+
+    /**
+     * This method returns the number of error responses seen from the motor after sending a command.
+     *
+     * @return The number of non-OK error code responses seen from the motor
+     * after sending a command.
+     */
+    public int getErrorCount()
+    {
+        return errorCount;
+    } //getErrorCount
+
+    /**
+     * The method returns the last CANTalon error code. If there is none, null is returned.
+     *
+     * @return last CAN Talon error code.
+     */
+    public ErrorCode getLastError()
+    {
+        return lastError;
+    }   //getLastError
+
+    /**
+     * This method checks for error code returned by the motor controller executing the last command. If there was
+     * an error, the error count is incremented.
+     *
+     * @param errorCode specifies the error code returned by the motor controller.
+     */
+    private void recordResponseCode(ErrorCode errorCode)
+    {
+        lastError = errorCode;
+        if (errorCode != null && !errorCode.equals(ErrorCode.OK))
+        {
+            errorCount++;
+            if (debugEnabled)
+            {
+                dbgTrace.traceErr("CANTalonError", "ErrorCode=%s", errorCode);
+            }
+        }
+    } //recordResponseCode
+
+    /**
+     * This method sets the motor controller to velocity mode with the specified maximum velocity.
+     *
+     * @param maxVelocity specifies the maximum velocity the motor can run.
+     */
+    public void enableVelocityMode(double maxVelocity)
+    {
+        final String funcName = "enableVelocityMode";
+
+        if (debugEnabled)
+        {
+            dbgTrace.traceEnter(funcName, TrcDbgTrace.TraceLevel.API, "maxVel=%f", maxVelocity);
+            dbgTrace.traceExit(funcName, TrcDbgTrace.TraceLevel.API);
+        }
+
+        this.maxVelocity = maxVelocity;
+    }   //enableVelocityMode
+
+    /**
+     * This method sets the motor controller to power mode.
+     */
+    public void disableVelocityMode()
+    {
+        final String funcName = "disableVelocityMode";
+
+        if (debugEnabled)
+        {
+            dbgTrace.traceEnter(funcName, TrcDbgTrace.TraceLevel.API);
+            dbgTrace.traceExit(funcName, TrcDbgTrace.TraceLevel.API);
+        }
+
+        this.maxVelocity = 0.0;
+    }   //disableVelocityMode
 
     /**
      * This method swaps the forward and reverse limit switches. By default, the lower limit switch is associated
@@ -170,20 +247,6 @@ public class FrcCANTalon extends TrcMotor
             0));
         fwdLimitSwitchNormalOpen = normalOpen;
     }   //configFwdLimitSwitchNormallyOpen
-
-    private void recordResponseCode(ErrorCode errorCode) {
-        if (errorCode != null && !errorCode.equals(ErrorCode.OK)) {
-            errorCount++;
-        }
-    } //recordResponseCode
-
-    /**
-     * @return The number of non-OK error code responses seen from the motor
-     * after sending a command.
-     */
-    public int getErrorCount() {
-        return errorCount;
-    } //getErrorCount
 
     /**
      * This method configures the reverse limit switch to be normally open (i.e. active when close).
@@ -411,6 +474,52 @@ public class FrcCANTalon extends TrcMotor
     }   //resetPosition
 
     /**
+     * This method sets the motor output value. The value can be power or velocity percentage depending on whether
+     * the motor controller is in power mode or velocity mode.
+     *
+     * @param value specifies the percentage power or velocity (range -1.0 to 1.0) to be set.
+     */
+    @Override
+    public void set(double value)
+    {
+        final String funcName = "set";
+
+        if (debugEnabled)
+        {
+            dbgTrace.traceEnter(funcName, TrcDbgTrace.TraceLevel.API, "value=%f", value);
+        }
+
+        if (value < -1.0 || value > 1.0)
+        {
+            throw new IllegalArgumentException("Value must be in the range of -1.0 to 1.0.");
+        }
+
+        if (softLowerLimitEnabled && value < 0.0 && getPosition() <= softLowerLimit ||
+            softUpperLimitEnabled && value > 0.0 && getPosition() >= softUpperLimit)
+        {
+            value = 0.0;
+        }
+
+        ControlMode controlMode;
+        if (maxVelocity == 0.0)
+        {
+            controlMode = ControlMode.PercentOutput;
+        }
+        else
+        {
+            controlMode = ControlMode.Velocity;
+            value *= maxVelocity;
+        }
+        motor.set(controlMode, value);
+        recordResponseCode(motor.getLastError());
+
+        if (debugEnabled)
+        {
+            dbgTrace.traceExit(funcName, TrcDbgTrace.TraceLevel.API, "! (value=%f)", value);
+        }
+    }   //set
+
+    /**
      * This method enables/disables motor brake mode. In motor brake mode, set power to 0 would stop the motor very
      * abruptly by shorting the motor wires together using the generated back EMF to stop the motor. When brakMode
      * is false (i.e. float/coast mode), the motor wires are just disconnected from the motor controller so the motor
@@ -452,36 +561,6 @@ public class FrcCANTalon extends TrcMotor
         motor.setInverted(inverted);
         recordResponseCode(motor.getLastError());
     }   //setInverted
-
-    /**
-     * This method sets the output power of the motor controller.
-     *
-     * @param power specifies the output power for the motor controller in the range of -1.0 to 1.0.
-     */
-    @Override
-    public void setPower(double power)
-    {
-        final String funcName = "setPower";
-
-        if (debugEnabled)
-        {
-            dbgTrace.traceEnter(funcName, TrcDbgTrace.TraceLevel.API, "power=%f", power);
-        }
-
-        if (softLowerLimitEnabled && power < 0.0 && getPosition() <= softLowerLimit ||
-            softUpperLimitEnabled && power > 0.0 && getPosition() >= softUpperLimit)
-        {
-            power = 0.0;
-        }
-
-        motor.set(ControlMode.PercentOutput, power);
-        recordResponseCode(motor.getLastError());
-
-        if (debugEnabled)
-        {
-            dbgTrace.traceExit(funcName, TrcDbgTrace.TraceLevel.API, "! (power=%f)", power);
-        }
-    }   //setPower
 
     /**
      * This method inverts the position sensor direction. This may be rare but there are scenarios where the motor
