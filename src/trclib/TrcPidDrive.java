@@ -84,6 +84,7 @@ public class TrcPidDrive
     private final TrcPidController turnPidCtrl;
     private final TrcTaskMgr.TaskObject pidDriveTaskObj;
     private TrcWarpSpace warpSpace = null;
+    private boolean warpSpaceEnabled = true;
     private StuckWheelHandler stuckWheelHandler = null;
     private double stuckTimeout = 0.0;
     private TurnMode turnMode = TurnMode.IN_PLACE;
@@ -179,6 +180,26 @@ public class TrcPidDrive
     {
         setMsgTracer(tracer, false, null);
     }   //setMsgTracer
+
+    /**
+     * This method checks if warpspace processing is enabled in a PID controlled turn.
+     *
+     * @return true if warpspace processing is enabled, false otherwise.
+     */
+    public boolean isWarpSpaceEnabled()
+    {
+        return warpSpaceEnabled;
+    }   //isWarpSpaceEnabled
+
+    /**
+     * This method enables/disables warpspace processing when doing a PID controlled turn.
+     *
+     * @param enabled specifies true to enable warpspace processing, false to disable.
+     */
+    public void setWarpSpaceEnabled(boolean enabled)
+    {
+        warpSpaceEnabled = enabled;
+    }   //setWarpSpaceEnabled
 
     /**
      * This method returns the X PID controller if any.
@@ -411,7 +432,7 @@ public class TrcPidDrive
 
         if (turnPidCtrl != null)
         {
-            turnPidCtrl.setTarget(turnTarget, warpSpace);
+            turnPidCtrl.setTarget(turnTarget, warpSpaceEnabled? warpSpace: null);
         }
 
         if (event != null)

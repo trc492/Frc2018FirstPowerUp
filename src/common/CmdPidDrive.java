@@ -62,6 +62,10 @@ public class CmdPidDrive implements TrcRobot.RobotCommand
     private double heading;
     private double drivePowerLimit;
     private boolean testMode;
+    private PidCoefficients savedXPidCoeff = null;
+    private PidCoefficients savedYPidCoeff = null;
+    private PidCoefficients savedTurnPidCoeff = null;
+    private Boolean savedWarpSpaceEnabled = null;
 
     private TrcEvent event;
     private TrcTimer timer;
@@ -167,19 +171,24 @@ public class CmdPidDrive implements TrcRobot.RobotCommand
                         //
                         if (xPidCtrl != null && xDistance != 0.0)
                         {
+                            savedXPidCoeff = xPidCtrl.getPidCoefficients();
                             xPidCtrl.setPidCoefficients(
                                 new PidCoefficients(robot.tuneKp, robot.tuneKi, robot.tuneKd, 0.0));
                         }
                         else if (yPidCtrl != null && yDistance != 0.0)
                         {
+                            savedYPidCoeff = yPidCtrl.getPidCoefficients();
                             yPidCtrl.setPidCoefficients(
                                 new PidCoefficients(robot.tuneKp, robot.tuneKi, robot.tuneKd, 0.0));
                         }
                         else if (turnPidCtrl != null && heading != 0.0)
                         {
-                            robot.gyroTurnPidCtrl.setPidCoefficients(
+                            savedTurnPidCoeff = turnPidCtrl.getPidCoefficients();
+                            turnPidCtrl.setPidCoefficients(
                                 new PidCoefficients(robot.tuneKp, robot.tuneKi, robot.tuneKd, 0.0));
                         }
+                        savedWarpSpaceEnabled = pidDrive.isWarpSpaceEnabled();
+                        pidDrive.setWarpSpaceEnabled(false);
                     }
                     //
                     // Set power limits for each direction if applicable.
@@ -203,6 +212,10 @@ public class CmdPidDrive implements TrcRobot.RobotCommand
                     if (xPidCtrl != null) xPidCtrl.setOutputRange(-1.0, 1.0);
                     if (yPidCtrl != null) yPidCtrl.setOutputRange(-1.0, 1.0);
                     if (turnPidCtrl != null) turnPidCtrl.setOutputRange(-1.0, 1.0);
+                    if (savedXPidCoeff != null) xPidCtrl.setPidCoefficients(savedXPidCoeff);
+                    if (savedYPidCoeff != null) yPidCtrl.setPidCoefficients(savedYPidCoeff);
+                    if (savedTurnPidCoeff != null) turnPidCtrl.setPidCoefficients(savedTurnPidCoeff);
+                    if (savedWarpSpaceEnabled != null) pidDrive.setWarpSpaceEnabled(savedWarpSpaceEnabled);
                     done = true;
                     sm.stop();
                     break;

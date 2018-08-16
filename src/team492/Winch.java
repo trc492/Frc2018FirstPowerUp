@@ -57,7 +57,7 @@ public class Winch
     public void setPower(double power)
     {
         motorPower = power;
-        mainMotor.setPower(motorPower);
+        mainMotor.set(motorPower);
     }
 
 }   //class Winch

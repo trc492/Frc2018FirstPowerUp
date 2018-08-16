@@ -224,7 +224,7 @@ public class CubePickup
             sm.stop();
             setPickupTaskEnabled(false);
         }
-        controlMotor.setPower(power);
+        controlMotor.set(power);
     }
 
     public void setPickupPower(double power)
@@ -258,7 +258,7 @@ public class CubePickup
         final String funcName = "grabCube";
         if (!sm.isEnabled())
         {
-            controlMotor.setPower(power);
+            controlMotor.set(power);
             cubeInPossessionEvent = event;
             setPickupTaskEnabled(true);
         }
