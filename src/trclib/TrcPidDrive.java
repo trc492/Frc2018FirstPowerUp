@@ -59,7 +59,7 @@ public class TrcPidDrive
          * @param pidDrive specifies this TrcPidDrive instance.
          * @param motorType specifies which wheel in the DriveBase is stuck.
          */
-        void stuckWheel(TrcPidDrive pidDrive, TrcDriveBase.MotorType motorType);
+        void stuckWheel(TrcPidDrive pidDrive, TrcSimpleDriveBase.MotorType motorType);
 
     }   //interface StuckWheelHandler
 
@@ -78,7 +78,7 @@ public class TrcPidDrive
     private static final double DEF_BEEP_DURATION       = 0.2;          //in seconds
 
     private final String instanceName;
-    private final TrcDriveBase driveBase;
+    private final TrcSimpleDriveBase driveBase;
     private final TrcPidController xPidCtrl;
     private final TrcPidController yPidCtrl;
     private final TrcPidController turnPidCtrl;
@@ -112,7 +112,7 @@ public class TrcPidDrive
      * @param turnPidCtrl specifies the PID controller for turn.
      */
     public TrcPidDrive(
-        final String instanceName, final TrcDriveBase driveBase,
+        final String instanceName, final TrcSimpleDriveBase driveBase,
         final TrcPidController xPidCtrl, final TrcPidController yPidCtrl, final TrcPidController turnPidCtrl)
     {
         if (debugEnabled)
@@ -707,25 +707,25 @@ public class TrcPidDrive
             {
                 if (driveBase.getNumMotors() > 2)
                 {
-                    if (driveBase.isStalled(TrcDriveBase.MotorType.LEFT_FRONT, stuckTimeout))
+                    if (driveBase.isStalled(TrcSimpleDriveBase.MotorType.LEFT_FRONT, stuckTimeout))
                     {
-                        stuckWheelHandler.stuckWheel(this, TrcDriveBase.MotorType.LEFT_FRONT);
+                        stuckWheelHandler.stuckWheel(this, TrcSimpleDriveBase.MotorType.LEFT_FRONT);
                     }
 
-                    if (driveBase.isStalled(TrcDriveBase.MotorType.RIGHT_FRONT, stuckTimeout))
+                    if (driveBase.isStalled(TrcSimpleDriveBase.MotorType.RIGHT_FRONT, stuckTimeout))
                     {
-                        stuckWheelHandler.stuckWheel(this, TrcDriveBase.MotorType.RIGHT_FRONT);
+                        stuckWheelHandler.stuckWheel(this, TrcSimpleDriveBase.MotorType.RIGHT_FRONT);
                     }
                 }
 
-                if (driveBase.isStalled(TrcDriveBase.MotorType.LEFT_REAR, stuckTimeout))
+                if (driveBase.isStalled(TrcSimpleDriveBase.MotorType.LEFT_REAR, stuckTimeout))
                 {
-                    stuckWheelHandler.stuckWheel(this, TrcDriveBase.MotorType.LEFT_REAR);
+                    stuckWheelHandler.stuckWheel(this, TrcSimpleDriveBase.MotorType.LEFT_REAR);
                 }
 
-                if (driveBase.isStalled(TrcDriveBase.MotorType.RIGHT_REAR, stuckTimeout))
+                if (driveBase.isStalled(TrcSimpleDriveBase.MotorType.RIGHT_REAR, stuckTimeout))
                 {
-                    stuckWheelHandler.stuckWheel(this, TrcDriveBase.MotorType.RIGHT_REAR);
+                    stuckWheelHandler.stuckWheel(this, TrcSimpleDriveBase.MotorType.RIGHT_REAR);
                 }
             }
 
@@ -742,9 +742,9 @@ public class TrcPidDrive
                 }
             }
 
-            if (maintainHeading)
+            if (maintainHeading && driveBase instanceof TrcMecanumDriveBase)
             {
-                driveBase.mecanumDrive_Cartesian(manualX, manualY, turnPower, false, 0.0);
+                ((TrcMecanumDriveBase)driveBase).mecanumDrive_Cartesian(manualX, manualY, turnPower, false, 0.0);
             }
             else if (expired || stalled || turnOnTarget && (turnOnly || xOnTarget && yOnTarget))
             {
@@ -757,9 +757,9 @@ public class TrcPidDrive
                         notifyEvent = null;
                     }
                 }
-                else if (xPidCtrl != null)
+                else if (xPidCtrl != null && driveBase instanceof TrcMecanumDriveBase)
                 {
-                    driveBase.mecanumDrive_Cartesian(0.0, 0.0, 0.0, false, 0.0);
+                    ((TrcMecanumDriveBase)driveBase).mecanumDrive_Cartesian(0.0, 0.0, 0.0, false, 0.0);
                 }
                 else
                 {
@@ -798,9 +798,9 @@ public class TrcPidDrive
                         break;
                 }
             }
-            else if (xPidCtrl != null)
+            else if (xPidCtrl != null && driveBase instanceof TrcMecanumDriveBase)
             {
-                driveBase.mecanumDrive_Cartesian(xPower, yPower, turnPower, false, 0.0);
+                ((TrcMecanumDriveBase)driveBase).mecanumDrive_Cartesian(xPower, yPower, turnPower, false, 0.0);
             }
             else if (turnMode == TurnMode.IN_PLACE)
             {
