@@ -48,10 +48,10 @@ import frclib.FrcRobotBase;
 import frclib.FrcRobotBattery;
 import hallib.HalDashboard;
 import team492.PixyVision.TargetInfo;
+import trclib.TrcDriveBase;
 import trclib.TrcEmic2TextToSpeech.Voice;
 import trclib.TrcLidarLite;
 import trclib.TrcMaxbotixSonarArray;
-import trclib.TrcMecanumDriveBase;
 import trclib.TrcPidController;
 import trclib.TrcPidController.PidCoefficients;
 import trclib.TrcPidDrive;
@@ -157,7 +157,7 @@ public class Robot extends FrcRobotBase
     public FrcCANTalon leftRearWheel;
     public FrcCANTalon rightFrontWheel;
     public FrcCANTalon rightRearWheel;
-    public TrcMecanumDriveBase driveBase;
+    public TrcDriveBase driveBase;
 
     public TrcPidController encoderXPidCtrl;
     public TrcPidController encoderYPidCtrl;
@@ -324,7 +324,7 @@ public class Robot extends FrcRobotBase
         //
         // Initialize DriveBase subsystem.
         //
-        driveBase = new TrcMecanumDriveBase(leftFrontWheel, leftRearWheel, rightFrontWheel, rightRearWheel, gyro);
+        driveBase = new TrcDriveBase(leftFrontWheel, leftRearWheel, rightFrontWheel, rightRearWheel, gyro);
         driveBase.setXPositionScale(RobotInfo.ENCODER_X_INCHES_PER_COUNT);
         driveBase.setYPositionScale(RobotInfo.ENCODER_Y_INCHES_PER_COUNT);
 
