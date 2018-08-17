@@ -78,12 +78,12 @@ public class TrcSimpleDriveBase
     private static double DEF_SENSITIVITY = 0.5;
     private static double DEF_MAX_OUTPUT = 1.0;
 
-    protected TrcMotor leftFrontMotor;
-    protected TrcMotor rightFrontMotor;
-    protected TrcMotor leftRearMotor;
-    protected TrcMotor rightRearMotor;
-    private TrcMotor leftMidMotor;
-    private TrcMotor rightMidMotor;
+    protected TrcMotorController leftFrontMotor;
+    protected TrcMotorController rightFrontMotor;
+    protected TrcMotorController leftRearMotor;
+    protected TrcMotorController rightRearMotor;
+    private TrcMotorController leftMidMotor;
+    private TrcMotorController rightMidMotor;
     protected TrcGyro gyro;
     protected MotorPowerMapper motorPowerMapper = null;
     private int numMotors = 0;
@@ -125,9 +125,10 @@ public class TrcSimpleDriveBase
      * @param gyro specifies the gyro. If none, it can be set to null.
      */
     private void commonInit(
-        TrcMotor leftFrontMotor, TrcMotor leftMidMotor, TrcMotor leftRearMotor,
-        TrcMotor rightFrontMotor, TrcMotor rightMidMotor, TrcMotor rightRearMotor,
-        TrcGyro gyro)
+        final TrcMotorController leftFrontMotor, final TrcMotorController leftMidMotor,
+        final TrcMotorController leftRearMotor, final TrcMotorController rightFrontMotor,
+        final TrcMotorController rightMidMotor, final TrcMotorController rightRearMotor,
+        final TrcGyro gyro)
     {
         if (debugEnabled)
         {
@@ -176,9 +177,10 @@ public class TrcSimpleDriveBase
      * @param gyro specifies the gyro. If none, it can be set to null.
      */
     public TrcSimpleDriveBase(
-        TrcMotor leftFrontMotor, TrcMotor leftMidMotor, TrcMotor leftRearMotor,
-        TrcMotor rightFrontMotor, TrcMotor rightMidMotor, TrcMotor rightRearMotor,
-        TrcGyro gyro)
+        final TrcMotorController leftFrontMotor, final TrcMotorController leftMidMotor,
+        final TrcMotorController leftRearMotor, final TrcMotorController rightFrontMotor,
+        final TrcMotorController rightMidMotor, final TrcMotorController rightRearMotor,
+        final TrcGyro gyro)
     {
         if (leftFrontMotor == null || rightFrontMotor == null ||
             leftRearMotor == null || rightRearMotor == null ||
@@ -200,8 +202,9 @@ public class TrcSimpleDriveBase
      * @param rightRearMotor specifies the right rear motor of the drive base.
      */
     public TrcSimpleDriveBase(
-        TrcMotor leftFrontMotor, TrcMotor leftMidMotor, TrcMotor leftRearMotor,
-        TrcMotor rightFrontMotor, TrcMotor rightMidMotor, TrcMotor rightRearMotor)
+        final TrcMotorController leftFrontMotor, final TrcMotorController leftMidMotor,
+        final TrcMotorController leftRearMotor, final TrcMotorController rightFrontMotor,
+        final TrcMotorController rightMidMotor, final TrcMotorController rightRearMotor)
     {
         this(leftFrontMotor, leftMidMotor, leftRearMotor, rightFrontMotor, rightMidMotor, rightRearMotor, null);
     }   //TrcSimpleDriveBase
@@ -216,8 +219,9 @@ public class TrcSimpleDriveBase
      * @param gyro specifies the gyro. If none, it can be set to null.
      */
     public TrcSimpleDriveBase(
-        TrcMotor leftFrontMotor, TrcMotor leftRearMotor, TrcMotor rightFrontMotor, TrcMotor rightRearMotor,
-        TrcGyro gyro)
+        final TrcMotorController leftFrontMotor, final TrcMotorController leftRearMotor,
+        final TrcMotorController rightFrontMotor, final TrcMotorController rightRearMotor,
+        final TrcGyro gyro)
     {
         if (leftFrontMotor == null || rightFrontMotor == null || leftRearMotor == null || rightRearMotor == null)
         {
@@ -235,7 +239,8 @@ public class TrcSimpleDriveBase
      * @param rightRearMotor specifies the right rear motor of the drive base.
      */
     public TrcSimpleDriveBase(
-        TrcMotor leftFrontMotor, TrcMotor leftRearMotor, TrcMotor rightFrontMotor, TrcMotor rightRearMotor)
+        final TrcMotorController leftFrontMotor, final TrcMotorController leftRearMotor,
+        final TrcMotorController rightFrontMotor, final TrcMotorController rightRearMotor)
     {
         this(leftFrontMotor, leftRearMotor, rightFrontMotor, rightRearMotor, null);
     }   //TrcSimpleDriveBase
@@ -248,7 +253,7 @@ public class TrcSimpleDriveBase
      * @param gyro specifies the gyro. If none, it can be set to null.
      */
     public TrcSimpleDriveBase(
-        TrcMotor leftMotor, TrcMotor rightMotor, final TrcGyro gyro)
+        final TrcMotorController leftMotor, final TrcMotorController rightMotor, final TrcGyro gyro)
     {
         if (leftMotor == null || rightMotor == null)
         {
@@ -263,7 +268,7 @@ public class TrcSimpleDriveBase
      * @param leftMotor specifies the left rear motor of the drive base.
      * @param rightMotor specifies the right rear motor of the drive base.
      */
-    public TrcSimpleDriveBase(TrcMotor leftMotor, TrcMotor rightMotor)
+    public TrcSimpleDriveBase(final TrcMotorController leftMotor, final TrcMotorController rightMotor)
     {
         this(leftMotor, rightMotor, null);
     }   //TrcSimpleDriveBase
