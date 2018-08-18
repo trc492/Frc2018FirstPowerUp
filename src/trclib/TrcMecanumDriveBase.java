@@ -87,6 +87,7 @@ public class TrcMecanumDriveBase extends TrcSimpleDriveBase
      *
      * @param scale specifies the X position scale.
      */
+    @Override
     public void setXPositionScale(double scale)
     {
         final String funcName = "setXPositionScale";
@@ -105,6 +106,7 @@ public class TrcMecanumDriveBase extends TrcSimpleDriveBase
      *
      * @return X position.
      */
+    @Override
     public double getXPosition()
     {
         final String funcName = "getXPosition";
@@ -123,6 +125,7 @@ public class TrcMecanumDriveBase extends TrcSimpleDriveBase
      *
      * @return X speed.
      */
+    @Override
     public double getXSpeed()
     {
         final String funcName = "getXSpeed";
@@ -137,7 +140,7 @@ public class TrcMecanumDriveBase extends TrcSimpleDriveBase
     }   //getXSpeed
 
     /**
-     * This method implements mecanum drive where x controls how fast the robot will go in the x direction, and y
+     * This method implements holonomic drive where x controls how fast the robot will go in the x direction, and y
      * controls how fast the robot will go in the y direction. Rotation controls how fast the robot rotates and
      * gyroAngle specifies the heading the robot should maintain.
      *
@@ -147,9 +150,10 @@ public class TrcMecanumDriveBase extends TrcSimpleDriveBase
      * @param inverted specifies true to invert control (i.e. robot front becomes robot back).
      * @param gyroAngle specifies the gyro angle to maintain.
      */
-    public void mecanumDrive_Cartesian(double x, double y, double rotation, boolean inverted, double gyroAngle)
+    @Override
+    public void holonomicDrive(double x, double y, double rotation, boolean inverted, double gyroAngle)
     {
-        final String funcName = "mecanumDrive_Cartesian";
+        final String funcName = "holonomicDrive";
 
         if (debugEnabled)
         {
@@ -238,10 +242,10 @@ public class TrcMecanumDriveBase extends TrcSimpleDriveBase
         {
             dbgTrace.traceExit(funcName, TrcDbgTrace.TraceLevel.API);
         }
-    }   //mecanumDrive_Cartesian
+    }   //holonomicDrive
 
     /**
-     * This method implements mecanum drive where x controls how fast the robot will go in the x direction, and y
+     * This method implements holonomic drive where x controls how fast the robot will go in the x direction, and y
      * controls how fast the robot will go in the y direction. Rotation controls how fast the robot rotates and
      * gyroAngle specifies the heading the robot should maintain.
      *
@@ -250,36 +254,39 @@ public class TrcMecanumDriveBase extends TrcSimpleDriveBase
      * @param rotation specifies the rotating power.
      * @param inverted specifies true to invert control (i.e. robot front becomes robot back).
      */
-    public void mecanumDrive_Cartesian(double x, double y, double rotation, boolean inverted)
+    @Override
+    public void holonomicDrive(double x, double y, double rotation, boolean inverted)
     {
-        mecanumDrive_Cartesian(x, y, rotation, inverted, 0.0);
-    }   //mecanumDrive_Cartesian
+        holonomicDrive(x, y, rotation, inverted, 0.0);
+    }   //holonomicDrive
 
     /**
-     * This method implements mecanum drive where x controls how fast the robot will go in the x direction, and y
+     * This method implements holonomic drive where x controls how fast the robot will go in the x direction, and y
      * controls how fast the robot will go in the y direction. Rotation controls how fast the robot rotates.
      *
      * @param x specifies the x power.
      * @param y specifies the y power.
      * @param rotation specifies the rotating power.
      */
-    public void mecanumDrive_Cartesian(double x, double y, double rotation)
+    @Override
+    public void holonomicDrive(double x, double y, double rotation)
     {
-        mecanumDrive_Cartesian(x, y, rotation, false, 0.0);
-    }   //mecanumDrive_Cartesian
+        holonomicDrive(x, y, rotation, false, 0.0);
+    }   //holonomicDrive
 
     /**
-     * This method implements mecanum drive where magnitude controls how fast the robot will go in the given direction
-     * and how fast it will rotate.
+     * This method implements holonomic drive where magnitude controls how fast the robot will go in the given
+     * direction and how fast it will rotate.
      *
      * @param magnitude specifies the magnitude combining x and y axes.
      * @param direction specifies the direction in degrees.
      * @param rotation specifies the rotation power.
      * @param inverted specifies true to invert control (i.e. robot front becomes robot back).
      */
-    public void mecanumDrive_Polar(double magnitude, double direction, double rotation, boolean inverted)
+    @Override
+    public void holonomicDrive_Polar(double magnitude, double direction, double rotation, boolean inverted)
     {
-        final String funcName = "mecanumDrive_Polar";
+        final String funcName = "holonomicDrive_Polar";
 
         if (debugEnabled)
         {
@@ -356,20 +363,21 @@ public class TrcMecanumDriveBase extends TrcSimpleDriveBase
         {
             dbgTrace.traceExit(funcName, TrcDbgTrace.TraceLevel.API);
         }
-    }   //mecanumDrive_Polar
+    }   //holonomicDrive_Polar
 
     /**
-     * This method implements mecanum drive where magnitude controls how fast the robot will go in the given direction
-     * and how fast it will rotate.
+     * This method implements holonomic drive where magnitude controls how fast the robot will go in the given
+     * direction and how fast it will rotate.
      *
      * @param magnitude specifies the magnitude combining x and y axes.
      * @param direction specifies the direction in degrees.
      * @param rotation specifies the rotation power.
      */
-    public void mecanumDrive_Polar(double magnitude, double direction, double rotation)
+    @Override
+    public void holonomicDrive_Polar(double magnitude, double direction, double rotation)
     {
-        mecanumDrive_Polar(magnitude, direction, rotation, false);
-    }   //mecanumDrive_Polar
+        holonomicDrive_Polar(magnitude, direction, rotation, false);
+    }   //holonomicDrive_Polar
 
     /**
      * This method is called periodically to monitor the encoders and gyro to update the odometry data or when

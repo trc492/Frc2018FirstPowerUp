@@ -125,10 +125,9 @@ public class TrcSimpleDriveBase
      * @param gyro specifies the gyro. If none, it can be set to null.
      */
     private void commonInit(
-        final TrcMotorController leftFrontMotor, final TrcMotorController leftMidMotor,
-        final TrcMotorController leftRearMotor, final TrcMotorController rightFrontMotor,
-        final TrcMotorController rightMidMotor, final TrcMotorController rightRearMotor,
-        final TrcGyro gyro)
+        TrcMotorController leftFrontMotor, TrcMotorController leftMidMotor, TrcMotorController leftRearMotor,
+        TrcMotorController rightFrontMotor, TrcMotorController rightMidMotor, TrcMotorController rightRearMotor,
+        TrcGyro gyro)
     {
         if (debugEnabled)
         {
@@ -177,10 +176,9 @@ public class TrcSimpleDriveBase
      * @param gyro specifies the gyro. If none, it can be set to null.
      */
     public TrcSimpleDriveBase(
-        final TrcMotorController leftFrontMotor, final TrcMotorController leftMidMotor,
-        final TrcMotorController leftRearMotor, final TrcMotorController rightFrontMotor,
-        final TrcMotorController rightMidMotor, final TrcMotorController rightRearMotor,
-        final TrcGyro gyro)
+        TrcMotorController leftFrontMotor, TrcMotorController leftMidMotor, TrcMotorController leftRearMotor,
+        TrcMotorController rightFrontMotor, TrcMotorController rightMidMotor, TrcMotorController rightRearMotor,
+        TrcGyro gyro)
     {
         if (leftFrontMotor == null || rightFrontMotor == null ||
             leftRearMotor == null || rightRearMotor == null ||
@@ -202,9 +200,8 @@ public class TrcSimpleDriveBase
      * @param rightRearMotor specifies the right rear motor of the drive base.
      */
     public TrcSimpleDriveBase(
-        final TrcMotorController leftFrontMotor, final TrcMotorController leftMidMotor,
-        final TrcMotorController leftRearMotor, final TrcMotorController rightFrontMotor,
-        final TrcMotorController rightMidMotor, final TrcMotorController rightRearMotor)
+        TrcMotorController leftFrontMotor, TrcMotorController leftMidMotor, TrcMotorController leftRearMotor,
+        TrcMotorController rightFrontMotor, TrcMotorController rightMidMotor, TrcMotorController rightRearMotor)
     {
         this(leftFrontMotor, leftMidMotor, leftRearMotor, rightFrontMotor, rightMidMotor, rightRearMotor, null);
     }   //TrcSimpleDriveBase
@@ -493,6 +490,17 @@ public class TrcSimpleDriveBase
     }   //resetPosition
 
     /**
+     * This method sets the X position scale. The raw position from the encoder is in encoder counts. By setting the
+     * scale factor, one could make getPosition to return unit in inches, for example.
+     *
+     * @param scale specifies the X position scale.
+     */
+    public void setXPositionScale(double scale)
+    {
+        throw new UnsupportedOperationException("SimpleDriveBase does not support X direction.");
+    }   //setXPositionScale
+
+    /**
      * This method sets the Y position scale. The raw position from the encoder is in encoder counts. By setting the
      * scale factor, one could make getPosition to return unit in inches, for example.
      *
@@ -530,6 +538,16 @@ public class TrcSimpleDriveBase
 
         this.rotScale = scale;
     }   //setRotationScale
+
+    /**
+     * This method returns the X position in scaled unit.
+     *
+     * @return X position.
+     */
+    public double getXPosition()
+    {
+        throw new UnsupportedOperationException("SimpleDriveBase does not support X direction.");
+    }   //getXPosition
 
     /**
      * This method returns the Y position in scaled unit.
@@ -584,6 +602,16 @@ public class TrcSimpleDriveBase
 
         return heading;
     }   //getHeading
+
+    /**
+     * This method returns the drive base speed in the X direction.
+     *
+     * @return X speed.
+     */
+    public double getXSpeed()
+    {
+        throw new UnsupportedOperationException("SimpleDriveBase does not support X direction.");
+    }   //getXSpeed
 
     /**
      * This method returns the drive base speed in the Y direction.
@@ -752,78 +780,6 @@ public class TrcSimpleDriveBase
     }   //stop
 
     /**
-     * This method drives the motors at "magnitude" and "curve". Both magnitude and curve are -1.0 to +1.0 values,
-     * where 0.0 represents stopped and not turning. curve less than 0 will turn left and curve greater than 0 will
-     * turn right. The algorithm for steering provides a constant turn radius for any normal speed range, both
-     * forward and backward. Increasing sensitivity causes sharper turns for fixed values of curve.
-     *
-     * @param magnitude specifies the speed setting for the outside wheel in a turn, forward or backwards, +1 to -1.
-     * @param curve specifies the rate of turn, constant for different forward speeds. Set curve less than 0 for left
-     *              turn or curve greater than 0 for right turn. Set curve = e^(-r/w) to get a turn radius r for
-     *              wheel base w of your robot. Conversely, turn radius r = -ln(curve)*w for a given value of curve
-     *              and wheel base w.
-     * @param inverted specifies true to invert control (i.e. robot front becomes robot back).
-     */
-    public void drive(double magnitude, double curve, boolean inverted)
-    {
-        final String funcName = "drive";
-        double leftOutput;
-        double rightOutput;
-
-        if (debugEnabled)
-        {
-            dbgTrace.traceEnter(funcName, TrcDbgTrace.TraceLevel.API, "mag=%f,curve=%f,inverted=%s",
-                                magnitude, curve, Boolean.toString(inverted));
-        }
-
-        if (curve < 0.0)
-        {
-            double value = Math.log(-curve);
-            double ratio = (value - sensitivity)/(value + sensitivity);
-            if (ratio == 0.0)
-            {
-                ratio = 0.0000000001;
-            }
-            leftOutput = magnitude/ratio;
-            rightOutput = magnitude;
-        }
-        else if (curve > 0.0)
-        {
-            double value = Math.log(curve);
-            double ratio = (value - sensitivity)/(value + sensitivity);
-            if (ratio == 0.0)
-            {
-                ratio = 0.0000000001;
-            }
-            leftOutput = magnitude;
-            rightOutput = magnitude/ratio;
-        }
-        else
-        {
-            leftOutput = magnitude;
-            rightOutput = magnitude;
-        }
-
-        tankDrive(leftOutput, rightOutput, inverted);
-
-        if (debugEnabled)
-        {
-            dbgTrace.traceExit(funcName, TrcDbgTrace.TraceLevel.API);
-        }
-    }   //drive
-
-    /**
-     * This method drives the motors with the given magnitude and curve values.
-     *
-     * @param magnitude specifies the magnitude value.
-     * @param curve specifies the curve value.
-     */
-    public void drive(double magnitude, double curve)
-    {
-        drive(magnitude, curve, false);
-    }   //drive
-
-    /**
      * This method implements tank drive where leftPower controls the left motors and right power controls the right
      * motors.
      *
@@ -951,6 +907,78 @@ public class TrcSimpleDriveBase
     }   //tankDrive
 
     /**
+     * This method drives the motors at "magnitude" and "curve". Both magnitude and curve are -1.0 to +1.0 values,
+     * where 0.0 represents stopped and not turning. curve less than 0 will turn left and curve greater than 0 will
+     * turn right. The algorithm for steering provides a constant turn radius for any normal speed range, both
+     * forward and backward. Increasing sensitivity causes sharper turns for fixed values of curve.
+     *
+     * @param magnitude specifies the speed setting for the outside wheel in a turn, forward or backwards, +1 to -1.
+     * @param curve specifies the rate of turn, constant for different forward speeds. Set curve less than 0 for left
+     *              turn or curve greater than 0 for right turn. Set curve = e^(-r/w) to get a turn radius r for
+     *              wheel base w of your robot. Conversely, turn radius r = -ln(curve)*w for a given value of curve
+     *              and wheel base w.
+     * @param inverted specifies true to invert control (i.e. robot front becomes robot back).
+     */
+    public void curveDrive(double magnitude, double curve, boolean inverted)
+    {
+        final String funcName = "curveDrive";
+        double leftOutput;
+        double rightOutput;
+
+        if (debugEnabled)
+        {
+            dbgTrace.traceEnter(funcName, TrcDbgTrace.TraceLevel.API, "mag=%f,curve=%f,inverted=%s",
+                                magnitude, curve, Boolean.toString(inverted));
+        }
+
+        if (curve < 0.0)
+        {
+            double value = Math.log(-curve);
+            double ratio = (value - sensitivity)/(value + sensitivity);
+            if (ratio == 0.0)
+            {
+                ratio = 0.0000000001;
+            }
+            leftOutput = magnitude/ratio;
+            rightOutput = magnitude;
+        }
+        else if (curve > 0.0)
+        {
+            double value = Math.log(curve);
+            double ratio = (value - sensitivity)/(value + sensitivity);
+            if (ratio == 0.0)
+            {
+                ratio = 0.0000000001;
+            }
+            leftOutput = magnitude;
+            rightOutput = magnitude/ratio;
+        }
+        else
+        {
+            leftOutput = magnitude;
+            rightOutput = magnitude;
+        }
+
+        tankDrive(leftOutput, rightOutput, inverted);
+
+        if (debugEnabled)
+        {
+            dbgTrace.traceExit(funcName, TrcDbgTrace.TraceLevel.API);
+        }
+    }   //curveDrive
+
+    /**
+     * This method drives the motors with the given magnitude and curve values.
+     *
+     * @param magnitude specifies the magnitude value.
+     * @param curve specifies the curve value.
+     */
+    public void curveDrive(double magnitude, double curve)
+    {
+        curveDrive(magnitude, curve, false);
+    }   //curveDrive
+
+    /**
      * This method implements arcade drive where drivePower controls how fast the robot goes in the y-axis and
      * turnPower controls how fast it will turn.
      *
@@ -1004,7 +1032,79 @@ public class TrcSimpleDriveBase
     }   //arcadeDrive
 
     /**
-     * This method normalizes the power to the four wheels for mecanum drive.
+     * This method implements holonomic drive where x controls how fast the robot will go in the x direction, and y
+     * controls how fast the robot will go in the y direction. Rotation controls how fast the robot rotates and
+     * gyroAngle specifies the heading the robot should maintain.
+     *
+     * @param x specifies the x power.
+     * @param y specifies the y power.
+     * @param rotation specifies the rotating power.
+     * @param inverted specifies true to invert control (i.e. robot front becomes robot back).
+     * @param gyroAngle specifies the gyro angle to maintain.
+     */
+    public void holonomicDrive(double x, double y, double rotation, boolean inverted, double gyroAngle)
+    {
+        throw new UnsupportedOperationException("SimpleDriveBase does not support holonomic drive.");
+    }   //holonomicDrive
+
+    /**
+     * This method implements holonomic drive where x controls how fast the robot will go in the x direction, and y
+     * controls how fast the robot will go in the y direction. Rotation controls how fast the robot rotates and
+     * gyroAngle specifies the heading the robot should maintain.
+     *
+     * @param x specifies the x power.
+     * @param y specifies the y power.
+     * @param rotation specifies the rotating power.
+     * @param inverted specifies true to invert control (i.e. robot front becomes robot back).
+     */
+    public void holonomicDrive(double x, double y, double rotation, boolean inverted)
+    {
+        holonomicDrive(x, y, rotation, inverted, 0.0);
+    }   //holonomicDrive
+
+    /**
+     * This method implements holonomic drive where x controls how fast the robot will go in the x direction, and y
+     * controls how fast the robot will go in the y direction. Rotation controls how fast the robot rotates and
+     * gyroAngle specifies the heading the robot should maintain.
+     *
+     * @param x specifies the x power.
+     * @param y specifies the y power.
+     * @param rotation specifies the rotating power.
+     */
+    public void holonomicDrive(double x, double y, double rotation)
+    {
+        holonomicDrive(x, y, rotation, false, 0.0);
+    }   //holonomicDrive
+
+    /**
+     * This method implements holonomic drive where magnitude controls how fast the robot will go in the given
+     * direction and how fast it will rotate.
+     *
+     * @param magnitude specifies the magnitude combining x and y axes.
+     * @param direction specifies the direction in degrees.
+     * @param rotation specifies the rotation power.
+     * @param inverted specifies true to invert control (i.e. robot front becomes robot back).
+     */
+    public void holonomicDrive_Polar(double magnitude, double direction, double rotation, boolean inverted)
+    {
+        throw new UnsupportedOperationException("SimpleDriveBase does not support holonomic drive.");
+    }   //holonomicDrive_Polar
+
+    /**
+     * This method implements holonomic drive where magnitude controls how fast the robot will go in the given
+     * direction and how fast it will rotate.
+     *
+     * @param magnitude specifies the magnitude combining x and y axes.
+     * @param direction specifies the direction in degrees.
+     * @param rotation specifies the rotation power.
+     */
+    public void holonomicDrive_Polar(double magnitude, double direction, double rotation)
+    {
+        holonomicDrive_Polar(magnitude, direction, rotation, false);
+    }   //holonomicDrive_Polar
+
+    /**
+     * This method normalizes the power to the four wheels for drive method such as holonomic drive.
      *
      * @param wheelPowers specifies the wheel power of all four wheels.
      */

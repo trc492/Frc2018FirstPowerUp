@@ -370,33 +370,6 @@ public class TrcPidDrive
     }   //setStallTimeout
 
     /**
-     * This method allows PID controlled drive using the joysticks. PID controlled drive will distribute power to
-     * the wheels to compensate for drive train friction difference so that the robot will drive straight and
-     * maintain the specified heading.
-     *
-     * @param xSpeed specifies the robot speed in the X direction.
-     * @param ySpeed specifies the robot speed in the Y direction.
-     * @param turnSpeed specifies the robot turn speed.
-     */
-    public void setSpeed(double xSpeed, double ySpeed, double turnSpeed)
-    {
-        final String funcName = "setSpeed";
-
-        if (debugEnabled)
-        {
-            dbgTrace.traceEnter(
-                    funcName, TrcDbgTrace.TraceLevel.API, "xPwr=%f,yPwr=%f,turnPwr=%f", xSpeed, ySpeed, turnSpeed);
-        }
-
-        // TODO: need to implement it.
-
-        if (debugEnabled)
-        {
-            dbgTrace.traceExit(funcName, TrcDbgTrace.TraceLevel.API);
-        }
-    }   //setSpeed
-
-    /**
      * This method starts a PID operation by setting the PID targets.
      *
      * @param xTarget specifies the X target position.
@@ -569,7 +542,7 @@ public class TrcPidDrive
 
         if (active)
         {
-            stop();
+            stopPid();
             canceled = true;
             if (notifyEvent != null)
             {
@@ -605,9 +578,9 @@ public class TrcPidDrive
     /**
      * This method stops the PID drive operation and reset the states.
      */
-    private void stop()
+    private void stopPid()
     {
-        final String funcName = "stop";
+        final String funcName = "stopPid";
 
         if (debugEnabled)
         {
@@ -641,7 +614,7 @@ public class TrcPidDrive
         {
             dbgTrace.traceExit(funcName, TrcDbgTrace.TraceLevel.FUNC);
         }
-    }   //stop
+    }   //stopPid
 
     /**
      * This method enables/disables the PID drive task.
@@ -702,6 +675,7 @@ public class TrcPidDrive
             boolean xOnTarget = xPidCtrl == null || xPidCtrl.isOnTarget();
             boolean yOnTarget = yPidCtrl == null || yPidCtrl.isOnTarget();
             boolean turnOnTarget = turnPidCtrl == null || turnPidCtrl.isOnTarget();
+            boolean onTarget = turnOnTarget && (turnOnly || xOnTarget && yOnTarget);
 
             if (stuckWheelHandler != null)
             {
@@ -742,30 +716,33 @@ public class TrcPidDrive
                 }
             }
 
-            if (maintainHeading && driveBase instanceof TrcMecanumDriveBase)
+            if (maintainHeading)
             {
-                ((TrcMecanumDriveBase)driveBase).mecanumDrive_Cartesian(manualX, manualY, turnPower, false, 0.0);
+                driveBase.holonomicDrive(manualX, manualY, turnPower, false, 0.0);
             }
-            else if (expired || stalled || turnOnTarget && (turnOnly || xOnTarget && yOnTarget))
+            else if (expired || stalled || onTarget)
             {
-                if (!holdTarget)
+                if (expired || stalled || onTarget && !holdTarget)
                 {
-                    stop();
+                    stopPid();
                     if (notifyEvent != null)
                     {
                         notifyEvent.set(true);
                         notifyEvent = null;
                     }
                 }
-                else if (xPidCtrl != null && driveBase instanceof TrcMecanumDriveBase)
+                // If we come here, both onTarget and holdTarget are true.
+                // We will stop the drive base but not stopping PID.
+                else if (xPidCtrl != null)
                 {
-                    ((TrcMecanumDriveBase)driveBase).mecanumDrive_Cartesian(0.0, 0.0, 0.0, false, 0.0);
+                    driveBase.holonomicDrive(0.0, 0.0, 0.0, false, 0.0);
                 }
                 else
                 {
-                    driveBase.drive(0.0, 0.0);
+                    driveBase.tankDrive(0.0, 0.0);
                 }
             }
+            // If we come here, we are not on target yet, keep driving.
             else if (turnOnly)
             {
                 switch (turnMode)
@@ -798,17 +775,18 @@ public class TrcPidDrive
                         break;
                 }
             }
-            else if (xPidCtrl != null && driveBase instanceof TrcMecanumDriveBase)
+            else if (xPidCtrl != null)
             {
-                ((TrcMecanumDriveBase)driveBase).mecanumDrive_Cartesian(xPower, yPower, turnPower, false, 0.0);
+                driveBase.holonomicDrive(xPower, yPower, turnPower, false, 0.0);
             }
             else if (turnMode == TurnMode.IN_PLACE)
             {
+                // We are still in an in-place turn.
                 driveBase.arcadeDrive(yPower, turnPower);
             }
             else
             {
-               driveBase.drive(yPower, turnPower);
+               driveBase.curveDrive(yPower, turnPower);
             }
 
             if (msgTracer != null && tracePidInfo)
@@ -821,7 +799,7 @@ public class TrcPidDrive
         }
         else if (taskType == TaskType.STOP_TASK)
         {
-            stop();
+            stopPid();
         }
 
         if (debugEnabled)

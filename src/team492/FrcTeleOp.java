@@ -129,7 +129,7 @@ public class FrcTeleOp implements TrcRobot.RobotMode
                     }
 //                    double xForceOz = x * RobotInfo.MAX_WHEEL_FORCE_OZ;
 //                    double yForceOz = y * RobotInfo.MAX_WHEEL_FORCE_OZ;
-                    robot.driveBase.mecanumDrive_Cartesian(x, y, rot, driveInverted);
+                    robot.driveBase.holonomicDrive(x, y, rot, driveInverted);
 //                    HalDashboard.putNumber("xForceOz", xForceOz);
 //                    HalDashboard.putNumber("yForceOz", yForceOz);
                     break;
