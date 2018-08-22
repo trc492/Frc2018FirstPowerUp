@@ -681,23 +681,23 @@ public class TrcPidDrive
             {
                 if (driveBase.getNumMotors() > 2)
                 {
-                    if (driveBase.isStalled(TrcSimpleDriveBase.MotorType.LEFT_FRONT, stuckTimeout))
+                    if (driveBase.isMotorStalled(TrcSimpleDriveBase.MotorType.LEFT_FRONT, stuckTimeout))
                     {
                         stuckWheelHandler.stuckWheel(this, TrcSimpleDriveBase.MotorType.LEFT_FRONT);
                     }
 
-                    if (driveBase.isStalled(TrcSimpleDriveBase.MotorType.RIGHT_FRONT, stuckTimeout))
+                    if (driveBase.isMotorStalled(TrcSimpleDriveBase.MotorType.RIGHT_FRONT, stuckTimeout))
                     {
                         stuckWheelHandler.stuckWheel(this, TrcSimpleDriveBase.MotorType.RIGHT_FRONT);
                     }
                 }
 
-                if (driveBase.isStalled(TrcSimpleDriveBase.MotorType.LEFT_REAR, stuckTimeout))
+                if (driveBase.isMotorStalled(TrcSimpleDriveBase.MotorType.LEFT_REAR, stuckTimeout))
                 {
                     stuckWheelHandler.stuckWheel(this, TrcSimpleDriveBase.MotorType.LEFT_REAR);
                 }
 
-                if (driveBase.isStalled(TrcSimpleDriveBase.MotorType.RIGHT_REAR, stuckTimeout))
+                if (driveBase.isMotorStalled(TrcSimpleDriveBase.MotorType.RIGHT_REAR, stuckTimeout))
                 {
                     stuckWheelHandler.stuckWheel(this, TrcSimpleDriveBase.MotorType.RIGHT_REAR);
                 }

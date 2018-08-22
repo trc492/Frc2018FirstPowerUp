@@ -146,7 +146,7 @@ public class CmdAutoDiagnostics implements TrcRobot.RobotCommand
                 case SPIN_MOTORS_FORWARD:
                     if(timedDrive == null)
                     {
-                        robot.driveBase.resetPosition();
+                        robot.driveBase.resetOdometry();
                         timedDrive = createTimedDrive(0.0,0.7);
                     }
 
@@ -174,7 +174,7 @@ public class CmdAutoDiagnostics implements TrcRobot.RobotCommand
                 case SPIN_MOTORS_BACKWARD:
                     if(timedDrive == null)
                     {
-                        robot.driveBase.resetPosition();
+                        robot.driveBase.resetOdometry();
                         timedDrive = createTimedDrive(0.0,-0.7);
                     }
 
