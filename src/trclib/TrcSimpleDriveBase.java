@@ -52,7 +52,6 @@ public class TrcSimpleDriveBase extends TrcDriveBase
     protected TrcMotorController rightRearMotor = null;
     protected TrcMotorController leftMidMotor = null;
     protected TrcMotorController rightMidMotor = null;
-    protected int numMotors;
     protected double lfEnc = 0.0, rfEnc = 0.0, lrEnc = 0.0, rrEnc = 0.0;
     protected double lfSpeed = 0.0, rfSpeed = 0.0, lrSpeed = 0.0, rrSpeed = 0.0;
 
@@ -73,7 +72,7 @@ public class TrcSimpleDriveBase extends TrcDriveBase
         TrcGyro gyro)
     {
         super(new TrcMotorController[]
-                 {leftFrontMotor, rightFrontMotor, leftRearMotor, rightRearMotor, leftMidMotor, rightMidMotor},
+                {leftFrontMotor, rightFrontMotor, leftRearMotor, rightRearMotor, leftMidMotor, rightMidMotor},
               gyro);
 
         if (leftFrontMotor == null || rightFrontMotor == null ||
@@ -89,7 +88,6 @@ public class TrcSimpleDriveBase extends TrcDriveBase
         this.rightRearMotor = rightRearMotor;
         this.leftMidMotor = leftMidMotor;
         this.rightMidMotor = rightMidMotor;
-        numMotors = 6;
     }   //TrcSimpleDriveBase
 
     /**
@@ -134,7 +132,6 @@ public class TrcSimpleDriveBase extends TrcDriveBase
         this.rightFrontMotor = rightFrontMotor;
         this.leftRearMotor = leftRearMotor;
         this.rightRearMotor = rightRearMotor;
-        numMotors = 4;
     }   //TrcSimpleDriveBase
 
     /**
@@ -171,7 +168,6 @@ public class TrcSimpleDriveBase extends TrcDriveBase
 
         this.leftFrontMotor = leftMotor;
         this.rightFrontMotor = rightMotor;
-        numMotors = 2;
     }   //TrcSimpleDriveBase
 
     /**
@@ -224,8 +220,7 @@ public class TrcSimpleDriveBase extends TrcDriveBase
         if (debugEnabled)
         {
             dbgTrace.traceEnter(funcName, TrcDbgTrace.TraceLevel.API,
-                                "leftPower=%f,rightPower=%f,inverted=%s",
-                                leftPower, rightPower, Boolean.toString(inverted));
+                "leftPower=%f,rightPower=%f,inverted=%s", leftPower, rightPower, inverted);
         }
 
         leftPower = TrcUtil.clipRange(leftPower);
@@ -323,27 +318,10 @@ public class TrcSimpleDriveBase extends TrcDriveBase
     }   //tankDrive
 
     /**
-     * This method implements holonomic drive where x controls how fast the robot will go in the x direction, and y
-     * controls how fast the robot will go in the y direction. Rotation controls how fast the robot rotates and
-     * gyroAngle specifies the heading the robot should maintain.
-     *
-     * @param x specifies the x power.
-     * @param y specifies the y power.
-     * @param rotation specifies the rotating power.
-     * @param inverted specifies true to invert control (i.e. robot front becomes robot back).
-     * @param gyroAngle specifies the gyro angle to maintain.
-     */
-    @Override
-    public void holonomicDrive(double x, double y, double rotation, boolean inverted, double gyroAngle)
-    {
-        throw new UnsupportedOperationException("SimpleDriveBase does not support holonomic drive.");
-    }   //holonomicDrive
-
-    /**
      * This method is called periodically to monitor the encoders to update the odometry data.
      */
     @Override
-    public void updateOdometry()
+    protected void updateOdometry()
     {
         final String funcName = "updateOdometry";
 
@@ -408,8 +386,9 @@ public class TrcSimpleDriveBase extends TrcDriveBase
             }
         }
 
-        updateYOdometry((lfEnc + lrEnc + rfEnc + rrEnc)/numMotors, (lfSpeed + lrSpeed + rfSpeed + rrSpeed)/numMotors);
-        updateRotationOdometry(((lfEnc + lrEnc) - (rfEnc + rrEnc))/numMotors);
+        updateYOdometry(
+            TrcUtil.average(lfEnc, lrEnc, rfEnc, rrEnc), TrcUtil.average(lfSpeed, lrSpeed, rfSpeed, rrSpeed));
+        updateRotationOdometry(TrcUtil.average(lfEnc, lrEnc, -rfEnc, -rrEnc));
 
         if (debugEnabled)
         {

@@ -43,7 +43,7 @@ public abstract class TrcDriveBase
     /**
      * This method is called periodically to monitor the encoders to update the odometry data.
      */
-    public abstract void updateOdometry();
+    protected abstract void updateOdometry();
 
     /**
      * This method implements tank drive where leftPower controls the left motors and right power controls the right
@@ -54,19 +54,6 @@ public abstract class TrcDriveBase
      * @param inverted specifies true to invert control (i.e. robot front becomes robot back).
      */
     public abstract void tankDrive(double leftPower, double rightPower, boolean inverted);
-
-    /**
-     * This method implements holonomic drive where x controls how fast the robot will go in the x direction, and y
-     * controls how fast the robot will go in the y direction. Rotation controls how fast the robot rotates and
-     * gyroAngle specifies the heading the robot should maintain.
-     *
-     * @param x specifies the x power.
-     * @param y specifies the y power.
-     * @param rotation specifies the rotating power.
-     * @param inverted specifies true to invert control (i.e. robot front becomes robot back).
-     * @param gyroAngle specifies the gyro angle to maintain.
-     */
-    public abstract void holonomicDrive(double x, double y, double rotation, boolean inverted, double gyroAngle);
 
     /**
      * This interface is provided by the caller to translate the motor power to actual motor power according to
@@ -98,18 +85,7 @@ public abstract class TrcDriveBase
     private double gyroHeading, gyroTurnRate;
     private double[] stallStartTimes;
     private double[] prevPositions;
-
-    protected MotorPowerMapper motorPowerMapper = new MotorPowerMapper()
-    {
-        //
-        // Default motor power mapper.
-        //
-        public double translateMotorPower(double power, double speed)
-        {
-            return power;
-        }
-    };
-
+    protected MotorPowerMapper motorPowerMapper = this::defaultMotorPowerMapper;
     private double sensitivity = DEF_SENSITIVITY;
     private double maxOutput = DEF_MAX_OUTPUT;
     private double gyroMaxRotationRate = 0.0;
@@ -155,6 +131,18 @@ public abstract class TrcDriveBase
     {
         this(motors, null);
     }   //TrcDriveBase
+
+    /**
+     * This method provides the default motor power mapping which is returning the same power unchanged.
+     *
+     * @param power specifies the motor power.
+     * @param speed specifies the motor speed (not used).
+     * @return the same motor power.
+     */
+    private double defaultMotorPowerMapper(double power, double speed)
+    {
+        return power;
+    }   //defaultMotorPowerMapper
 
     /**
      * This method sets the X position scale. The raw position from the encoder is in encoder counts. By setting the
@@ -462,7 +450,7 @@ public abstract class TrcDriveBase
      */
     public void setMotorPowerMapper(MotorPowerMapper motorPowerMapper)
     {
-        this.motorPowerMapper = motorPowerMapper;
+        this.motorPowerMapper = motorPowerMapper == null? this::defaultMotorPowerMapper: motorPowerMapper;
     }   //setMotorPowerMapper
 
     /**
@@ -562,17 +550,36 @@ public abstract class TrcDriveBase
         this.gyroAssistEnabled = false;
     }   //disableGyroAssist
 
+    /**
+     * This method checks if Gyro Assist is enabled.
+     * @return true if Gyro Assist is enabled, false otherwise.
+     */
     public boolean isGyroAssistEnabled()
     {
         return gyroAssistEnabled;
     }   //isGyroAssistEnabled
 
+    /**
+     * This method calculates and returns the gyro assist power.
+     *
+     * @param rotation specifies the rotation power.
+     * @return gyro assist power.
+     */
     public double getGyroAssistPower(double rotation)
     {
         double error = rotation - gyro.getZRotationRate().value/gyroMaxRotationRate;
-        double assistPower = gyroAssistEnabled? TrcUtil.clipRange(gyroAssistKp*error): 0.0;
-        return assistPower;
+        return gyroAssistEnabled? TrcUtil.clipRange(gyroAssistKp*error): 0.0;
     }   //getGyroAssistPower
+
+    /**
+     * This method checks if it supports holonomic drive.
+     *
+     * @return true if this drive base supports holonomic drive, false otherwise.
+     */
+    public boolean supportsHolonomicDrive()
+    {
+        return false;
+    }   //supportsHolonomicDrive
 
     /**
      * This method returns the number of motors in the drive train.
@@ -763,8 +770,8 @@ public abstract class TrcDriveBase
 
         if (debugEnabled)
         {
-            dbgTrace.traceEnter(funcName, TrcDbgTrace.TraceLevel.API, "mag=%f,curve=%f,inverted=%s",
-                                magnitude, curve, Boolean.toString(inverted));
+            dbgTrace.traceEnter(funcName, TrcDbgTrace.TraceLevel.API,
+                "mag=%f,curve=%f,inverted=%s", magnitude, curve, inverted);
         }
 
         if (curve < 0.0)
@@ -831,8 +838,7 @@ public abstract class TrcDriveBase
         if (debugEnabled)
         {
             dbgTrace.traceEnter(funcName, TrcDbgTrace.TraceLevel.API,
-                                "drivePower=%f,turnPower=%f,inverted=%s",
-                                drivePower, turnPower, Boolean.toString(inverted));
+                "drivePower=%f,turnPower=%f,inverted=%s", drivePower, turnPower, inverted);
         }
 
         drivePower = TrcUtil.clipRange(drivePower);
@@ -876,10 +882,41 @@ public abstract class TrcDriveBase
      * @param y specifies the y power.
      * @param rotation specifies the rotating power.
      * @param inverted specifies true to invert control (i.e. robot front becomes robot back).
+     * @param gyroAngle specifies the current gyro heading. Use this to drive by the field reference frame.
+     */
+    protected void holonomicDrive(double x, double y, double rotation, boolean inverted, double gyroAngle)
+    {
+        throw new UnsupportedOperationException("Holonomic drive is not supported by this drive base!");
+    }   //holonomicDrive
+
+    /**
+     * This method implements holonomic drive where x controls how fast the robot will go in the x direction, and y
+     * controls how fast the robot will go in the y direction. Rotation controls how fast the robot rotates and
+     * gyroAngle specifies the heading the robot should maintain.
+     *
+     * @param x specifies the x power.
+     * @param y specifies the y power.
+     * @param rotation specifies the rotating power.
+     * @param inverted specifies true to invert control (i.e. robot front becomes robot back).
      */
     public void holonomicDrive(double x, double y, double rotation, boolean inverted)
     {
         holonomicDrive(x, y, rotation, inverted, 0.0);
+    }   //holonomicDrive
+
+    /**
+     * This method implements holonomic drive where x controls how fast the robot will go in the x direction, and y
+     * controls how fast the robot will go in the y direction. Rotation controls how fast the robot rotates and
+     * gyroAngle specifies the heading the robot should maintain.
+     *
+     * @param x specifies the x power.
+     * @param y specifies the y power.
+     * @param rotation specifies the rotating power.
+     * @param gyroAngle specifies the current gyro heading. Use this to drive by the field reference frame.
+     */
+    public void holonomicDrive(double x, double y, double rotation, double gyroAngle)
+    {
+        holonomicDrive(x, y, rotation, false, gyroAngle);
     }   //holonomicDrive
 
     /**
@@ -908,7 +945,22 @@ public abstract class TrcDriveBase
     public void holonomicDrive_Polar(double magnitude, double direction, double rotation, boolean inverted)
     {
         double dirInRads = Math.toRadians(direction);
-        holonomicDrive(magnitude*Math.cos(dirInRads), magnitude*Math.sin(dirInRads), rotation, inverted);
+        holonomicDrive(magnitude*Math.cos(dirInRads), magnitude*Math.sin(dirInRads), rotation, inverted, 0.0);
+    }   //holonomicDrive_Polar
+
+    /**
+     * This method implements holonomic drive where magnitude controls how fast the robot will go in the given
+     * direction and how fast it will rotate.
+     *
+     * @param magnitude specifies the magnitude combining x and y axes.
+     * @param direction specifies the direction in degrees.
+     * @param rotation specifies the rotation power.
+     * @param gyroAngle specifies the current gyro heading. Use this to drive by the field reference frame.
+     */
+    public void holonomicDrive_Polar(double magnitude, double direction, double rotation, double gyroAngle)
+    {
+        double dirInRads = Math.toRadians(direction);
+        holonomicDrive(magnitude*Math.cos(dirInRads), magnitude*Math.sin(dirInRads), rotation, false, gyroAngle);
     }   //holonomicDrive_Polar
 
     /**
@@ -921,34 +973,9 @@ public abstract class TrcDriveBase
      */
     public void holonomicDrive_Polar(double magnitude, double direction, double rotation)
     {
-        holonomicDrive_Polar(magnitude, direction, rotation, false);
+        double dirInRads = Math.toRadians(direction);
+        holonomicDrive(magnitude*Math.cos(dirInRads), magnitude*Math.sin(dirInRads), rotation, false, 0.0);
     }   //holonomicDrive_Polar
-
-    /**
-     * This method normalizes the power to the four wheels for drive method such as holonomic drive.
-     *
-     * @param wheelPowers specifies the wheel power of all four wheels.
-     */
-    protected void normalize(double[] wheelPowers)
-    {
-        double maxMagnitude = Math.abs(wheelPowers[0]);
-        for (int i = 1; i < wheelPowers.length; i++)
-        {
-            double magnitude = Math.abs(wheelPowers[i]);
-            if (magnitude > maxMagnitude)
-            {
-                maxMagnitude = magnitude;
-            }
-        }
-
-        if (maxMagnitude > 1.0)
-        {
-            for (int i = 0; i < wheelPowers.length; i++)
-            {
-                wheelPowers[i] /= maxMagnitude;
-            }
-        }
-    }   //normalize
 
     /**
      * This method is called periodically to update the drive base odometry (xPos, yPos, rotPos, gyroHeading).

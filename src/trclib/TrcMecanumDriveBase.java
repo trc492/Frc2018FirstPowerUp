@@ -29,7 +29,7 @@ package trclib;
 public class TrcMecanumDriveBase extends TrcSimpleDriveBase
 {
     /**
-     * Constructor: Create an instance of the object.
+     * Constructor: Create an instance of the 4-wheel mecanum drive base.
      *
      * @param leftFrontMotor specifies the left front motor of the drive base.
      * @param leftRearMotor specifies the left rear motor of the drive base.
@@ -38,15 +38,15 @@ public class TrcMecanumDriveBase extends TrcSimpleDriveBase
      * @param gyro specifies the gyro. If none, it can be set to null.
      */
     public TrcMecanumDriveBase(
-        final TrcMotorController leftFrontMotor, final TrcMotorController leftRearMotor,
-        final TrcMotorController rightFrontMotor, final TrcMotorController rightRearMotor,
-        final TrcGyro gyro)
+        TrcMotorController leftFrontMotor, TrcMotorController leftRearMotor,
+        TrcMotorController rightFrontMotor, TrcMotorController rightRearMotor,
+        TrcGyro gyro)
     {
         super(leftFrontMotor, leftRearMotor, rightFrontMotor, rightRearMotor, gyro);
     }   //TrcMecanumDriveBase
 
     /**
-     * Constructor: Create an instance of the object.
+     * Constructor: Create an instance of the 4-wheel mecanum drive base.
      *
      * @param leftFrontMotor specifies the left front motor of the drive base.
      * @param leftRearMotor specifies the left rear motor of the drive base.
@@ -54,11 +54,22 @@ public class TrcMecanumDriveBase extends TrcSimpleDriveBase
      * @param rightRearMotor specifies the right rear motor of the drive base.
      */
     public TrcMecanumDriveBase(
-        final TrcMotorController leftFrontMotor, final TrcMotorController leftRearMotor,
-        final TrcMotorController rightFrontMotor, final TrcMotorController rightRearMotor)
+        TrcMotorController leftFrontMotor, TrcMotorController leftRearMotor,
+        TrcMotorController rightFrontMotor, TrcMotorController rightRearMotor)
     {
         super(leftFrontMotor, leftRearMotor, rightFrontMotor, rightRearMotor, null);
     }   //TrcMecanumDriveBase
+
+    /**
+     * This method checks if it supports holonomic drive.
+     *
+     * @return true if this drive base supports holonomic drive, false otherwise.
+     */
+    @Override
+    public boolean supportsHolonomicDrive()
+    {
+        return true;
+    }   //supportsHolonomicDrive
 
     /**
      * This method implements holonomic drive where x controls how fast the robot will go in the x direction, and y
@@ -107,49 +118,25 @@ public class TrcMecanumDriveBase extends TrcSimpleDriveBase
         wheelPowers[MotorType.RIGHT_FRONT.value] = -x1 + y1 - rotation;
         wheelPowers[MotorType.LEFT_REAR.value] = -x1 + y1 + rotation;
         wheelPowers[MotorType.RIGHT_REAR.value] = x1 + y1 - rotation;
-        normalize(wheelPowers);
+        TrcUtil.normalizeInPlace(wheelPowers);
 
         double wheelPower;
 
-        if (leftFrontMotor != null)
-        {
-            wheelPower = wheelPowers[MotorType.LEFT_FRONT.value];
-            if (motorPowerMapper != null)
-            {
-                wheelPower = motorPowerMapper.translateMotorPower(wheelPower, leftFrontMotor.getSpeed());
-            }
-            leftFrontMotor.set(wheelPower);
-        }
+        wheelPower = motorPowerMapper.translateMotorPower(
+            wheelPowers[MotorType.LEFT_FRONT.value], leftFrontMotor.getSpeed());
+        leftFrontMotor.set(wheelPower);
 
-        if (rightFrontMotor != null)
-        {
-            wheelPower = wheelPowers[MotorType.RIGHT_FRONT.value];
-            if (motorPowerMapper != null)
-            {
-                wheelPower = motorPowerMapper.translateMotorPower(wheelPower, rightFrontMotor.getSpeed());
-            }
-            rightFrontMotor.set(wheelPower);
-        }
+        wheelPower = motorPowerMapper.translateMotorPower(
+            wheelPowers[MotorType.RIGHT_FRONT.value], rightFrontMotor.getSpeed());
+        rightFrontMotor.set(wheelPower);
 
-        if (leftRearMotor != null)
-        {
-            wheelPower = wheelPowers[MotorType.LEFT_REAR.value];
-            if (motorPowerMapper != null)
-            {
-                wheelPower = motorPowerMapper.translateMotorPower(wheelPower, leftRearMotor.getSpeed());
-            }
-            leftRearMotor.set(wheelPower);
-        }
+        wheelPower = motorPowerMapper.translateMotorPower(
+            wheelPowers[MotorType.LEFT_REAR.value], leftRearMotor.getSpeed());
+        leftRearMotor.set(wheelPower);
 
-        if (rightRearMotor != null)
-        {
-            wheelPower = wheelPowers[MotorType.RIGHT_REAR.value];
-            if (motorPowerMapper != null)
-            {
-                wheelPower = motorPowerMapper.translateMotorPower(wheelPower, rightRearMotor.getSpeed());
-            }
-            rightRearMotor.set(wheelPower);
-        }
+        wheelPower = motorPowerMapper.translateMotorPower(
+            wheelPowers[MotorType.RIGHT_REAR.value], rightRearMotor.getSpeed());
+        rightRearMotor.set(wheelPower);
 
         if (debugEnabled)
         {
@@ -161,7 +148,7 @@ public class TrcMecanumDriveBase extends TrcSimpleDriveBase
      * This method is called periodically to monitor the encoders to update the odometry data.
      */
     @Override
-    public void updateOdometry()
+    protected void updateOdometry()
     {
         //
         // Call super class to update Y and rotation odometry.
@@ -185,7 +172,7 @@ public class TrcMecanumDriveBase extends TrcSimpleDriveBase
         // => rot = ((LF + LR) - (RF + RR))/4
         //
         updateXOdometry(
-            ((lfEnc + rrEnc) - (rfEnc + lrEnc))/numMotors, ((lfSpeed + rrSpeed) - (rfSpeed + lrSpeed))/numMotors);
+            TrcUtil.average(lfEnc, rrEnc, -rfEnc, -lrEnc), TrcUtil.average(lfSpeed, rrSpeed, -rfSpeed, -lrSpeed));
     }   //updateOdometry
 
 }   //class TrcMecanumDriveBase
