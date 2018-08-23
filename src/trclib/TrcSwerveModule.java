@@ -24,8 +24,9 @@ package trclib;
 
 /**
  * This class implements a platform independent Swerve Drive module. A Swerve Drive module consists of a drive motor
- * and a steer motor. The steer motor is a PID controlled motor that allows a steering angle to be set and held. It
- * implements the TrcMotorController interface so that it can be used in TrcDriveBase.
+ * and a steer motor. The steer motor is a PID controlled motor with zero calibration limit switches that allows an
+ * absolute steering angle to be set and held. It implements the TrcMotorController interface so that it can be used
+ * in TrcDriveBase.
  */
 public class TrcSwerveModule implements TrcMotorController
 {
@@ -40,6 +41,8 @@ public class TrcSwerveModule implements TrcMotorController
     private final String instanceName;
     public final TrcMotorController driveMotor;
     public final TrcPidMotor steerMotor;
+
+    // TODO: Add support for steering limit switches for auto zero calibrating steering angle.
 
     /**
      * Constructor: Create an instance of the object.
