@@ -16,10 +16,10 @@ import java.util.Date;
 
 public class MotionProfileTest implements TrcRobot.RobotCommand
 {
-    private static final double kP = 1.275;
+    private static final double kP = 0.5651851839;
     private static final double kI = 0.0;
-    private static final double kD = 0.0956;
-    private static final double kF = 0.8525; // TODO: Calculate this according to Phoenix docs
+    private static final double kD = 0.1695555552;
+    private static final double kF = 1.131266385; // TODO: Calculate this according to Phoenix docs
 
     private static final boolean WRITE_CSV = true;
 
@@ -74,6 +74,27 @@ public class MotionProfileTest implements TrcRobot.RobotCommand
                     fileOut = new PrintStream(new FileOutputStream(new File(dir, timeStamp + "_profilelog.csv")));
                     fileOut.println("Time," + "TargetPosLeft,ActualPosLeft,TargetVelLeft,ActualVelLeft,"
                         + "TargetPosRight,ActualPosRight,TargetVelRight,ActualVelRight");
+
+                    PrintStream out = new PrintStream(new FileOutputStream(new File(dir, timeStamp + "_conversions.csv")));
+                    TrcTankMotionProfile.TrcMotionProfilePoint[] leftPoints = profile.getLeftPoints();
+                    TrcTankMotionProfile.TrcMotionProfilePoint[] rightPoints = profile.getRightPoints();
+                    TrcTankMotionProfile.TrcMotionProfilePoint[] leftPointsScaled = follower.getActiveProfile().getLeftPoints();
+                    TrcTankMotionProfile.TrcMotionProfilePoint[] rightPointsScaled = follower.getActiveProfile().getRightPoints();
+                    out.println("Time,LeftPos,LeftSpeed,RightPos,RightSpeed,"
+                        + "LeftPosScaled,LeftSpeedScaled,RightPosScaled,RightSpeedScaled");
+                    double time = 0.0;
+                    for(int i = 0; i < leftPoints.length; i++)
+                    {
+                        time += leftPoints[i].timeStep;
+                        out.printf("%.2f,"
+                            + "%.2f,%.2f,%.2f,%.2f,"
+                            + "%.2f,%.2f,%.2f,%.2f\n",
+                            time, leftPoints[i].encoderPosition, leftPoints[i].velocity,
+                            rightPoints[i].encoderPosition, rightPoints[i].velocity,
+                            leftPointsScaled[i].encoderPosition, leftPointsScaled[i].velocity,
+                            rightPointsScaled[i].encoderPosition, rightPointsScaled[i].velocity);
+                    }
+                    out.close();
                 }
             }
             catch (IOException e)
@@ -86,6 +107,8 @@ public class MotionProfileTest implements TrcRobot.RobotCommand
     public void stop()
     {
     	follower.cancel();
+    	fileOut.close();
+    	fileOut = null;
     }
 
     @Override
@@ -125,7 +148,7 @@ public class MotionProfileTest implements TrcRobot.RobotCommand
         if (fileOut != null && isActive)
         {
             String line = String
-                .format("%.2f," + "%.2f,%.2f,%.2f,%.2f," + "%.2f,%.2f,%.2f,%.2f", TrcUtil.getCurrentTime() - startTime,
+                .format("%.2f," + "%.2f,%.2f,%.2f,%.2f," + "%.2f,%.2f,%.2f,%.2f,", TrcUtil.getCurrentTime() - startTime,
                     targetPosLeft, actualPosLeft, targetVelLeft, actualVelLeft, targetPosRight, actualPosRight,
                     targetVelRight, actualVelRight);
             fileOut.println(line);

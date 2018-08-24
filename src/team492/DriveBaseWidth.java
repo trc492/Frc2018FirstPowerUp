@@ -24,7 +24,7 @@ public class DriveBaseWidth implements TrcRobot.RobotCommand
     
     public void start()
     {
-        timedDrive = new CmdTimedDrive(robot, 0.0, 8.0, 0.0, 0.0, 0.7);
+        timedDrive = new CmdTimedDrive(robot, 0.0, 8.0, 0.0, 0.0, 0.9);
         reset();
     }
 

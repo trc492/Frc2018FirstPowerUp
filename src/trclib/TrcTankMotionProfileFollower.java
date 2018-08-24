@@ -50,6 +50,13 @@ public abstract class TrcTankMotionProfileFollower
     public abstract void start(TrcTankMotionProfile profile, TrcEvent event, double timeout);
 
     /**
+     * The motion profile currently being followed by the follower.
+     *
+     * @return The profile object currently being followed. null if not following any profile.
+     */
+    public abstract TrcTankMotionProfile getActiveProfile();
+
+    /**
      * Is path currently being followed?
      *
      * @return True if yes, false otherwise

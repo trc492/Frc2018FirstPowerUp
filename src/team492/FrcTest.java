@@ -288,8 +288,11 @@ public class FrcTest extends FrcTeleOp
             case X_DISTANCE_DRIVE:
             case Y_DISTANCE_DRIVE:
             case TURN_DEGREES:
-                robot.dashboard.displayPrintf(2, "xPos=%.1f,yPos=%.1f,heading=%.1f", robot.driveBase.getXPosition(),
-                    robot.driveBase.getYPosition(), robot.driveBase.getHeading());
+                robot.dashboard.displayPrintf(2, "xPos=%.1f,yPos=%.1f,heading=%.1f, lf=%.2f,rf=%.2f,lr=%.2f,rr=%.2f",
+                    robot.driveBase.getXPosition(), robot.driveBase.getYPosition(),
+                    robot.driveBase.getHeading(),
+                    robot.leftFrontWheel.getPosition(), robot.rightFrontWheel.getPosition(),
+                    robot.leftRearWheel.getPosition(), robot.rightRearWheel.getPosition());
                 robot.encoderXPidCtrl.displayPidInfo(3);
                 robot.encoderYPidCtrl.displayPidInfo(5);
                 robot.gyroTurnPidCtrl.displayPidInfo(7);

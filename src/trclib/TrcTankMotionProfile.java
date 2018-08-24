@@ -104,7 +104,7 @@ public class TrcTankMotionProfile
      * Scale the motion profile by distance and time
      * 
      * @param worldUnitsPerEncoderTick Number of world units in a single encoder tick
-     * @param timeStep Speed denomination in seconds. inches/second? inches/100ms?
+     * @param timeStep Speed denomination in seconds.
      */
     public void scale(double worldUnitsPerEncoderTick, double timeStep)
     {
@@ -138,7 +138,7 @@ public class TrcTankMotionProfile
         {
             return minTimeStep.getAsDouble();
         }
-        throw new IllegalStateException("For some reason the streaming returned a null! I don't know why!");
+        throw new IllegalStateException("Empty motion profile!");
     }
 
     public TrcTankMotionProfile copy()

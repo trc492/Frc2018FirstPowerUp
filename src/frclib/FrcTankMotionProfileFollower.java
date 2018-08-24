@@ -51,7 +51,7 @@ import trclib.TrcUtil;
 
 public class FrcTankMotionProfileFollower extends TrcTankMotionProfileFollower
 {
-    private static final double MIN_TRAJ_SECONDS = 1.0; // How many seconds of points to buffer before beginning?
+    private static final double MIN_TRAJ_SECONDS = 0.5; // How many seconds of points to buffer before beginning?
     private static final TrajectoryDuration DEFAULT_TRAJECTORY_DURATION = TrajectoryDuration.Trajectory_Duration_10ms;
 
     private enum State
@@ -70,7 +70,7 @@ public class FrcTankMotionProfileFollower extends TrcTankMotionProfileFollower
     private int fillIndex = 0;
     private boolean filled = false;
     private Notifier notifier;
-    private MotionProfileStatus[] statuses;
+    private MotionProfileStatus leftStatus, rightStatus;
     private boolean cancelled = false;
     private TrcEvent onFinishedEvent;
     private double timedOutTime;
@@ -177,6 +177,7 @@ public class FrcTankMotionProfileFollower extends TrcTankMotionProfileFollower
      * @param event   Event to signal when path has been followed
      * @param timeout Maximum number of seconds to spend following the path. 0.0 means no timeout.
      */
+    @Override
     public void start(TrcTankMotionProfile profile, TrcEvent event, double timeout)
     {
         if (leftMaster == null || rightMaster == null)
@@ -200,9 +201,12 @@ public class FrcTankMotionProfileFollower extends TrcTankMotionProfileFollower
         numPoints = this.profile.getNumPoints();
         this.profile.scale(worldUnitsPerEncoderTick, 0.1); // Scale to worldUnits and time frame of 100ms
 
+        this.fillIndex = 0;
+
         sm.start(State.START);
 
-        statuses = new MotionProfileStatus[] { new MotionProfileStatus(), new MotionProfileStatus() };
+        leftStatus = new MotionProfileStatus();
+        rightStatus = new MotionProfileStatus();
 
         double minDuration = this.profile.getMinTimeStep();
 
@@ -222,10 +226,22 @@ public class FrcTankMotionProfileFollower extends TrcTankMotionProfileFollower
     }
 
     /**
+     * The motion profile currently being followed by the follower.
+     *
+     * @return The profile object currently being followed. null if not following any profile.
+     */
+    @Override
+    public TrcTankMotionProfile getActiveProfile()
+    {
+        return this.profile;
+    }
+
+    /**
      * Is path currently being followed?
      *
      * @return True if yes, false otherwise
      */
+    @Override
     public boolean isActive()
     {
         return sm.isEnabled();
@@ -236,6 +252,7 @@ public class FrcTankMotionProfileFollower extends TrcTankMotionProfileFollower
      *
      * @return True if someone has called the cancel() method while it was running, false otherwise
      */
+    @Override
     public boolean isCancelled()
     {
         return cancelled;
@@ -244,6 +261,7 @@ public class FrcTankMotionProfileFollower extends TrcTankMotionProfileFollower
     /**
      * Stop following the path and cancel the event.
      */
+    @Override
     public void cancel()
     {
         cancelled = true;
@@ -259,7 +277,7 @@ public class FrcTankMotionProfileFollower extends TrcTankMotionProfileFollower
      */
     public int leftBottomBufferCount()
     {
-        return statuses != null ? statuses[0].btmBufferCnt : -1;
+        return leftStatus != null ? leftStatus.btmBufferCnt : -1;
     }
 
     /**
@@ -269,7 +287,7 @@ public class FrcTankMotionProfileFollower extends TrcTankMotionProfileFollower
      */
     public int rightBottomBufferCount()
     {
-        return statuses != null ? statuses[1].btmBufferCnt : -1;
+        return rightStatus != null ? rightStatus.btmBufferCnt : -1;
     }
 
     /**
@@ -279,7 +297,7 @@ public class FrcTankMotionProfileFollower extends TrcTankMotionProfileFollower
      */
     public int leftTopBufferCount()
     {
-        return statuses != null ? statuses[0].topBufferCnt : -1;
+        return leftStatus != null ? leftStatus.topBufferCnt : -1;
     }
 
     /**
@@ -289,7 +307,7 @@ public class FrcTankMotionProfileFollower extends TrcTankMotionProfileFollower
      */
     public int rightTopBufferCount()
     {
-        return statuses != null ? statuses[1].topBufferCnt : -1;
+        return rightStatus != null ? rightStatus.topBufferCnt : -1;
     }
 
     /**
@@ -300,6 +318,7 @@ public class FrcTankMotionProfileFollower extends TrcTankMotionProfileFollower
     public double leftTargetPosition()
     {
         // convert from ticks to worldUnits
+
         return leftMaster == null ? 0.0 : leftMaster.motor.getActiveTrajectoryPosition() * worldUnitsPerEncoderTick;
     }
 
@@ -396,6 +415,10 @@ public class FrcTankMotionProfileFollower extends TrcTankMotionProfileFollower
         sm.stop();
         setTaskEnabled(false);
         setTalonValue(SetValueMotionProfile.Disable);
+        this.profile = null;
+        fillIndex = 0;
+
+        resetTalons();
     }
 
     private void setTaskEnabled(boolean enabled)
@@ -460,12 +483,8 @@ public class FrcTankMotionProfileFollower extends TrcTankMotionProfileFollower
 
     private boolean isDone()
     {
-        for (MotionProfileStatus status : statuses)
-        {
-            if (!status.activePointValid || !status.isLast)
-                return false;
-        }
-        return true;
+        return (leftStatus.activePointValid && leftStatus.isLast) &&
+            (rightStatus.activePointValid && rightStatus.isLast);
     }
 
     private void setTalonValue(SetValueMotionProfile value)
@@ -479,19 +498,15 @@ public class FrcTankMotionProfileFollower extends TrcTankMotionProfileFollower
     private void fillStatuses()
     {
         if (leftMaster != null)
-            leftMaster.motor.getMotionProfileStatus(statuses[0]);
+            leftMaster.motor.getMotionProfileStatus(leftStatus);
         if (rightMaster != null)
-            rightMaster.motor.getMotionProfileStatus(statuses[1]);
+            rightMaster.motor.getMotionProfileStatus(rightStatus);
     }
 
     private boolean hasEnoughPoints()
     {
-        for (MotionProfileStatus status : statuses)
-        {
-            if (status.btmBufferCnt < requiredTrajectoryPoints)
-                return false;
-        }
-        return true;
+        return leftStatus.btmBufferCnt >= requiredTrajectoryPoints &&
+            rightStatus.btmBufferCnt >= requiredTrajectoryPoints;
     }
 
     private void processPointBuffer()
@@ -520,6 +535,20 @@ public class FrcTankMotionProfileFollower extends TrcTankMotionProfileFollower
         return dur;
     }
 
+    /**
+     * Clear the previous motion profile and underrun flags
+     */
+    private void resetTalons()
+    {
+        leftMaster.motor.clearMotionProfileTrajectories();
+        leftMaster.motor.clearMotionProfileHasUnderrun(0);
+        leftMaster.motor.configMotionProfileTrajectoryPeriod(0, 0); // Set the base trajectory period to 0
+
+        rightMaster.motor.clearMotionProfileTrajectories();
+        rightMaster.motor.clearMotionProfileHasUnderrun(0);
+        rightMaster.motor.configMotionProfileTrajectoryPeriod(0, 0); // Set the base trajectory period to 0
+    }
+
     private void fillPointBuffer()
     {
         if (filled)
@@ -527,19 +556,13 @@ public class FrcTankMotionProfileFollower extends TrcTankMotionProfileFollower
 
         // Fills range [startIndex, endIndex)
         int startIndex = fillIndex;
-        int endIndex = Math.min(numPoints, startIndex + Math.min(statuses[0].topBufferRem, statuses[1].topBufferRem));
+        int endIndex = Math.min(numPoints, startIndex + Math.min(leftStatus.topBufferRem, rightStatus.topBufferRem));
         fillIndex = endIndex;
 
         // Cancel previous MP and clear underrun flag if this is the first time filling profiles
         if (startIndex == 0)
         {
-            leftMaster.motor.clearMotionProfileTrajectories();
-            leftMaster.motor.clearMotionProfileHasUnderrun(0);
-            leftMaster.motor.configMotionProfileTrajectoryPeriod(0, 0); // Set the base trajectory period to 0
-
-            rightMaster.motor.clearMotionProfileTrajectories();
-            rightMaster.motor.clearMotionProfileHasUnderrun(0);
-            rightMaster.motor.configMotionProfileTrajectoryPeriod(0, 0); // Set the base trajectory period to 0
+            resetTalons();
         }
 
         TrajectoryPoint point = new TrajectoryPoint();
