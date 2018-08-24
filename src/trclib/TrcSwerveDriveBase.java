@@ -185,7 +185,6 @@ public class TrcSwerveDriveBase extends TrcSimpleDriveBase
     {
         final String funcName = "holonomicDrive";
 
-        // TODO: need to understand this code.
         if (debugEnabled)
         {
             dbgTrace.traceEnter(funcName, TrcDbgTrace.TraceLevel.API, "x=%f,y=%f,rot=%f,inverted=%s,angle=%f",
@@ -221,13 +220,13 @@ public class TrcSwerveDriveBase extends TrcSimpleDriveBase
         double c = y - (rotation * wheelBaseWidth/wheelBaseDiagonal);
         double d = y + (rotation * wheelBaseWidth/wheelBaseDiagonal);
 
-        // The whitepaper goes in order rf, lf, lr, rr. We like to do lf, rf, lr, rr.
-        double lfAngle = Math.toDegrees(Math.atan2(b,d));
-        double rfAngle = Math.toDegrees(Math.atan2(b,c));
-        double lrAngle = Math.toDegrees(Math.atan2(a,d));
-        double rrAngle = Math.toDegrees(Math.atan2(a,c));
+        // The white paper goes in order rf, lf, lr, rr. We like to do lf, rf, lr, rr.
+        double lfAngle = Math.toDegrees(Math.atan2(b, d));
+        double rfAngle = Math.toDegrees(Math.atan2(b, c));
+        double lrAngle = Math.toDegrees(Math.atan2(a, d));
+        double rrAngle = Math.toDegrees(Math.atan2(a, c));
 
-        // The whitepaper goes in order rf, lf, lr, rr. We like to do lf, rf, lr, rr.
+        // The white paper goes in order rf, lf, lr, rr. We like to do lf, rf, lr, rr.
         double lfPower = TrcUtil.magnitude(b, d);
         double rfPower = TrcUtil.magnitude(b, c);
         double lrPower = TrcUtil.magnitude(a, d);
