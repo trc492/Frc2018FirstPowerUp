@@ -46,12 +46,12 @@ public class TrcSimpleDriveBase extends TrcDriveBase
         }
     }   //enum MotorType
 
-    protected TrcMotorController leftFrontMotor = null;
-    protected TrcMotorController rightFrontMotor = null;
-    protected TrcMotorController leftRearMotor = null;
-    protected TrcMotorController rightRearMotor = null;
-    protected TrcMotorController leftMidMotor = null;
-    protected TrcMotorController rightMidMotor = null;
+    protected final TrcMotorController leftFrontMotor;
+    protected final TrcMotorController rightFrontMotor;
+    protected final TrcMotorController leftRearMotor;
+    protected final TrcMotorController rightRearMotor;
+    protected final TrcMotorController leftMidMotor;
+    protected final TrcMotorController rightMidMotor;
     protected double lfEnc = 0.0, rfEnc = 0.0, lrEnc = 0.0, rrEnc = 0.0;
     protected double lfSpeed = 0.0, rfSpeed = 0.0, lrSpeed = 0.0, rrSpeed = 0.0;
 
@@ -117,9 +117,9 @@ public class TrcSimpleDriveBase extends TrcDriveBase
      * @param gyro specifies the gyro. If none, it can be set to null.
      */
     public TrcSimpleDriveBase(
-        final TrcMotorController leftFrontMotor, final TrcMotorController leftRearMotor,
-        final TrcMotorController rightFrontMotor, final TrcMotorController rightRearMotor,
-        final TrcGyro gyro)
+        TrcMotorController leftFrontMotor, TrcMotorController leftRearMotor,
+        TrcMotorController rightFrontMotor, TrcMotorController rightRearMotor,
+        TrcGyro gyro)
     {
         super(new TrcMotorController[] {leftFrontMotor, rightFrontMotor, leftRearMotor, rightRearMotor}, gyro);
 
@@ -132,6 +132,8 @@ public class TrcSimpleDriveBase extends TrcDriveBase
         this.rightFrontMotor = rightFrontMotor;
         this.leftRearMotor = leftRearMotor;
         this.rightRearMotor = rightRearMotor;
+        this.leftMidMotor = null;
+        this.rightMidMotor = null;
     }   //TrcSimpleDriveBase
 
     /**
@@ -143,8 +145,8 @@ public class TrcSimpleDriveBase extends TrcDriveBase
      * @param rightRearMotor specifies the right rear motor of the drive base.
      */
     public TrcSimpleDriveBase(
-        final TrcMotorController leftFrontMotor, final TrcMotorController leftRearMotor,
-        final TrcMotorController rightFrontMotor, final TrcMotorController rightRearMotor)
+        TrcMotorController leftFrontMotor, TrcMotorController leftRearMotor,
+        TrcMotorController rightFrontMotor, TrcMotorController rightRearMotor)
     {
         this(leftFrontMotor, leftRearMotor, rightFrontMotor, rightRearMotor, null);
     }   //TrcSimpleDriveBase
@@ -157,7 +159,7 @@ public class TrcSimpleDriveBase extends TrcDriveBase
      * @param gyro specifies the gyro. If none, it can be set to null.
      */
     public TrcSimpleDriveBase(
-        final TrcMotorController leftMotor, final TrcMotorController rightMotor, final TrcGyro gyro)
+        TrcMotorController leftMotor, TrcMotorController rightMotor, TrcGyro gyro)
     {
         super(new TrcMotorController[] {leftMotor, rightMotor}, gyro);
 
@@ -168,6 +170,10 @@ public class TrcSimpleDriveBase extends TrcDriveBase
 
         this.leftFrontMotor = leftMotor;
         this.rightFrontMotor = rightMotor;
+        this.leftRearMotor = null;
+        this.rightRearMotor = null;
+        this.leftMidMotor = null;
+        this.rightMidMotor = null;
     }   //TrcSimpleDriveBase
 
     /**
@@ -176,7 +182,7 @@ public class TrcSimpleDriveBase extends TrcDriveBase
      * @param leftMotor specifies the left rear motor of the drive base.
      * @param rightMotor specifies the right rear motor of the drive base.
      */
-    public TrcSimpleDriveBase(final TrcMotorController leftMotor, final TrcMotorController rightMotor)
+    public TrcSimpleDriveBase(TrcMotorController leftMotor, TrcMotorController rightMotor)
     {
         this(leftMotor, rightMotor, null);
     }   //TrcSimpleDriveBase

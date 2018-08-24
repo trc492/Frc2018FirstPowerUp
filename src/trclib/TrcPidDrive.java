@@ -57,9 +57,9 @@ public class TrcPidDrive
          * This method is called when a stuck wheel is detected.
          *
          * @param pidDrive specifies this TrcPidDrive instance.
-         * @param motorType specifies which wheel in the DriveBase is stuck.
+         * @param index specifies which wheel in the DriveBase is stuck.
          */
-        void stuckWheel(TrcPidDrive pidDrive, TrcSimpleDriveBase.MotorType motorType);
+        void stuckWheel(TrcPidDrive pidDrive, int index);
 
     }   //interface StuckWheelHandler
 
@@ -78,7 +78,7 @@ public class TrcPidDrive
     private static final double DEF_BEEP_DURATION       = 0.2;          //in seconds
 
     private final String instanceName;
-    private final TrcSimpleDriveBase driveBase;
+    private final TrcDriveBase driveBase;
     private final TrcPidController xPidCtrl;
     private final TrcPidController yPidCtrl;
     private final TrcPidController turnPidCtrl;
@@ -112,8 +112,8 @@ public class TrcPidDrive
      * @param turnPidCtrl specifies the PID controller for turn.
      */
     public TrcPidDrive(
-        final String instanceName, final TrcSimpleDriveBase driveBase,
-        final TrcPidController xPidCtrl, final TrcPidController yPidCtrl, final TrcPidController turnPidCtrl)
+        String instanceName, TrcDriveBase driveBase,
+        TrcPidController xPidCtrl, TrcPidController yPidCtrl, TrcPidController turnPidCtrl)
     {
         if (debugEnabled)
         {
@@ -679,27 +679,12 @@ public class TrcPidDrive
 
             if (stuckWheelHandler != null)
             {
-                if (driveBase.getNumMotors() > 2)
+                for (int i = 0; i < driveBase.getNumMotors(); i++)
                 {
-                    if (driveBase.isMotorStalled(TrcSimpleDriveBase.MotorType.LEFT_FRONT, stuckTimeout))
+                    if(driveBase.isMotorStalled(i, stuckTimeout))
                     {
-                        stuckWheelHandler.stuckWheel(this, TrcSimpleDriveBase.MotorType.LEFT_FRONT);
+                        stuckWheelHandler.stuckWheel(this, i);
                     }
-
-                    if (driveBase.isMotorStalled(TrcSimpleDriveBase.MotorType.RIGHT_FRONT, stuckTimeout))
-                    {
-                        stuckWheelHandler.stuckWheel(this, TrcSimpleDriveBase.MotorType.RIGHT_FRONT);
-                    }
-                }
-
-                if (driveBase.isMotorStalled(TrcSimpleDriveBase.MotorType.LEFT_REAR, stuckTimeout))
-                {
-                    stuckWheelHandler.stuckWheel(this, TrcSimpleDriveBase.MotorType.LEFT_REAR);
-                }
-
-                if (driveBase.isMotorStalled(TrcSimpleDriveBase.MotorType.RIGHT_REAR, stuckTimeout))
-                {
-                    stuckWheelHandler.stuckWheel(this, TrcSimpleDriveBase.MotorType.RIGHT_REAR);
                 }
             }
 
@@ -716,7 +701,7 @@ public class TrcPidDrive
                 }
             }
 
-            if (maintainHeading)
+            if (maintainHeading && driveBase.supportsHolonomicDrive())
             {
                 driveBase.holonomicDrive(manualX, manualY, turnPower, false, 0.0);
             }
@@ -733,13 +718,9 @@ public class TrcPidDrive
                 }
                 // If we come here, both onTarget and holdTarget are true.
                 // We will stop the drive base but not stopping PID.
-                else if (xPidCtrl != null)
-                {
-                    driveBase.holonomicDrive(0.0, 0.0, 0.0, false, 0.0);
-                }
                 else
                 {
-                    driveBase.tankDrive(0.0, 0.0);
+                    driveBase.stop();
                 }
             }
             // If we come here, we are not on target yet, keep driving.

@@ -260,7 +260,7 @@ public abstract class TrcGameController
     protected double getMagnitude(double x, double y)
     {
         final String funcName = "getMagnitude";
-        double value = Math.sqrt(x*x + y*y);
+        double value = TrcUtil.magnitude(x, y);
 
         if (debugEnabled)
         {

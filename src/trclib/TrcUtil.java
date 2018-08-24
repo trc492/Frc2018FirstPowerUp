@@ -137,6 +137,17 @@ public class TrcUtil
     }   //average
 
     /**
+     * This method calculates the magnitudes of the given array of numbers.
+     *
+     * @param nums specifies the number array.
+     * @return magnitude of all numbers in the array.
+     */
+    public static double magnitude(double... nums)
+    {
+        return Math.sqrt(Arrays.stream(nums).map(e -> e*e).sum());
+    }   //magnitude
+
+    /**
      * This method normalizes the given array of numbers such that no number exceeds +/- 1.0.
      *
      * @param nums specifies the number array.

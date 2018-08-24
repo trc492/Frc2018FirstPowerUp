@@ -77,8 +77,8 @@ public abstract class TrcDriveBase
     private static double DEF_SENSITIVITY = 0.5;
     private static double DEF_MAX_OUTPUT = 1.0;
 
-    private TrcMotorController[] motors;
-    private TrcGyro gyro;
+    private final TrcMotorController[] motors;
+    private final TrcGyro gyro;
     private double xScale, yScale, rotScale;
     private double xPos, yPos, rotPos;
     private double xSpeed, ySpeed;
@@ -127,7 +127,7 @@ public abstract class TrcDriveBase
      *
      * @param motors specifies the array of motors in the drive base.
      */
-    public TrcDriveBase(TrcMotorController[] motors)
+    public TrcDriveBase(TrcMotorController... motors)
     {
         this(motors, null);
     }   //TrcDriveBase

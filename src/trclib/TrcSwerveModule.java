@@ -79,9 +79,10 @@ public class TrcSwerveModule implements TrcMotorController
      * Reset the encoder of the drive and steer motors.
      *
      * @param hardware specifies true for resetting hardware position, false for resetting software position.
-     * @param resetSteerPosition specifies true to also reset the steer motor encoder, false otherwise.
+     * @param resetSteerPosition specifies true to also reset the steer motor encoder usually for zero calibration,
+     *                           false otherwise.
      */
-    public void resetPosition(boolean hardware, boolean resetSteerPosition)
+    private void resetPosition(boolean hardware, boolean resetSteerPosition)
     {
         final String funcName = "resetPosition";
 

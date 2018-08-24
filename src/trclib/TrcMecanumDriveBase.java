@@ -83,7 +83,7 @@ public class TrcMecanumDriveBase extends TrcSimpleDriveBase
      * @param gyroAngle specifies the gyro angle to maintain.
      */
     @Override
-    public void holonomicDrive(double x, double y, double rotation, boolean inverted, double gyroAngle)
+    protected void holonomicDrive(double x, double y, double rotation, boolean inverted, double gyroAngle)
     {
         final String funcName = "holonomicDrive";
 
