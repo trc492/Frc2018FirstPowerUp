@@ -32,11 +32,8 @@ package trclib;
  */
 public class TrcSwerveDriveBase extends TrcSimpleDriveBase
 {
-    private TrcSwerveModule lfModule, rfModule, lrModule, rrModule;
-    private double wheelBaseWidth, wheelBaseLength, wheelBaseDiagonal;
-    private double positionScale = 1.0;
-    private double xEncPos, yEncPos, rotPos;
-    private double xEncSpeed, yEncSpeed;
+    private final TrcSwerveModule lfModule, rfModule, lrModule, rrModule;
+    private final double wheelBaseWidth, wheelBaseLength, wheelBaseDiagonal;
     private Double prevTimestamp = null;
     private double prevLfEnc, prevRfEnc, prevLrEnc, prevRrEnc;
 
@@ -96,187 +93,6 @@ public class TrcSwerveDriveBase extends TrcSimpleDriveBase
     {
         return true;
     }   //supportsHolonomicDrive
-
-    /**
-     * This method sets the position scale. In Swerve Drive, there is no separate X and Y position scales.
-     * There is just one single position scale that translates the wheels rotation into wheels travel distance.
-     * By using sin/cos of the steering angle, one can calculate the traveled distances of X and Y.
-     *
-     * @param scale specifies the position scale.
-     */
-    public void setPositionScale(double scale)
-    {
-        final String funcName = "setPositionScale";
-
-        if (debugEnabled)
-        {
-            dbgTrace.traceEnter(funcName, TrcDbgTrace.TraceLevel.API, "scale=%f", scale);
-            dbgTrace.traceExit(funcName, TrcDbgTrace.TraceLevel.API);
-        }
-
-        positionScale = scale;
-    }   //setPositionScale
-
-    /**
-     * This method sets the X position scale.
-     *
-     * @param scale specifies the X position scale.
-     */
-    @Override
-    public void setXPositionScale(double scale)
-    {
-        throw new UnsupportedOperationException(
-            "Swerve Drive does not have X and Y position scales, please use setPositionScale instead.");
-    }   //setXPositionScale
-
-    /**
-     * This method sets the Y position scale.
-     *
-     * @param scale specifies the Y position scale.
-     */
-    @Override
-    public void setYPositionScale(double scale)
-    {
-        throw new UnsupportedOperationException(
-            "Swerve Drive does not have X and Y position scales, please use setPositionScale instead.");
-    }   //setYPositionScale
-
-    /**
-     * This method sets the rotation scale.
-     *
-     * @param scale specifies the rotation scale.
-     */
-    @Override
-    public void setRotationScale(double scale)
-    {
-        throw new UnsupportedOperationException("Swerve Drive does not have Rotation scale.");
-    }   //setRotationScale
-
-    /**
-     * This method returns the X position in scaled unit.
-     *
-     * @return X position.
-     */
-    @Override
-    public double getXPosition()
-    {
-        final String funcName = "getXPosition";
-        double pos = xEncPos*positionScale;
-
-        if (debugEnabled)
-        {
-            dbgTrace.traceEnter(funcName, TrcDbgTrace.TraceLevel.API);
-            dbgTrace.traceExit(funcName, TrcDbgTrace.TraceLevel.API, "=%f", pos);
-        }
-
-        return pos;
-    }   //getXPosition
-
-    /**
-     * This method returns the Y position in scaled unit.
-     *
-     * @return Y position.
-     */
-    @Override
-    public double getYPosition()
-    {
-        final String funcName = "getYPosition";
-        double pos = yEncPos*positionScale;
-
-        if (debugEnabled)
-        {
-            dbgTrace.traceEnter(funcName, TrcDbgTrace.TraceLevel.API);
-            dbgTrace.traceExit(funcName, TrcDbgTrace.TraceLevel.API, "=%f", pos);
-        }
-
-        return pos;
-    }   //getYPosition
-
-    /**
-     * This method returns the rotation position in scaled unit.
-     *
-     * @return rotation position.
-     */
-    @Override
-    public double getRotationPosition()
-    {
-        final String funcName = "getRotationPosition";
-
-        if (debugEnabled)
-        {
-            dbgTrace.traceEnter(funcName, TrcDbgTrace.TraceLevel.API);
-            dbgTrace.traceExit(funcName, TrcDbgTrace.TraceLevel.API, "=%f", rotPos);
-        }
-
-        return rotPos;
-    }   //getRotationPosition
-
-    /**
-     * This method returns the drive base speed in the X direction.
-     *
-     * @return X speed.
-     */
-    @Override
-    public double getXSpeed()
-    {
-        final String funcName = "getXSpeed";
-        double speed = xEncSpeed*positionScale;
-
-        if (debugEnabled)
-        {
-            dbgTrace.traceEnter(funcName, TrcDbgTrace.TraceLevel.API);
-            dbgTrace.traceExit(funcName, TrcDbgTrace.TraceLevel.API, "=%f", speed);
-        }
-
-        return speed;
-    }   //getXSpeed
-
-    /**
-     * This method returns the drive base speed in the Y direction.
-     *
-     * @return Y speed.
-     */
-    @Override
-    public double getYSpeed()
-    {
-        final String funcName = "getYSpeed";
-        double speed = yEncSpeed*positionScale;
-
-        if (debugEnabled)
-        {
-            dbgTrace.traceEnter(funcName, TrcDbgTrace.TraceLevel.API);
-            dbgTrace.traceExit(funcName, TrcDbgTrace.TraceLevel.API, "=%f", speed);
-        }
-
-        return speed;
-    }   //getYSpeed
-
-    /**
-     * This method resets the drive base odometry. This includes the motor encoders, drive base position, speed and
-     * gyro heading.
-     *
-     * @param hardware specifies true for resetting hardware position, false for resetting software position.
-     * @param resetGyro specifies true to also reset the gyro heading, false otherwise.
-     */
-    @Override
-    public void resetOdometry(boolean hardware, boolean resetGyro)
-    {
-        final String funcName = "resetOdometry";
-
-        if (debugEnabled)
-        {
-            dbgTrace.traceEnter(funcName, TrcDbgTrace.TraceLevel.API);
-        }
-
-        super.resetOdometry(hardware, resetGyro);
-        xEncPos = yEncPos = 0.0;
-        xEncSpeed = yEncSpeed = 0.0;
-
-        if (debugEnabled)
-        {
-            dbgTrace.traceExit(funcName, TrcDbgTrace.TraceLevel.API);
-        }
-    }   //resetOdometry
 
     /**
      * This method sets the steering angle of all four wheels.
@@ -472,7 +288,6 @@ public class TrcSwerveDriveBase extends TrcSimpleDriveBase
         //
         // First time. Initialize all prevEnc readings.
         //
-        // Make timestamp nullable instead.
         if (prevTimestamp == null)
         {
             prevTimestamp = currTime;
@@ -485,14 +300,14 @@ public class TrcSwerveDriveBase extends TrcSimpleDriveBase
         double timeDelta = currTime - prevTimestamp;
         double avgEncDelta = TrcUtil.average(
             lfEnc - prevLfEnc, rfEnc - prevRfEnc, lrEnc - prevLrEnc, rrEnc - prevRrEnc);
-
-        xEncPos += avgEncDelta*angleCos;
-        yEncPos += avgEncDelta*angleSin;
-        rotPos = avgAngleDeg;   //TODO: Think about this some more???
-
         double avgEncSpeed = timeDelta != 0.0? avgEncDelta/timeDelta: 0.0;
-        xEncSpeed = avgEncSpeed*angleCos;
-        yEncSpeed = avgEncSpeed*angleSin;
+
+        updateXOdometry(getRawXPosition() + avgEncDelta*angleCos, avgEncSpeed*angleCos);
+        updateYOdometry(getRawYPosition() + avgEncDelta*angleSin, avgEncSpeed*angleSin);
+        // Rotation position is only valid when the robot is doing turn-in-place.
+        // In Swerve Drive, the wheels are steered in a diamond formation (i.e. tangential to the turning circle).
+        // So the rotation position is the degree turned by the robot in the turning circle.
+        updateRotationOdometry(getRawRotationPosition() + avgEncDelta);
 
         prevTimestamp = currTime;
         prevLfEnc = lfEnc;

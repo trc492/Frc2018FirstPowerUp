@@ -80,8 +80,8 @@ public abstract class TrcDriveBase
     private final TrcMotorController[] motors;
     private final TrcGyro gyro;
     private double xScale, yScale, rotScale;
-    private double xPos, yPos, rotPos;
-    private double xSpeed, ySpeed;
+    private double xRawPos, yRawPos, rotRawPos;
+    private double xRawSpeed, yRawSpeed;
     private double gyroHeading, gyroTurnRate;
     private double[] stallStartTimes;
     private double[] prevPositions;
@@ -145,62 +145,94 @@ public abstract class TrcDriveBase
     }   //defaultMotorPowerMapper
 
     /**
-     * This method sets the X position scale. The raw position from the encoder is in encoder counts. By setting the
+     * This method sets the position scales. The raw position from the encoder is in encoder counts. By setting the
      * scale factor, one could make getPosition to return unit in inches, for example.
      *
-     * @param scale specifies the X position scale.
+     * @param xScale specifies the X position scale.
+     * @param yScale specifies the Y position scale.
+     * @param rotScale specifies the rotation scale.
      */
-    public void setXPositionScale(double scale)
+    public void setPositionScales(double xScale, double yScale, double rotScale)
     {
-        final String funcName = "setXPositionScale";
+        final String funcName = "setPositionScales";
 
         if (debugEnabled)
         {
-            dbgTrace.traceEnter(funcName, TrcDbgTrace.TraceLevel.API, "scale=%f", scale);
+            dbgTrace.traceEnter(funcName, TrcDbgTrace.TraceLevel.API,
+                "xScale=%f,yScale=%f,rotScale=%f", xScale, yScale, rotScale);
             dbgTrace.traceExit(funcName, TrcDbgTrace.TraceLevel.API);
         }
 
-        this.xScale = scale;
-    }   //setXPositionScale
+        this.xScale = xScale;
+        this.yScale = yScale;
+        this.rotScale = rotScale;
+    }   //setPositionScales
 
     /**
-     * This method sets the Y position scale. The raw position from the encoder is in encoder counts. By setting the
+     * This method sets the position scales. The raw position from the encoder is in encoder counts. By setting the
      * scale factor, one could make getPosition to return unit in inches, for example.
      *
-     * @param scale specifies the Y position scale.
+     * @param xScale specifies the X position scale.
+     * @param yScale specifies the Y position scale.
      */
-    public void setYPositionScale(double scale)
+    public void setPositionScales(double xScale, double yScale)
     {
-        final String funcName = "setYPositionScale";
-
-        if (debugEnabled)
-        {
-            dbgTrace.traceEnter(funcName, TrcDbgTrace.TraceLevel.API, "scale=%f", scale);
-            dbgTrace.traceExit(funcName, TrcDbgTrace.TraceLevel.API);
-        }
-
-        this.yScale = scale;
-    }   //setYPositionScale
+        setPositionScales(xScale, yScale, 1.0);
+    }   //setPositionScales
 
     /**
-     * This method sets the rotation scale. This class supports getting the drive base heading even without the gyro
-     * by using the difference of the left and right encoders. Again, this would be in encoder counts. By setting
-     * the rotation scale, one could get a good approximation of the heading in degrees using encoders only.
+     * This method returns the raw X position in raw sensor unit.
      *
-     * @param scale specifies the rotation scale.
+     * @return raw X position.
      */
-    public void setRotationScale(double scale)
+    public double getRawXPosition()
     {
-        final String funcName = "setRotationScale";
+        final String funcName = "getRawXPosition";
 
         if (debugEnabled)
         {
-            dbgTrace.traceEnter(funcName, TrcDbgTrace.TraceLevel.API, "scale=%f", scale);
-            dbgTrace.traceExit(funcName, TrcDbgTrace.TraceLevel.API);
+            dbgTrace.traceEnter(funcName, TrcDbgTrace.TraceLevel.API);
+            dbgTrace.traceExit(funcName, TrcDbgTrace.TraceLevel.API, "=%f", xRawPos);
         }
 
-        this.rotScale = scale;
-    }   //setRotationScale
+        return xRawPos;
+    }   //getRawXPosition
+
+    /**
+     * This method returns the raw Y position in raw sensor unit.
+     *
+     * @return raw Y position.
+     */
+    public double getRawYPosition()
+    {
+        final String funcName = "getRawYPosition";
+
+        if (debugEnabled)
+        {
+            dbgTrace.traceEnter(funcName, TrcDbgTrace.TraceLevel.API);
+            dbgTrace.traceExit(funcName, TrcDbgTrace.TraceLevel.API, "=%f", yRawPos);
+        }
+
+        return yRawPos;
+    }   //getRawYPosition
+
+    /**
+     * This method returns the raw rotation position in raw sensor unit.
+     *
+     * @return raw rotation position.
+     */
+    public double getRawRotationPosition()
+    {
+        final String funcName = "getRawRotationPosition";
+
+        if (debugEnabled)
+        {
+            dbgTrace.traceEnter(funcName, TrcDbgTrace.TraceLevel.API);
+            dbgTrace.traceExit(funcName, TrcDbgTrace.TraceLevel.API, "=%f", rotRawPos);
+        }
+
+        return rotRawPos;
+    }   //getRawRotationPosition
 
     /**
      * This method returns the X position in scaled unit.
@@ -210,14 +242,15 @@ public abstract class TrcDriveBase
     public double getXPosition()
     {
         final String funcName = "getXPosition";
+        double pos = xRawPos*xScale;
 
         if (debugEnabled)
         {
             dbgTrace.traceEnter(funcName, TrcDbgTrace.TraceLevel.API);
-            dbgTrace.traceExit(funcName, TrcDbgTrace.TraceLevel.API, "=%f", xPos);
+            dbgTrace.traceExit(funcName, TrcDbgTrace.TraceLevel.API, "=%f", pos);
         }
 
-        return xPos;
+        return pos;
     }   //getXPosition
 
     /**
@@ -228,14 +261,15 @@ public abstract class TrcDriveBase
     public double getYPosition()
     {
         final String funcName = "getYPosition";
+        double pos = yRawPos*yScale;
 
         if (debugEnabled)
         {
             dbgTrace.traceEnter(funcName, TrcDbgTrace.TraceLevel.API);
-            dbgTrace.traceExit(funcName, TrcDbgTrace.TraceLevel.API, "=%f", yPos);
+            dbgTrace.traceExit(funcName, TrcDbgTrace.TraceLevel.API, "=%f", pos);
         }
 
-        return yPos;
+        return pos;
     }   //getYPosition
 
     /**
@@ -246,14 +280,15 @@ public abstract class TrcDriveBase
     public double getRotationPosition()
     {
         final String funcName = "getRotationPosition";
+        double pos = rotRawPos*rotScale;
 
         if (debugEnabled)
         {
             dbgTrace.traceEnter(funcName, TrcDbgTrace.TraceLevel.API);
-            dbgTrace.traceExit(funcName, TrcDbgTrace.TraceLevel.API, "=%f", rotPos);
+            dbgTrace.traceExit(funcName, TrcDbgTrace.TraceLevel.API, "=%f", pos);
         }
 
-        return rotPos;
+        return pos;
     }   //getRotationPosition
 
     /**
@@ -272,7 +307,7 @@ public abstract class TrcDriveBase
             dbgTrace.traceExit(funcName, TrcDbgTrace.TraceLevel.API, "=%f", gyroHeading);
         }
 
-        return gyro != null? gyroHeading: rotPos;
+        return gyro != null? gyroHeading: rotRawPos*rotScale;
     }   //getHeading
 
     /**
@@ -283,14 +318,15 @@ public abstract class TrcDriveBase
     public double getXSpeed()
     {
         final String funcName = "getXSpeed";
+        double speed = xRawSpeed*xScale;
 
         if (debugEnabled)
         {
             dbgTrace.traceEnter(funcName, TrcDbgTrace.TraceLevel.API);
-            dbgTrace.traceExit(funcName, TrcDbgTrace.TraceLevel.API, "=%f", xSpeed);
+            dbgTrace.traceExit(funcName, TrcDbgTrace.TraceLevel.API, "=%f", speed);
         }
 
-        return xSpeed;
+        return speed;
     }   //getXSpeed
 
     /**
@@ -301,14 +337,15 @@ public abstract class TrcDriveBase
     public double getYSpeed()
     {
         final String funcName = "getYSpeed";
+        double speed = yRawSpeed*yScale;
 
         if (debugEnabled)
         {
             dbgTrace.traceEnter(funcName, TrcDbgTrace.TraceLevel.API);
-            dbgTrace.traceExit(funcName, TrcDbgTrace.TraceLevel.API, "=%f", ySpeed);
+            dbgTrace.traceExit(funcName, TrcDbgTrace.TraceLevel.API, "=%f", speed);
         }
 
-        return ySpeed;
+        return speed;
     }   //getYSpeed
 
     /**
@@ -350,14 +387,14 @@ public abstract class TrcDriveBase
             motor.resetPosition(hardware);
         }
 
-        if (resetGyro && gyro != null)
+        if (gyro != null && resetGyro)
         {
             gyro.resetZIntegrator();
             gyroHeading = gyroTurnRate = 0.0;
         }
 
-        xPos = yPos = rotPos = 0.0;
-        xSpeed = ySpeed = 0.0;
+        xRawPos = yRawPos = rotRawPos = 0.0;
+        xRawSpeed = yRawSpeed = 0.0;
 
         if (debugEnabled)
         {
@@ -401,8 +438,8 @@ public abstract class TrcDriveBase
             dbgTrace.traceExit(funcName, TrcDbgTrace.TraceLevel.FUNC);
         }
 
-        this.xPos = pos*xScale;
-        this.xSpeed = speed*xScale;
+        this.xRawPos = pos;
+        this.xRawSpeed = speed;
     }   //updateXOdometry
 
     /**
@@ -421,8 +458,8 @@ public abstract class TrcDriveBase
             dbgTrace.traceExit(funcName, TrcDbgTrace.TraceLevel.FUNC);
         }
 
-        this.yPos = pos*yScale;
-        this.ySpeed = speed*yScale;
+        this.yRawPos = pos;
+        this.yRawSpeed = speed;
     }   //updateYOdometry
 
     /**
@@ -440,7 +477,7 @@ public abstract class TrcDriveBase
             dbgTrace.traceExit(funcName, TrcDbgTrace.TraceLevel.FUNC);
         }
 
-        this.rotPos = pos*rotScale;
+        this.rotRawPos = pos;
     }   //updateRotationOdometry
 
     /**

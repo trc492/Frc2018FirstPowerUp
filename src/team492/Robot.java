@@ -325,8 +325,7 @@ public class Robot extends FrcRobotBase
         // Initialize DriveBase subsystem.
         //
         driveBase = new TrcMecanumDriveBase(leftFrontWheel, leftRearWheel, rightFrontWheel, rightRearWheel, gyro);
-        driveBase.setXPositionScale(RobotInfo.ENCODER_X_INCHES_PER_COUNT);
-        driveBase.setYPositionScale(RobotInfo.ENCODER_Y_INCHES_PER_COUNT);
+        driveBase.setPositionScales(RobotInfo.ENCODER_X_INCHES_PER_COUNT, RobotInfo.ENCODER_Y_INCHES_PER_COUNT);
 
         if (USE_TORQUE_BASED_DRIVING)
         {
