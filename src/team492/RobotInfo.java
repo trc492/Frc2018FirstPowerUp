@@ -167,7 +167,8 @@ public class RobotInfo
 
     public static final double DRIVE_WHEEL_RADIUS_IN            = 4.0;
     public static final double DRIVE_MOTOR_ROTATIONS_PER_WHEEL_ROTATION= 12.0;
-    public static final double MAX_WHEEL_FORCE_OZ               = (343.4 * DRIVE_MOTOR_ROTATIONS_PER_WHEEL_ROTATION) / DRIVE_WHEEL_RADIUS_IN;
+    public static final double MOTOR_MAX_TORQUE                 = 343.4; //oz-in
+    public static final double MAX_WHEEL_FORCE_OZ               = (MOTOR_MAX_TORQUE * DRIVE_MOTOR_ROTATIONS_PER_WHEEL_ROTATION) / DRIVE_WHEEL_RADIUS_IN;
     public static final double DRIVE_ENCODER_COUNTS_PER_ROTATION= 1440.0;
     public static final double DRIVE_GYRO_ASSIST_KP             = 1.5;
     public static final double DRIVE_MAX_ROTATION_RATE          = 6.5;      //radians per second

@@ -48,10 +48,10 @@ import frclib.FrcRobotBase;
 import frclib.FrcRobotBattery;
 import hallib.HalDashboard;
 import team492.PixyVision.TargetInfo;
-import trclib.TrcDriveBase;
 import trclib.TrcEmic2TextToSpeech.Voice;
 import trclib.TrcLidarLite;
 import trclib.TrcMaxbotixSonarArray;
+import trclib.TrcMecanumDriveBase;
 import trclib.TrcPidController;
 import trclib.TrcPidController.PidCoefficients;
 import trclib.TrcPidDrive;
@@ -157,7 +157,7 @@ public class Robot extends FrcRobotBase
     public FrcCANTalon leftRearWheel;
     public FrcCANTalon rightFrontWheel;
     public FrcCANTalon rightRearWheel;
-    public TrcDriveBase driveBase;
+    public TrcMecanumDriveBase driveBase;
 
     public TrcPidController encoderXPidCtrl;
     public TrcPidController encoderYPidCtrl;
@@ -322,9 +322,8 @@ public class Robot extends FrcRobotBase
         //
         // Initialize DriveBase subsystem.
         //
-        driveBase = new TrcDriveBase(leftFrontWheel, leftRearWheel, rightFrontWheel, rightRearWheel, gyro);
-        driveBase.setXPositionScale(RobotInfo.ENCODER_X_INCHES_PER_COUNT);
-        driveBase.setYPositionScale(RobotInfo.ENCODER_Y_INCHES_PER_COUNT);
+        driveBase = new TrcMecanumDriveBase(leftFrontWheel, leftRearWheel, rightFrontWheel, rightRearWheel, gyro);
+        driveBase.setPositionScales(RobotInfo.ENCODER_X_INCHES_PER_COUNT, RobotInfo.ENCODER_Y_INCHES_PER_COUNT);
 
         if (USE_TORQUE_BASED_DRIVING)
         {
@@ -421,7 +420,7 @@ public class Robot extends FrcRobotBase
             pdp.setTaskEnabled(true);
             battery.setTaskEnabled(true);
             setVisionEnabled(true);
-            driveBase.resetPosition();
+            driveBase.resetOdometry();
             targetHeading = 0.0;
 
             dashboard.clearDisplay();
@@ -836,7 +835,16 @@ public class Robot extends FrcRobotBase
         double rpmAtMotor = rpmAtWheel * RobotInfo.DRIVE_MOTOR_ROTATIONS_PER_WHEEL_ROTATION;
         double constrainedForcePercentage = constrainForcePercentageByElevatorHeight(desiredForcePercentage);
         double constrainedForceOz = constrainedForcePercentage * RobotInfo.MAX_WHEEL_FORCE_OZ;
-        double max_torque_at_rpm_in_ounce_inch = Math.max((-0.06467043 * rpmAtMotor) + 343.4, 0.000001);
+        //
+        // From the CIM motor spec: maxMotorRpm = 5310; maxMotorTorque = 343.4 oz-in
+        // Motor torque curve is represented by: motorTorque = (-maxMotorTorque/maxMotorRpm)*motorRpm + maxMotorTorque
+        // Motor Curve: y = mx + b
+        //  where y is motorTorque
+        //        m = -maxMotorTorque/maxMotorRpm = -343.4/5310 = -0.06467043314500941619585687382298
+        //        x = motorRpm
+        //        b = maxMotorTorque
+        //
+        double max_torque_at_rpm_in_ounce_inch = Math.max((-0.06467043 * rpmAtMotor) + RobotInfo.MOTOR_MAX_TORQUE, 0.000001);
         double desiredTorqueAtWheelOzIn = constrainedForceOz * RobotInfo.DRIVE_WHEEL_RADIUS_IN;
         double desiredTorqueAtMotorOzIn = desiredTorqueAtWheelOzIn/RobotInfo.DRIVE_MOTOR_ROTATIONS_PER_WHEEL_ROTATION;
         double returnValue = TrcUtil.clipRange(desiredTorqueAtMotorOzIn/max_torque_at_rpm_in_ounce_inch, -1.0, 1.0);
