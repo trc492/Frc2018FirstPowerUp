@@ -41,6 +41,8 @@ public class TrcSwerveModule implements TrcMotorController
     private final String instanceName;
     public final TrcMotorController driveMotor;
     public final TrcPidActuator steerMotor;
+    private double prevSteerAngle = 0.0;
+    private double optimizedWheelDir = 1.0;
 
     /**
      * Constructor: Create an instance of the object.
@@ -88,67 +90,76 @@ public class TrcSwerveModule implements TrcMotorController
         }
 
         steerMotor.zeroCalibrate();
+        setSteerAngle(0.0, false, true);
     }   //zeroCalibrateSteering
 
     /**
-     * Reset the encoder of the drive and steer motors.
+     * This method sets the steer angle.
      *
-     * @param hardware specifies true for resetting hardware position, false for resetting software position.
-     * @param resetSteerPosition specifies true to also reset the steer motor encoder usually for zero calibration,
-     *                           false otherwise.
+     * @param angle specifies the angle in degrees to set the steer motor to, in the range [0,360).
+     * @param optimize specifies true to optimize steering angle to be no greater than 90 degrees, false otherwise.
+     * @param hold specifies true to hold the angle, false otherwise.
      */
-    private void resetPosition(boolean hardware, boolean resetSteerPosition)
+    public void setSteerAngle(double angle, boolean optimize, boolean hold)
     {
-        final String funcName = "resetPosition";
+        final String funcName = "setSteerAngle";
+        double angleDelta;
 
         if (debugEnabled)
         {
             dbgTrace.traceEnter(funcName, TrcDbgTrace.TraceLevel.API,
-                "hardware=%s,resetSteerPosition=%s", hardware, resetSteerPosition);
+                "angle=%f,optimize=%s,hold=%s", angle, optimize, hold);
         }
 
-        driveMotor.resetPosition(hardware);
-
-        if(resetSteerPosition)
+        if (!optimize)
         {
-            steerMotor.getMotor().resetPosition(hardware);
+            // We are not optimizing, reset wheel direction back to normal.
+            optimizedWheelDir = 1.0;
         }
-
-        if (debugEnabled)
+        else if (Math.abs(angleDelta = angle - prevSteerAngle) > 90.0)
         {
-            dbgTrace.traceExit(funcName, TrcDbgTrace.TraceLevel.API);
-        }
-    }   //resetPosition
-
-    /**
-     * This method sets the steer angle. The steer motor will hold this angle.
-     *
-     * @param angle specifies the angle in degrees to set the steer motor to, in the range [0,360).
-     * @param hold specifies true to hold the angle.
-     */
-    public void setSteerAngle(double angle, boolean hold)
-    {
-        final String funcName = "setSteerAngle";
-
-        angle = TrcUtil.modulo(angle, 360);
-
-        if (debugEnabled)
-        {
-            dbgTrace.traceEnter(funcName, TrcDbgTrace.TraceLevel.API, "angle=%f", angle);
-            dbgTrace.traceExit(funcName, TrcDbgTrace.TraceLevel.API);
+            // We are optimizing and the steer delta is greater than 90 degrees.
+            // Adjust the steer delta to be within 90 degrees and flip the wheel direction.
+            if (angleDelta < 0.0)
+            {
+                angleDelta += 180.0;
+            }
+            else
+            {
+                angleDelta -= 180.0;
+            }
+            angle += angleDelta;
+            optimizedWheelDir = -optimizedWheelDir;
         }
 
         steerMotor.setTarget(angle, hold);
+        prevSteerAngle = angle;
+
+        if (debugEnabled)
+        {
+            dbgTrace.traceExit(funcName, TrcDbgTrace.TraceLevel.API, " (angle=%f)", angle);
+        }
     }   //setSteerAngle
 
     /**
-     * This method sets the steer angle. The steer motor will hold this angle.
+     * This method sets the steer angle.
+     *
+     * @param angle specifies the angle in degrees to set the steer motor to, in the range [0,360).
+     * @param optimize specifies true to optimize steering angle to be no greater than 90 degrees, false otherwise.
+     */
+    public void setSteerAngle(double angle, boolean optimize)
+    {
+        setSteerAngle(angle, optimize, true);
+    }   //setSteerAngle
+
+    /**
+     * This method sets the steer angle.
      *
      * @param angle specifies the angle in degrees to set the steer motor to, in the range [0,360).
      */
     public void setSteerAngle(double angle)
     {
-        setSteerAngle(angle, true);
+        setSteerAngle(angle, true, true);
     }   //setSteerAngle
 
     /**
@@ -159,8 +170,7 @@ public class TrcSwerveModule implements TrcMotorController
     public double getSteerAngle()
     {
         final String funcName = "getSteerAngle";
-
-        double angle = TrcUtil.modulo(steerMotor.getPosition(), 360.0);
+        double angle = steerMotor.getPosition();
 
         if (debugEnabled)
         {
@@ -286,7 +296,15 @@ public class TrcSwerveModule implements TrcMotorController
     @Override
     public void resetPosition(boolean hardware)
     {
-        resetPosition(hardware, false);
+        final String funcName = "resetPosition";
+
+        if (debugEnabled)
+        {
+            dbgTrace.traceEnter(funcName, TrcDbgTrace.TraceLevel.API, "hardware=%s", hardware);
+            dbgTrace.traceExit(funcName, TrcDbgTrace.TraceLevel.API);
+        }
+
+        driveMotor.resetPosition(hardware);
     }   //resetPosition
 
     /**
@@ -306,7 +324,7 @@ public class TrcSwerveModule implements TrcMotorController
             dbgTrace.traceExit(funcName, TrcDbgTrace.TraceLevel.API);
         }
 
-        driveMotor.set(value);
+        driveMotor.set(value*optimizedWheelDir);
     }   //set
 
     /**

@@ -27,7 +27,7 @@ package trclib;
  * each of which consists of a driving motor and a PID controlled steering motor. It extends the TrcSimpleDriveBase
  * class so it inherits all the SimpleDriveBase methods and features
  *
- * The implementation of this code is based on Ether's white paper:
+ * The implementation of swerve algorithm is based on Ether's white paper:
  *  http://www.chiefdelphi.com/media/papers/download/3028
  */
 public class TrcSwerveDriveBase extends TrcSimpleDriveBase
@@ -36,8 +36,6 @@ public class TrcSwerveDriveBase extends TrcSimpleDriveBase
     private final double wheelBaseWidth, wheelBaseLength, wheelBaseDiagonal;
     private Double prevTimestamp = null;
     private double prevLfEnc, prevRfEnc, prevLrEnc, prevRrEnc;
-    private double prevSteerAngle = 0.0;
-    private double optimizedWheelDir = 1.0;
 
     /**
      * Constructor: Create an instance of the 4-wheel swerve drive base.
@@ -95,8 +93,6 @@ public class TrcSwerveDriveBase extends TrcSimpleDriveBase
         rfModule.zeroCalibrateSteering();
         lrModule.zeroCalibrateSteering();
         rrModule.zeroCalibrateSteering();
-
-        setSteerAngle(0.0, false);
     }   //zeroCalibrateSteering
 
     /**
@@ -139,7 +135,6 @@ public class TrcSwerveDriveBase extends TrcSimpleDriveBase
     public void setSteerAngle(double angle, boolean optimize)
     {
         final String funcName = "setSteerAngle";
-        double angleDelta;
 
         if (debugEnabled)
         {
@@ -147,28 +142,10 @@ public class TrcSwerveDriveBase extends TrcSimpleDriveBase
             dbgTrace.traceExit(funcName, TrcDbgTrace.TraceLevel.API);
         }
 
-        if (!optimize)
-        {
-            optimizedWheelDir = 1.0;
-        }
-        else if (Math.abs(angleDelta = angle - prevSteerAngle) > 90.0)
-        {
-            if (angleDelta < 0.0)
-            {
-                angleDelta += 180.0;
-            }
-            else
-            {
-                angleDelta -= 180.0;
-            }
-            angle += angleDelta;
-            optimizedWheelDir = -optimizedWheelDir;
-        }
-
-        lfModule.setSteerAngle(angle);
-        rfModule.setSteerAngle(angle);
-        lrModule.setSteerAngle(angle);
-        rrModule.setSteerAngle(angle);
+        lfModule.setSteerAngle(angle, optimize);
+        rfModule.setSteerAngle(angle, optimize);
+        lrModule.setSteerAngle(angle, optimize);
+        rrModule.setSteerAngle(angle, optimize);
     }   //setSteerAngle
 
     /**
@@ -309,10 +286,10 @@ public class TrcSwerveDriveBase extends TrcSimpleDriveBase
         lrModule.setSteerAngle(lrAngle);
         rrModule.setSteerAngle(rrAngle);
 
-        lfModule.set(motorPowerMapper.translateMotorPower(lfPower*optimizedWheelDir, lfModule.getSpeed()));
-        rfModule.set(motorPowerMapper.translateMotorPower(rfPower*optimizedWheelDir, rfModule.getSpeed()));
-        lrModule.set(motorPowerMapper.translateMotorPower(lrPower*optimizedWheelDir, lrModule.getSpeed()));
-        rrModule.set(motorPowerMapper.translateMotorPower(rrPower*optimizedWheelDir, rrModule.getSpeed()));
+        lfModule.set(motorPowerMapper.translateMotorPower(lfPower, lfModule.getSpeed()));
+        rfModule.set(motorPowerMapper.translateMotorPower(rfPower, rfModule.getSpeed()));
+        lrModule.set(motorPowerMapper.translateMotorPower(lrPower, lrModule.getSpeed()));
+        rrModule.set(motorPowerMapper.translateMotorPower(rrPower, rrModule.getSpeed()));
 
         if (debugEnabled)
         {
