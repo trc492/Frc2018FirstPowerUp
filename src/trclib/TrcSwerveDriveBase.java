@@ -27,7 +27,7 @@ package trclib;
  * each of which consists of a driving motor and a PID controlled steering motor. It extends the TrcSimpleDriveBase
  * class so it inherits all the SimpleDriveBase methods and features
  *
- * The implementation of this code is based on Ether's white paper:
+ * The implementation of swerve algorithm is based on Ether's white paper:
  *  http://www.chiefdelphi.com/media/papers/download/3028
  */
 public class TrcSwerveDriveBase extends TrcSimpleDriveBase
@@ -62,7 +62,8 @@ public class TrcSwerveDriveBase extends TrcSimpleDriveBase
         this.wheelBaseWidth = wheelBaseWidth;
         this.wheelBaseLength = wheelBaseLength;
         this.wheelBaseDiagonal = TrcUtil.magnitude(wheelBaseWidth, wheelBaseLength);
-        // TODO: do zero calibration on all four wheels.
+
+        zeroCalibrateSteering();
     }   //TrcSwerveDriveBase
 
     /**
@@ -82,6 +83,17 @@ public class TrcSwerveDriveBase extends TrcSimpleDriveBase
     {
         this(leftFrontMotor, leftRearMotor, rightFrontMotor, rightRearMotor, null, wheelBaseWidth, wheelBaseLength);
     }   //TrcSwerveDriveBase
+
+    /**
+     * This method does zero calibration on the steer angle encoders.
+     */
+    public void zeroCalibrateSteering()
+    {
+        lfModule.zeroCalibrateSteering();
+        rfModule.zeroCalibrateSteering();
+        lrModule.zeroCalibrateSteering();
+        rrModule.zeroCalibrateSteering();
+    }   //zeroCalibrateSteering
 
     /**
      * This method checks if it supports holonomic drive.
@@ -105,16 +117,10 @@ public class TrcSwerveDriveBase extends TrcSimpleDriveBase
     @Override
     public void setPositionScales(double xScale, double yScale)
     {
-        double semiXAxis = wheelBaseWidth / Math.sqrt(2.0);
-        double semiYAxis = wheelBaseLength / Math.sqrt(2.0);
-
-        // The following black magic calculation is Ramanujan's method of approximating the perimeter of an ellipse.
-        double h = Math.pow(semiXAxis - semiYAxis, 2) / Math.pow(semiXAxis + semiYAxis, 2);
-        double perimeter = Math.PI * (semiXAxis + semiYAxis) * (1.0 + (3.0 * h / (10.0 + Math.sqrt(4.0 - 3.0 * h))));
-
         // encDist / perimeter = rotPos / 360.0
         // encDist * 360.0 / perimeter = rotPos
         // Therefore, rotScale = 360.0 / perimeter
+        double perimeter = wheelBaseDiagonal * Math.PI;
         double rotScale = 360.0 / perimeter;
 
         super.setPositionScales(xScale, yScale, rotScale);
@@ -124,21 +130,32 @@ public class TrcSwerveDriveBase extends TrcSimpleDriveBase
      * This method sets the steering angle of all four wheels.
      *
      * @param angle specifies the steering angle to be set.
+     * @param optimize specifies true to optimize steering angle to be no greater than 90 degrees, false otherwise.
      */
-    public void setSteerAngle(double angle)
+    public void setSteerAngle(double angle, boolean optimize)
     {
         final String funcName = "setSteerAngle";
 
         if (debugEnabled)
         {
-            dbgTrace.traceEnter(funcName, TrcDbgTrace.TraceLevel.API, "angle=%f", angle);
+            dbgTrace.traceEnter(funcName, TrcDbgTrace.TraceLevel.API, "angle=%f,optimize=%s", angle, optimize);
             dbgTrace.traceExit(funcName, TrcDbgTrace.TraceLevel.API);
         }
 
-        lfModule.setSteerAngle(angle);
-        rfModule.setSteerAngle(angle);
-        lrModule.setSteerAngle(angle);
-        rrModule.setSteerAngle(angle);
+        lfModule.setSteerAngle(angle, optimize);
+        rfModule.setSteerAngle(angle, optimize);
+        lrModule.setSteerAngle(angle, optimize);
+        rrModule.setSteerAngle(angle, optimize);
+    }   //setSteerAngle
+
+    /**
+     * This method sets the steering angle of all four wheels.
+     *
+     * @param angle specifies the steering angle to be set.
+     */
+    public void setSteerAngle(double angle)
+    {
+        setSteerAngle(angle, true);
     }   //setSteerAngle
 
     /**
@@ -159,7 +176,7 @@ public class TrcSwerveDriveBase extends TrcSimpleDriveBase
 
         if (resetSteer)
         {
-            setSteerAngle(0.0);
+            setSteerAngle(0.0, false);
         }
 
         if (debugEnabled)
@@ -191,7 +208,7 @@ public class TrcSwerveDriveBase extends TrcSimpleDriveBase
     @Override
     public void tankDrive(double leftPower, double rightPower, boolean inverted)
     {
-        setSteerAngle(0.0);
+        setSteerAngle(0.0, false);
         super.tankDrive(leftPower, rightPower, inverted);
     }   //tankDrive
 
@@ -329,9 +346,11 @@ public class TrcSwerveDriveBase extends TrcSimpleDriveBase
 
         updateXOdometry(getRawXPosition() + avgEncDelta*angleCos, avgEncSpeed*angleCos);
         updateYOdometry(getRawYPosition() + avgEncDelta*angleSin, avgEncSpeed*angleSin);
+        //
         // Rotation position is only valid when the robot is doing turn-in-place.
         // In Swerve Drive, the wheels are steered in a diamond formation (i.e. tangential to the turning circle).
         // So the rotation position is the degree turned by the robot in the turning circle.
+        //
         updateRotationOdometry(getRawRotationPosition() + avgEncDelta);
 
         prevTimestamp = currTime;

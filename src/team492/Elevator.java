@@ -49,9 +49,10 @@ public class Elevator
         elevatorPidCtrl = new TrcPidController("elevatorPidController",
             new TrcPidController.PidCoefficients(RobotInfo.ELEVATOR_KP, RobotInfo.ELEVATOR_KI, RobotInfo.ELEVATOR_KD),
             RobotInfo.ELEVATOR_TOLERANCE, this::getPosition);
-        elevator = new TrcPidActuator("elevator", elevatorMotor,
-            new FrcCANTalonLimitSwitch("elevatorLowerLimit", elevatorMotor, false), elevatorPidCtrl,
-            RobotInfo.ELEVATOR_PID_FLOOR, RobotInfo.ELEVATOR_PID_CEILING, this::getGravityCompensation);
+        elevator = new TrcPidActuator(
+            "elevator", elevatorMotor, new FrcCANTalonLimitSwitch("elevatorLowerLimit", elevatorMotor, false),
+            elevatorPidCtrl, RobotInfo.ELEVATOR_CAL_POWER, RobotInfo.ELEVATOR_PID_FLOOR, RobotInfo.ELEVATOR_PID_CEILING,
+            this::getGravityCompensation);
         elevator.setPositionScale(RobotInfo.ELEVATOR_INCHES_PER_COUNT, RobotInfo.ELEVATOR_POSITION_OFFSET);
         elevator.setStallProtection(
             RobotInfo.ELEVATOR_STALL_MIN_POWER, RobotInfo.ELEVATOR_STALL_TIMEOUT,
@@ -65,7 +66,7 @@ public class Elevator
 
     public void zeroCalibrate()
     {
-        elevator.zeroCalibrate(RobotInfo.ELEVATOR_CAL_POWER);
+        elevator.zeroCalibrate();
     } // zeroCalibrate
 
     /**
