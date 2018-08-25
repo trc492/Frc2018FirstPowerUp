@@ -130,7 +130,7 @@ public class CmdTimedDrive implements TrcRobot.RobotCommand
                     //
                     // Drive the robot with the given power for a set amount of time.
                     //
-                    robot.driveBase.mecanumDrive_Cartesian(xDrivePower, yDrivePower, turnPower);
+                    robot.driveBase.holonomicDrive(xDrivePower, yDrivePower, turnPower);
                     timer.set(driveTime, event);
                     sm.waitForSingleEvent(event, State.DONE);
                     break;
@@ -140,7 +140,7 @@ public class CmdTimedDrive implements TrcRobot.RobotCommand
                     //
                     // We are done.
                     //
-                    robot.driveBase.mecanumDrive_Cartesian(0.0, 0.0, 0.0);
+                    robot.driveBase.stop();
                     done = true;
                     sm.stop();
                     break;
