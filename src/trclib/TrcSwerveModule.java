@@ -103,7 +103,7 @@ public class TrcSwerveModule implements TrcMotorController
     public void setSteerAngle(double angle, boolean optimize, boolean hold)
     {
         final String funcName = "setSteerAngle";
-        double angleDelta;
+        double angleDelta = angle - prevSteerAngle;
 
         if (debugEnabled)
         {
@@ -116,19 +116,11 @@ public class TrcSwerveModule implements TrcMotorController
             // We are not optimizing, reset wheel direction back to normal.
             optimizedWheelDir = 1.0;
         }
-        else if (Math.abs(angleDelta = angle - prevSteerAngle) > 90.0)
+        else if (Math.abs(angleDelta) > 90.0)
         {
             // We are optimizing and the steer delta is greater than 90 degrees.
             // Adjust the steer delta to be within 90 degrees and flip the wheel direction.
-            if (angleDelta < 0.0)
-            {
-                angleDelta += 180.0;
-            }
-            else
-            {
-                angleDelta -= 180.0;
-            }
-            angle += angleDelta;
+            angle += angleDelta < 0.0? 180.0: -180.0;
             optimizedWheelDir = -optimizedWheelDir;
         }
 

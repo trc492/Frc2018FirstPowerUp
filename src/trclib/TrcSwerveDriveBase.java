@@ -264,6 +264,8 @@ public class TrcSwerveDriveBase extends TrcSimpleDriveBase
         double d = y + (rotation * wheelBaseWidth/wheelBaseDiagonal);
 
         // The white paper goes in order rf, lf, lr, rr. We like to do lf, rf, lr, rr.
+        // Note: atan2(y, x) in java will take care of x being zero.
+        //       If will return pi/2 for positive y and -pi/2 for negative y.
         double lfAngle = Math.toDegrees(Math.atan2(b, d));
         double rfAngle = Math.toDegrees(Math.atan2(b, c));
         double lrAngle = Math.toDegrees(Math.atan2(a, d));
