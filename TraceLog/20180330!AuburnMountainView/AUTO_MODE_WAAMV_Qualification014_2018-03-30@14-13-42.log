@@ -1,0 +1,1027 @@
+GlobalTracer.FirstPowerUp_Info: Fri Mar 30 14:13:42 PDT 2018[0.482]: ***** Starting autonomous *****
+GlobalTracer.FirstPowerUp_Info: WAAMV_Qualification_ 14 (Blue1) [FMSConnected=true]
+GlobalTracer.CmdAutoScale_Info: [0.513] delay=0.0, startPos=RIGHT_POS, fwdDistance=235.0
+GlobalTracer.CmdAutoScale_Info: alliance=Blue, gameSpecificMsg=LRL, delay=0.000, startPosition=RIGHT_POS, fwdDistance=235
+GlobalTracer.Vision_Info: Pixy is enabled!
+GlobalTracer.FrcAuto.startMode_Info: [0.538] startMode done!
+GlobalTracer.Robot_Info: [0.539]      START: xPos=  0.00,yPos=  0.00,heading=   0.0/   0.0,volts=12.3(12.4)
+GlobalTracer.startCompetition_Warn: AUTO_MODE.periodic takes too long (0.169s)
+
+GlobalTracer.startCompetition_Warn: AUTO_MODE.updates takes too long (0.024s)
+
+GlobalTracer.startCompetition_Warn: AUTO_MODE takes too long (0.768s)
+
+GlobalTracer.CmdAutoScale_Info: setRangingEnabled(true)
+GlobalTracer.CmdAutoScale_Info: setSonarTriggerEnabled(true)
+GlobalTracer.Robot_Info: [0.761] DRIVE_TO_SWITCH: xPos=  0.00,yPos=  0.00,heading=   0.0/   0.0,volts=12.4(12.3)
+GlobalTracer.printPidInfo_Info: encoderXPidCtrl: Target=   0.0, Input=   0.0, Error=   0.0, PIDTerms= 0.000/ 0.000/ 0.000/ 0.000, Output= 0.000(-0.700/0.700), Volt=12.4(12.3)
+GlobalTracer.printPidInfo_Info: encoderYPidCtrl: Target= 169.0, Input=   0.0, Error= 169.0, PIDTerms= 3.380/ 0.000/ 0.000/ 0.000, Output= 0.600(-0.600/0.600), Volt=12.4(12.3)
+GlobalTracer.printPidInfo_Info: gyroTurnPidCtrl: Target=   0.0, Input=   0.0, Error=   0.0, PIDTerms= 0.000/ 0.000/ 0.000/ 0.000, Output= 0.000(-0.700/0.700), Volt=12.4(12.3)
+GlobalTracer.startCompetition_Warn: AUTO_MODE.postContinuousTasks takes too long (0.037s)
+
+GlobalTracer.startCompetition_Warn: AUTO_MODE.updates takes too long (0.029s)
+
+GlobalTracer.startCompetition_Warn: AUTO_MODE takes too long (0.125s)
+
+GlobalTracer.CmdAutoScale_Info: SonarTriggerEvent: prevZone=-1, currZone=1, value:47.7
+GlobalTracer.startCompetition_Warn: AUTO_MODE.preContinuousTasks takes too long (0.030s)
+
+GlobalTracer.printPidInfo_Info: encoderXPidCtrl: Target=   0.0, Input=  -0.0, Error=   0.0, PIDTerms= 0.010/ 0.000/ 0.005/ 0.000, Output= 0.016(-0.700/0.700), Volt=10.3(10.4)
+GlobalTracer.printPidInfo_Info: encoderYPidCtrl: Target= 169.0, Input=   0.7, Error= 168.3, PIDTerms= 3.367/ 0.000/-0.008/ 0.000, Output= 0.600(-0.600/0.600), Volt=10.3(10.4)
+GlobalTracer.printPidInfo_Info: gyroTurnPidCtrl: Target=   0.0, Input=  -0.1, Error=   0.1, PIDTerms= 0.002/ 0.000/ 0.002/ 0.000, Output= 0.004(-0.700/0.700), Volt=10.3(10.4)
+GlobalTracer.startCompetition_Warn: AUTO_MODE.updates takes too long (0.038s)
+
+GlobalTracer.startCompetition_Warn: AUTO_MODE.periodic takes too long (0.020s)
+
+GlobalTracer.printPidInfo_Info: encoderXPidCtrl: Target=   0.0, Input=   0.0, Error=  -0.0, PIDTerms=-0.010/ 0.000/-0.011/ 0.000, Output=-0.021(-0.700/0.700), Volt=10.5(10.4)
+GlobalTracer.printPidInfo_Info: encoderYPidCtrl: Target= 169.0, Input=   2.8, Error= 166.2, PIDTerms= 3.324/ 0.000/-0.029/ 0.000, Output= 0.600(-0.600/0.600), Volt=10.5(10.4)
+GlobalTracer.printPidInfo_Info: gyroTurnPidCtrl: Target=   0.0, Input=  -0.1, Error=   0.1, PIDTerms= 0.002/ 0.000/-0.000/ 0.000, Output= 0.001(-0.700/0.700), Volt=10.5(10.4)
+GlobalTracer.startCompetition_Warn: AUTO_MODE.postContinuousTasks takes too long (0.027s)
+
+GlobalTracer.startCompetition_Warn: AUTO_MODE.updates takes too long (0.050s)
+
+GlobalTracer.startCompetition_Warn: AUTO_MODE takes too long (0.149s)
+
+GlobalTracer.printPidInfo_Info: encoderXPidCtrl: Target=   0.0, Input=   0.2, Error=  -0.2, PIDTerms=-0.046/ 0.000/-0.019/ 0.000, Output=-0.065(-0.700/0.700), Volt=10.8(10.4)
+GlobalTracer.printPidInfo_Info: encoderYPidCtrl: Target= 169.0, Input=   7.6, Error= 161.4, PIDTerms= 3.228/ 0.000/-0.063/ 0.000, Output= 0.600(-0.600/0.600), Volt=10.8(10.4)
+GlobalTracer.printPidInfo_Info: gyroTurnPidCtrl: Target=   0.0, Input=   0.0, Error=   0.0, PIDTerms= 0.000/ 0.000/-0.001/ 0.000, Output=-0.001(-0.700/0.700), Volt=10.8(10.4)
+GlobalTracer.startCompetition_Warn: AUTO_MODE.postContinuousTasks takes too long (0.025s)
+
+GlobalTracer.startCompetition_Warn: AUTO_MODE.updates takes too long (0.035s)
+
+GlobalTracer.printPidInfo_Info: encoderXPidCtrl: Target=   0.0, Input=   0.0, Error=  -0.0, PIDTerms=-0.011/ 0.000/ 0.025/ 0.000, Output= 0.014(-0.700/0.700), Volt=10.8(10.4)
+GlobalTracer.printPidInfo_Info: encoderYPidCtrl: Target= 169.0, Input=  10.7, Error= 158.3, PIDTerms= 3.166/ 0.000/-0.054/ 0.000, Output= 0.600(-0.600/0.600), Volt=10.8(10.4)
+GlobalTracer.printPidInfo_Info: gyroTurnPidCtrl: Target=   0.0, Input=   0.3, Error=  -0.3, PIDTerms=-0.005/ 0.000/-0.006/ 0.000, Output=-0.011(-0.700/0.700), Volt=10.9(10.4)
+GlobalTracer.startCompetition_Warn: AUTO_MODE.postContinuousTasks takes too long (0.037s)
+
+GlobalTracer.startCompetition_Warn: AUTO_MODE.updates takes too long (0.074s)
+
+GlobalTracer.startCompetition_Warn: AUTO_MODE takes too long (0.139s)
+
+GlobalTracer.printPidInfo_Info: encoderXPidCtrl: Target=   0.0, Input=   0.0, Error=  -0.0, PIDTerms=-0.003/ 0.000/ 0.004/ 0.000, Output= 0.001(-0.700/0.700), Volt=11.0(10.4)
+GlobalTracer.printPidInfo_Info: encoderYPidCtrl: Target= 169.0, Input=  18.6, Error= 150.4, PIDTerms= 3.008/ 0.000/-0.089/ 0.000, Output= 0.600(-0.600/0.600), Volt=11.0(10.4)
+GlobalTracer.printPidInfo_Info: gyroTurnPidCtrl: Target=   0.0, Input=   0.7, Error=  -0.7, PIDTerms=-0.014/ 0.000/-0.006/ 0.000, Output=-0.020(-0.700/0.700), Volt=11.0(10.4)
+GlobalTracer.startCompetition_Warn: AUTO_MODE.updates takes too long (0.054s)
+
+GlobalTracer.printPidInfo_Info: encoderXPidCtrl: Target=   0.0, Input=  -0.0, Error=   0.0, PIDTerms= 0.003/ 0.000/ 0.003/ 0.000, Output= 0.006(-0.700/0.700), Volt=11.1(10.4)
+GlobalTracer.printPidInfo_Info: encoderYPidCtrl: Target= 169.0, Input=  23.2, Error= 145.8, PIDTerms= 2.916/ 0.000/-0.069/ 0.000, Output= 0.600(-0.600/0.600), Volt=11.1(10.4)
+GlobalTracer.printPidInfo_Info: gyroTurnPidCtrl: Target=   0.0, Input=   0.9, Error=  -0.9, PIDTerms=-0.018/ 0.000/-0.003/ 0.000, Output=-0.021(-0.700/0.700), Volt=11.1(10.4)
+GlobalTracer.startCompetition_Warn: AUTO_MODE.postContinuousTasks takes too long (0.027s)
+
+GlobalTracer.startCompetition_Warn: AUTO_MODE.updates takes too long (0.040s)
+
+GlobalTracer.startCompetition_Warn: AUTO_MODE takes too long (0.102s)
+
+GlobalTracer.startCompetition_Warn: AUTO_MODE.periodic takes too long (0.024s)
+
+GlobalTracer.printPidInfo_Info: encoderXPidCtrl: Target=   0.0, Input=   0.0, Error=   0.0, PIDTerms= 0.000/ 0.000/-0.001/ 0.000, Output=-0.001(-0.700/0.700), Volt=11.3(10.4)
+GlobalTracer.printPidInfo_Info: encoderYPidCtrl: Target= 169.0, Input=  29.3, Error= 139.7, PIDTerms= 2.794/ 0.000/-0.078/ 0.000, Output= 0.600(-0.600/0.600), Volt=11.3(10.4)
+GlobalTracer.printPidInfo_Info: gyroTurnPidCtrl: Target=   0.0, Input=   1.0, Error=  -1.0, PIDTerms=-0.019/ 0.000/-0.001/ 0.000, Output=-0.021(-0.700/0.700), Volt=11.3(10.4)
+GlobalTracer.startCompetition_Warn: AUTO_MODE.postContinuousTasks takes too long (0.028s)
+
+GlobalTracer.startCompetition_Warn: AUTO_MODE.updates takes too long (0.030s)
+
+GlobalTracer.startCompetition_Warn: AUTO_MODE takes too long (0.101s)
+
+GlobalTracer.printPidInfo_Info: encoderXPidCtrl: Target=   0.0, Input=   0.0, Error=  -0.0, PIDTerms=-0.007/ 0.000/-0.005/ 0.000, Output=-0.012(-0.700/0.700), Volt=11.4(10.4)
+GlobalTracer.printPidInfo_Info: encoderYPidCtrl: Target= 169.0, Input=  35.9, Error= 133.1, PIDTerms= 2.663/ 0.000/-0.132/ 0.000, Output= 0.600(-0.600/0.600), Volt=11.4(10.4)
+GlobalTracer.printPidInfo_Info: gyroTurnPidCtrl: Target=   0.0, Input=   0.9, Error=  -0.9, PIDTerms=-0.019/ 0.000/ 0.000/ 0.000, Output=-0.019(-0.700/0.700), Volt=11.4(10.4)
+GlobalTracer.startCompetition_Warn: AUTO_MODE.updates takes too long (0.035s)
+
+GlobalTracer.printPidInfo_Info: encoderXPidCtrl: Target=   0.0, Input=   0.0, Error=  -0.0, PIDTerms=-0.001/ 0.000/ 0.005/ 0.000, Output= 0.005(-0.700/0.700), Volt=11.4(10.4)
+GlobalTracer.printPidInfo_Info: encoderYPidCtrl: Target= 169.0, Input=  40.0, Error= 129.0, PIDTerms= 2.581/ 0.000/-0.090/ 0.000, Output= 0.600(-0.600/0.600), Volt=11.4(10.4)
+GlobalTracer.printPidInfo_Info: gyroTurnPidCtrl: Target=   0.0, Input=   0.9, Error=  -0.9, PIDTerms=-0.018/ 0.000/ 0.002/ 0.000, Output=-0.016(-0.700/0.700), Volt=11.4(10.4)
+GlobalTracer.startCompetition_Warn: AUTO_MODE.updates takes too long (0.039s)
+
+GlobalTracer.printPidInfo_Info: encoderXPidCtrl: Target=   0.0, Input=  -0.0, Error=   0.0, PIDTerms= 0.007/ 0.000/ 0.005/ 0.000, Output= 0.012(-0.700/0.700), Volt=11.4(10.4)
+GlobalTracer.printPidInfo_Info: encoderYPidCtrl: Target= 169.0, Input=  45.6, Error= 123.4, PIDTerms= 2.468/ 0.000/-0.097/ 0.000, Output= 0.600(-0.600/0.600), Volt=11.4(10.4)
+GlobalTracer.printPidInfo_Info: gyroTurnPidCtrl: Target=   0.0, Input=   0.9, Error=  -0.9, PIDTerms=-0.017/ 0.000/ 0.001/ 0.000, Output=-0.016(-0.700/0.700), Volt=11.4(10.4)
+GlobalTracer.startCompetition_Warn: AUTO_MODE.postContinuousTasks takes too long (0.023s)
+
+GlobalTracer.startCompetition_Warn: AUTO_MODE.updates takes too long (0.042s)
+
+GlobalTracer.printPidInfo_Info: encoderXPidCtrl: Target=   0.0, Input=  -0.0, Error=   0.0, PIDTerms= 0.004/ 0.000/-0.002/ 0.000, Output= 0.002(-0.700/0.700), Volt=11.4(10.4)
+GlobalTracer.printPidInfo_Info: encoderYPidCtrl: Target= 169.0, Input=  53.0, Error= 116.0, PIDTerms= 2.321/ 0.000/-0.107/ 0.000, Output= 0.600(-0.600/0.600), Volt=11.4(10.4)
+GlobalTracer.printPidInfo_Info: gyroTurnPidCtrl: Target=   0.0, Input=   0.8, Error=  -0.8, PIDTerms=-0.017/ 0.000/ 0.000/ 0.000, Output=-0.016(-0.700/0.700), Volt=11.5(10.4)
+GlobalTracer.startCompetition_Warn: AUTO_MODE.postContinuousTasks takes too long (0.031s)
+
+GlobalTracer.startCompetition_Warn: AUTO_MODE.updates takes too long (0.041s)
+
+GlobalTracer.startCompetition_Warn: AUTO_MODE takes too long (0.105s)
+
+GlobalTracer.printPidInfo_Info: encoderXPidCtrl: Target=   0.0, Input=   0.0, Error=  -0.0, PIDTerms=-0.005/ 0.000/-0.006/ 0.000, Output=-0.011(-0.700/0.700), Volt=11.5(10.4)
+GlobalTracer.printPidInfo_Info: encoderYPidCtrl: Target= 169.0, Input=  61.3, Error= 107.7, PIDTerms= 2.153/ 0.000/-0.131/ 0.000, Output= 0.600(-0.600/0.600), Volt=11.5(10.4)
+GlobalTracer.printPidInfo_Info: gyroTurnPidCtrl: Target=   0.0, Input=   0.9, Error=  -0.9, PIDTerms=-0.017/ 0.000/-0.001/ 0.000, Output=-0.018(-0.700/0.700), Volt=11.5(10.4)
+GlobalTracer.startCompetition_Warn: AUTO_MODE.updates takes too long (0.042s)
+
+GlobalTracer.printPidInfo_Info: encoderXPidCtrl: Target=   0.0, Input=  -0.0, Error=   0.0, PIDTerms= 0.003/ 0.000/ 0.007/ 0.000, Output= 0.010(-0.700/0.700), Volt=11.5(10.4)
+GlobalTracer.printPidInfo_Info: encoderYPidCtrl: Target= 169.0, Input=  66.8, Error= 102.2, PIDTerms= 2.043/ 0.000/-0.108/ 0.000, Output= 0.600(-0.600/0.600), Volt=11.5(10.4)
+GlobalTracer.printPidInfo_Info: gyroTurnPidCtrl: Target=   0.0, Input=   0.9, Error=  -0.9, PIDTerms=-0.018/ 0.000/-0.001/ 0.000, Output=-0.019(-0.700/0.700), Volt=11.5(10.4)
+GlobalTracer.startCompetition_Warn: AUTO_MODE.updates takes too long (0.045s)
+
+GlobalTracer.printPidInfo_Info: encoderXPidCtrl: Target=   0.0, Input=   0.0, Error=  -0.0, PIDTerms=-0.005/ 0.000/-0.006/ 0.000, Output=-0.011(-0.700/0.700), Volt=11.6(10.4)
+GlobalTracer.printPidInfo_Info: encoderYPidCtrl: Target= 169.0, Input=  73.2, Error=  95.8, PIDTerms= 1.915/ 0.000/-0.124/ 0.000, Output= 0.600(-0.600/0.600), Volt=11.6(10.4)
+GlobalTracer.printPidInfo_Info: gyroTurnPidCtrl: Target=   0.0, Input=   0.9, Error=  -0.9, PIDTerms=-0.019/ 0.000/-0.001/ 0.000, Output=-0.020(-0.700/0.700), Volt=11.6(10.4)
+GlobalTracer.startCompetition_Warn: AUTO_MODE.postContinuousTasks takes too long (0.036s)
+
+GlobalTracer.startCompetition_Warn: AUTO_MODE.updates takes too long (0.028s)
+
+GlobalTracer.printPidInfo_Info: encoderXPidCtrl: Target=   0.0, Input=   0.0, Error=  -0.0, PIDTerms=-0.008/ 0.000/-0.002/ 0.000, Output=-0.009(-0.700/0.700), Volt=11.6(10.4)
+GlobalTracer.printPidInfo_Info: encoderYPidCtrl: Target= 169.0, Input=  79.6, Error=  89.4, PIDTerms= 1.788/ 0.000/-0.098/ 0.000, Output= 0.600(-0.600/0.600), Volt=11.6(10.4)
+GlobalTracer.printPidInfo_Info: gyroTurnPidCtrl: Target=   0.0, Input=   1.0, Error=  -1.0, PIDTerms=-0.020/ 0.000/-0.001/ 0.000, Output=-0.021(-0.700/0.700), Volt=11.6(10.4)
+GlobalTracer.startCompetition_Warn: AUTO_MODE.postContinuousTasks takes too long (0.025s)
+
+GlobalTracer.startCompetition_Warn: AUTO_MODE.updates takes too long (0.037s)
+
+GlobalTracer.printPidInfo_Info: encoderXPidCtrl: Target=   0.0, Input=   0.2, Error=  -0.2, PIDTerms=-0.059/ 0.000/-0.033/ 0.000, Output=-0.091(-0.700/0.700), Volt=11.5(10.4)
+GlobalTracer.printPidInfo_Info: encoderYPidCtrl: Target= 169.0, Input=  88.2, Error=  80.8, PIDTerms= 1.615/ 0.000/-0.138/ 0.000, Output= 0.600(-0.600/0.600), Volt=11.5(10.4)
+GlobalTracer.printPidInfo_Info: gyroTurnPidCtrl: Target=   0.0, Input=   1.0, Error=  -1.0, PIDTerms=-0.020/ 0.000/ 0.000/ 0.000, Output=-0.019(-0.700/0.700), Volt=11.5(10.4)
+GlobalTracer.startCompetition_Warn: AUTO_MODE.postContinuousTasks takes too long (0.021s)
+
+GlobalTracer.startCompetition_Warn: AUTO_MODE.updates takes too long (0.024s)
+
+GlobalTracer.printPidInfo_Info: encoderXPidCtrl: Target=   0.0, Input=  -0.0, Error=   0.0, PIDTerms= 0.007/ 0.000/ 0.056/ 0.000, Output= 0.063(-0.700/0.700), Volt=11.5(10.4)
+GlobalTracer.printPidInfo_Info: encoderYPidCtrl: Target= 169.0, Input=  94.5, Error=  74.5, PIDTerms= 1.490/ 0.000/-0.134/ 0.000, Output= 0.600(-0.600/0.600), Volt=11.6(10.4)
+GlobalTracer.printPidInfo_Info: gyroTurnPidCtrl: Target=   0.0, Input=   0.9, Error=  -0.9, PIDTerms=-0.019/ 0.000/ 0.001/ 0.000, Output=-0.017(-0.700/0.700), Volt=11.6(10.4)
+GlobalTracer.startCompetition_Warn: AUTO_MODE.postContinuousTasks takes too long (0.021s)
+
+GlobalTracer.startCompetition_Warn: AUTO_MODE.updates takes too long (0.038s)
+
+GlobalTracer.printPidInfo_Info: encoderXPidCtrl: Target=   0.0, Input=   0.2, Error=  -0.2, PIDTerms=-0.049/ 0.000/-0.036/ 0.000, Output=-0.085(-0.700/0.700), Volt=11.6(10.4)
+GlobalTracer.printPidInfo_Info: encoderYPidCtrl: Target= 169.0, Input= 101.7, Error=  67.3, PIDTerms= 1.346/ 0.000/-0.117/ 0.000, Output= 0.600(-0.600/0.600), Volt=11.6(10.4)
+GlobalTracer.printPidInfo_Info: gyroTurnPidCtrl: Target=   0.0, Input=   0.8, Error=  -0.8, PIDTerms=-0.015/ 0.000/ 0.003/ 0.000, Output=-0.012(-0.700/0.700), Volt=11.6(10.4)
+GlobalTracer.startCompetition_Warn: AUTO_MODE.updates takes too long (0.027s)
+
+GlobalTracer.printPidInfo_Info: encoderXPidCtrl: Target=   0.0, Input=  -0.0, Error=   0.0, PIDTerms= 0.009/ 0.000/ 0.043/ 0.000, Output= 0.052(-0.700/0.700), Volt=11.6(10.4)
+GlobalTracer.printPidInfo_Info: encoderYPidCtrl: Target= 169.0, Input= 108.1, Error=  60.9, PIDTerms= 1.219/ 0.000/-0.119/ 0.000, Output= 0.600(-0.600/0.600), Volt=11.7(10.4)
+GlobalTracer.printPidInfo_Info: gyroTurnPidCtrl: Target=   0.0, Input=   0.6, Error=  -0.6, PIDTerms=-0.013/ 0.000/ 0.002/ 0.000, Output=-0.010(-0.700/0.700), Volt=11.7(10.4)
+GlobalTracer.startCompetition_Warn: AUTO_MODE.updates takes too long (0.040s)
+
+GlobalTracer.printPidInfo_Info: encoderXPidCtrl: Target=   0.0, Input=  -0.3, Error=   0.3, PIDTerms= 0.079/ 0.000/ 0.048/ 0.000, Output= 0.127(-0.700/0.700), Volt=11.7(10.4)
+GlobalTracer.printPidInfo_Info: encoderYPidCtrl: Target= 169.0, Input= 116.2, Error=  52.8, PIDTerms= 1.056/ 0.000/-0.138/ 0.000, Output= 0.600(-0.600/0.600), Volt=11.7(10.4)
+GlobalTracer.printPidInfo_Info: gyroTurnPidCtrl: Target=   0.0, Input=   0.5, Error=  -0.5, PIDTerms=-0.010/ 0.000/ 0.002/ 0.000, Output=-0.008(-0.700/0.700), Volt=11.7(10.4)
+GlobalTracer.startCompetition_Warn: AUTO_MODE.updates takes too long (0.032s)
+
+GlobalTracer.startCompetition_Warn: AUTO_MODE.periodic takes too long (0.022s)
+
+GlobalTracer.printPidInfo_Info: encoderXPidCtrl: Target=   0.0, Input=   0.1, Error=  -0.1, PIDTerms=-0.015/ 0.000/-0.066/ 0.000, Output=-0.081(-0.700/0.700), Volt=11.6(10.4)
+GlobalTracer.printPidInfo_Info: encoderYPidCtrl: Target= 169.0, Input= 123.7, Error=  45.3, PIDTerms= 0.907/ 0.000/-0.131/ 0.000, Output= 0.600(-0.600/0.600), Volt=11.7(10.4)
+GlobalTracer.printPidInfo_Info: gyroTurnPidCtrl: Target=   0.0, Input=   0.6, Error=  -0.6, PIDTerms=-0.013/ 0.000/-0.003/ 0.000, Output=-0.016(-0.700/0.700), Volt=11.7(10.4)
+GlobalTracer.startCompetition_Warn: AUTO_MODE.updates takes too long (0.042s)
+
+GlobalTracer.startCompetition_Warn: AUTO_MODE takes too long (0.100s)
+
+GlobalTracer.CmdAutoScale_Info: SonarTriggerEvent: prevZone=1, currZone=0, value:12.8
+GlobalTracer.CmdAutoScale_Info: setSonarTriggerEnabled(false)
+GlobalTracer.CmdAutoScale_Info: sonarDistance=12.8, distanceFromWall=53.0, xDistance=17.4, yDistance=166.0
+GlobalTracer.Robot_Info: [2.845] CHECK_SONAR_DISTANCE: xPos=  0.12,yPos=132.48,heading=   0.8/   0.0,volts=11.6(10.4)
+GlobalTracer.printPidInfo_Info: [2.845] elevatorPidController: Target=  35.0, Input=   0.0, Error=  27.0, PIDTerms= 0.000/ 0.000/ 0.000/ 0.000, Output= 0.000(-1.000/1.000), Volt=11.6(10.4)
+GlobalTracer.printPidInfo_Info: encoderXPidCtrl: Target=  17.5, Input=   0.1, Error=  17.4, PIDTerms= 4.347/ 0.000/ 0.000/ 0.000, Output= 0.700(-0.700/0.700), Volt=12.2(10.4)
+GlobalTracer.printPidInfo_Info: encoderYPidCtrl: Target= 298.5, Input= 132.5, Error= 166.0, PIDTerms= 3.320/ 0.000/ 0.000/ 0.000, Output= 0.600(-0.600/0.600), Volt=12.2(10.4)
+GlobalTracer.printPidInfo_Info: gyroTurnPidCtrl: Target=   0.0, Input=   0.8, Error=  -0.8, PIDTerms=-0.015/ 0.000/ 0.000/ 0.000, Output=-0.015(-0.700/0.700), Volt=12.2(10.4)
+GlobalTracer.startCompetition_Warn: AUTO_MODE.updates takes too long (0.029s)
+
+GlobalTracer.printPidInfo_Info: [2.941] elevatorPidController: Target=  35.0, Input=   8.0, Error=  27.0, PIDTerms= 5.409/ 0.001/ 0.000/ 0.000, Output= 1.000(-1.000/1.000), Volt=10.0(10.4)
+GlobalTracer.printPidInfo_Info: encoderXPidCtrl: Target=  17.5, Input=   0.1, Error=  17.4, PIDTerms= 4.349/ 0.000/ 0.002/ 0.000, Output= 0.700(-0.700/0.700), Volt=10.1(10.4)
+GlobalTracer.printPidInfo_Info: encoderYPidCtrl: Target= 298.5, Input= 139.8, Error= 158.7, PIDTerms= 3.175/ 0.000/-0.132/ 0.000, Output= 0.600(-0.600/0.600), Volt=10.1(10.4)
+GlobalTracer.printPidInfo_Info: gyroTurnPidCtrl: Target=   0.0, Input=   0.7, Error=  -0.7, PIDTerms=-0.014/ 0.000/ 0.001/ 0.000, Output=-0.013(-0.700/0.700), Volt=10.1(10.4)
+GlobalTracer.startCompetition_Warn: AUTO_MODE.updates takes too long (0.030s)
+
+GlobalTracer.printPidInfo_Info: [3.023] elevatorPidController: Target=  35.0, Input=   9.3, Error=  25.7, PIDTerms= 5.138/ 0.003/-0.000/ 0.000, Output= 1.000(-1.000/1.000), Volt=10.3(10.3)
+GlobalTracer.printPidInfo_Info: encoderXPidCtrl: Target=  17.5, Input=   1.4, Error=  16.1, PIDTerms= 4.022/ 0.000/-0.248/ 0.000, Output= 0.700(-0.700/0.700), Volt=10.4(10.3)
+GlobalTracer.printPidInfo_Info: encoderYPidCtrl: Target= 298.5, Input= 146.7, Error= 151.8, PIDTerms= 3.037/ 0.000/-0.131/ 0.000, Output= 0.600(-0.600/0.600), Volt=10.4(10.3)
+GlobalTracer.printPidInfo_Info: gyroTurnPidCtrl: Target=   0.0, Input=   1.1, Error=  -1.1, PIDTerms=-0.023/ 0.000/-0.010/ 0.000, Output=-0.033(-0.700/0.700), Volt=10.4(10.3)
+GlobalTracer.startCompetition_Warn: AUTO_MODE.updates takes too long (0.029s)
+
+GlobalTracer.printPidInfo_Info: [3.101] elevatorPidController: Target=  35.0, Input=   8.7, Error=  26.3, PIDTerms= 5.268/ 0.005/ 0.000/ 0.000, Output= 1.000(-1.000/1.000), Volt=10.0(10.0)
+GlobalTracer.printPidInfo_Info: encoderXPidCtrl: Target=  17.5, Input=   2.8, Error=  14.8, PIDTerms= 3.688/ 0.000/-0.262/ 0.000, Output= 0.700(-0.700/0.700), Volt=10.2(10.0)
+GlobalTracer.printPidInfo_Info: encoderYPidCtrl: Target= 298.5, Input= 152.1, Error= 146.4, PIDTerms= 2.928/ 0.000/-0.106/ 0.000, Output= 0.600(-0.600/0.600), Volt=10.2(10.0)
+GlobalTracer.printPidInfo_Info: gyroTurnPidCtrl: Target=   0.0, Input=   2.2, Error=  -2.2, PIDTerms=-0.044/ 0.000/-0.024/ 0.000, Output=-0.069(-0.700/0.700), Volt=10.2(10.0)
+GlobalTracer.startCompetition_Warn: AUTO_MODE.updates takes too long (0.036s)
+
+GlobalTracer.printPidInfo_Info: [3.179] elevatorPidController: Target=  35.0, Input=  11.4, Error=  23.6, PIDTerms= 4.715/ 0.007/-0.000/ 0.000, Output= 1.000(-1.000/1.000), Volt=10.1(10.0)
+GlobalTracer.startCompetition_Warn: AUTO_MODE.periodic takes too long (0.031s)
+
+GlobalTracer.printPidInfo_Info: encoderXPidCtrl: Target=  17.5, Input=   3.5, Error=  14.0, PIDTerms= 3.507/ 0.000/-0.110/ 0.000, Output= 0.700(-0.700/0.700), Volt=10.0(10.0)
+GlobalTracer.printPidInfo_Info: encoderYPidCtrl: Target= 298.5, Input= 157.4, Error= 141.1, PIDTerms= 2.822/ 0.000/-0.081/ 0.000, Output= 0.600(-0.600/0.600), Volt=10.0(10.0)
+GlobalTracer.printPidInfo_Info: gyroTurnPidCtrl: Target=   0.0, Input=   2.7, Error=  -2.7, PIDTerms=-0.053/ 0.000/-0.008/ 0.000, Output=-0.061(-0.700/0.700), Volt=10.0(10.0)
+GlobalTracer.startCompetition_Warn: AUTO_MODE.postContinuousTasks takes too long (0.021s)
+
+GlobalTracer.startCompetition_Warn: AUTO_MODE.updates takes too long (0.028s)
+
+GlobalTracer.startCompetition_Warn: AUTO_MODE takes too long (0.102s)
+
+GlobalTracer.printPidInfo_Info: [3.282] elevatorPidController: Target=  35.0, Input=  15.0, Error=  20.0, PIDTerms= 3.991/ 0.009/-0.000/ 0.000, Output= 1.000(-1.000/1.000), Volt=10.0(10.0)
+GlobalTracer.printPidInfo_Info: encoderXPidCtrl: Target=  17.5, Input=   4.9, Error=  12.6, PIDTerms= 3.145/ 0.000/-0.271/ 0.000, Output= 0.700(-0.700/0.700), Volt=10.0(10.0)
+GlobalTracer.printPidInfo_Info: encoderYPidCtrl: Target= 298.5, Input= 164.9, Error= 133.6, PIDTerms= 2.672/ 0.000/-0.140/ 0.000, Output= 0.600(-0.600/0.600), Volt=10.0(10.0)
+GlobalTracer.printPidInfo_Info: gyroTurnPidCtrl: Target=   0.0, Input=   2.9, Error=  -2.9, PIDTerms=-0.058/ 0.000/-0.005/ 0.000, Output=-0.063(-0.700/0.700), Volt=10.0(10.0)
+GlobalTracer.startCompetition_Warn: AUTO_MODE.postContinuousTasks takes too long (0.026s)
+
+GlobalTracer.startCompetition_Warn: AUTO_MODE.updates takes too long (0.028s)
+
+GlobalTracer.printPidInfo_Info: [3.367] elevatorPidController: Target=  35.0, Input=  18.9, Error=  16.1, PIDTerms= 3.218/ 0.010/-0.000/ 0.000, Output= 1.000(-1.000/1.000), Volt=10.1(10.0)
+GlobalTracer.printPidInfo_Info: encoderXPidCtrl: Target=  17.5, Input=   6.3, Error=  11.2, PIDTerms= 2.803/ 0.000/-0.242/ 0.000, Output= 0.700(-0.700/0.700), Volt=10.3(10.0)
+GlobalTracer.printPidInfo_Info: encoderYPidCtrl: Target= 298.5, Input= 170.7, Error= 127.8, PIDTerms= 2.557/ 0.000/-0.102/ 0.000, Output= 0.600(-0.600/0.600), Volt=10.3(10.0)
+GlobalTracer.printPidInfo_Info: gyroTurnPidCtrl: Target=   0.0, Input=   2.7, Error=  -2.7, PIDTerms=-0.053/ 0.000/ 0.005/ 0.000, Output=-0.048(-0.700/0.700), Volt=10.3(10.0)
+GlobalTracer.startCompetition_Warn: AUTO_MODE.updates takes too long (0.032s)
+
+GlobalTracer.printPidInfo_Info: [3.443] elevatorPidController: Target=  35.0, Input=  21.3, Error=  13.7, PIDTerms= 2.748/ 0.011/-0.000/ 0.000, Output= 1.000(-1.000/1.000), Volt=10.1(10.0)
+GlobalTracer.printPidInfo_Info: encoderXPidCtrl: Target=  17.5, Input=   7.6, Error=   9.9, PIDTerms= 2.484/ 0.000/-0.229/ 0.000, Output= 0.700(-0.700/0.700), Volt=10.1(10.0)
+GlobalTracer.printPidInfo_Info: encoderYPidCtrl: Target= 298.5, Input= 175.7, Error= 122.8, PIDTerms= 2.456/ 0.000/-0.091/ 0.000, Output= 0.600(-0.600/0.600), Volt=10.1(10.0)
+GlobalTracer.printPidInfo_Info: gyroTurnPidCtrl: Target=   0.0, Input=   2.1, Error=  -2.1, PIDTerms=-0.042/ 0.000/ 0.011/ 0.000, Output=-0.031(-0.700/0.700), Volt=10.1(10.0)
+GlobalTracer.startCompetition_Warn: AUTO_MODE.updates takes too long (0.030s)
+
+GlobalTracer.printPidInfo_Info: [3.527] elevatorPidController: Target=  35.0, Input=  25.1, Error=   9.9, PIDTerms= 1.990/ 0.012/-0.000/ 0.000, Output= 1.000(-1.000/1.000), Volt=10.0(10.0)
+GlobalTracer.startCompetition_Warn: AUTO_MODE.periodic takes too long (0.024s)
+
+GlobalTracer.printPidInfo_Info: encoderXPidCtrl: Target=  17.5, Input=   8.8, Error=   8.7, PIDTerms= 2.168/ 0.000/-0.203/ 0.000, Output= 0.700(-0.700/0.700), Volt=10.1(10.0)
+GlobalTracer.printPidInfo_Info: encoderYPidCtrl: Target= 298.5, Input= 180.8, Error= 117.7, PIDTerms= 2.353/ 0.000/-0.082/ 0.000, Output= 0.600(-0.600/0.600), Volt=10.1(10.0)
+GlobalTracer.printPidInfo_Info: gyroTurnPidCtrl: Target=   0.0, Input=   1.4, Error=  -1.4, PIDTerms=-0.028/ 0.000/ 0.013/ 0.000, Output=-0.015(-0.700/0.700), Volt=10.1(10.0)
+GlobalTracer.startCompetition_Warn: AUTO_MODE.updates takes too long (0.038s)
+
+GlobalTracer.startCompetition_Warn: AUTO_MODE takes too long (0.101s)
+
+GlobalTracer.printPidInfo_Info: [3.629] elevatorPidController: Target=  35.0, Input=  28.0, Error=   7.0, PIDTerms= 1.402/ 0.013/-0.000/ 0.000, Output= 1.000(-1.000/1.000), Volt=10.0(10.0)
+GlobalTracer.startCompetition_Warn: AUTO_MODE.periodic takes too long (0.020s)
+
+GlobalTracer.printPidInfo_Info: encoderXPidCtrl: Target=  17.5, Input=  10.6, Error=   6.9, PIDTerms= 1.737/ 0.000/-0.270/ 0.000, Output= 0.700(-0.700/0.700), Volt=10.0(10.0)
+GlobalTracer.printPidInfo_Info: encoderYPidCtrl: Target= 298.5, Input= 187.0, Error= 111.5, PIDTerms= 2.230/ 0.000/-0.097/ 0.000, Output= 0.600(-0.600/0.600), Volt=10.0(10.0)
+GlobalTracer.printPidInfo_Info: gyroTurnPidCtrl: Target=   0.0, Input=   1.0, Error=  -1.0, PIDTerms=-0.021/ 0.000/ 0.007/ 0.000, Output=-0.014(-0.700/0.700), Volt=10.0(10.0)
+GlobalTracer.startCompetition_Warn: AUTO_MODE.updates takes too long (0.040s)
+
+GlobalTracer.printPidInfo_Info: [3.719] elevatorPidController: Target=  35.0, Input=  31.7, Error=   3.3, PIDTerms= 0.656/ 0.013/-0.000/ 0.000, Output= 0.669(-1.000/1.000), Volt=10.4(10.0)
+GlobalTracer.startCompetition_Warn: AUTO_MODE.periodic takes too long (0.024s)
+
+GlobalTracer.printPidInfo_Info: encoderXPidCtrl: Target=  17.5, Input=  12.0, Error=   5.5, PIDTerms= 1.378/ 0.000/-0.241/ 0.000, Output= 0.700(-0.700/0.700), Volt=10.5(10.0)
+GlobalTracer.printPidInfo_Info: encoderYPidCtrl: Target= 298.5, Input= 192.1, Error= 106.4, PIDTerms= 2.129/ 0.000/-0.085/ 0.000, Output= 0.600(-0.600/0.600), Volt=10.5(10.0)
+GlobalTracer.printPidInfo_Info: gyroTurnPidCtrl: Target=   0.0, Input=   0.9, Error=  -0.9, PIDTerms=-0.018/ 0.000/ 0.002/ 0.000, Output=-0.016(-0.700/0.700), Volt=10.4(10.0)
+GlobalTracer.startCompetition_Warn: AUTO_MODE.updates takes too long (0.028s)
+
+GlobalTracer.printPidInfo_Info: [3.807] elevatorPidController: Target=  35.0, Input=  34.9, Error=   0.1, PIDTerms= 0.030/ 0.013/-0.000/ 0.000, Output= 0.043(-1.000/1.000), Volt=10.8(10.0)
+GlobalTracer.startCompetition_Warn: AUTO_MODE.periodic takes too long (0.020s)
+
+GlobalTracer.printPidInfo_Info: encoderXPidCtrl: Target=  17.5, Input=  14.0, Error=   3.5, PIDTerms= 0.883/ 0.000/-0.336/ 0.000, Output= 0.547(-0.700/0.700), Volt=10.8(10.0)
+GlobalTracer.printPidInfo_Info: encoderYPidCtrl: Target= 298.5, Input= 198.3, Error= 100.2, PIDTerms= 2.004/ 0.000/-0.105/ 0.000, Output= 0.600(-0.600/0.600), Volt=10.8(10.0)
+GlobalTracer.printPidInfo_Info: gyroTurnPidCtrl: Target=   0.0, Input=   1.4, Error=  -1.4, PIDTerms=-0.027/ 0.000/-0.009/ 0.000, Output=-0.036(-0.700/0.700), Volt=10.8(10.0)
+GlobalTracer.startCompetition_Warn: AUTO_MODE.updates takes too long (0.040s)
+
+GlobalTracer.printPidInfo_Info: [3.905] elevatorPidController: Target=  35.0, Input=  35.6, Error=  -0.6, PIDTerms=-0.114/ 0.013/-0.000/ 0.000, Output=-0.101(-1.000/1.000), Volt=10.8(10.0)
+GlobalTracer.printPidInfo_Info: encoderXPidCtrl: Target=  17.5, Input=  16.0, Error=   1.5, PIDTerms= 0.382/ 0.000/-0.307/ 0.000, Output= 0.074(-0.700/0.700), Volt=10.6(10.0)
+GlobalTracer.printPidInfo_Info: encoderYPidCtrl: Target= 298.5, Input= 205.0, Error=  93.5, PIDTerms= 1.870/ 0.000/-0.103/ 0.000, Output= 0.600(-0.600/0.600), Volt=10.6(10.0)
+GlobalTracer.printPidInfo_Info: gyroTurnPidCtrl: Target=   0.0, Input=   1.7, Error=  -1.7, PIDTerms=-0.033/ 0.000/-0.005/ 0.000, Output=-0.039(-0.700/0.700), Volt=10.6(10.0)
+GlobalTracer.startCompetition_Warn: AUTO_MODE.updates takes too long (0.032s)
+
+GlobalTracer.printPidInfo_Info: [3.989] elevatorPidController: Target=  35.0, Input=  35.1, Error=  -0.1, PIDTerms=-0.016/ 0.013/ 0.000/ 0.000, Output=-0.003(-1.000/1.000), Volt=11.4(10.0)
+GlobalTracer.printPidInfo_Info: encoderXPidCtrl: Target=  17.5, Input=  17.3, Error=   0.2, PIDTerms= 0.061/ 0.000/-0.241/ 0.000, Output=-0.180(-0.700/0.700), Volt=11.1(10.0)
+GlobalTracer.printPidInfo_Info: encoderYPidCtrl: Target= 298.5, Input= 210.3, Error=  88.2, PIDTerms= 1.765/ 0.000/-0.099/ 0.000, Output= 0.600(-0.600/0.600), Volt=11.1(10.0)
+GlobalTracer.printPidInfo_Info: gyroTurnPidCtrl: Target=   0.0, Input=   1.4, Error=  -1.4, PIDTerms=-0.027/ 0.000/ 0.007/ 0.000, Output=-0.020(-0.700/0.700), Volt=11.1(10.0)
+GlobalTracer.startCompetition_Warn: AUTO_MODE.postContinuousTasks takes too long (0.020s)
+
+GlobalTracer.startCompetition_Warn: AUTO_MODE.updates takes too long (0.033s)
+
+GlobalTracer.printPidInfo_Info: [4.084] elevatorPidController: Target=  35.0, Input=  34.6, Error=   0.4, PIDTerms= 0.078/ 0.013/ 0.000/ 0.000, Output= 0.091(-1.000/1.000), Volt=10.8(10.0)
+GlobalTracer.startCompetition_Warn: AUTO_MODE.periodic takes too long (0.025s)
+
+GlobalTracer.printPidInfo_Info: encoderXPidCtrl: Target=  17.5, Input=  17.8, Error=  -0.3, PIDTerms=-0.063/ 0.000/-0.070/ 0.000, Output=-0.133(-0.700/0.700), Volt=10.8(10.0)
+GlobalTracer.printPidInfo_Info: encoderYPidCtrl: Target= 298.5, Input= 216.8, Error=  81.7, PIDTerms= 1.634/ 0.000/-0.093/ 0.000, Output= 0.600(-0.600/0.600), Volt=10.8(10.0)
+GlobalTracer.printPidInfo_Info: gyroTurnPidCtrl: Target=   0.0, Input=   1.5, Error=  -1.5, PIDTerms=-0.031/ 0.000/-0.003/ 0.000, Output=-0.033(-0.700/0.700), Volt=10.8(10.0)
+GlobalTracer.startCompetition_Warn: AUTO_MODE.updates takes too long (0.034s)
+
+GlobalTracer.printPidInfo_Info: [4.175] elevatorPidController: Target=  35.0, Input=  34.5, Error=   0.5, PIDTerms= 0.097/ 0.013/ 0.000/ 0.000, Output= 0.110(-1.000/1.000), Volt=11.0(10.0)
+GlobalTracer.printPidInfo_Info: encoderXPidCtrl: Target=  17.5, Input=  17.8, Error=  -0.3, PIDTerms=-0.068/ 0.000/-0.003/ 0.000, Output=-0.071(-0.700/0.700), Volt=11.0(10.0)
+GlobalTracer.printPidInfo_Info: encoderYPidCtrl: Target= 298.5, Input= 222.2, Error=  76.3, PIDTerms= 1.527/ 0.000/-0.092/ 0.000, Output= 0.600(-0.600/0.600), Volt=11.0(10.0)
+GlobalTracer.printPidInfo_Info: gyroTurnPidCtrl: Target=   0.0, Input=   1.9, Error=  -1.9, PIDTerms=-0.039/ 0.000/-0.008/ 0.000, Output=-0.047(-0.700/0.700), Volt=11.0(10.0)
+GlobalTracer.startCompetition_Warn: AUTO_MODE.updates takes too long (0.033s)
+
+GlobalTracer.printPidInfo_Info: [4.275] elevatorPidController: Target=  35.0, Input=  34.5, Error=   0.5, PIDTerms= 0.097/ 0.013/ 0.000/ 0.000, Output= 0.110(-1.000/1.000), Volt=11.3(10.0)
+GlobalTracer.printPidInfo_Info: encoderXPidCtrl: Target=  17.5, Input=  17.7, Error=  -0.2, PIDTerms=-0.041/ 0.000/ 0.018/ 0.000, Output=-0.022(-0.700/0.700), Volt=11.3(10.0)
+GlobalTracer.printPidInfo_Info: encoderYPidCtrl: Target= 298.5, Input= 229.2, Error=  69.3, PIDTerms= 1.386/ 0.000/-0.121/ 0.000, Output= 0.600(-0.600/0.600), Volt=11.3(10.0)
+GlobalTracer.printPidInfo_Info: gyroTurnPidCtrl: Target=   0.0, Input=   2.6, Error=  -2.6, PIDTerms=-0.052/ 0.000/-0.014/ 0.000, Output=-0.066(-0.700/0.700), Volt=11.3(10.0)
+GlobalTracer.startCompetition_Warn: AUTO_MODE.updates takes too long (0.040s)
+
+GlobalTracer.printPidInfo_Info: [4.362] elevatorPidController: Target=  35.0, Input=  34.5, Error=   0.5, PIDTerms= 0.097/ 0.013/ 0.000/ 0.000, Output= 0.110(-1.000/1.000), Volt=11.3(10.0)
+GlobalTracer.printPidInfo_Info: encoderXPidCtrl: Target=  17.5, Input=  17.6, Error=  -0.1, PIDTerms=-0.017/ 0.000/ 0.015/ 0.000, Output=-0.002(-0.700/0.700), Volt=11.3(10.0)
+GlobalTracer.printPidInfo_Info: encoderYPidCtrl: Target= 298.5, Input= 236.0, Error=  62.5, PIDTerms= 1.251/ 0.000/-0.107/ 0.000, Output= 0.600(-0.600/0.600), Volt=11.3(10.0)
+GlobalTracer.printPidInfo_Info: gyroTurnPidCtrl: Target=   0.0, Input=   2.5, Error=  -2.5, PIDTerms=-0.049/ 0.000/ 0.003/ 0.000, Output=-0.046(-0.700/0.700), Volt=11.3(10.0)
+GlobalTracer.startCompetition_Warn: AUTO_MODE.postContinuousTasks takes too long (0.023s)
+
+GlobalTracer.startCompetition_Warn: AUTO_MODE.updates takes too long (0.044s)
+
+GlobalTracer.startCompetition_Warn: AUTO_MODE takes too long (0.106s)
+
+GlobalTracer.startCompetition_Warn: AUTO_MODE.preContinuousTasks takes too long (0.024s)
+
+GlobalTracer.printPidInfo_Info: [4.468] elevatorPidController: Target=  35.0, Input=  34.5, Error=   0.5, PIDTerms= 0.097/ 0.013/ 0.000/ 0.000, Output= 0.110(-1.000/1.000), Volt=11.3(10.0)
+GlobalTracer.printPidInfo_Info: encoderXPidCtrl: Target=  17.5, Input=  17.5, Error=  -0.0, PIDTerms=-0.006/ 0.000/ 0.006/ 0.000, Output= 0.000(-0.700/0.700), Volt=11.3(10.0)
+GlobalTracer.printPidInfo_Info: encoderYPidCtrl: Target= 298.5, Input= 244.4, Error=  54.1, PIDTerms= 1.083/ 0.000/-0.114/ 0.000, Output= 0.600(-0.600/0.600), Volt=11.3(10.0)
+GlobalTracer.printPidInfo_Info: gyroTurnPidCtrl: Target=   0.0, Input=   1.6, Error=  -1.6, PIDTerms=-0.033/ 0.000/ 0.013/ 0.000, Output=-0.020(-0.700/0.700), Volt=11.3(10.0)
+GlobalTracer.startCompetition_Warn: AUTO_MODE.updates takes too long (0.041s)
+
+GlobalTracer.printPidInfo_Info: [4.562] elevatorPidController: Target=  35.0, Input=  34.5, Error=   0.5, PIDTerms= 0.097/ 0.013/ 0.000/ 0.000, Output= 0.110(-1.000/1.000), Volt=11.4(10.0)
+GlobalTracer.printPidInfo_Info: encoderXPidCtrl: Target=  17.5, Input=  17.3, Error=   0.2, PIDTerms= 0.040/ 0.000/ 0.031/ 0.000, Output= 0.072(-0.700/0.700), Volt=11.4(10.0)
+GlobalTracer.printPidInfo_Info: encoderYPidCtrl: Target= 298.5, Input= 252.0, Error=  46.5, PIDTerms= 0.930/ 0.000/-0.131/ 0.000, Output= 0.600(-0.600/0.600), Volt=11.4(10.0)
+GlobalTracer.printPidInfo_Info: gyroTurnPidCtrl: Target=   0.0, Input=   0.9, Error=  -0.9, PIDTerms=-0.019/ 0.000/ 0.014/ 0.000, Output=-0.004(-0.700/0.700), Volt=11.4(10.0)
+GlobalTracer.startCompetition_Warn: AUTO_MODE.postContinuousTasks takes too long (0.022s)
+
+GlobalTracer.startCompetition_Warn: AUTO_MODE.updates takes too long (0.047s)
+
+GlobalTracer.startCompetition_Warn: AUTO_MODE takes too long (0.105s)
+
+GlobalTracer.startCompetition_Warn: AUTO_MODE.preContinuousTasks takes too long (0.022s)
+
+GlobalTracer.printPidInfo_Info: [4.668] elevatorPidController: Target=  35.0, Input=  34.5, Error=   0.5, PIDTerms= 0.097/ 0.013/ 0.000/ 0.000, Output= 0.110(-1.000/1.000), Volt=11.5(10.0)
+GlobalTracer.printPidInfo_Info: encoderXPidCtrl: Target=  17.5, Input=  17.7, Error=  -0.2, PIDTerms=-0.045/ 0.000/-0.045/ 0.000, Output=-0.090(-0.700/0.700), Volt=11.5(10.0)
+GlobalTracer.printPidInfo_Info: encoderYPidCtrl: Target= 298.5, Input= 260.5, Error=  38.0, PIDTerms= 0.760/ 0.000/-0.112/ 0.000, Output= 0.600(-0.600/0.600), Volt=11.5(10.0)
+GlobalTracer.printPidInfo_Info: gyroTurnPidCtrl: Target=   0.0, Input=   0.4, Error=  -0.4, PIDTerms=-0.007/ 0.000/ 0.009/ 0.000, Output= 0.002(-0.700/0.700), Volt=11.5(10.0)
+GlobalTracer.startCompetition_Warn: AUTO_MODE.updates takes too long (0.038s)
+
+GlobalTracer.startCompetition_Warn: AUTO_MODE.preContinuousTasks takes too long (0.021s)
+
+GlobalTracer.printPidInfo_Info: [4.761] elevatorPidController: Target=  35.0, Input=  34.5, Error=   0.5, PIDTerms= 0.097/ 0.013/ 0.000/ 0.000, Output= 0.110(-1.000/1.000), Volt=11.4(10.0)
+GlobalTracer.printPidInfo_Info: encoderXPidCtrl: Target=  17.5, Input=  17.8, Error=  -0.3, PIDTerms=-0.068/ 0.000/-0.015/ 0.000, Output=-0.083(-0.700/0.700), Volt=11.4(10.0)
+GlobalTracer.printPidInfo_Info: encoderYPidCtrl: Target= 298.5, Input= 268.8, Error=  29.7, PIDTerms= 0.594/ 0.000/-0.133/ 0.000, Output= 0.461(-0.600/0.600), Volt=11.4(10.0)
+GlobalTracer.printPidInfo_Info: gyroTurnPidCtrl: Target=   0.0, Input=   0.3, Error=  -0.3, PIDTerms=-0.006/ 0.000/ 0.001/ 0.000, Output=-0.006(-0.700/0.700), Volt=11.4(10.0)
+GlobalTracer.startCompetition_Warn: AUTO_MODE.updates takes too long (0.038s)
+
+GlobalTracer.printPidInfo_Info: [4.856] elevatorPidController: Target=  35.0, Input=  34.5, Error=   0.5, PIDTerms= 0.097/ 0.014/ 0.000/ 0.000, Output= 0.110(-1.000/1.000), Volt=11.9(10.0)
+GlobalTracer.printPidInfo_Info: encoderXPidCtrl: Target=  17.5, Input=  17.7, Error=  -0.2, PIDTerms=-0.051/ 0.000/ 0.013/ 0.000, Output=-0.037(-0.700/0.700), Volt=11.9(10.0)
+GlobalTracer.printPidInfo_Info: encoderYPidCtrl: Target= 298.5, Input= 275.4, Error=  23.1, PIDTerms= 0.462/ 0.000/-0.126/ 0.000, Output= 0.336(-0.600/0.600), Volt=11.9(10.0)
+GlobalTracer.printPidInfo_Info: gyroTurnPidCtrl: Target=   0.0, Input=   0.4, Error=  -0.4, PIDTerms=-0.009/ 0.000/-0.002/ 0.000, Output=-0.011(-0.700/0.700), Volt=11.9(10.0)
+GlobalTracer.startCompetition_Warn: AUTO_MODE.updates takes too long (0.042s)
+
+GlobalTracer.printPidInfo_Info: [4.944] elevatorPidController: Target=  35.0, Input=  34.5, Error=   0.5, PIDTerms= 0.097/ 0.014/ 0.000/ 0.000, Output= 0.110(-1.000/1.000), Volt=12.2(10.0)
+GlobalTracer.printPidInfo_Info: encoderXPidCtrl: Target=  17.5, Input=  17.6, Error=  -0.1, PIDTerms=-0.022/ 0.000/ 0.017/ 0.000, Output=-0.004(-0.700/0.700), Volt=12.2(10.0)
+GlobalTracer.printPidInfo_Info: encoderYPidCtrl: Target= 298.5, Input= 283.2, Error=  15.3, PIDTerms= 0.306/ 0.000/-0.116/ 0.000, Output= 0.190(-0.600/0.600), Volt=12.2(10.0)
+GlobalTracer.printPidInfo_Info: gyroTurnPidCtrl: Target=   0.0, Input=   0.7, Error=  -0.7, PIDTerms=-0.014/ 0.000/-0.005/ 0.000, Output=-0.019(-0.700/0.700), Volt=12.2(10.0)
+GlobalTracer.startCompetition_Warn: AUTO_MODE.updates takes too long (0.034s)
+
+GlobalTracer.printPidInfo_Info: [5.033] elevatorPidController: Target=  35.0, Input=  34.5, Error=   0.5, PIDTerms= 0.097/ 0.014/ 0.000/ 0.000, Output= 0.110(-1.000/1.000), Volt=12.3(10.0)
+GlobalTracer.startCompetition_Warn: AUTO_MODE.periodic takes too long (0.020s)
+
+GlobalTracer.printPidInfo_Info: encoderXPidCtrl: Target=  17.5, Input=  17.5, Error=  -0.0, PIDTerms=-0.009/ 0.000/ 0.009/ 0.000, Output= 0.000(-0.700/0.700), Volt=12.3(10.0)
+GlobalTracer.printPidInfo_Info: encoderYPidCtrl: Target= 298.5, Input= 288.9, Error=   9.6, PIDTerms= 0.192/ 0.000/-0.099/ 0.000, Output= 0.093(-0.600/0.600), Volt=12.3(10.0)
+GlobalTracer.printPidInfo_Info: gyroTurnPidCtrl: Target=   0.0, Input=   0.7, Error=  -0.7, PIDTerms=-0.014/ 0.000/ 0.000/ 0.000, Output=-0.014(-0.700/0.700), Volt=12.3(10.0)
+GlobalTracer.startCompetition_Warn: AUTO_MODE.updates takes too long (0.057s)
+
+GlobalTracer.startCompetition_Warn: AUTO_MODE takes too long (0.115s)
+
+GlobalTracer.printPidInfo_Info: [5.150] elevatorPidController: Target=  35.0, Input=  34.5, Error=   0.5, PIDTerms= 0.097/ 0.014/ 0.000/ 0.000, Output= 0.111(-1.000/1.000), Volt=12.2(10.0)
+GlobalTracer.printPidInfo_Info: encoderXPidCtrl: Target=  17.5, Input=  17.3, Error=   0.2, PIDTerms= 0.043/ 0.000/ 0.028/ 0.000, Output= 0.070(-0.700/0.700), Volt=12.2(10.0)
+GlobalTracer.printPidInfo_Info: encoderYPidCtrl: Target= 298.5, Input= 296.3, Error=   2.2, PIDTerms= 0.045/ 0.000/-0.098/ 0.000, Output=-0.053(-0.600/0.600), Volt=12.0(10.0)
+GlobalTracer.printPidInfo_Info: gyroTurnPidCtrl: Target=   0.0, Input=  -0.2, Error=   0.2, PIDTerms= 0.003/ 0.000/ 0.013/ 0.000, Output= 0.017(-0.700/0.700), Volt=12.0(10.0)
+GlobalTracer.startCompetition_Warn: AUTO_MODE.postContinuousTasks takes too long (0.032s)
+
+GlobalTracer.startCompetition_Warn: AUTO_MODE.updates takes too long (0.054s)
+
+GlobalTracer.startCompetition_Warn: AUTO_MODE takes too long (0.124s)
+
+GlobalTracer.printPidInfo_Info: [5.276] elevatorPidController: Target=  35.0, Input=  34.5, Error=   0.5, PIDTerms= 0.097/ 0.014/ 0.000/ 0.000, Output= 0.111(-1.000/1.000), Volt=12.1(10.0)
+GlobalTracer.startCompetition_Warn: AUTO_MODE.periodic takes too long (0.033s)
+
+GlobalTracer.printPidInfo_Info: encoderXPidCtrl: Target=  17.5, Input=  17.1, Error=   0.4, PIDTerms= 0.099/ 0.000/ 0.022/ 0.000, Output= 0.121(-0.700/0.700), Volt=12.0(10.0)
+GlobalTracer.printPidInfo_Info: encoderYPidCtrl: Target= 298.5, Input= 301.6, Error=  -3.1, PIDTerms=-0.062/ 0.000/-0.053/ 0.000, Output=-0.114(-0.600/0.600), Volt=12.0(10.0)
+GlobalTracer.printPidInfo_Info: gyroTurnPidCtrl: Target=   0.0, Input=  -1.8, Error=   1.8, PIDTerms= 0.037/ 0.000/ 0.019/ 0.000, Output= 0.056(-0.700/0.700), Volt=11.9(10.0)
+GlobalTracer.startCompetition_Warn: AUTO_MODE.postContinuousTasks takes too long (0.024s)
+
+GlobalTracer.startCompetition_Warn: AUTO_MODE.updates takes too long (0.052s)
+
+GlobalTracer.startCompetition_Warn: AUTO_MODE takes too long (0.140s)
+
+GlobalTracer.printPidInfo_Info: [5.418] elevatorPidController: Target=  35.0, Input=  34.6, Error=   0.4, PIDTerms= 0.072/ 0.014/-0.000/ 0.000, Output= 0.086(-1.000/1.000), Volt=11.8(10.0)
+GlobalTracer.startCompetition_Warn: AUTO_MODE.periodic takes too long (0.029s)
+
+GlobalTracer.printPidInfo_Info: encoderXPidCtrl: Target=  17.5, Input=  17.7, Error=  -0.2, PIDTerms=-0.038/ 0.000/-0.058/ 0.000, Output=-0.097(-0.700/0.700), Volt=11.8(10.0)
+GlobalTracer.printPidInfo_Info: encoderYPidCtrl: Target= 298.5, Input= 304.5, Error=  -6.0, PIDTerms=-0.119/ 0.000/-0.031/ 0.000, Output=-0.150(-0.600/0.600), Volt=11.8(10.0)
+GlobalTracer.printPidInfo_Info: gyroTurnPidCtrl: Target=   0.0, Input=  -3.6, Error=   3.6, PIDTerms= 0.072/ 0.000/ 0.022/ 0.000, Output= 0.094(-0.700/0.700), Volt=11.8(10.0)
+GlobalTracer.startCompetition_Warn: AUTO_MODE.postContinuousTasks takes too long (0.026s)
+
+GlobalTracer.startCompetition_Warn: AUTO_MODE.updates takes too long (0.060s)
+
+GlobalTracer.startCompetition_Warn: AUTO_MODE takes too long (0.151s)
+
+GlobalTracer.printPidInfo_Info: [5.572] elevatorPidController: Target=  35.0, Input=  34.6, Error=   0.4, PIDTerms= 0.080/ 0.014/ 0.000/ 0.000, Output= 0.093(-1.000/1.000), Volt=11.8(10.0)
+GlobalTracer.startCompetition_Warn: AUTO_MODE.periodic takes too long (0.035s)
+
+GlobalTracer.printPidInfo_Info: encoderXPidCtrl: Target=  17.5, Input=  17.5, Error=   0.0, PIDTerms= 0.012/ 0.000/ 0.019/ 0.000, Output= 0.031(-0.700/0.700), Volt=11.8(10.0)
+GlobalTracer.printPidInfo_Info: encoderYPidCtrl: Target= 298.5, Input= 306.0, Error=  -7.5, PIDTerms=-0.151/ 0.000/-0.015/ 0.000, Output=-0.166(-0.600/0.600), Volt=11.7(10.0)
+GlobalTracer.printPidInfo_Info: gyroTurnPidCtrl: Target=   0.0, Input=  -4.6, Error=   4.6, PIDTerms= 0.093/ 0.000/ 0.011/ 0.000, Output= 0.104(-0.700/0.700), Volt=11.7(10.0)
+GlobalTracer.startCompetition_Warn: AUTO_MODE.postContinuousTasks takes too long (0.026s)
+
+GlobalTracer.startCompetition_Warn: AUTO_MODE.updates takes too long (0.053s)
+
+GlobalTracer.startCompetition_Warn: AUTO_MODE takes too long (0.149s)
+
+GlobalTracer.printPidInfo_Info: [5.722] elevatorPidController: Target=  35.0, Input=  34.6, Error=   0.4, PIDTerms= 0.083/ 0.014/ 0.000/ 0.000, Output= 0.096(-1.000/1.000), Volt=11.9(10.0)
+GlobalTracer.startCompetition_Warn: AUTO_MODE.periodic takes too long (0.025s)
+
+GlobalTracer.printPidInfo_Info: encoderXPidCtrl: Target=  17.5, Input=  17.1, Error=   0.4, PIDTerms= 0.105/ 0.000/ 0.040/ 0.000, Output= 0.145(-0.700/0.700), Volt=11.9(10.0)
+GlobalTracer.printPidInfo_Info: encoderYPidCtrl: Target= 298.5, Input= 307.0, Error=  -8.5, PIDTerms=-0.169/ 0.000/-0.010/ 0.000, Output=-0.179(-0.600/0.600), Volt=11.9(10.0)
+GlobalTracer.printPidInfo_Info: gyroTurnPidCtrl: Target=   0.0, Input=  -3.8, Error=   3.8, PIDTerms= 0.076/ 0.000/-0.010/ 0.000, Output= 0.066(-0.700/0.700), Volt=11.9(10.0)
+GlobalTracer.startCompetition_Warn: AUTO_MODE.updates takes too long (0.049s)
+
+GlobalTracer.startCompetition_Warn: AUTO_MODE takes too long (0.126s)
+
+GlobalTracer.printPidInfo_Info: [5.850] elevatorPidController: Target=  35.0, Input=  34.6, Error=   0.4, PIDTerms= 0.083/ 0.014/ 0.000/ 0.000, Output= 0.096(-1.000/1.000), Volt=11.7(10.0)
+GlobalTracer.startCompetition_Warn: AUTO_MODE.periodic takes too long (0.027s)
+
+GlobalTracer.printPidInfo_Info: encoderXPidCtrl: Target=  17.5, Input=  17.0, Error=   0.5, PIDTerms= 0.120/ 0.000/ 0.007/ 0.000, Output= 0.127(-0.700/0.700), Volt=11.6(10.0)
+GlobalTracer.printPidInfo_Info: encoderYPidCtrl: Target= 298.5, Input= 306.8, Error=  -8.3, PIDTerms=-0.166/ 0.000/ 0.002/ 0.000, Output=-0.164(-0.600/0.600), Volt=11.6(10.0)
+GlobalTracer.printPidInfo_Info: gyroTurnPidCtrl: Target=   0.0, Input=  -2.7, Error=   2.7, PIDTerms= 0.054/ 0.000/-0.016/ 0.000, Output= 0.038(-0.700/0.700), Volt=11.6(10.0)
+GlobalTracer.startCompetition_Warn: AUTO_MODE.postContinuousTasks takes too long (0.035s)
+
+GlobalTracer.startCompetition_Warn: AUTO_MODE.updates takes too long (0.063s)
+
+GlobalTracer.startCompetition_Warn: AUTO_MODE takes too long (0.152s)
+
+GlobalTracer.startCompetition_Warn: AUTO_MODE.preContinuousTasks takes too long (0.022s)
+
+GlobalTracer.printPidInfo_Info: [6.004] elevatorPidController: Target=  35.0, Input=  34.6, Error=   0.4, PIDTerms= 0.083/ 0.014/ 0.000/ 0.000, Output= 0.097(-1.000/1.000), Volt=11.8(10.0)
+GlobalTracer.startCompetition_Warn: AUTO_MODE.periodic takes too long (0.034s)
+
+GlobalTracer.printPidInfo_Info: encoderXPidCtrl: Target=  17.5, Input=  17.1, Error=   0.4, PIDTerms= 0.100/ 0.000/-0.007/ 0.000, Output= 0.093(-0.700/0.700), Volt=11.8(10.0)
+GlobalTracer.printPidInfo_Info: encoderYPidCtrl: Target= 298.5, Input= 305.9, Error=  -7.4, PIDTerms=-0.149/ 0.000/ 0.007/ 0.000, Output=-0.141(-0.600/0.600), Volt=11.8(10.0)
+GlobalTracer.printPidInfo_Info: gyroTurnPidCtrl: Target=   0.0, Input=  -3.1, Error=   3.1, PIDTerms= 0.062/ 0.000/ 0.004/ 0.000, Output= 0.066(-0.700/0.700), Volt=11.8(10.0)
+GlobalTracer.startCompetition_Warn: AUTO_MODE.postContinuousTasks takes too long (0.029s)
+
+GlobalTracer.startCompetition_Warn: AUTO_MODE.updates takes too long (0.062s)
+
+GlobalTracer.startCompetition_Warn: AUTO_MODE takes too long (0.168s)
+
+GlobalTracer.printPidInfo_Info: [6.174] elevatorPidController: Target=  35.0, Input=  34.6, Error=   0.4, PIDTerms= 0.083/ 0.014/ 0.000/ 0.000, Output= 0.097(-1.000/1.000), Volt=11.9(10.0)
+GlobalTracer.startCompetition_Warn: AUTO_MODE.periodic takes too long (0.034s)
+
+GlobalTracer.printPidInfo_Info: encoderXPidCtrl: Target=  17.5, Input=  17.2, Error=   0.3, PIDTerms= 0.076/ 0.000/-0.009/ 0.000, Output= 0.067(-0.700/0.700), Volt=11.9(10.0)
+GlobalTracer.printPidInfo_Info: encoderYPidCtrl: Target= 298.5, Input= 304.4, Error=  -5.9, PIDTerms=-0.117/ 0.000/ 0.014/ 0.000, Output=-0.103(-0.600/0.600), Volt=12.0(10.0)
+GlobalTracer.printPidInfo_Info: gyroTurnPidCtrl: Target=   0.0, Input=  -2.2, Error=   2.2, PIDTerms= 0.045/ 0.000/-0.009/ 0.000, Output= 0.036(-0.700/0.700), Volt=12.0(10.0)
+GlobalTracer.startCompetition_Warn: AUTO_MODE.postContinuousTasks takes too long (0.031s)
+
+GlobalTracer.startCompetition_Warn: AUTO_MODE.updates takes too long (0.058s)
+
+GlobalTracer.startCompetition_Warn: AUTO_MODE takes too long (0.159s)
+
+GlobalTracer.startCompetition_Warn: AUTO_MODE.preContinuousTasks takes too long (0.022s)
+
+GlobalTracer.printPidInfo_Info: [6.333] elevatorPidController: Target=  35.0, Input=  34.6, Error=   0.4, PIDTerms= 0.083/ 0.014/ 0.000/ 0.000, Output= 0.097(-1.000/1.000), Volt=12.1(10.0)
+GlobalTracer.startCompetition_Warn: AUTO_MODE.periodic takes too long (0.035s)
+
+GlobalTracer.printPidInfo_Info: encoderXPidCtrl: Target=  17.5, Input=  17.2, Error=   0.3, PIDTerms= 0.064/ 0.000/-0.004/ 0.000, Output= 0.059(-0.700/0.700), Volt=12.1(10.0)
+GlobalTracer.printPidInfo_Info: encoderYPidCtrl: Target= 298.5, Input= 302.6, Error=  -4.1, PIDTerms=-0.082/ 0.000/ 0.016/ 0.000, Output=-0.066(-0.600/0.600), Volt=12.1(10.0)
+GlobalTracer.printPidInfo_Info: gyroTurnPidCtrl: Target=   0.0, Input=  -1.0, Error=   1.0, PIDTerms= 0.021/ 0.000/-0.013/ 0.000, Output= 0.008(-0.700/0.700), Volt=12.1(10.0)
+GlobalTracer.startCompetition_Warn: AUTO_MODE.postContinuousTasks takes too long (0.033s)
+
+GlobalTracer.startCompetition_Warn: AUTO_MODE.updates takes too long (0.058s)
+
+GlobalTracer.startCompetition_Warn: AUTO_MODE takes too long (0.165s)
+
+GlobalTracer.startCompetition_Warn: AUTO_MODE.preContinuousTasks takes too long (0.021s)
+
+GlobalTracer.printPidInfo_Info: [6.499] elevatorPidController: Target=  35.0, Input=  34.6, Error=   0.4, PIDTerms= 0.083/ 0.014/ 0.000/ 0.000, Output= 0.097(-1.000/1.000), Volt=12.0(10.0)
+GlobalTracer.startCompetition_Warn: AUTO_MODE.periodic takes too long (0.027s)
+
+GlobalTracer.printPidInfo_Info: encoderXPidCtrl: Target=  17.5, Input=  17.3, Error=   0.2, PIDTerms= 0.040/ 0.000/-0.009/ 0.000, Output= 0.030(-0.700/0.700), Volt=12.1(10.0)
+GlobalTracer.printPidInfo_Info: encoderYPidCtrl: Target= 298.5, Input= 301.0, Error=  -2.5, PIDTerms=-0.050/ 0.000/ 0.015/ 0.000, Output=-0.035(-0.600/0.600), Volt=12.1(10.0)
+GlobalTracer.printPidInfo_Info: gyroTurnPidCtrl: Target=   0.0, Input=  -0.6, Error=   0.6, PIDTerms= 0.013/ 0.000/-0.004/ 0.000, Output= 0.008(-0.700/0.700), Volt=12.1(10.0)
+GlobalTracer.startCompetition_Warn: AUTO_MODE.postContinuousTasks takes too long (0.037s)
+
+GlobalTracer.startCompetition_Warn: AUTO_MODE.updates takes too long (0.069s)
+
+GlobalTracer.startCompetition_Warn: AUTO_MODE takes too long (0.171s)
+
+GlobalTracer.printPidInfo_Info: [6.672] elevatorPidController: Target=  35.0, Input=  34.6, Error=   0.4, PIDTerms= 0.083/ 0.014/ 0.000/ 0.000, Output= 0.097(-1.000/1.000), Volt=12.2(10.0)
+GlobalTracer.startCompetition_Warn: AUTO_MODE.periodic takes too long (0.037s)
+
+GlobalTracer.printPidInfo_Info: encoderXPidCtrl: Target=   0.0, Input=  17.4, Error=   0.0, PIDTerms= 0.033/ 0.000/-0.002/ 0.000, Output= 0.000(-0.700/0.700), Volt=12.1(10.0)
+GlobalTracer.printPidInfo_Info: encoderYPidCtrl: Target=   0.0, Input= 299.8, Error=   0.0, PIDTerms=-0.026/ 0.000/ 0.010/ 0.000, Output= 0.000(-0.600/0.600), Volt=12.1(10.0)
+GlobalTracer.printPidInfo_Info: gyroTurnPidCtrl: Target=   0.0, Input=  -0.7, Error=   0.0, PIDTerms= 0.013/ 0.000/ 0.000/ 0.000, Output= 0.000(-0.700/0.700), Volt=12.1(10.0)
+GlobalTracer.startCompetition_Warn: AUTO_MODE.postContinuousTasks takes too long (0.034s)
+
+GlobalTracer.startCompetition_Warn: AUTO_MODE.updates takes too long (0.065s)
+
+GlobalTracer.startCompetition_Warn: AUTO_MODE takes too long (0.170s)
+
+GlobalTracer.startCompetition_Warn: AUTO_MODE.preContinuousTasks takes too long (0.031s)
+
+GlobalTracer.Robot_Info: [6.844] TURN_TO_FACE_SCALE: xPos= 17.38,yPos=299.00,heading=  -0.5/ -90.0,volts=12.2(10.0)
+GlobalTracer.printPidInfo_Info: [6.844] elevatorPidController: Target=  35.0, Input=  34.6, Error=   0.4, PIDTerms= 0.083/ 0.014/ 0.000/ 0.000, Output= 0.097(-1.000/1.000), Volt=12.2(10.0)
+GlobalTracer.printPidInfo_Info: encoderXPidCtrl: Target=  17.4, Input=  17.4, Error=   0.0, PIDTerms= 0.033/ 0.000/-0.002/ 0.000, Output= 0.000(-0.700/0.700), Volt=12.2(10.0)
+GlobalTracer.printPidInfo_Info: encoderYPidCtrl: Target= 299.0, Input= 299.8, Error=   0.0, PIDTerms=-0.026/ 0.000/ 0.010/ 0.000, Output= 0.000(-0.600/0.600), Volt=12.2(10.0)
+GlobalTracer.printPidInfo_Info: gyroTurnPidCtrl: Target= -90.0, Input=  -0.5, Error= -89.5, PIDTerms=-1.790/ 0.000/ 0.000/-0.000, Output=-0.700(-0.700/0.700), Volt=12.2(10.0)
+GlobalTracer.startCompetition_Warn: AUTO_MODE.postContinuousTasks takes too long (0.041s)
+
+GlobalTracer.startCompetition_Warn: AUTO_MODE.updates takes too long (0.052s)
+
+GlobalTracer.startCompetition_Warn: AUTO_MODE takes too long (0.152s)
+
+GlobalTracer.printPidInfo_Info: [6.998] elevatorPidController: Target=  35.0, Input=  34.6, Error=   0.4, PIDTerms= 0.083/ 0.014/ 0.000/ 0.000, Output= 0.097(-1.000/1.000), Volt=9.9(9.6)
+GlobalTracer.startCompetition_Warn: AUTO_MODE.periodic takes too long (0.031s)
+
+GlobalTracer.printPidInfo_Info: encoderXPidCtrl: Target=  17.4, Input=  17.4, Error=   0.0, PIDTerms= 0.033/ 0.000/-0.002/ 0.000, Output= 0.000(-0.700/0.700), Volt=9.9(9.6)
+GlobalTracer.printPidInfo_Info: encoderYPidCtrl: Target= 299.0, Input= 299.8, Error=   0.0, PIDTerms=-0.026/ 0.000/ 0.010/ 0.000, Output= 0.000(-0.600/0.600), Volt=9.9(9.6)
+GlobalTracer.printPidInfo_Info: gyroTurnPidCtrl: Target= -90.0, Input=  -2.4, Error= -87.6, PIDTerms=-1.753/ 0.000/ 0.021/-0.000, Output=-0.700(-0.700/0.700), Volt=10.1(9.6)
+GlobalTracer.startCompetition_Warn: AUTO_MODE.postContinuousTasks takes too long (0.032s)
+
+GlobalTracer.startCompetition_Warn: AUTO_MODE.updates takes too long (0.057s)
+
+GlobalTracer.startCompetition_Warn: AUTO_MODE takes too long (0.153s)
+
+GlobalTracer.printPidInfo_Info: [7.151] elevatorPidController: Target=  35.0, Input=  34.6, Error=   0.4, PIDTerms= 0.083/ 0.014/ 0.000/ 0.000, Output= 0.097(-1.000/1.000), Volt=10.3(9.6)
+GlobalTracer.startCompetition_Warn: AUTO_MODE.periodic takes too long (0.037s)
+
+GlobalTracer.printPidInfo_Info: encoderXPidCtrl: Target=  17.4, Input=  17.4, Error=   0.0, PIDTerms= 0.033/ 0.000/-0.002/ 0.000, Output= 0.000(-0.700/0.700), Volt=10.5(9.6)
+GlobalTracer.printPidInfo_Info: encoderYPidCtrl: Target= 299.0, Input= 299.8, Error=   0.0, PIDTerms=-0.026/ 0.000/ 0.010/ 0.000, Output= 0.000(-0.600/0.600), Volt=10.5(9.6)
+GlobalTracer.printPidInfo_Info: gyroTurnPidCtrl: Target= -90.0, Input= -16.5, Error= -73.5, PIDTerms=-1.471/ 0.000/ 0.167/-0.000, Output=-0.700(-0.700/0.700), Volt=10.6(9.6)
+GlobalTracer.startCompetition_Warn: AUTO_MODE.postContinuousTasks takes too long (0.029s)
+
+GlobalTracer.startCompetition_Warn: AUTO_MODE.updates takes too long (0.061s)
+
+GlobalTracer.startCompetition_Warn: AUTO_MODE takes too long (0.149s)
+
+GlobalTracer.startCompetition_Warn: AUTO_MODE.preContinuousTasks takes too long (0.021s)
+
+GlobalTracer.printPidInfo_Info: [7.300] elevatorPidController: Target=  35.0, Input=  34.6, Error=   0.4, PIDTerms= 0.084/ 0.015/ 0.000/ 0.000, Output= 0.098(-1.000/1.000), Volt=10.6(9.6)
+GlobalTracer.printPidInfo_Info: encoderXPidCtrl: Target=  17.4, Input=  17.4, Error=   0.0, PIDTerms= 0.033/ 0.000/-0.002/ 0.000, Output= 0.000(-0.700/0.700), Volt=10.9(9.6)
+GlobalTracer.printPidInfo_Info: encoderYPidCtrl: Target= 299.0, Input= 299.8, Error=   0.0, PIDTerms=-0.026/ 0.000/ 0.010/ 0.000, Output= 0.000(-0.600/0.600), Volt=10.9(9.6)
+GlobalTracer.printPidInfo_Info: gyroTurnPidCtrl: Target= -90.0, Input= -37.9, Error= -52.1, PIDTerms=-1.041/ 0.000/ 0.267/-0.000, Output=-0.700(-0.700/0.700), Volt=10.9(9.6)
+GlobalTracer.startCompetition_Warn: AUTO_MODE.updates takes too long (0.061s)
+
+GlobalTracer.startCompetition_Warn: AUTO_MODE takes too long (0.127s)
+
+GlobalTracer.startCompetition_Warn: AUTO_MODE.preContinuousTasks takes too long (0.022s)
+
+GlobalTracer.printPidInfo_Info: [7.429] elevatorPidController: Target=  35.0, Input=  34.6, Error=   0.4, PIDTerms= 0.084/ 0.015/ 0.000/ 0.000, Output= 0.099(-1.000/1.000), Volt=10.9(9.6)
+GlobalTracer.startCompetition_Warn: AUTO_MODE.periodic takes too long (0.028s)
+
+GlobalTracer.printPidInfo_Info: encoderXPidCtrl: Target=  17.4, Input=  17.4, Error=   0.0, PIDTerms= 0.033/ 0.000/-0.002/ 0.000, Output= 0.000(-0.700/0.700), Volt=10.9(9.6)
+GlobalTracer.printPidInfo_Info: encoderYPidCtrl: Target= 299.0, Input= 299.8, Error=   0.0, PIDTerms=-0.026/ 0.000/ 0.010/ 0.000, Output= 0.000(-0.600/0.600), Volt=11.0(9.6)
+GlobalTracer.printPidInfo_Info: gyroTurnPidCtrl: Target= -90.0, Input= -59.4, Error= -30.6, PIDTerms=-0.611/ 0.000/ 0.260/-0.000, Output=-0.352(-0.700/0.700), Volt=11.0(9.6)
+GlobalTracer.startCompetition_Warn: AUTO_MODE.postContinuousTasks takes too long (0.022s)
+
+GlobalTracer.startCompetition_Warn: AUTO_MODE.updates takes too long (0.063s)
+
+GlobalTracer.startCompetition_Warn: AUTO_MODE takes too long (0.152s)
+
+GlobalTracer.printPidInfo_Info: [7.584] elevatorPidController: Target=  35.0, Input=  34.6, Error=   0.4, PIDTerms= 0.083/ 0.015/-0.000/ 0.000, Output= 0.097(-1.000/1.000), Volt=12.0(9.6)
+GlobalTracer.startCompetition_Warn: AUTO_MODE.periodic takes too long (0.038s)
+
+GlobalTracer.printPidInfo_Info: encoderXPidCtrl: Target=  17.4, Input=  17.4, Error=   0.0, PIDTerms= 0.033/ 0.000/-0.002/ 0.000, Output= 0.000(-0.700/0.700), Volt=11.9(9.6)
+GlobalTracer.printPidInfo_Info: encoderYPidCtrl: Target= 299.0, Input= 299.8, Error=   0.0, PIDTerms=-0.026/ 0.000/ 0.010/ 0.000, Output= 0.000(-0.600/0.600), Volt=11.9(9.6)
+GlobalTracer.printPidInfo_Info: gyroTurnPidCtrl: Target= -90.0, Input= -85.5, Error=  -4.5, PIDTerms=-0.091/ 0.000/ 0.302/-0.000, Output= 0.211(-0.700/0.700), Volt=11.9(9.6)
+GlobalTracer.startCompetition_Warn: AUTO_MODE.updates takes too long (0.066s)
+
+GlobalTracer.startCompetition_Warn: AUTO_MODE takes too long (0.148s)
+
+GlobalTracer.printPidInfo_Info: [7.734] elevatorPidController: Target=  35.0, Input=  34.6, Error=   0.4, PIDTerms= 0.084/ 0.015/ 0.000/ 0.000, Output= 0.099(-1.000/1.000), Volt=11.6(9.6)
+GlobalTracer.startCompetition_Warn: AUTO_MODE.periodic takes too long (0.022s)
+
+GlobalTracer.printPidInfo_Info: encoderXPidCtrl: Target=  17.4, Input=  17.4, Error=   0.0, PIDTerms= 0.033/ 0.000/-0.002/ 0.000, Output= 0.000(-0.700/0.700), Volt=11.7(9.6)
+GlobalTracer.printPidInfo_Info: encoderYPidCtrl: Target= 299.0, Input= 299.8, Error=   0.0, PIDTerms=-0.026/ 0.000/ 0.010/ 0.000, Output= 0.000(-0.600/0.600), Volt=11.7(9.6)
+GlobalTracer.printPidInfo_Info: gyroTurnPidCtrl: Target= -90.0, Input=-104.3, Error=  14.3, PIDTerms= 0.286/ 0.000/ 0.242/-0.000, Output= 0.528(-0.700/0.700), Volt=10.4(9.6)
+GlobalTracer.startCompetition_Warn: AUTO_MODE.postContinuousTasks takes too long (0.028s)
+
+GlobalTracer.startCompetition_Warn: AUTO_MODE.updates takes too long (0.048s)
+
+GlobalTracer.startCompetition_Warn: AUTO_MODE takes too long (0.126s)
+
+GlobalTracer.startCompetition_Warn: AUTO_MODE.preContinuousTasks takes too long (0.022s)
+
+GlobalTracer.printPidInfo_Info: [7.860] elevatorPidController: Target=  35.0, Input=  34.6, Error=   0.4, PIDTerms= 0.084/ 0.015/ 0.000/ 0.000, Output= 0.099(-1.000/1.000), Volt=10.6(9.6)
+GlobalTracer.startCompetition_Warn: AUTO_MODE.periodic takes too long (0.023s)
+
+GlobalTracer.printPidInfo_Info: encoderXPidCtrl: Target=  17.4, Input=  17.4, Error=   0.0, PIDTerms= 0.033/ 0.000/-0.002/ 0.000, Output= 0.000(-0.700/0.700), Volt=10.8(9.6)
+GlobalTracer.printPidInfo_Info: encoderYPidCtrl: Target= 299.0, Input= 299.8, Error=   0.0, PIDTerms=-0.026/ 0.000/ 0.010/ 0.000, Output= 0.000(-0.600/0.600), Volt=11.4(9.6)
+GlobalTracer.printPidInfo_Info: gyroTurnPidCtrl: Target= -90.0, Input=-105.1, Error=  15.1, PIDTerms= 0.301/ 0.000/ 0.010/-0.000, Output= 0.311(-0.700/0.700), Volt=11.4(9.6)
+GlobalTracer.startCompetition_Warn: AUTO_MODE.postContinuousTasks takes too long (0.035s)
+
+GlobalTracer.startCompetition_Warn: AUTO_MODE.updates takes too long (0.074s)
+
+GlobalTracer.startCompetition_Warn: AUTO_MODE takes too long (0.165s)
+
+GlobalTracer.startCompetition_Warn: AUTO_MODE.preContinuousTasks takes too long (0.026s)
+
+GlobalTracer.printPidInfo_Info: [8.025] elevatorPidController: Target=  35.0, Input=  34.6, Error=   0.4, PIDTerms= 0.084/ 0.015/ 0.000/ 0.000, Output= 0.099(-1.000/1.000), Volt=11.8(9.6)
+GlobalTracer.printPidInfo_Info: encoderXPidCtrl: Target=  17.4, Input=  17.4, Error=   0.0, PIDTerms= 0.033/ 0.000/-0.002/ 0.000, Output= 0.000(-0.700/0.700), Volt=11.8(9.6)
+GlobalTracer.printPidInfo_Info: encoderYPidCtrl: Target= 299.0, Input= 299.8, Error=   0.0, PIDTerms=-0.026/ 0.000/ 0.010/ 0.000, Output= 0.000(-0.600/0.600), Volt=11.8(9.6)
+GlobalTracer.printPidInfo_Info: gyroTurnPidCtrl: Target= -90.0, Input= -93.6, Error=   3.6, PIDTerms= 0.072/ 0.000/-0.130/-0.000, Output=-0.058(-0.700/0.700), Volt=11.8(9.6)
+GlobalTracer.startCompetition_Warn: AUTO_MODE.postContinuousTasks takes too long (0.020s)
+
+GlobalTracer.startCompetition_Warn: AUTO_MODE.updates takes too long (0.056s)
+
+GlobalTracer.startCompetition_Warn: AUTO_MODE takes too long (0.121s)
+
+GlobalTracer.startCompetition_Warn: AUTO_MODE.preContinuousTasks takes too long (0.023s)
+
+GlobalTracer.printPidInfo_Info: [8.146] elevatorPidController: Target=  35.0, Input=  34.6, Error=   0.4, PIDTerms= 0.084/ 0.015/ 0.000/ 0.000, Output= 0.099(-1.000/1.000), Volt=12.0(9.6)
+GlobalTracer.printPidInfo_Info: encoderXPidCtrl: Target=  17.4, Input=  17.4, Error=   0.0, PIDTerms= 0.033/ 0.000/-0.002/ 0.000, Output= 0.000(-0.700/0.700), Volt=12.0(9.6)
+GlobalTracer.printPidInfo_Info: encoderYPidCtrl: Target= 299.0, Input= 299.8, Error=   0.0, PIDTerms=-0.026/ 0.000/ 0.010/ 0.000, Output= 0.000(-0.600/0.600), Volt=12.0(9.6)
+GlobalTracer.printPidInfo_Info: gyroTurnPidCtrl: Target= -90.0, Input= -83.9, Error=  -6.1, PIDTerms=-0.122/ 0.000/-0.145/-0.000, Output=-0.266(-0.700/0.700), Volt=11.8(9.6)
+GlobalTracer.startCompetition_Warn: AUTO_MODE.postContinuousTasks takes too long (0.023s)
+
+GlobalTracer.startCompetition_Warn: AUTO_MODE.updates takes too long (0.049s)
+
+GlobalTracer.startCompetition_Warn: AUTO_MODE takes too long (0.115s)
+
+GlobalTracer.printPidInfo_Info: [8.264] elevatorPidController: Target=  35.0, Input=  34.6, Error=   0.4, PIDTerms= 0.084/ 0.015/ 0.000/ 0.000, Output= 0.099(-1.000/1.000), Volt=11.6(9.6)
+GlobalTracer.startCompetition_Warn: AUTO_MODE.periodic takes too long (0.021s)
+
+GlobalTracer.printPidInfo_Info: encoderXPidCtrl: Target=  17.4, Input=  17.4, Error=   0.0, PIDTerms= 0.033/ 0.000/-0.002/ 0.000, Output= 0.000(-0.700/0.700), Volt=11.6(9.6)
+GlobalTracer.printPidInfo_Info: encoderYPidCtrl: Target= 299.0, Input= 299.8, Error=   0.0, PIDTerms=-0.026/ 0.000/ 0.010/ 0.000, Output= 0.000(-0.600/0.600), Volt=11.7(9.6)
+GlobalTracer.printPidInfo_Info: gyroTurnPidCtrl: Target= -90.0, Input= -83.3, Error=  -6.7, PIDTerms=-0.134/ 0.000/-0.009/-0.000, Output=-0.143(-0.700/0.700), Volt=11.7(9.6)
+GlobalTracer.startCompetition_Warn: AUTO_MODE.postContinuousTasks takes too long (0.032s)
+
+GlobalTracer.startCompetition_Warn: AUTO_MODE.updates takes too long (0.044s)
+
+GlobalTracer.startCompetition_Warn: AUTO_MODE takes too long (0.128s)
+
+GlobalTracer.printPidInfo_Info: [8.394] elevatorPidController: Target=  35.0, Input=  34.6, Error=   0.4, PIDTerms= 0.084/ 0.015/ 0.000/ 0.000, Output= 0.099(-1.000/1.000), Volt=12.0(9.6)
+GlobalTracer.printPidInfo_Info: encoderXPidCtrl: Target=  17.4, Input=  17.4, Error=   0.0, PIDTerms= 0.033/ 0.000/-0.002/ 0.000, Output= 0.000(-0.700/0.700), Volt=12.0(9.6)
+GlobalTracer.printPidInfo_Info: encoderYPidCtrl: Target= 299.0, Input= 299.8, Error=   0.0, PIDTerms=-0.026/ 0.000/ 0.010/ 0.000, Output= 0.000(-0.600/0.600), Volt=12.0(9.6)
+GlobalTracer.printPidInfo_Info: gyroTurnPidCtrl: Target= -90.0, Input= -86.9, Error=  -3.1, PIDTerms=-0.061/ 0.000/ 0.054/-0.000, Output=-0.007(-0.700/0.700), Volt=12.1(9.6)
+GlobalTracer.startCompetition_Warn: AUTO_MODE.postContinuousTasks takes too long (0.031s)
+
+GlobalTracer.startCompetition_Warn: AUTO_MODE.updates takes too long (0.059s)
+
+GlobalTracer.startCompetition_Warn: AUTO_MODE takes too long (0.129s)
+
+GlobalTracer.printPidInfo_Info: [8.525] elevatorPidController: Target=  35.0, Input=  34.6, Error=   0.4, PIDTerms= 0.084/ 0.015/ 0.000/ 0.000, Output= 0.099(-1.000/1.000), Volt=12.1(9.6)
+GlobalTracer.printPidInfo_Info: encoderXPidCtrl: Target=  17.4, Input=  17.4, Error=   0.0, PIDTerms= 0.033/ 0.000/-0.002/ 0.000, Output= 0.000(-0.700/0.700), Volt=12.1(9.6)
+GlobalTracer.printPidInfo_Info: encoderYPidCtrl: Target= 299.0, Input= 299.8, Error=   0.0, PIDTerms=-0.026/ 0.000/ 0.010/ 0.000, Output= 0.000(-0.600/0.600), Volt=12.1(9.6)
+GlobalTracer.printPidInfo_Info: gyroTurnPidCtrl: Target= -90.0, Input= -88.7, Error=  -1.3, PIDTerms=-0.026/ 0.000/ 0.024/-0.000, Output=-0.002(-0.700/0.700), Volt=12.1(9.6)
+GlobalTracer.startCompetition_Warn: AUTO_MODE.postContinuousTasks takes too long (0.027s)
+
+GlobalTracer.startCompetition_Warn: AUTO_MODE.updates takes too long (0.057s)
+
+GlobalTracer.startCompetition_Warn: AUTO_MODE takes too long (0.125s)
+
+GlobalTracer.printPidInfo_Info: [8.652] elevatorPidController: Target=  35.0, Input=  34.6, Error=   0.4, PIDTerms= 0.084/ 0.015/ 0.000/ 0.000, Output= 0.099(-1.000/1.000), Volt=12.1(9.6)
+GlobalTracer.printPidInfo_Info: encoderXPidCtrl: Target=   0.0, Input=  17.4, Error=   0.0, PIDTerms= 0.033/ 0.000/-0.002/ 0.000, Output= 0.000(-0.700/0.700), Volt=12.1(9.6)
+GlobalTracer.printPidInfo_Info: encoderYPidCtrl: Target=   0.0, Input= 299.8, Error=   0.0, PIDTerms=-0.026/ 0.000/ 0.010/ 0.000, Output= 0.000(-0.600/0.600), Volt=12.1(9.6)
+GlobalTracer.printPidInfo_Info: gyroTurnPidCtrl: Target=   0.0, Input= -88.2, Error=   0.0, PIDTerms=-0.036/ 0.000/-0.007/-0.000, Output= 0.000(-0.700/0.700), Volt=12.1(9.6)
+GlobalTracer.startCompetition_Warn: AUTO_MODE.postContinuousTasks takes too long (0.050s)
+
+GlobalTracer.startCompetition_Warn: AUTO_MODE.updates takes too long (0.043s)
+
+GlobalTracer.startCompetition_Warn: AUTO_MODE takes too long (0.129s)
+
+GlobalTracer.startCompetition_Warn: AUTO_MODE.preContinuousTasks takes too long (0.024s)
+
+GlobalTracer.Robot_Info: [8.783] RAISE_ELEVATOR: xPos= 18.09,yPos=298.07,heading= -88.3/ -90.0,volts=12.2(9.6)
+GlobalTracer.printPidInfo_Info: [8.783] elevatorPidController: Target=  70.0, Input=  34.6, Error=  35.4, PIDTerms= 0.084/ 0.015/ 0.000/ 0.000, Output= 0.000(-1.000/1.000), Volt=12.2(9.6)
+GlobalTracer.startCompetition_Warn: AUTO_MODE.periodic takes too long (0.020s)
+
+GlobalTracer.startCompetition_Warn: AUTO_MODE.updates takes too long (0.063s)
+
+GlobalTracer.startCompetition_Warn: AUTO_MODE takes too long (0.121s)
+
+GlobalTracer.startCompetition_Warn: AUTO_MODE.preContinuousTasks takes too long (0.026s)
+
+GlobalTracer.printPidInfo_Info: [8.904] elevatorPidController: Target=  70.0, Input=  34.6, Error=  35.4, PIDTerms= 7.084/ 0.001/ 0.000/ 0.000, Output= 1.000(-1.000/1.000), Volt=10.2(9.6)
+GlobalTracer.startCompetition_Warn: AUTO_MODE.periodic takes too long (0.040s)
+
+GlobalTracer.startCompetition_Warn: AUTO_MODE.updates takes too long (0.082s)
+
+GlobalTracer.startCompetition_Warn: AUTO_MODE takes too long (0.163s)
+
+GlobalTracer.startCompetition_Warn: AUTO_MODE.preContinuousTasks takes too long (0.037s)
+
+GlobalTracer.printPidInfo_Info: [9.068] elevatorPidController: Target=  70.0, Input=  37.3, Error=  32.7, PIDTerms= 6.537/ 0.006/-0.000/ 0.000, Output= 1.000(-1.000/1.000), Volt=11.3(9.6)
+GlobalTracer.startCompetition_Warn: AUTO_MODE.updates takes too long (0.057s)
+
+GlobalTracer.startCompetition_Warn: AUTO_MODE takes too long (0.116s)
+
+GlobalTracer.printPidInfo_Info: [9.185] elevatorPidController: Target=  70.0, Input=  42.5, Error=  27.5, PIDTerms= 5.502/ 0.010/-0.000/ 0.000, Output= 1.000(-1.000/1.000), Volt=11.1(9.6)
+GlobalTracer.startCompetition_Warn: AUTO_MODE.updates takes too long (0.037s)
+
+GlobalTracer.printPidInfo_Info: [9.264] elevatorPidController: Target=  70.0, Input=  46.5, Error=  23.5, PIDTerms= 4.707/ 0.012/-0.000/ 0.000, Output= 1.000(-1.000/1.000), Volt=11.2(9.6)
+GlobalTracer.startCompetition_Warn: AUTO_MODE.updates takes too long (0.031s)
+
+GlobalTracer.printPidInfo_Info: [9.334] elevatorPidController: Target=  70.0, Input=  49.6, Error=  20.4, PIDTerms= 4.088/ 0.013/-0.000/ 0.000, Output= 1.000(-1.000/1.000), Volt=11.3(9.6)
+GlobalTracer.printPidInfo_Info: [9.386] elevatorPidController: Target=  70.0, Input=  51.9, Error=  18.1, PIDTerms= 3.611/ 0.015/-0.000/ 0.000, Output= 1.000(-1.000/1.000), Volt=11.1(9.6)
+GlobalTracer.startCompetition_Warn: AUTO_MODE.periodic takes too long (0.020s)
+
+GlobalTracer.startCompetition_Warn: AUTO_MODE.updates takes too long (0.033s)
+
+GlobalTracer.printPidInfo_Info: [9.461] elevatorPidController: Target=  70.0, Input=  54.3, Error=  15.7, PIDTerms= 3.139/ 0.016/-0.000/ 0.000, Output= 1.000(-1.000/1.000), Volt=11.1(9.6)
+GlobalTracer.startCompetition_Warn: AUTO_MODE.updates takes too long (0.029s)
+
+GlobalTracer.printPidInfo_Info: [9.528] elevatorPidController: Target=  70.0, Input=  57.5, Error=  12.5, PIDTerms= 2.509/ 0.017/-0.000/ 0.000, Output= 1.000(-1.000/1.000), Volt=11.1(9.6)
+GlobalTracer.startCompetition_Warn: AUTO_MODE.updates takes too long (0.025s)
+
+GlobalTracer.printPidInfo_Info: [9.593] elevatorPidController: Target=  70.0, Input=  59.8, Error=  10.2, PIDTerms= 2.049/ 0.017/-0.000/ 0.000, Output= 1.000(-1.000/1.000), Volt=11.1(9.6)
+GlobalTracer.startCompetition_Warn: AUTO_MODE.updates takes too long (0.028s)
+
+GlobalTracer.printPidInfo_Info: [9.654] elevatorPidController: Target=  70.0, Input=  62.1, Error=   7.9, PIDTerms= 1.576/ 0.018/-0.000/ 0.000, Output= 1.000(-1.000/1.000), Volt=11.1(9.6)
+GlobalTracer.printPidInfo_Info: [9.707] elevatorPidController: Target=  70.0, Input=  64.4, Error=   5.6, PIDTerms= 1.112/ 0.018/-0.000/ 0.000, Output= 1.000(-1.000/1.000), Volt=11.1(9.6)
+GlobalTracer.startCompetition_Warn: AUTO_MODE.updates takes too long (0.023s)
+
+GlobalTracer.printPidInfo_Info: [9.767] elevatorPidController: Target=  70.0, Input=  66.7, Error=   3.3, PIDTerms= 0.652/ 0.018/-0.000/ 0.000, Output= 0.670(-1.000/1.000), Volt=11.7(9.6)
+GlobalTracer.startCompetition_Warn: AUTO_MODE.updates takes too long (0.032s)
+
+GlobalTracer.printPidInfo_Info: [9.836] elevatorPidController: Target=  70.0, Input=  68.1, Error=   1.9, PIDTerms= 0.375/ 0.018/-0.000/ 0.000, Output= 0.393(-1.000/1.000), Volt=12.0(9.6)
+GlobalTracer.startCompetition_Warn: AUTO_MODE.updates takes too long (0.039s)
+
+GlobalTracer.printPidInfo_Info: [9.910] elevatorPidController: Target=  70.0, Input=  70.2, Error=  -0.2, PIDTerms=-0.030/ 0.018/-0.000/ 0.000, Output=-0.012(-1.000/1.000), Volt=12.1(9.6)
+GlobalTracer.startCompetition_Warn: AUTO_MODE.updates takes too long (0.031s)
+
+GlobalTracer.printPidInfo_Info: [9.972] elevatorPidController: Target=  70.0, Input=  70.8, Error=  -0.8, PIDTerms=-0.151/ 0.018/-0.000/ 0.000, Output=-0.132(-1.000/1.000), Volt=12.1(9.6)
+GlobalTracer.startCompetition_Warn: AUTO_MODE.updates takes too long (0.035s)
+
+GlobalTracer.printPidInfo_Info: [10.046] elevatorPidController: Target=  70.0, Input=  70.4, Error=  -0.4, PIDTerms=-0.089/ 0.018/ 0.000/ 0.000, Output=-0.071(-1.000/1.000), Volt=12.1(9.6)
+GlobalTracer.startCompetition_Warn: AUTO_MODE.updates takes too long (0.027s)
+
+GlobalTracer.Robot_Info: [10.096] THROW_CUBE: xPos= 18.09,yPos=298.03,heading= -88.3/ -90.0,volts=12.1(9.6)
+GlobalTracer.printPidInfo_Info: [10.096] elevatorPidController: Target=  70.0, Input=  70.4, Error=   0.2, PIDTerms=-0.089/ 0.018/ 0.000/ 0.000, Output= 0.000(-1.000/1.000), Volt=12.1(9.6)
+GlobalTracer.startCompetition_Warn: AUTO_MODE.updates takes too long (0.037s)
+
+GlobalTracer.printPidInfo_Info: [10.183] elevatorPidController: Target=  70.0, Input=  69.7, Error=   0.3, PIDTerms= 0.064/ 0.000/ 0.000/ 0.000, Output= 0.064(-1.000/1.000), Volt=10.4(9.6)
+GlobalTracer.startCompetition_Warn: AUTO_MODE.updates takes too long (0.024s)
+
+GlobalTracer.printPidInfo_Info: [10.242] elevatorPidController: Target=  70.0, Input=  69.6, Error=   0.4, PIDTerms= 0.071/ 0.000/ 0.000/ 0.000, Output= 0.071(-1.000/1.000), Volt=10.4(9.6)
+GlobalTracer.startCompetition_Warn: AUTO_MODE.updates takes too long (0.022s)
+
+GlobalTracer.printPidInfo_Info: [10.307] elevatorPidController: Target=  70.0, Input=  69.6, Error=   0.4, PIDTerms= 0.071/ 0.000/ 0.000/ 0.000, Output= 0.071(-1.000/1.000), Volt=10.3(9.6)
+GlobalTracer.startCompetition_Warn: AUTO_MODE.updates takes too long (0.031s)
+
+GlobalTracer.printPidInfo_Info: [10.360] elevatorPidController: Target=  70.0, Input=  69.6, Error=   0.4, PIDTerms= 0.071/ 0.000/ 0.000/ 0.000, Output= 0.071(-1.000/1.000), Volt=10.6(9.6)
+GlobalTracer.startCompetition_Warn: AUTO_MODE.updates takes too long (0.031s)
+
+GlobalTracer.printPidInfo_Info: [10.433] elevatorPidController: Target=  70.0, Input=  69.6, Error=   0.4, PIDTerms= 0.073/ 0.000/ 0.000/ 0.000, Output= 0.073(-1.000/1.000), Volt=10.8(9.6)
+GlobalTracer.startCompetition_Warn: AUTO_MODE.updates takes too long (0.023s)
+
+GlobalTracer.printPidInfo_Info: [10.495] elevatorPidController: Target=  70.0, Input=  69.3, Error=   0.7, PIDTerms= 0.149/ 0.000/ 0.000/ 0.000, Output= 0.149(-1.000/1.000), Volt=11.1(9.6)
+GlobalTracer.startCompetition_Warn: AUTO_MODE.updates takes too long (0.026s)
+
+GlobalTracer.printPidInfo_Info: [10.561] elevatorPidController: Target=  70.0, Input=  69.3, Error=   0.7, PIDTerms= 0.137/ 0.000/-0.000/ 0.000, Output= 0.137(-1.000/1.000), Volt=11.3(9.6)
+GlobalTracer.startCompetition_Warn: AUTO_MODE.updates takes too long (0.030s)
+
+GlobalTracer.CmdAutoScale_Info: setSonarTriggerEnabled(false)
+GlobalTracer.CmdAutoScale_Info: setRangingEnabled(false)
+GlobalTracer.Robot_Info: [10.631]       DONE: xPos= 18.08,yPos=297.91,heading= -88.3/ -90.0,volts=11.4(9.6)
+GlobalTracer.printPidInfo_Info: [10.631] elevatorPidController: Target=   8.0, Input=  69.3, Error= -61.3, PIDTerms= 0.137/ 0.000/ 0.000/ 0.000, Output= 0.000(-1.000/1.000), Volt=11.4(9.6)
+GlobalTracer.startCompetition_Warn: AUTO_MODE.continuous takes too long (0.022s)
+
+GlobalTracer.printPidInfo_Info: [10.700] elevatorPidController: Target=   8.0, Input=  69.3, Error= -61.3, PIDTerms=-12.263/-0.002/ 0.000/ 0.000, Output=-1.000(-1.000/1.000), Volt=10.2(9.6)
+GlobalTracer.startCompetition_Warn: AUTO_MODE.periodic takes too long (0.021s)
+
+GlobalTracer.startCompetition_Warn: AUTO_MODE.updates takes too long (0.026s)
+
+GlobalTracer.printPidInfo_Info: [10.773] elevatorPidController: Target=   8.0, Input=  68.1, Error= -60.1, PIDTerms=-12.015/-0.005/ 0.000/ 0.000, Output=-1.000(-1.000/1.000), Volt=11.5(9.6)
+GlobalTracer.startCompetition_Warn: AUTO_MODE.updates takes too long (0.021s)
+
+GlobalTracer.printPidInfo_Info: [10.833] elevatorPidController: Target=   8.0, Input=  65.0, Error= -57.0, PIDTerms=-11.394/-0.009/ 0.000/ 0.000, Output=-1.000(-1.000/1.000), Volt=11.6(9.6)
+GlobalTracer.startCompetition_Warn: AUTO_MODE.updates takes too long (0.031s)
+
+GlobalTracer.printPidInfo_Info: [10.899] elevatorPidController: Target=   8.0, Input=  61.4, Error= -53.4, PIDTerms=-10.687/-0.012/ 0.000/ 0.000, Output=-1.000(-1.000/1.000), Volt=11.7(9.6)
+GlobalTracer.startCompetition_Warn: AUTO_MODE.updates takes too long (0.028s)
+
+GlobalTracer.printPidInfo_Info: [10.962] elevatorPidController: Target=   8.0, Input=  57.9, Error= -49.9, PIDTerms=-9.972/-0.016/ 0.000/ 0.000, Output=-1.000(-1.000/1.000), Volt=11.8(9.6)
+GlobalTracer.startCompetition_Warn: AUTO_MODE.updates takes too long (0.036s)
+
+GlobalTracer.printPidInfo_Info: [11.041] elevatorPidController: Target=   8.0, Input=  52.9, Error= -44.9, PIDTerms=-8.973/-0.019/ 0.000/ 0.000, Output=-1.000(-1.000/1.000), Volt=11.9(9.6)
+GlobalTracer.startCompetition_Warn: AUTO_MODE.updates takes too long (0.028s)
+
+GlobalTracer.printPidInfo_Info: [11.104] elevatorPidController: Target=   8.0, Input=  49.0, Error= -41.0, PIDTerms=-8.208/-0.022/ 0.000/ 0.000, Output=-1.000(-1.000/1.000), Volt=12.1(9.6)
+GlobalTracer.startCompetition_Warn: AUTO_MODE.updates takes too long (0.031s)
+
+GlobalTracer.printPidInfo_Info: [11.168] elevatorPidController: Target=   8.0, Input=  44.4, Error= -36.4, PIDTerms=-7.282/-0.024/ 0.000/ 0.000, Output=-1.000(-1.000/1.000), Volt=12.2(9.6)
+GlobalTracer.startCompetition_Warn: AUTO_MODE.updates takes too long (0.031s)
+
+GlobalTracer.printPidInfo_Info: [11.222] elevatorPidController: Target=   8.0, Input=  39.9, Error= -31.9, PIDTerms=-6.384/-0.026/ 0.000/ 0.000, Output=-1.000(-1.000/1.000), Volt=12.0(9.6)
+GlobalTracer.startCompetition_Warn: AUTO_MODE.updates takes too long (0.032s)
+
+GlobalTracer.printPidInfo_Info: [11.290] elevatorPidController: Target=   8.0, Input=  35.5, Error= -27.5, PIDTerms=-5.504/-0.027/ 0.000/ 0.000, Output=-1.000(-1.000/1.000), Volt=12.1(9.6)
+GlobalTracer.startCompetition_Warn: AUTO_MODE.updates takes too long (0.026s)
+
+GlobalTracer.printPidInfo_Info: [11.354] elevatorPidController: Target=   8.0, Input=  29.6, Error= -21.6, PIDTerms=-4.313/-0.029/ 0.000/ 0.000, Output=-1.000(-1.000/1.000), Volt=12.1(9.6)
+GlobalTracer.startCompetition_Warn: AUTO_MODE.updates takes too long (0.041s)
+
+GlobalTracer.printPidInfo_Info: [11.432] elevatorPidController: Target=   8.0, Input=  25.1, Error= -17.1, PIDTerms=-3.410/-0.030/ 0.000/ 0.000, Output=-1.000(-1.000/1.000), Volt=12.1(9.6)
+GlobalTracer.startCompetition_Warn: AUTO_MODE.updates takes too long (0.025s)
+
+GlobalTracer.printPidInfo_Info: [11.483] elevatorPidController: Target=   8.0, Input=  19.1, Error= -11.1, PIDTerms=-2.214/-0.031/ 0.000/ 0.000, Output=-1.000(-1.000/1.000), Volt=12.2(9.6)
+GlobalTracer.startCompetition_Warn: AUTO_MODE.updates takes too long (0.037s)
+
+GlobalTracer.printPidInfo_Info: [11.548] elevatorPidController: Target=   8.0, Input=  16.1, Error=  -8.1, PIDTerms=-1.622/-0.031/ 0.000/ 0.000, Output=-1.000(-1.000/1.000), Volt=12.1(9.6)
+GlobalTracer.startCompetition_Warn: AUTO_MODE.updates takes too long (0.031s)
+
+GlobalTracer.printPidInfo_Info: [11.614] elevatorPidController: Target=   8.0, Input=  10.1, Error=  -2.1, PIDTerms=-0.416/-0.031/ 0.000/ 0.000, Output=-0.447(-1.000/1.000), Volt=12.5(9.6)
+GlobalTracer.startCompetition_Warn: AUTO_MODE.updates takes too long (0.043s)
+
+GlobalTracer.printPidInfo_Info: [11.688] elevatorPidController: Target=   8.0, Input=   6.3, Error=   1.7, PIDTerms= 0.347/-0.031/ 0.000/ 0.000, Output= 0.316(-1.000/1.000), Volt=12.0(9.6)
+GlobalTracer.startCompetition_Warn: AUTO_MODE.updates takes too long (0.036s)
+
+GlobalTracer.printPidInfo_Info: [11.761] elevatorPidController: Target=   8.0, Input=   4.9, Error=   3.1, PIDTerms= 0.618/-0.031/ 0.000/ 0.000, Output= 0.587(-1.000/1.000), Volt=11.8(9.6)
+GlobalTracer.startCompetition_Warn: AUTO_MODE.updates takes too long (0.026s)
+
+GlobalTracer.printPidInfo_Info: [11.829] elevatorPidController: Target=   8.0, Input=   6.6, Error=   1.4, PIDTerms= 0.277/-0.031/-0.000/ 0.000, Output= 0.246(-1.000/1.000), Volt=12.2(9.6)
+GlobalTracer.startCompetition_Warn: AUTO_MODE.updates takes too long (0.035s)
+
+GlobalTracer.printPidInfo_Info: [11.902] elevatorPidController: Target=   8.0, Input=   7.6, Error=   0.4, PIDTerms= 0.089/-0.031/-0.000/ 0.000, Output= 0.058(-1.000/1.000), Volt=12.1(9.6)
+GlobalTracer.startCompetition_Warn: AUTO_MODE.updates takes too long (0.030s)
+
+GlobalTracer.printPidInfo_Info: [11.975] elevatorPidController: Target=   8.0, Input=   8.0, Error=   0.0, PIDTerms= 0.007/-0.031/-0.000/ 0.000, Output=-0.024(-1.000/1.000), Volt=12.2(9.6)
+GlobalTracer.startCompetition_Warn: AUTO_MODE.updates takes too long (0.024s)
+
+GlobalTracer.printPidInfo_Info: [12.036] elevatorPidController: Target=   8.0, Input=   7.9, Error=   0.1, PIDTerms= 0.016/-0.031/ 0.000/ 0.000, Output=-0.015(-1.000/1.000), Volt=12.2(9.6)
+GlobalTracer.startCompetition_Warn: AUTO_MODE.updates takes too long (0.033s)
+
+GlobalTracer.printPidInfo_Info: [12.105] elevatorPidController: Target=   8.0, Input=   7.9, Error=   0.1, PIDTerms= 0.027/-0.031/ 0.000/ 0.000, Output=-0.004(-1.000/1.000), Volt=12.2(9.6)
+GlobalTracer.startCompetition_Warn: AUTO_MODE.updates takes too long (0.023s)
+
+GlobalTracer.printPidInfo_Info: [12.165] elevatorPidController: Target=   8.0, Input=   7.8, Error=   0.2, PIDTerms= 0.040/-0.031/ 0.000/ 0.000, Output= 0.009(-1.000/1.000), Volt=12.1(9.6)
+GlobalTracer.startCompetition_Warn: AUTO_MODE.updates takes too long (0.026s)
+
+GlobalTracer.printPidInfo_Info: [12.220] elevatorPidController: Target=   8.0, Input=   7.8, Error=   0.2, PIDTerms= 0.044/-0.031/ 0.000/ 0.000, Output= 0.014(-1.000/1.000), Volt=12.1(9.6)
+GlobalTracer.startCompetition_Warn: AUTO_MODE.updates takes too long (0.025s)
+
+GlobalTracer.printPidInfo_Info: [12.275] elevatorPidController: Target=   8.0, Input=   7.7, Error=   0.3, PIDTerms= 0.054/-0.031/ 0.000/ 0.000, Output= 0.024(-1.000/1.000), Volt=12.2(9.6)
+GlobalTracer.startCompetition_Warn: AUTO_MODE.updates takes too long (0.034s)
+
+GlobalTracer.printPidInfo_Info: [12.343] elevatorPidController: Target=   8.0, Input=   7.7, Error=   0.3, PIDTerms= 0.063/-0.031/ 0.000/ 0.000, Output= 0.032(-1.000/1.000), Volt=12.1(9.6)
+GlobalTracer.startCompetition_Warn: AUTO_MODE.updates takes too long (0.027s)
+
+GlobalTracer.printPidInfo_Info: [12.396] elevatorPidController: Target=   8.0, Input=   7.6, Error=   0.4, PIDTerms= 0.070/-0.031/ 0.000/ 0.000, Output= 0.040(-1.000/1.000), Volt=12.2(9.6)
+GlobalTracer.startCompetition_Warn: AUTO_MODE.updates takes too long (0.031s)
+
+GlobalTracer.printPidInfo_Info: [12.461] elevatorPidController: Target=   8.0, Input=   7.6, Error=   0.4, PIDTerms= 0.079/-0.031/ 0.000/ 0.000, Output= 0.048(-1.000/1.000), Volt=12.2(9.6)
+GlobalTracer.printPidInfo_Info: [12.509] elevatorPidController: Target=   8.0, Input=   7.6, Error=   0.4, PIDTerms= 0.082/-0.031/ 0.000/ 0.000, Output= 0.051(-1.000/1.000), Volt=12.2(9.6)
+GlobalTracer.startCompetition_Warn: AUTO_MODE.updates takes too long (0.042s)
+
+GlobalTracer.printPidInfo_Info: [12.583] elevatorPidController: Target=   8.0, Input=   7.6, Error=   0.4, PIDTerms= 0.082/-0.031/ 0.000/ 0.000, Output= 0.051(-1.000/1.000), Volt=12.1(9.6)
+GlobalTracer.startCompetition_Warn: AUTO_MODE.updates takes too long (0.026s)
+
+GlobalTracer.printPidInfo_Info: [12.633] elevatorPidController: Target=   8.0, Input=   7.6, Error=   0.4, PIDTerms= 0.082/-0.031/ 0.000/ 0.000, Output= 0.051(-1.000/1.000), Volt=12.1(9.6)
+GlobalTracer.startCompetition_Warn: AUTO_MODE.periodic takes too long (0.020s)
+
+GlobalTracer.startCompetition_Warn: AUTO_MODE.updates takes too long (0.036s)
+
+GlobalTracer.printPidInfo_Info: [12.709] elevatorPidController: Target=   8.0, Input=   7.6, Error=   0.4, PIDTerms= 0.082/-0.031/ 0.000/ 0.000, Output= 0.051(-1.000/1.000), Volt=12.2(9.6)
+GlobalTracer.startCompetition_Warn: AUTO_MODE.updates takes too long (0.033s)
+
+GlobalTracer.printPidInfo_Info: [12.778] elevatorPidController: Target=   8.0, Input=   7.6, Error=   0.4, PIDTerms= 0.082/-0.031/ 0.000/ 0.000, Output= 0.051(-1.000/1.000), Volt=12.3(9.6)
+GlobalTracer.startCompetition_Warn: AUTO_MODE.updates takes too long (0.028s)
+
+GlobalTracer.printPidInfo_Info: [12.845] elevatorPidController: Target=   8.0, Input=   7.6, Error=   0.4, PIDTerms= 0.082/-0.031/ 0.000/ 0.000, Output= 0.051(-1.000/1.000), Volt=12.2(9.6)
+GlobalTracer.startCompetition_Warn: AUTO_MODE.updates takes too long (0.028s)
+
+GlobalTracer.printPidInfo_Info: [12.907] elevatorPidController: Target=   8.0, Input=   7.6, Error=   0.4, PIDTerms= 0.082/-0.031/ 0.000/ 0.000, Output= 0.051(-1.000/1.000), Volt=12.2(9.6)
+GlobalTracer.startCompetition_Warn: AUTO_MODE.updates takes too long (0.035s)
+
+GlobalTracer.printPidInfo_Info: [12.983] elevatorPidController: Target=   8.0, Input=   7.6, Error=   0.4, PIDTerms= 0.082/-0.030/ 0.000/ 0.000, Output= 0.051(-1.000/1.000), Volt=12.2(9.6)
+GlobalTracer.startCompetition_Warn: AUTO_MODE.updates takes too long (0.029s)
+
+GlobalTracer.printPidInfo_Info: [13.046] elevatorPidController: Target=   8.0, Input=   7.6, Error=   0.4, PIDTerms= 0.082/-0.030/ 0.000/ 0.000, Output= 0.051(-1.000/1.000), Volt=12.2(9.6)
+GlobalTracer.startCompetition_Warn: AUTO_MODE.updates takes too long (0.025s)
+
+GlobalTracer.printPidInfo_Info: [13.106] elevatorPidController: Target=   8.0, Input=   7.6, Error=   0.4, PIDTerms= 0.082/-0.030/ 0.000/ 0.000, Output= 0.051(-1.000/1.000), Volt=12.2(9.6)
+GlobalTracer.startCompetition_Warn: AUTO_MODE.updates takes too long (0.036s)
+
+GlobalTracer.printPidInfo_Info: [13.181] elevatorPidController: Target=   8.0, Input=   7.6, Error=   0.4, PIDTerms= 0.082/-0.030/ 0.000/ 0.000, Output= 0.051(-1.000/1.000), Volt=12.2(9.6)
+GlobalTracer.startCompetition_Warn: AUTO_MODE.updates takes too long (0.036s)
+
+GlobalTracer.printPidInfo_Info: [13.254] elevatorPidController: Target=   8.0, Input=   7.6, Error=   0.4, PIDTerms= 0.082/-0.030/ 0.000/ 0.000, Output= 0.051(-1.000/1.000), Volt=12.2(9.6)
+GlobalTracer.startCompetition_Warn: AUTO_MODE.periodic takes too long (0.026s)
+
+GlobalTracer.startCompetition_Warn: AUTO_MODE.updates takes too long (0.039s)
+
+GlobalTracer.printPidInfo_Info: [13.336] elevatorPidController: Target=   8.0, Input=   7.6, Error=   0.4, PIDTerms= 0.082/-0.030/ 0.000/ 0.000, Output= 0.051(-1.000/1.000), Volt=12.2(9.6)
+GlobalTracer.startCompetition_Warn: AUTO_MODE.updates takes too long (0.035s)
+
+GlobalTracer.printPidInfo_Info: [13.404] elevatorPidController: Target=   8.0, Input=   7.6, Error=   0.4, PIDTerms= 0.082/-0.030/ 0.000/ 0.000, Output= 0.051(-1.000/1.000), Volt=12.1(9.6)
+GlobalTracer.startCompetition_Warn: AUTO_MODE.updates takes too long (0.030s)
+
+GlobalTracer.printPidInfo_Info: [13.464] elevatorPidController: Target=   8.0, Input=   7.6, Error=   0.4, PIDTerms= 0.082/-0.030/ 0.000/ 0.000, Output= 0.051(-1.000/1.000), Volt=12.2(9.6)
+GlobalTracer.startCompetition_Warn: AUTO_MODE.updates takes too long (0.024s)
+
+GlobalTracer.printPidInfo_Info: [13.521] elevatorPidController: Target=   8.0, Input=   7.6, Error=   0.4, PIDTerms= 0.082/-0.030/ 0.000/ 0.000, Output= 0.051(-1.000/1.000), Volt=12.2(9.6)
+GlobalTracer.startCompetition_Warn: AUTO_MODE.updates takes too long (0.026s)
+
+GlobalTracer.printPidInfo_Info: [13.580] elevatorPidController: Target=   8.0, Input=   7.6, Error=   0.4, PIDTerms= 0.082/-0.030/ 0.000/ 0.000, Output= 0.051(-1.000/1.000), Volt=12.2(9.6)
+GlobalTracer.startCompetition_Warn: AUTO_MODE.updates takes too long (0.028s)
+
+GlobalTracer.printPidInfo_Info: [13.643] elevatorPidController: Target=   8.0, Input=   7.6, Error=   0.4, PIDTerms= 0.082/-0.030/ 0.000/ 0.000, Output= 0.051(-1.000/1.000), Volt=12.2(9.6)
+GlobalTracer.startCompetition_Warn: AUTO_MODE.updates takes too long (0.029s)
+
+GlobalTracer.printPidInfo_Info: [13.700] elevatorPidController: Target=   8.0, Input=   7.6, Error=   0.4, PIDTerms= 0.082/-0.030/ 0.000/ 0.000, Output= 0.051(-1.000/1.000), Volt=12.2(9.6)
+GlobalTracer.startCompetition_Warn: AUTO_MODE.updates takes too long (0.033s)
+
+GlobalTracer.printPidInfo_Info: [13.764] elevatorPidController: Target=   8.0, Input=   7.6, Error=   0.4, PIDTerms= 0.082/-0.030/ 0.000/ 0.000, Output= 0.052(-1.000/1.000), Volt=12.2(9.6)
+GlobalTracer.startCompetition_Warn: AUTO_MODE.updates takes too long (0.030s)
+
+GlobalTracer.printPidInfo_Info: [13.830] elevatorPidController: Target=   8.0, Input=   7.6, Error=   0.4, PIDTerms= 0.082/-0.030/ 0.000/ 0.000, Output= 0.052(-1.000/1.000), Volt=12.3(9.6)
+GlobalTracer.startCompetition_Warn: AUTO_MODE.updates takes too long (0.034s)
+
+GlobalTracer.printPidInfo_Info: [13.907] elevatorPidController: Target=   8.0, Input=   7.6, Error=   0.4, PIDTerms= 0.082/-0.030/ 0.000/ 0.000, Output= 0.052(-1.000/1.000), Volt=12.2(9.6)
+GlobalTracer.startCompetition_Warn: AUTO_MODE.updates takes too long (0.034s)
+
+GlobalTracer.printPidInfo_Info: [13.981] elevatorPidController: Target=   8.0, Input=   7.6, Error=   0.4, PIDTerms= 0.082/-0.030/ 0.000/ 0.000, Output= 0.052(-1.000/1.000), Volt=12.2(9.6)
+GlobalTracer.startCompetition_Warn: AUTO_MODE.updates takes too long (0.027s)
+
+GlobalTracer.printPidInfo_Info: [14.046] elevatorPidController: Target=   8.0, Input=   7.6, Error=   0.4, PIDTerms= 0.082/-0.030/ 0.000/ 0.000, Output= 0.052(-1.000/1.000), Volt=12.2(9.6)
+GlobalTracer.startCompetition_Warn: AUTO_MODE.updates takes too long (0.023s)
+
+GlobalTracer.printPidInfo_Info: [14.102] elevatorPidController: Target=   8.0, Input=   7.6, Error=   0.4, PIDTerms= 0.082/-0.030/ 0.000/ 0.000, Output= 0.052(-1.000/1.000), Volt=12.3(9.6)
+GlobalTracer.startCompetition_Warn: AUTO_MODE.updates takes too long (0.035s)
+
+GlobalTracer.printPidInfo_Info: [14.178] elevatorPidController: Target=   8.0, Input=   7.6, Error=   0.4, PIDTerms= 0.082/-0.030/ 0.000/ 0.000, Output= 0.052(-1.000/1.000), Volt=12.2(9.6)
+GlobalTracer.printPidInfo_Info: [14.227] elevatorPidController: Target=   8.0, Input=   7.6, Error=   0.4, PIDTerms= 0.082/-0.030/ 0.000/ 0.000, Output= 0.052(-1.000/1.000), Volt=12.2(9.6)
+GlobalTracer.startCompetition_Warn: AUTO_MODE.updates takes too long (0.022s)
+
+GlobalTracer.printPidInfo_Info: [14.282] elevatorPidController: Target=   8.0, Input=   7.6, Error=   0.4, PIDTerms= 0.082/-0.030/ 0.000/ 0.000, Output= 0.052(-1.000/1.000), Volt=12.2(9.6)
+GlobalTracer.printPidInfo_Info: [14.334] elevatorPidController: Target=   8.0, Input=   7.6, Error=   0.4, PIDTerms= 0.082/-0.030/ 0.000/ 0.000, Output= 0.052(-1.000/1.000), Volt=12.2(9.6)
+GlobalTracer.startCompetition_Warn: AUTO_MODE.periodic takes too long (0.022s)
+
+GlobalTracer.startCompetition_Warn: AUTO_MODE.updates takes too long (0.026s)
+
+GlobalTracer.printPidInfo_Info: [14.404] elevatorPidController: Target=   8.0, Input=   7.6, Error=   0.4, PIDTerms= 0.082/-0.030/ 0.000/ 0.000, Output= 0.052(-1.000/1.000), Volt=12.2(9.6)
+GlobalTracer.startCompetition_Warn: AUTO_MODE.updates takes too long (0.027s)
+
+GlobalTracer.printPidInfo_Info: [14.473] elevatorPidController: Target=   8.0, Input=   7.6, Error=   0.4, PIDTerms= 0.082/-0.030/ 0.000/ 0.000, Output= 0.052(-1.000/1.000), Volt=12.2(9.6)
+GlobalTracer.printPidInfo_Info: [14.522] elevatorPidController: Target=   8.0, Input=   7.6, Error=   0.4, PIDTerms= 0.082/-0.030/ 0.000/ 0.000, Output= 0.052(-1.000/1.000), Volt=12.2(9.6)
+GlobalTracer.startCompetition_Warn: AUTO_MODE.updates takes too long (0.040s)
+
+GlobalTracer.printPidInfo_Info: [14.606] elevatorPidController: Target=   8.0, Input=   7.6, Error=   0.4, PIDTerms= 0.082/-0.030/ 0.000/ 0.000, Output= 0.052(-1.000/1.000), Volt=12.2(9.6)
+GlobalTracer.startCompetition_Warn: AUTO_MODE.updates takes too long (0.034s)
+
+GlobalTracer.printPidInfo_Info: [14.672] elevatorPidController: Target=   8.0, Input=   7.6, Error=   0.4, PIDTerms= 0.082/-0.030/ 0.000/ 0.000, Output= 0.052(-1.000/1.000), Volt=12.2(9.6)
+GlobalTracer.startCompetition_Warn: AUTO_MODE.updates takes too long (0.037s)
+
+GlobalTracer.printPidInfo_Info: [14.751] elevatorPidController: Target=   8.0, Input=   7.6, Error=   0.4, PIDTerms= 0.082/-0.030/ 0.000/ 0.000, Output= 0.052(-1.000/1.000), Volt=12.2(9.6)
+GlobalTracer.startCompetition_Warn: AUTO_MODE.updates takes too long (0.026s)
+
+GlobalTracer.printPidInfo_Info: [14.804] elevatorPidController: Target=   8.0, Input=   7.6, Error=   0.4, PIDTerms= 0.082/-0.030/ 0.000/ 0.000, Output= 0.052(-1.000/1.000), Volt=12.2(9.6)
+GlobalTracer.startCompetition_Warn: AUTO_MODE.updates takes too long (0.040s)
+
+GlobalTracer.printPidInfo_Info: [14.884] elevatorPidController: Target=   8.0, Input=   7.6, Error=   0.4, PIDTerms= 0.082/-0.030/ 0.000/ 0.000, Output= 0.052(-1.000/1.000), Volt=12.3(9.6)
+GlobalTracer.startCompetition_Warn: AUTO_MODE.updates takes too long (0.033s)
+
+GlobalTracer.printPidInfo_Info: [14.957] elevatorPidController: Target=   8.0, Input=   7.6, Error=   0.4, PIDTerms= 0.082/-0.030/ 0.000/ 0.000, Output= 0.052(-1.000/1.000), Volt=12.2(9.6)
+GlobalTracer.startCompetition_Warn: AUTO_MODE.updates takes too long (0.034s)
+
+GlobalTracer.printPidInfo_Info: [15.023] elevatorPidController: Target=   8.0, Input=   7.6, Error=   0.4, PIDTerms= 0.082/-0.030/ 0.000/ 0.000, Output= 0.052(-1.000/1.000), Volt=12.2(9.6)
+GlobalTracer.startCompetition_Warn: AUTO_MODE.updates takes too long (0.026s)
+
+GlobalTracer.printPidInfo_Info: [15.082] elevatorPidController: Target=   8.0, Input=   7.6, Error=   0.4, PIDTerms= 0.082/-0.030/ 0.000/ 0.000, Output= 0.052(-1.000/1.000), Volt=12.2(9.6)
+GlobalTracer.startCompetition_Warn: AUTO_MODE.updates takes too long (0.025s)
+
+GlobalTracer.printPidInfo_Info: [15.146] elevatorPidController: Target=   8.0, Input=   7.6, Error=   0.4, PIDTerms= 0.082/-0.030/ 0.000/ 0.000, Output= 0.052(-1.000/1.000), Volt=12.2(9.6)
+GlobalTracer.startCompetition_Warn: AUTO_MODE.updates takes too long (0.034s)
+
+GlobalTracer.printPidInfo_Info: [15.218] elevatorPidController: Target=   8.0, Input=   7.6, Error=   0.4, PIDTerms= 0.082/-0.030/ 0.000/ 0.000, Output= 0.052(-1.000/1.000), Volt=12.2(9.6)
+GlobalTracer.startCompetition_Warn: AUTO_MODE.updates takes too long (0.044s)
+
+GlobalTracer.Vision_Info: Pixy is disabled!
+GlobalTracer.TaskPerformance_Info: leftDriveStick.prePeriodic: PrePeriodic=0.000012, PostPeriodic=NaN, PreContinuous=NaN, PostContinous=NaN
+GlobalTracer.TaskPerformance_Info: rightDriveStick.prePeriodic: PrePeriodic=0.000007, PostPeriodic=NaN, PreContinuous=NaN, PostContinous=NaN
+GlobalTracer.TaskPerformance_Info: operatorStick.prePeriodic: PrePeriodic=0.000010, PostPeriodic=NaN, PreContinuous=NaN, PostContinous=NaN
+GlobalTracer.TaskPerformance_Info: TrcRobotBattery.preContinuous: PrePeriodic=NaN, PostPeriodic=NaN, PreContinuous=0.002299, PostContinous=NaN
+GlobalTracer.TaskPerformance_Info: LeftSonar.preContinuous: PrePeriodic=NaN, PostPeriodic=NaN, PreContinuous=0.000247, PostContinous=NaN
+GlobalTracer.TaskPerformance_Info: LeftSonar.preContinuous: PrePeriodic=NaN, PostPeriodic=NaN, PreContinuous=0.000060, PostContinous=NaN
+GlobalTracer.TaskPerformance_Info: RightSonar.preContinuous: PrePeriodic=NaN, PostPeriodic=NaN, PreContinuous=NaN, PostContinous=NaN
+GlobalTracer.TaskPerformance_Info: RightSonar.preContinuous: PrePeriodic=NaN, PostPeriodic=NaN, PreContinuous=NaN, PostContinous=NaN
+GlobalTracer.TaskPerformance_Info: LeftFrontWheel.stop: PrePeriodic=NaN, PostPeriodic=NaN, PreContinuous=NaN, PostContinous=NaN
+GlobalTracer.TaskPerformance_Info: LeftFrontWheel.preContinuousTask: PrePeriodic=NaN, PostPeriodic=NaN, PreContinuous=NaN, PostContinous=NaN
+GlobalTracer.TaskPerformance_Info: LeftRearWheel.stop: PrePeriodic=NaN, PostPeriodic=NaN, PreContinuous=NaN, PostContinous=NaN
+GlobalTracer.TaskPerformance_Info: LeftRearWheel.preContinuousTask: PrePeriodic=NaN, PostPeriodic=NaN, PreContinuous=NaN, PostContinous=NaN
+GlobalTracer.TaskPerformance_Info: RightFrontWheel.stop: PrePeriodic=NaN, PostPeriodic=NaN, PreContinuous=NaN, PostContinous=NaN
+GlobalTracer.TaskPerformance_Info: RightFrontWheel.preContinuousTask: PrePeriodic=NaN, PostPeriodic=NaN, PreContinuous=NaN, PostContinous=NaN
+GlobalTracer.TaskPerformance_Info: RightRearWheel.stop: PrePeriodic=NaN, PostPeriodic=NaN, PreContinuous=NaN, PostContinous=NaN
+GlobalTracer.TaskPerformance_Info: RightRearWheel.preContinuousTask: PrePeriodic=NaN, PostPeriodic=NaN, PreContinuous=NaN, PostContinous=NaN
+GlobalTracer.TaskPerformance_Info: TrcDriveBase.stop: PrePeriodic=NaN, PostPeriodic=NaN, PreContinuous=NaN, PostContinous=NaN
+GlobalTracer.TaskPerformance_Info: TrcDriveBase.preContinuous: PrePeriodic=NaN, PostPeriodic=NaN, PreContinuous=0.006481, PostContinous=NaN
+GlobalTracer.TaskPerformance_Info:    pidDrive.stop: PrePeriodic=NaN, PostPeriodic=NaN, PreContinuous=NaN, PostContinous=NaN
+GlobalTracer.TaskPerformance_Info: pidDrive.postContinuous: PrePeriodic=NaN, PostPeriodic=NaN, PreContinuous=NaN, PostContinous=0.020324
+GlobalTracer.TaskPerformance_Info: elevatorMotor.stop: PrePeriodic=NaN, PostPeriodic=NaN, PreContinuous=NaN, PostContinous=NaN
+GlobalTracer.TaskPerformance_Info: elevatorMotor.preContinuousTask: PrePeriodic=NaN, PostPeriodic=NaN, PreContinuous=NaN, PostContinous=NaN
+GlobalTracer.TaskPerformance_Info:    elevator.stop: PrePeriodic=NaN, PostPeriodic=NaN, PreContinuous=NaN, PostContinous=NaN
+GlobalTracer.TaskPerformance_Info: elevator.postContinuous: PrePeriodic=NaN, PostPeriodic=NaN, PreContinuous=NaN, PostContinous=0.001527
+GlobalTracer.TaskPerformance_Info: elevatorMotor.preContinuous: PrePeriodic=NaN, PostPeriodic=NaN, PreContinuous=0.000503, PostContinous=NaN
+GlobalTracer.TaskPerformance_Info: LeftPickupMotor.stop: PrePeriodic=NaN, PostPeriodic=NaN, PreContinuous=NaN, PostContinous=NaN
+GlobalTracer.TaskPerformance_Info: LeftPickupMotor.preContinuousTask: PrePeriodic=NaN, PostPeriodic=NaN, PreContinuous=NaN, PostContinous=NaN
+GlobalTracer.TaskPerformance_Info: RightPickupMotor.stop: PrePeriodic=NaN, PostPeriodic=NaN, PreContinuous=NaN, PostContinous=NaN
+GlobalTracer.TaskPerformance_Info: RightPickupMotor.preContinuousTask: PrePeriodic=NaN, PostPeriodic=NaN, PreContinuous=NaN, PostContinous=NaN
+GlobalTracer.TaskPerformance_Info: CubePickupClaw.stop: PrePeriodic=NaN, PostPeriodic=NaN, PreContinuous=NaN, PostContinous=NaN
+GlobalTracer.TaskPerformance_Info: CubePickupClaw.postContinuous: PrePeriodic=NaN, PostPeriodic=NaN, PreContinuous=NaN, PostContinous=NaN
+GlobalTracer.TaskPerformance_Info: CubePickupClaw.preContinuous: PrePeriodic=NaN, PostPeriodic=NaN, PreContinuous=NaN, PostContinous=NaN
+GlobalTracer.TaskPerformance_Info: CubePickupDeploy.stop: PrePeriodic=NaN, PostPeriodic=NaN, PreContinuous=NaN, PostContinous=NaN
+GlobalTracer.TaskPerformance_Info: CubePickupDeploy.postContinuous: PrePeriodic=NaN, PostPeriodic=NaN, PreContinuous=NaN, PostContinous=NaN
+GlobalTracer.TaskPerformance_Info: CubePickupDeploy.preContinuous: PrePeriodic=NaN, PostPeriodic=NaN, PreContinuous=NaN, PostContinous=NaN
+GlobalTracer.TaskPerformance_Info: CubeProximityTrigger.preContinuous: PrePeriodic=NaN, PostPeriodic=NaN, PreContinuous=NaN, PostContinous=NaN
+GlobalTracer.TaskPerformance_Info: PickupCurrentTrigger.preContinuous: PrePeriodic=NaN, PostPeriodic=NaN, PreContinuous=NaN, PostContinous=NaN
+GlobalTracer.TaskPerformance_Info:       pickupTask: PrePeriodic=NaN, PostPeriodic=NaN, PreContinuous=NaN, PostContinous=NaN
+GlobalTracer.TaskPerformance_Info: pickupTimer.preContinuous: PrePeriodic=NaN, PostPeriodic=NaN, PreContinuous=NaN, PostContinous=NaN
+GlobalTracer.TaskPerformance_Info: WinchMaster.stop: PrePeriodic=NaN, PostPeriodic=NaN, PreContinuous=NaN, PostContinous=NaN
+GlobalTracer.TaskPerformance_Info: WinchMaster.preContinuousTask: PrePeriodic=NaN, PostPeriodic=NaN, PreContinuous=NaN, PostContinous=NaN
+GlobalTracer.TaskPerformance_Info:  WinchSlave.stop: PrePeriodic=NaN, PostPeriodic=NaN, PreContinuous=NaN, PostContinous=NaN
+GlobalTracer.TaskPerformance_Info: WinchSlave.preContinuousTask: PrePeriodic=NaN, PostPeriodic=NaN, PreContinuous=NaN, PostContinous=NaN
+GlobalTracer.TaskPerformance_Info: leftFlipper.stop: PrePeriodic=NaN, PostPeriodic=NaN, PreContinuous=NaN, PostContinous=NaN
+GlobalTracer.TaskPerformance_Info: leftFlipper.postContinuous: PrePeriodic=NaN, PostPeriodic=NaN, PreContinuous=NaN, PostContinous=NaN
+GlobalTracer.TaskPerformance_Info: leftFlipper.preContinuous: PrePeriodic=NaN, PostPeriodic=NaN, PreContinuous=NaN, PostContinous=NaN
+GlobalTracer.TaskPerformance_Info: rightFlipper.stop: PrePeriodic=NaN, PostPeriodic=NaN, PreContinuous=NaN, PostContinous=NaN
+GlobalTracer.TaskPerformance_Info: rightFlipper.postContinuous: PrePeriodic=NaN, PostPeriodic=NaN, PreContinuous=NaN, PostContinous=NaN
+GlobalTracer.TaskPerformance_Info: rightFlipper.preContinuous: PrePeriodic=NaN, PostPeriodic=NaN, PreContinuous=NaN, PostContinous=NaN
+GlobalTracer.TaskPerformance_Info: VisionTrigger.preContinuous: PrePeriodic=NaN, PostPeriodic=NaN, PreContinuous=NaN, PostContinous=NaN
+GlobalTracer.TaskPerformance_Info: ExchangeTrigger.preContinuous: PrePeriodic=NaN, PostPeriodic=NaN, PreContinuous=NaN, PostContinous=NaN
+GlobalTracer.TaskPerformance_Info: FrcTest.preContinuous: PrePeriodic=NaN, PostPeriodic=NaN, PreContinuous=NaN, PostContinous=NaN
+GlobalTracer.TaskPerformance_Info: CmdAutoScale.preContinuous: PrePeriodic=NaN, PostPeriodic=NaN, PreContinuous=0.000044, PostContinous=NaN
+GlobalTracer.TaskPerformance_Info: SwitchDistanceTrigger.preContinuous: PrePeriodic=NaN, PostPeriodic=NaN, PreContinuous=0.000167, PostContinous=NaN
+GlobalTracer.Robot_Info: TotalEnergy=1.055Wh
