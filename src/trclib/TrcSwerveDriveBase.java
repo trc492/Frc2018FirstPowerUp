@@ -36,6 +36,8 @@ public class TrcSwerveDriveBase extends TrcSimpleDriveBase
     private final double wheelBaseWidth, wheelBaseLength, wheelBaseDiagonal;
     private Double prevTimestamp = null;
     private double prevLfEnc, prevRfEnc, prevLrEnc, prevRrEnc;
+    private double prevSteerAngle = 0.0;
+    private double optimizedWheelDir = 1.0;
 
     /**
      * Constructor: Create an instance of the 4-wheel swerve drive base.
@@ -62,7 +64,8 @@ public class TrcSwerveDriveBase extends TrcSimpleDriveBase
         this.wheelBaseWidth = wheelBaseWidth;
         this.wheelBaseLength = wheelBaseLength;
         this.wheelBaseDiagonal = TrcUtil.magnitude(wheelBaseWidth, wheelBaseLength);
-        // TODO: do zero calibration on all four wheels.
+
+        zeroCalibrateSteering();
     }   //TrcSwerveDriveBase
 
     /**
@@ -82,6 +85,19 @@ public class TrcSwerveDriveBase extends TrcSimpleDriveBase
     {
         this(leftFrontMotor, leftRearMotor, rightFrontMotor, rightRearMotor, null, wheelBaseWidth, wheelBaseLength);
     }   //TrcSwerveDriveBase
+
+    /**
+     * This method does zero calibration on the steer angle encoders.
+     */
+    public void zeroCalibrateSteering()
+    {
+        lfModule.zeroCalibrateSteering();
+        rfModule.zeroCalibrateSteering();
+        lrModule.zeroCalibrateSteering();
+        rrModule.zeroCalibrateSteering();
+
+        setSteerAngle(0.0, false);
+    }   //zeroCalibrateSteering
 
     /**
      * This method checks if it supports holonomic drive.
@@ -118,21 +134,51 @@ public class TrcSwerveDriveBase extends TrcSimpleDriveBase
      * This method sets the steering angle of all four wheels.
      *
      * @param angle specifies the steering angle to be set.
+     * @param optimize specifies true to optimize steering angle to be no greater than 90 degrees, false otherwise.
      */
-    public void setSteerAngle(double angle)
+    public void setSteerAngle(double angle, boolean optimize)
     {
         final String funcName = "setSteerAngle";
+        double angleDelta;
 
         if (debugEnabled)
         {
-            dbgTrace.traceEnter(funcName, TrcDbgTrace.TraceLevel.API, "angle=%f", angle);
+            dbgTrace.traceEnter(funcName, TrcDbgTrace.TraceLevel.API, "angle=%f,optimize=%s", angle, optimize);
             dbgTrace.traceExit(funcName, TrcDbgTrace.TraceLevel.API);
+        }
+
+        if (!optimize)
+        {
+            optimizedWheelDir = 1.0;
+        }
+        else if (Math.abs(angleDelta = angle - prevSteerAngle) > 90.0)
+        {
+            if (angleDelta < 0.0)
+            {
+                angleDelta += 180.0;
+            }
+            else
+            {
+                angleDelta -= 180.0;
+            }
+            angle += angleDelta;
+            optimizedWheelDir = -optimizedWheelDir;
         }
 
         lfModule.setSteerAngle(angle);
         rfModule.setSteerAngle(angle);
         lrModule.setSteerAngle(angle);
         rrModule.setSteerAngle(angle);
+    }   //setSteerAngle
+
+    /**
+     * This method sets the steering angle of all four wheels.
+     *
+     * @param angle specifies the steering angle to be set.
+     */
+    public void setSteerAngle(double angle)
+    {
+        setSteerAngle(angle, true);
     }   //setSteerAngle
 
     /**
@@ -153,7 +199,7 @@ public class TrcSwerveDriveBase extends TrcSimpleDriveBase
 
         if (resetSteer)
         {
-            setSteerAngle(0.0);
+            setSteerAngle(0.0, false);
         }
 
         if (debugEnabled)
@@ -185,7 +231,7 @@ public class TrcSwerveDriveBase extends TrcSimpleDriveBase
     @Override
     public void tankDrive(double leftPower, double rightPower, boolean inverted)
     {
-        setSteerAngle(0.0);
+        setSteerAngle(0.0, false);
         super.tankDrive(leftPower, rightPower, inverted);
     }   //tankDrive
 
@@ -263,10 +309,10 @@ public class TrcSwerveDriveBase extends TrcSimpleDriveBase
         lrModule.setSteerAngle(lrAngle);
         rrModule.setSteerAngle(rrAngle);
 
-        lfModule.set(motorPowerMapper.translateMotorPower(lfPower, lfModule.getSpeed()));
-        rfModule.set(motorPowerMapper.translateMotorPower(rfPower, rfModule.getSpeed()));
-        lrModule.set(motorPowerMapper.translateMotorPower(lrPower, lrModule.getSpeed()));
-        rrModule.set(motorPowerMapper.translateMotorPower(rrPower, rrModule.getSpeed()));
+        lfModule.set(motorPowerMapper.translateMotorPower(lfPower*optimizedWheelDir, lfModule.getSpeed()));
+        rfModule.set(motorPowerMapper.translateMotorPower(rfPower*optimizedWheelDir, rfModule.getSpeed()));
+        lrModule.set(motorPowerMapper.translateMotorPower(lrPower*optimizedWheelDir, lrModule.getSpeed()));
+        rrModule.set(motorPowerMapper.translateMotorPower(rrPower*optimizedWheelDir, rrModule.getSpeed()));
 
         if (debugEnabled)
         {
@@ -323,9 +369,11 @@ public class TrcSwerveDriveBase extends TrcSimpleDriveBase
 
         updateXOdometry(getRawXPosition() + avgEncDelta*angleCos, avgEncSpeed*angleCos);
         updateYOdometry(getRawYPosition() + avgEncDelta*angleSin, avgEncSpeed*angleSin);
+        //
         // Rotation position is only valid when the robot is doing turn-in-place.
         // In Swerve Drive, the wheels are steered in a diamond formation (i.e. tangential to the turning circle).
         // So the rotation position is the degree turned by the robot in the turning circle.
+        //
         updateRotationOdometry(getRawRotationPosition() + avgEncDelta);
 
         prevTimestamp = currTime;

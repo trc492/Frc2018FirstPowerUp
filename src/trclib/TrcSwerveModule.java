@@ -40,9 +40,7 @@ public class TrcSwerveModule implements TrcMotorController
 
     private final String instanceName;
     public final TrcMotorController driveMotor;
-    public final TrcPidMotor steerMotor;
-
-    // TODO: Add support for steering limit switches for auto zero calibrating steering angle.
+    public final TrcPidActuator steerMotor;
 
     /**
      * Constructor: Create an instance of the object.
@@ -51,7 +49,8 @@ public class TrcSwerveModule implements TrcMotorController
      * @param driveMotor specifies the drive motor.
      * @param steerMotor specifies the steering motor.
      */
-    public TrcSwerveModule(String instanceName, TrcMotorController driveMotor, TrcPidMotor steerMotor)
+    public TrcSwerveModule(
+        String instanceName, TrcMotorController driveMotor, TrcPidActuator steerMotor)
     {
         if (debugEnabled)
         {
@@ -74,6 +73,22 @@ public class TrcSwerveModule implements TrcMotorController
     {
         return instanceName;
     }   //toString
+
+    /**
+     * This method performs a zero calibration on the steering motor.
+     */
+    public void zeroCalibrateSteering()
+    {
+        final String funcName = "zeroCalibrateSteering";
+
+        if (debugEnabled)
+        {
+            dbgTrace.traceEnter(funcName, TrcDbgTrace.TraceLevel.API);
+            dbgTrace.traceExit(funcName, TrcDbgTrace.TraceLevel.API);
+        }
+
+        steerMotor.zeroCalibrate();
+    }   //zeroCalibrateSteering
 
     /**
      * Reset the encoder of the drive and steer motors.
