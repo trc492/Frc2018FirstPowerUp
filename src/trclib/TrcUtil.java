@@ -113,11 +113,11 @@ public class TrcUtil
 
     /**
      * This method calculates the modulo of two numbers. Unlike the <code>%</code> operator, this returns a number
-     * in the range [0, b). For some reason, in Java, the <code>%</code> operator actually does reminder, which
+     * in the range [0, b). For some reason, in Java, the <code>%</code> operator actually does remainder, which
      * means the result is in the range (-b, b).
      *
      * @param a specifies the dividend.
-     * @param b spepcifies the divisor.
+     * @param b specifies the divisor.
      * @return the modulo in the range [0, b)
      */
     public static double modulo(double a, double b)
@@ -170,9 +170,12 @@ public class TrcUtil
     {
         double maxMagnitude = Arrays.stream(nums).map(Math::abs).max().orElse(0.0);
 
-        for(int i = 0; i < nums.length; i++)
+        if (maxMagnitude > 1.0)
         {
-            nums[i] /= maxMagnitude;
+            for(int i = 0; i < nums.length; i++)
+            {
+                nums[i] /= maxMagnitude;
+            }
         }
     }   //normalizeInPlace
 
@@ -186,7 +189,7 @@ public class TrcUtil
      */
     public static int clipRange(int value, int lowLimit, int highLimit)
     {
-        return (value < lowLimit)? lowLimit: (value > highLimit)? highLimit: value;
+        return Math.min(Math.max(value, lowLimit), highLimit);
     }   //clipRange
 
     /**
@@ -199,7 +202,7 @@ public class TrcUtil
      */
     public static double clipRange(double value, double lowLimit, double highLimit)
     {
-        return (value < lowLimit)? lowLimit: (value > highLimit)? highLimit: value;
+        return Math.min(Math.max(value, lowLimit), highLimit);
     }   //clipRange
 
     /**

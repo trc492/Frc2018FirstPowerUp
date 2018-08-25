@@ -95,6 +95,32 @@ public class TrcSwerveDriveBase extends TrcSimpleDriveBase
     }   //supportsHolonomicDrive
 
     /**
+     * This method sets the position scales. The raw position from the encoder is in encoder counts. By setting the
+     * scale factor, one could make getPosition to return unit in inches, for example. This also automatically
+     * calculates the rotateScale, which is used for approximating the heading without the gyro.
+     *
+     * @param xScale specifies the X position scale.
+     * @param yScale specifies the Y position scale.
+     */
+    @Override
+    public void setPositionScales(double xScale, double yScale)
+    {
+        double semiXAxis = wheelBaseWidth / Math.sqrt(2.0);
+        double semiYAxis = wheelBaseLength / Math.sqrt(2.0);
+
+        // The following black magic calculation is Ramanujan's method of approximating the perimeter of an ellipse.
+        double h = Math.pow(semiXAxis - semiYAxis, 2) / Math.pow(semiXAxis + semiYAxis, 2);
+        double perimeter = Math.PI * (semiXAxis + semiYAxis) * (1.0 + (3.0 * h / (10.0 + Math.sqrt(4.0 - 3.0 * h))));
+
+        // encDist / perimeter = rotPos / 360.0
+        // encDist * 360.0 / perimeter = rotPos
+        // Therefore, rotScale = 360.0 / perimeter
+        double rotScale = 360.0 / perimeter;
+
+        super.setPositionScales(xScale, yScale, rotScale);
+    }   //setPositionScales
+
+    /**
      * This method sets the steering angle of all four wheels.
      *
      * @param angle specifies the steering angle to be set.

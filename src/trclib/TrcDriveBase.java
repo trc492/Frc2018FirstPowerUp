@@ -181,6 +181,17 @@ public abstract class TrcDriveBase
     }   //setPositionScales
 
     /**
+     * This method sets the position scales. The raw position from the encoder is in encoder counts. By setting the
+     * scale factor, one could make getPosition to return unit in inches, for example.
+     *
+     * @param yScale specifies the Y position scale.
+     */
+    public void setPositionScales(double yScale)
+    {
+        setPositionScales(1.0, yScale, 1.0);
+    }   //setPositionScales
+
+    /**
      * This method returns the raw X position in raw sensor unit.
      *
      * @return raw X position.
