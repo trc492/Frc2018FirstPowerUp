@@ -165,6 +165,13 @@ public class FrcTeleOp implements TrcRobot.RobotMode
             robot.cmdAutoCubePickup.cmdPeriodic(elapsedTime);
         }
 
+        if(robot.cmdExchangeAlign.isEnabled())
+        {
+            robot.globalTracer.traceInfo(funcName, "[%.3f] ExchangeAlign - Activated: %b",
+                elapsedTime, robot.cmdExchangeAlign.isEnabled());
+            robot.cmdExchangeAlign.cmdPeriodic(elapsedTime);
+        }
+
         if (robot.elevator.elevator.isActive())
         {
             robot.elevator.elevatorPidCtrl.printPidInfo(robot.globalTracer, elapsedTime, robot.battery);
@@ -179,7 +186,9 @@ public class FrcTeleOp implements TrcRobot.RobotMode
 
     private boolean isAutoAssistEnabled()
     {
-        return robot.cmdAutoCubePickup.isEnabled();
+        return robot.cmdAutoCubePickup.isEnabled() ||
+               robot.cmdExchangeAlign.isEnabled() ||
+               robot.cmdStrafeUntilCube.isEnabled();
     }
 
     //
@@ -210,9 +219,17 @@ public class FrcTeleOp implements TrcRobot.RobotMode
                 break;
 
             case FrcJoystick.LOGITECH_BUTTON4:
+                if(pressed)
+                {
+                    robot.cmdExchangeAlign.start(false);
+                }
                 break;
 
             case FrcJoystick.LOGITECH_BUTTON5:
+                if(pressed)
+                {
+                    robot.cmdExchangeAlign.start(true);
+                }
                 break;
 
             case FrcJoystick.LOGITECH_BUTTON6:

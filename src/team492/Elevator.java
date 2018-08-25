@@ -71,6 +71,11 @@ public class Elevator
     /**
      * @param pos
      *            (Altitude in inches)
+     * @param event
+     *            (TrcEvent event)
+     * @param timeout
+     *            Set the position for Elevator to move to in inches using PID
+     *            control.
      */
     public void setPosition(double pos)
     {
