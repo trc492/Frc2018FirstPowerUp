@@ -100,10 +100,11 @@ public class TrcSwerveModule implements TrcMotorController
      * @param optimize specifies true to optimize steering angle to be no greater than 90 degrees, false otherwise.
      * @param hold specifies true to hold the angle, false otherwise.
      */
-    public void setSteerAngle(double angle, boolean optimize, boolean hold)
+    public void setSteerAngle(final double angle, boolean optimize, boolean hold)
     {
         final String funcName = "setSteerAngle";
         double angleDelta = angle - prevSteerAngle;
+        double newAngle = angle;
 
         if (debugEnabled)
         {
@@ -120,15 +121,20 @@ public class TrcSwerveModule implements TrcMotorController
         {
             // We are optimizing and the steer delta is greater than 90 degrees.
             // Adjust the steer delta to be within 90 degrees and flip the wheel direction.
-            angle += angleDelta < 0.0? 180.0: -180.0;
+            newAngle += angleDelta < 0.0? 180.0: -180.0;
             optimizedWheelDir = -optimizedWheelDir;
         }
 
-        steerMotor.setTarget(angle, hold);
-        prevSteerAngle = angle;
+        steerMotor.setTarget(newAngle, hold);
+        prevSteerAngle = newAngle;
 
         if (debugEnabled)
         {
+            if (optimize)
+            {
+                dbgTrace.traceInfo(funcName, "Optimizing steer angle: %.1f -> %.1f (%.0f)",
+                    angle, newAngle, optimizedWheelDir);
+            }
             dbgTrace.traceExit(funcName, TrcDbgTrace.TraceLevel.API, " (angle=%f)", angle);
         }
     }   //setSteerAngle
