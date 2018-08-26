@@ -112,17 +112,14 @@ public class TrcSwerveModule implements TrcMotorController
                 "angle=%f,optimize=%s,hold=%s", angle, optimize, hold);
         }
 
-        if (!optimize)
-        {
-            // We are not optimizing, reset wheel direction back to normal.
-            optimizedWheelDir = 1.0;
-        }
-        else if (Math.abs(angleDelta) > 90.0)
+        // If we are not optimizing, reset wheel direction back to normal.
+        optimizedWheelDir = 1.0;
+        if (optimize && Math.abs(angleDelta) > 90.0)
         {
             // We are optimizing and the steer delta is greater than 90 degrees.
             // Adjust the steer delta to be within 90 degrees and flip the wheel direction.
             newAngle += angleDelta < 0.0? 180.0: -180.0;
-            optimizedWheelDir = -optimizedWheelDir;
+            optimizedWheelDir = -1.0;
         }
 
         steerMotor.setTarget(newAngle, hold);
