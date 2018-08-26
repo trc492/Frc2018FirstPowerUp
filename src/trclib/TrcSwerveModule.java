@@ -132,8 +132,8 @@ public class TrcSwerveModule implements TrcMotorController
         {
             if (optimize)
             {
-                dbgTrace.traceInfo(funcName, "Optimizing steer angle: %.1f -> %.1f (%.0f)",
-                    angle, newAngle, optimizedWheelDir);
+                dbgTrace.traceInfo(funcName, "Optimizing steer angle for %s: %.1f -> %.1f (%.0f)",
+                    instanceName, angle, newAngle, optimizedWheelDir);
             }
             dbgTrace.traceExit(funcName, TrcDbgTrace.TraceLevel.API, " (angle=%f)", angle);
         }
