@@ -26,7 +26,6 @@ import common.CmdPidDrive;
 import common.CmdTimedDrive;
 import frclib.FrcChoiceMenu;
 import hallib.HalDashboard;
-import team492.RobotInfo.Position;
 import trclib.TrcRobot;
 import trclib.TrcRobot.RunMode;
 import trclib.TrcTaskMgr;
@@ -39,6 +38,7 @@ public class FrcAuto implements TrcRobot.RobotMode
     public static enum AutoStrategy
     {
         // Different choices for autonomous
+        MOTION_PROFILE_TEST,
         AUTO_SIDE,
         AUTO_SWITCH,
         AUTO_SCALE,
@@ -77,7 +77,7 @@ public class FrcAuto implements TrcRobot.RobotMode
     // Menus.
     //
     private FrcChoiceMenu<AutoStrategy> autoStrategyMenu;
-    private FrcChoiceMenu<Position> startPositionMenu;
+    private FrcChoiceMenu<RobotInfo.Position> startPositionMenu;
     private FrcChoiceMenu<YesOrNo> fastDeliveryMenu;
     private FrcChoiceMenu<YesOrNo> getSecondCubeMenu;
     private FrcChoiceMenu<Lane> laneMenu;
@@ -85,7 +85,7 @@ public class FrcAuto implements TrcRobot.RobotMode
     private FrcChoiceMenu<YesOrNo> useSonarMenu;
 
     private AutoStrategy autoStrategy;
-    private Position startPosition;
+    private RobotInfo.Position startPosition;
     private boolean fastDelivery;
     private boolean getSecondCube;
     private Lane lane;
@@ -94,6 +94,7 @@ public class FrcAuto implements TrcRobot.RobotMode
     private double forwardDriveDistance;
 
     private TrcRobot.RobotCommand autoCommand;
+    private MotionProfileTest test;
 
     public FrcAuto(Robot robot)
     {
@@ -112,8 +113,8 @@ public class FrcAuto implements TrcRobot.RobotMode
         //
         // Populate Autonomous Mode menus.
         //
-        // CodeReview: I thought AutoSwitch is still the default. We still like center start.
-        autoStrategyMenu.addChoice("Auto Side", AutoStrategy.AUTO_SIDE, true, false);
+        autoStrategyMenu.addChoice("Motion Profile", AutoStrategy.MOTION_PROFILE_TEST, true, false);
+        autoStrategyMenu.addChoice("Auto Side", AutoStrategy.AUTO_SIDE, false, false);
         autoStrategyMenu.addChoice("Auto Switch", AutoStrategy.AUTO_SWITCH, false, false);
         autoStrategyMenu.addChoice("Auto Scale", AutoStrategy.AUTO_SCALE, false, false);
         autoStrategyMenu.addChoice("X Timed Drive", AutoStrategy.X_TIMED_DRIVE, false, false);
@@ -123,9 +124,11 @@ public class FrcAuto implements TrcRobot.RobotMode
         autoStrategyMenu.addChoice("Turn Degrees", AutoStrategy.TURN_DEGREES, false, false);
         autoStrategyMenu.addChoice("Do Nothing", AutoStrategy.DO_NOTHING, false, true);
 
-        startPositionMenu.addChoice("Left Side Start", Position.LEFT_POS, false, false);
-        startPositionMenu.addChoice("Middle Start", Position.MID_POS, true, false);
-        startPositionMenu.addChoice("Right Side Start", Position.RIGHT_POS, false, true);
+        test = new MotionProfileTest("MP", robot);
+
+        startPositionMenu.addChoice("Left Side Start", RobotInfo.Position.LEFT_POS, false, false);
+        startPositionMenu.addChoice("Middle Start", RobotInfo.Position.MID_POS, true, false);
+        startPositionMenu.addChoice("Right Side Start", RobotInfo.Position.RIGHT_POS, false, true);
 
         fastDeliveryMenu.addChoice("Yes", YesOrNo.YES, true, false);
         fastDeliveryMenu.addChoice("No", YesOrNo.NO, false, true);
@@ -200,12 +203,17 @@ public class FrcAuto implements TrcRobot.RobotMode
 
         switch (autoStrategy)
         {
+            case MOTION_PROFILE_TEST:
+                test.start();
+                autoCommand = test;
+                break;
+
             case AUTO_SIDE:
-                if (startPosition != Position.MID_POS)
+                if (startPosition != RobotInfo.Position.MID_POS)
                 {
                     boolean switchRight = robot.gameSpecificMessage.charAt(0) == 'R';
                     boolean scaleRight = robot.gameSpecificMessage.charAt(1) == 'R';
-                    boolean startRight = startPosition == Position.RIGHT_POS;
+                    boolean startRight = startPosition == RobotInfo.Position.RIGHT_POS;
                     ScaleOrSwitch preference = preferenceMenu.getCurrentChoiceObject();
 
                     if (startRight == scaleRight && scaleRight == switchRight)
@@ -280,6 +288,15 @@ public class FrcAuto implements TrcRobot.RobotMode
     @Override
     public void stopMode(RunMode nextMode)
     {
+    	switch(autoStrategy)
+    	{
+            case MOTION_PROFILE_TEST:
+                test.stop();
+                break;
+                
+            default:
+                break;
+    	}
         TrcTaskMgr.getInstance().printTaskPerformanceMetrics(robot.globalTracer);
     } // stopMode
 

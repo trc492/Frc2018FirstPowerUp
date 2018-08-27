@@ -274,7 +274,7 @@ public abstract class TrcRGBLight
      * This method sets the RGB light with the specified color value. If the specified color value is zero, the light
      * is turned OFF.
      *
-     * @param color specifies the color value.
+     * @param colorValue specifies the color value.
      */
     private void setColorValue(int colorValue)
     {

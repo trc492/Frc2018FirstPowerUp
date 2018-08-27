@@ -88,7 +88,7 @@ public class Robot extends FrcRobotBase
     private static final boolean DEBUG_POWER_CONSUMPTION = false;
     private static final boolean DEBUG_DRIVE_BASE = false;
     private static final boolean DEBUG_PID_DRIVE = false;
-    private static final boolean DEBUG_SUBSYSTEMS = true;
+    private static final boolean DEBUG_SUBSYSTEMS = false;
     private static final boolean DEBUG_PIXY = false;
 
     private static final double DASHBOARD_UPDATE_INTERVAL = 0.1;

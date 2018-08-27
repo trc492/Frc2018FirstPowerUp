@@ -43,6 +43,8 @@ public class FrcTest extends FrcTeleOp
     {
         SENSORS_TEST,
         SUBSYSTEMS_TEST,
+        CALC_DRIVE_BASE_WIDTH,
+        MEASURE_ROBOT_STATS,
         DRIVE_MOTORS_TEST,
         AUTO_DIAGNOSTICS,
         X_TIMED_DRIVE,
@@ -71,6 +73,8 @@ public class FrcTest extends FrcTeleOp
 
     private CmdTimedDrive timedDriveCommand = null;
     private CmdPidDrive pidDriveCommand = null;
+    private DriveBaseWidth calcDriveBaseWidth = null;
+    private RobotStats robotStats = null;
     private CmdAutoDiagnostics autoDiagnostics = null;
 
     private int motorIndex = 0;
@@ -86,12 +90,17 @@ public class FrcTest extends FrcTeleOp
         event = new TrcEvent(moduleName);
         timer = new TrcTimer(moduleName);
         sm = new TrcStateMachine<>(moduleName);
+
+        calcDriveBaseWidth = new DriveBaseWidth(robot);
+        robotStats = new RobotStats(robot);
         //
         // Create and populate Test Mode specific menus.
         //
         testMenu = new FrcChoiceMenu<>("Test/Tests");
         testMenu.addChoice("Sensors Test", FrcTest.Test.SENSORS_TEST, true, false);
         testMenu.addChoice("Subsystems Test", FrcTest.Test.SUBSYSTEMS_TEST, false, false);
+        testMenu.addChoice("Drive Base Width", Test.CALC_DRIVE_BASE_WIDTH, false, false);
+        testMenu.addChoice("Measure Robot Stats", FrcTest.Test.MEASURE_ROBOT_STATS, false, false);
         testMenu.addChoice("Drive Motors Test", FrcTest.Test.DRIVE_MOTORS_TEST, false, false);
         testMenu.addChoice("Diagnostics", FrcTest.Test.AUTO_DIAGNOSTICS, false, false);
         testMenu.addChoice("X Timed Drive", FrcTest.Test.X_TIMED_DRIVE, false, false);
@@ -142,6 +151,14 @@ public class FrcTest extends FrcTeleOp
                 if (robot.frontSonarArray != null) robot.frontSonarArray.startRanging(true);
                 break;
 
+            case CALC_DRIVE_BASE_WIDTH:
+                calcDriveBaseWidth.start();
+                break;
+                
+            case MEASURE_ROBOT_STATS:
+                robotStats.start();
+                break;
+
             case DRIVE_MOTORS_TEST:
                 motorIndex = 0;
                 break;
@@ -190,6 +207,16 @@ public class FrcTest extends FrcTeleOp
         // Call TeleOp stopMode.
         //
         super.stopMode(nextMode);
+        
+        switch(test)
+        {
+            case MEASURE_ROBOT_STATS:
+                robotStats.stop();
+                break;
+             
+            default:
+                break;
+        }
 
         if (robot.leftSonarArray != null) robot.leftSonarArray.stopRanging();
         if (robot.rightSonarArray != null) robot.rightSonarArray.stopRanging();
@@ -239,6 +266,14 @@ public class FrcTest extends FrcTeleOp
             case AUTO_DIAGNOSTICS:
                 autoDiagnostics.cmdPeriodic(elapsedTime);
                 break;
+                
+            case CALC_DRIVE_BASE_WIDTH:
+                calcDriveBaseWidth.cmdPeriodic(elapsedTime);
+                break;
+                
+            case MEASURE_ROBOT_STATS:
+                robotStats.cmdPeriodic(elapsedTime);
+                break;
 
             case X_TIMED_DRIVE:
             case Y_TIMED_DRIVE:
@@ -257,8 +292,11 @@ public class FrcTest extends FrcTeleOp
             case X_DISTANCE_DRIVE:
             case Y_DISTANCE_DRIVE:
             case TURN_DEGREES:
-                robot.dashboard.displayPrintf(2, "xPos=%.1f,yPos=%.1f,heading=%.1f", robot.driveBase.getXPosition(),
-                    robot.driveBase.getYPosition(), robot.driveBase.getHeading());
+                robot.dashboard.displayPrintf(2, "xPos=%.1f,yPos=%.1f,heading=%.1f, lf=%.2f,rf=%.2f,lr=%.2f,rr=%.2f",
+                    robot.driveBase.getXPosition(), robot.driveBase.getYPosition(),
+                    robot.driveBase.getHeading(),
+                    robot.leftFrontWheel.getPosition(), robot.rightFrontWheel.getPosition(),
+                    robot.leftRearWheel.getPosition(), robot.rightRearWheel.getPosition());
                 robot.encoderXPidCtrl.displayPidInfo(3);
                 robot.encoderYPidCtrl.displayPidInfo(5);
                 robot.gyroTurnPidCtrl.displayPidInfo(7);
@@ -397,6 +435,13 @@ public class FrcTest extends FrcTeleOp
         robot.dashboard.displayPrintf(7, "Elevator: pos=%.1f,limitSwitches=%b,%b",
             robot.elevator.getPosition(), robot.elevator.elevatorMotor.isLowerLimitSwitchActive(),
             robot.elevator.elevatorMotor.isUpperLimitSwitchActive());
+        double lfSpeed = robot.leftFrontWheel.getSpeed();
+        double rfSpeed = robot.rightFrontWheel.getSpeed();
+        double lrSpeed = robot.leftRearWheel.getSpeed();
+        double rrSpeed = robot.rightRearWheel.getSpeed();
+        double avgSpeed = (lfSpeed + rfSpeed + lrSpeed + rrSpeed) / 4.0;
+        robot.dashboard.displayPrintf(8,"DriveSpeed: lf=%.0f,rf=%.0f,lr=%.0f,rr=%.0f,avg=%.0f",
+            lfSpeed, rfSpeed, lrSpeed, rrSpeed, avgSpeed);
     } // doSensorsTest
 
     /**
