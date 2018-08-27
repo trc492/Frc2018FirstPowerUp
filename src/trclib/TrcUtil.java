@@ -180,6 +180,17 @@ public class TrcUtil
     }   //normalizeInPlace
 
     /**
+     * This method rounds a double to the nearest integer.
+     *
+     * @param num Number to round.
+     * @return Rounded to the nearest integer.
+     */
+    public static int round(double num)
+    {
+        return (int) Math.floor(num + 0.5);
+    }   //round
+
+    /**
      * This method clips the given value to the range limited by the given low and high limits.
      *
      * @param value specifies the value to be clipped

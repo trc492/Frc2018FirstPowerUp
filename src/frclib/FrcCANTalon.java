@@ -34,6 +34,8 @@ import edu.wpi.first.wpilibj.Sendable;
 import edu.wpi.first.wpilibj.smartdashboard.SendableBuilder;
 import trclib.TrcDbgTrace;
 import trclib.TrcMotor;
+import trclib.TrcPidController;
+import trclib.TrcUtil;
 
 /**
  * This class implements a platform independent CANTalon motor controller. It extends the CANTalon class and
@@ -170,20 +172,41 @@ public class FrcCANTalon extends TrcMotor
 
     /**
      * This method sets the motor controller to velocity mode with the specified maximum velocity.
+     * This will use the PIDF constants already loaded to the Talon. Make sure they're correct!
      *
-     * @param maxVelocity specifies the maximum velocity the motor can run.
+     * @param maxVelocity specifies the maximum velocity the motor can run, in sensor units per 100ms.
      */
     public void enableVelocityMode(double maxVelocity)
+    {
+        enableVelocityMode(maxVelocity, null);
+    }
+
+    /**
+     * This method sets the motor controller to velocity mode with the specified maximum velocity.
+     *
+     * @param maxVelocity specifies the maximum velocity the motor can run, in sensor units per 100ms.
+     * @param pidCoefficients specifies the PIDF coefficients to send to the Talon to use for velocity control.
+     */
+    public void enableVelocityMode(double maxVelocity, TrcPidController.PidCoefficients pidCoefficients)
     {
         final String funcName = "enableVelocityMode";
 
         if (debugEnabled)
         {
-            dbgTrace.traceEnter(funcName, TrcDbgTrace.TraceLevel.API, "maxVel=%f", maxVelocity);
+            dbgTrace.traceEnter(funcName, TrcDbgTrace.TraceLevel.API, "maxVel=%f,pidCoefficients=%s",
+                maxVelocity, pidCoefficients == null ? "N/A" : pidCoefficients.toString());
             dbgTrace.traceExit(funcName, TrcDbgTrace.TraceLevel.API);
         }
 
         this.maxVelocity = maxVelocity;
+
+        if(pidCoefficients != null)
+        {
+            this.motor.config_kP(0, pidCoefficients.kP);
+            this.motor.config_kI(0, pidCoefficients.kI);
+            this.motor.config_kD(0, pidCoefficients.kD);
+            this.motor.config_kF(0, pidCoefficients.kF);
+        }
     }   //enableVelocityMode
 
     /**
@@ -394,8 +417,8 @@ public class FrcCANTalon extends TrcMotor
     {
         final String funcName = "isLowerLimitSwitchActive";
         boolean isActive = limitSwitchesSwapped?
-            !(fwdLimitSwitchNormalOpen^motor.getSensorCollection().isFwdLimitSwitchClosed()):
-            !(revLimitSwitchNormalOpen^motor.getSensorCollection().isRevLimitSwitchClosed());
+            fwdLimitSwitchNormalOpen == motor.getSensorCollection().isFwdLimitSwitchClosed() :
+            revLimitSwitchNormalOpen == motor.getSensorCollection().isRevLimitSwitchClosed();
 
         if (debugEnabled)
         {
@@ -416,8 +439,8 @@ public class FrcCANTalon extends TrcMotor
     {
         final String funcName = "isUpperLimitSwitchActive";
         boolean isActive = limitSwitchesSwapped?
-            !(revLimitSwitchNormalOpen^motor.getSensorCollection().isRevLimitSwitchClosed()):
-            !(fwdLimitSwitchNormalOpen^motor.getSensorCollection().isFwdLimitSwitchClosed());
+            revLimitSwitchNormalOpen == motor.getSensorCollection().isRevLimitSwitchClosed() :
+            fwdLimitSwitchNormalOpen == motor.getSensorCollection().isFwdLimitSwitchClosed();
 
         if (debugEnabled)
         {
@@ -509,6 +532,7 @@ public class FrcCANTalon extends TrcMotor
         {
             controlMode = ControlMode.Velocity;
             value *= maxVelocity;
+            value = TrcUtil.round(value); // Velocity mode is in sensor units/100ms, and sensor units are in integers.
         }
         motor.set(controlMode, value);
         recordResponseCode(motor.getLastError());
