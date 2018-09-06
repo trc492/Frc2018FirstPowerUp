@@ -18,7 +18,7 @@ public class DriveBaseWidth implements TrcRobot.RobotCommand
 
     public void reset()
     {
-        robot.driveBase.resetPosition(true);
+        robot.driveBase.resetOdometry(true);
         this.cumulativeAngle = 0.0;
     }
     
