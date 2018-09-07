@@ -24,8 +24,8 @@ public class MotionProfileTest implements TrcRobot.RobotCommand
     private static final boolean WRITE_CSV = true;
 
     private String instanceName;
-    private FrcTankMotionProfileFollower follower;
     private Robot robot;
+    private FrcTankMotionProfileFollower follower;
     private PrintStream fileOut;
     private double startTime;
 
@@ -38,7 +38,7 @@ public class MotionProfileTest implements TrcRobot.RobotCommand
             RobotInfo.ENCODER_Y_INCHES_PER_COUNT);
         follower.setLeftMotors(robot.leftFrontWheel, robot.leftRearWheel);
         follower.setRightMotors(robot.rightFrontWheel, robot.rightRearWheel);
-        
+
         refreshData("Test/TargetPosLeft",0.0);
         refreshData("Test/ActualPosLeft",0.0);
         refreshData("Test/TargetVelLeft",0.0);
@@ -49,11 +49,11 @@ public class MotionProfileTest implements TrcRobot.RobotCommand
         refreshData("Test/TargetVelRight",0.0);
         refreshData("Test/ActualVelRight",0.0);
     }
-    
+
     private void refreshData(String name, double defaultValue)
-	{
-		HalDashboard.putNumber(name, HalDashboard.getNumber(name, defaultValue));		
-	}
+    {
+        HalDashboard.putNumber(name, HalDashboard.getNumber(name, defaultValue));
+    }
 
     public void start()
     {

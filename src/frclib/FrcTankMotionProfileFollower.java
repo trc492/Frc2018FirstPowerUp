@@ -42,9 +42,9 @@ import trclib.TrcTaskMgr;
 import trclib.TrcUtil;
 
 /**
- * This is an implementation of motion profiling. It streams the profiles to the buffer, and then executes
- * it. Also, the profiles are processed 2x as fast as the first point.
- * This was written by using these resources:
+ * This class implements the platform dependent motion profiling. It streams the profiles to the buffer of the CAN
+ * Talon, and then executes it. Also, the profiles are processed 2x as fast as the first point.
+ * This code is based on the following references:
  * https://github.com/CrossTheRoadElec/Phoenix-Examples-Languages/tree/master/Java/MotionProfile/src/org/usfirst/frc/team217/robot
  * https://github.com/CrossTheRoadElec/Phoenix-Documentation/blob/master/Talon%20SRX%20Motion%20Profile%20Reference%20Manual.pdf
  */

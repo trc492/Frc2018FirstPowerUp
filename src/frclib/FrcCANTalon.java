@@ -89,9 +89,9 @@ public class FrcCANTalon extends TrcMotor
             builder.addDoubleProperty("Distance", FrcCANTalon.this::getPosition, null);
             builder.addDoubleProperty("DistancePerCount", ()->1, null);
         }   //initSendable
-    }
 
-    private String instanceName;
+    }   //class EncoderInfo
+
     public TalonSRX motor;
     private double maxVelocity = 0.0;
     private boolean feedbackDeviceIsPot = false;
@@ -120,14 +120,18 @@ public class FrcCANTalon extends TrcMotor
     public FrcCANTalon(final String instanceName, int deviceNumber)
     {
         super(instanceName);
-        this.instanceName = instanceName;
         motor = new TalonSRX(deviceNumber);
         resetPosition(true);
     }   //FrcCANTalon
 
+    /**
+     * This method creates an EncoderInfo object and returns it.
+     *
+     * @return created GyroInfo object.
+     */
     public Sendable getEncoderSendable()
     {
-        return new EncoderInfo(instanceName);
+        return new EncoderInfo(toString());
     }   //getEncoderSendable
 
     /**

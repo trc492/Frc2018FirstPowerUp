@@ -94,7 +94,7 @@ public class FrcAuto implements TrcRobot.RobotMode
     private double forwardDriveDistance;
 
     private TrcRobot.RobotCommand autoCommand;
-    private MotionProfileTest test;
+    private MotionProfileTest mpTest;
 
     public FrcAuto(Robot robot)
     {
@@ -124,7 +124,7 @@ public class FrcAuto implements TrcRobot.RobotMode
         autoStrategyMenu.addChoice("Turn Degrees", AutoStrategy.TURN_DEGREES, false, false);
         autoStrategyMenu.addChoice("Do Nothing", AutoStrategy.DO_NOTHING, false, true);
 
-        test = new MotionProfileTest("MP", robot);
+        mpTest = new MotionProfileTest("MPTest", robot);
 
         startPositionMenu.addChoice("Left Side Start", RobotInfo.Position.LEFT_POS, false, false);
         startPositionMenu.addChoice("Middle Start", RobotInfo.Position.MID_POS, true, false);
@@ -204,8 +204,8 @@ public class FrcAuto implements TrcRobot.RobotMode
         switch (autoStrategy)
         {
             case MOTION_PROFILE_TEST:
-                test.start();
-                autoCommand = test;
+                mpTest.start();
+                autoCommand = mpTest;
                 break;
 
             case AUTO_SIDE:
@@ -291,7 +291,7 @@ public class FrcAuto implements TrcRobot.RobotMode
     	switch(autoStrategy)
     	{
             case MOTION_PROFILE_TEST:
-                test.stop();
+                mpTest.stop();
                 break;
                 
             default:

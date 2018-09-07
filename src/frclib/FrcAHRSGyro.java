@@ -41,57 +41,61 @@ public class FrcAHRSGyro extends TrcGyro
         public GyroInfo(String name)
         {
             this.name = name;
-        }
+        }   //GyroInfo
 
         @Override
         public String getName()
         {
             return name;
-        }
+        }   //getName
 
         @Override
         public void setName(String name)
         {
             this.name = name;
-        }
+        }   //setName
 
         @Override
         public String getSubsystem()
         {
             return subsystem;
-        }
+        }   //getSubsystem
 
         @Override
         public void setSubsystem(String subsystem)
         {
             this.subsystem = subsystem;
-        }
+        }   //setSubsystem
 
         @Override
         public void initSendable(SendableBuilder builder)
         {
             builder.setSmartDashboardType("Gyro");
-            builder.addDoubleProperty("Value", () -> FrcAHRSGyro.this.getZHeading().value, null);
-        }
-    }
+            builder.addDoubleProperty("Value", () -> getZHeading().value, null);
+        }   //initSendable
+
+    }   //class GyroInfo
 
     public AHRS ahrs;
     private double xSign = 1.0;
     private double ySign = 1.0;
     private double zSign = 1.0;
-    private String instanceName;
 
     public FrcAHRSGyro(final String instanceName, Port port)
     {
         super(instanceName, 3, GYRO_HAS_X_AXIS | GYRO_HAS_Y_AXIS | GYRO_HAS_Z_AXIS, null);
-        this.instanceName = instanceName;
         this.ahrs = new AHRS(port);
     }   //FrcAHRSGyro
 
+    /**
+     * This method creates a GyroInfo object and returns it.
+     *
+     * @return created GyroInfo object.
+     */
     public Sendable getGyroSendable()
     {
-        return new GyroInfo(instanceName);
-    }
+        return new GyroInfo(toString());
+    }   //getGyroSendable
 
     //
     // Implements TrcGyro abstract methods.
