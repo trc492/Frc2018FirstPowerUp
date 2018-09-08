@@ -57,12 +57,15 @@ public class TrcPidActuator extends TrcPidMotor
      */
     public TrcPidActuator(
             String instanceName, TrcMotor motor, TrcDigitalInput lowerLimitSwitch, TrcPidController pidCtrl,
-            double calPower, double minPos,double maxPos, PowerCompensation powerCompensation)
+            double calPower, double minPos, double maxPos, PowerCompensation powerCompensation)
     {
         super(instanceName, motor, pidCtrl, calPower, powerCompensation);
         this.minPos = minPos;
         this.maxPos = maxPos;
-        motor.resetPositionOnDigitalInput(lowerLimitSwitch);
+        if (lowerLimitSwitch != null)
+        {
+            motor.resetPositionOnDigitalInput(lowerLimitSwitch);
+        }
         pidCtrl.setAbsoluteSetPoint(true);
     }   //TrcPidActuator
 
@@ -98,6 +101,57 @@ public class TrcPidActuator extends TrcPidMotor
             double calPower)
     {
         this(instanceName, motor, lowerLimitSwitch, pidCtrl, calPower, 0.0, 0.0, null);
+    }   //TrcPidActuator
+
+    /**
+     * Constructor: Create an instance of the object.
+     *
+     * @param instanceName specifies the instance name.
+     * @param motor specifies the motor in the actuator.
+     * @param pidCtrl specifies the PID controller for PID controlled movement.
+     * @param calPower specifies the motor power for the calibration.
+     * @param minPos specifies the minimum position of the actuator range.
+     * @param maxPos specifies the maximum position of the actuator range.
+     * @param powerCompensation specifies the object that implements the PowerCompensation interface, null if none
+     *                          provided.
+     */
+    public TrcPidActuator(
+            String instanceName, TrcMotor motor, TrcPidController pidCtrl, double calPower, double minPos,
+            double maxPos, PowerCompensation powerCompensation)
+    {
+        this(instanceName, motor, null, pidCtrl, calPower, minPos, maxPos, powerCompensation);
+    }   //TrcPidActuator
+
+    /**
+     * Constructor: Create an instance of the object.
+     *
+     * @param instanceName specifies the instance name.
+     * @param motor specifies the motor in the actuator.
+     * @param pidCtrl specifies the PID controller for PID controlled movement.
+     * @param calPower specifies the motor power for the calibration.
+     * @param minPos specifies the minimum position of the actuator range.
+     * @param maxPos specifies the maximum position of the actuator range.
+     */
+    public TrcPidActuator(
+            String instanceName, TrcMotor motor, TrcPidController pidCtrl, double calPower, double minPos,
+            double maxPos)
+    {
+        this(instanceName, motor, null, pidCtrl, calPower, minPos, maxPos, null);
+    }   //TrcPidActuator
+
+    /**
+     * Constructor: Create an instance of the object.
+     *
+     * @param instanceName specifies the instance name.
+     * @param motor specifies the motor in the actuator.
+     * @param lowerLimitSwitch specifies the lower limit switch. Required for zero calibration.
+     * @param pidCtrl specifies the PID controller for PID controlled movement.
+     * @param calPower specifies the motor power for the calibration.
+     */
+    public TrcPidActuator(
+            String instanceName, TrcMotor motor, TrcPidController pidCtrl, double calPower)
+    {
+        this(instanceName, motor, null, pidCtrl, calPower, 0.0, 0.0, null);
     }   //TrcPidActuator
 
     /**

@@ -40,7 +40,7 @@ public class TrcSwerveModule implements TrcMotorController
 
     private final String instanceName;
     public final TrcMotorController driveMotor;
-    public final TrcPidActuator steerMotor;
+    public final TrcPidMotor steerMotor;
     private double prevSteerAngle = 0.0;
     private double optimizedWheelDir = 1.0;
 
