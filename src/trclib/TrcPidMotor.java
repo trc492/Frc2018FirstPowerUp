@@ -459,6 +459,10 @@ public class TrcPidMotor
      * - the power applied to the motor is above or equal to stallMinPower.
      * - the motor has not moved for at least stallTimeout.
      *
+     * Note: By definition, holding target position is stalling. If you decide to enable stall protection while
+     *       holding target, please make sure to set a stallMinPower much greater the power necessary to hold
+     *       position against gravity, for example.
+     *
      * @param stallMinPower specifies the minimum motor power to detect stalled condition. If the motor power is
      *                      below stallMinPower, it won't consider it as a stalled condition even if the motor does
      *                      not move.
@@ -536,7 +540,6 @@ public class TrcPidMotor
         {
             expiredTime += TrcUtil.getCurrentTime();
         }
-
         //
         // Set the PID motor task active.
         //
@@ -578,8 +581,8 @@ public class TrcPidMotor
      * detected. It will also check to reset the stalled condition if reset timeout was specified.
      *
      * @param power specifies the motor power.
-     * @param rangeLow specifies the range low limit.
-     * @param rangeHigh specifies the range high limit.
+     * @param rangeLow specifies the power range low limit.
+     * @param rangeHigh specifies the power range high limit.
      * @param stopPid specifies true to stop previous PID operation, false otherwise.
      */
     private void setPower(double power, double rangeLow, double rangeHigh, boolean stopPid)
@@ -592,86 +595,87 @@ public class TrcPidMotor
                                 "power=%f,rangeLow=%f,rangeHigh=%f,stopPid=%s",
                                 power, rangeLow, rangeHigh, Boolean.toString(stopPid));
         }
-
-        if (power != 0.0 || !calibrating)
+        //
+        // Note: this method does not handle zero calibration, so do not call this method in zero calibration mode.
+        //
+        if (active && stopPid)
         {
-            if (active && stopPid)
-            {
-                //
-                // A previous PID operation is still in progress, cancel it. Don't stop the motor to prevent jerkiness.
-                //
-                stop(false);
-            }
+            //
+            // A previous PID operation is still in progress, cancel it. Don't stop the motor to prevent jerkiness.
+            //
+            stop(false);
+        }
 
-            if (stalled)
+        if (stalled)
+        {
+            if (power == 0.0)
             {
-                if (power == 0.0)
+                //
+                // We had a stalled condition but if power is removed for at least reset timeout, we clear the
+                // stalled condition.
+                //
+                if (resetTimeout == 0.0 || TrcUtil.getCurrentTime() - prevTime > resetTimeout)
                 {
-                    //
-                    // We had a stalled condition but if power is removed for at least reset timeout, we clear the
-                    // stalled condition.
-                    //
-                    if (resetTimeout == 0.0 || TrcUtil.getCurrentTime() - prevTime > resetTimeout)
-                    {
-                        prevPos = getPosition();
-                        prevTime = TrcUtil.getCurrentTime();
-                        stalled = false;
-                        if (beepDevice != null)
-                        {
-                            beepDevice.playTone(beepLowFrequency, beepDuration);
-                        }
-                    }
-                }
-                else
-                {
+                    prevPos = getPosition();
                     prevTime = TrcUtil.getCurrentTime();
+                    stalled = false;
+                    if (beepDevice != null)
+                    {
+                        beepDevice.playTone(beepLowFrequency, beepDuration);
+                    }
                 }
             }
             else
             {
-                if (powerCompensation != null)
-                {
-                    power += powerCompensation.getCompensation();
-                }
-                power = TrcUtil.clipRange(power, rangeLow, rangeHigh);
-
-                motorPower = power;
-                if (stallMinPower > 0.0 && stallTimeout > 0.0)
-                {
-                    //
-                    // Stall protection is ON, check for stall condition.
-                    // - power is above stallMinPower
-                    // - motor has not moved for at least stallTimeout.
-                    //
-                    double currPos = getPosition();
-                    if (Math.abs(power) < Math.abs(stallMinPower) || currPos != prevPos)
-                    {
-                        prevPos = currPos;
-                        prevTime = TrcUtil.getCurrentTime();
-                    }
-
-                    if (TrcUtil.getCurrentTime() - prevTime > stallTimeout)
-                    {
-                        //
-                        // We have detected a stalled condition for at least stallTimeout. Kill power to protect
-                        // the motor.
-                        //
-                        motorPower = 0.0;
-                        stalled = true;
-                        if (beepDevice != null)
-                        {
-                            beepDevice.playTone(beepHighFrequency, beepDuration);
-                        }
-
-                        if (msgTracer != null)
-                        {
-                            msgTracer.traceInfo(funcName, "%s: stalled", instanceName);
-                        }
-                    }
-                }
-
-                setMotorPower(motorPower);
+                prevTime = TrcUtil.getCurrentTime();
             }
+        }
+        else
+        {
+            if (powerCompensation != null)
+            {
+                power += powerCompensation.getCompensation();
+            }
+            power = TrcUtil.clipRange(power, rangeLow, rangeHigh);
+            motorPower = power;
+            //
+            // Perform stall detection if enabled.
+            //
+            if (stallMinPower > 0.0 && stallTimeout > 0.0)
+            {
+                //
+                // Stall protection is ON, check for stall condition.
+                // - power is above stallMinPower
+                // - motor has not moved for at least stallTimeout.
+                //
+                double currPos = getPosition();
+                if (Math.abs(power) < Math.abs(stallMinPower) || currPos != prevPos)
+                {
+                    prevPos = currPos;
+                    prevTime = TrcUtil.getCurrentTime();
+                }
+
+                if (TrcUtil.getCurrentTime() - prevTime > stallTimeout)
+                {
+                    //
+                    // We have detected a stalled condition for at least stallTimeout. Kill power to protect
+                    // the motor.
+                    //
+                    motorPower = 0.0;
+                    stalled = true;
+                    if (beepDevice != null)
+                    {
+                        beepDevice.playTone(beepHighFrequency, beepDuration);
+                    }
+
+                    if (msgTracer != null)
+                    {
+                        msgTracer.traceInfo(funcName, "%s: stalled", instanceName);
+                    }
+                }
+            }
+
+            setMotorPower(motorPower);
         }
 
         if (debugEnabled)
@@ -730,9 +734,8 @@ public class TrcPidMotor
                                 "power=%.2f,minPos=%.1f,maxPos=%.1f,hold=%s",
                                 power, minPos, maxPos, Boolean.toString(holdTarget));
         }
-
         //
-        // If speed is negative, set the target to minPos. If speed is positive, set the target to maxPos. We only
+        // If power is negative, set the target to minPos. If power is positive, set the target to maxPos. We only
         // set a new target if the target has changed. (i.e. either the motor changes direction, starting or stopping).
         //
         double currTarget = power < 0.0? minPos: power > 0.0? maxPos: minPos - 1.0;
@@ -837,11 +840,11 @@ public class TrcPidMotor
 
         power = TrcUtil.clipRange(power, MIN_MOTOR_POWER, MAX_MOTOR_POWER);
 
-        if (power == 0.0 || syncGain == 0.0 || calibrating)
+        if (power == 0.0 || syncGain == 0.0)
         {
             //
-            // If we are not sync'ing or is in zero calibration mode, just set the motor power. If we are stopping
-            // the motor, even if we are sync'ing, we should just stop. But we should still observe the limit switches.
+            // If we are not sync'ing or stopping, just set the motor power. If we are stopping the motor, even if
+            // we are sync'ing, we should just stop. But we should still observe the limit switches.
             //
             motor1.set(power);
             if (motor2 != null)
@@ -851,6 +854,9 @@ public class TrcPidMotor
         }
         else
         {
+            //
+            // We are sync'ing the two motors and the motor power is not zero.
+            //
             double pos1 = motor1.getPosition();
             double pos2 = motor2.getPosition();
             double deltaPower = TrcUtil.clipRange((pos2 - pos1)*syncGain);
@@ -859,7 +865,6 @@ public class TrcPidMotor
             double minPower = Math.min(power1, power2);
             double maxPower = Math.max(power1, power2);
             double scale = maxPower > MAX_MOTOR_POWER? maxPower: minPower < MIN_MOTOR_POWER? -minPower: 1.0;
-
             //
             // We don't want the motors to switch direction in order to sync. It will worsen oscillation.
             // So make sure the motor powers are moving in the same direction.
@@ -905,7 +910,6 @@ public class TrcPidMotor
         {
             dbgTrace.traceEnter(funcName, TrcDbgTrace.TraceLevel.FUNC, "stopMotor=%s", Boolean.toString(stopMotor));
         }
-
         //
         // Canceling previous PID operation if any.
         //
@@ -985,16 +989,42 @@ public class TrcPidMotor
                 //
                 // We are in zero calibration mode.
                 //
-                if (!motor1ZeroCalDone && motor1.isLowerLimitSwitchActive())
+                if (!motor1ZeroCalDone)
                 {
-                    motor1ZeroCalDone = true;
+                    if (motor1.isLowerLimitSwitchActive())
+                    {
+                        //
+                        // Done with motor 1 zero calibration. Call the motor directly to stop, do not call any of
+                        // the setPower or setMotorPower because they do not handle zero calibration mode.
+                        //
+                        motor1.resetPosition(false);
+                        motor1ZeroCalDone = true;
+                        motor1.set(0.0);
+                    }
+                    else
+                    {
+                        motor1.set(calPower);
+                    }
                 }
-    
-                if (!motor2ZeroCalDone && motor2.isLowerLimitSwitchActive())
+
+                if (!motor2ZeroCalDone)
                 {
-                    motor2ZeroCalDone = true;
+                    if (motor2.isLowerLimitSwitchActive())
+                    {
+                        //
+                        // Done with motor 2 zero calibration. Call the motor directly to stop, do not call any of
+                        // the setPower or setMotorPower because they do not handle zero calibration mode.
+                        //
+                        motor2.resetPosition(false);
+                        motor2ZeroCalDone = true;
+                        motor2.set(0.0);
+                    }
+                    else
+                    {
+                        motor2.set(calPower);
+                    }
                 }
-    
+
                 if (motor1ZeroCalDone && motor2ZeroCalDone)
                 {
                     //
@@ -1003,17 +1033,19 @@ public class TrcPidMotor
                     calibrating = false;
                     setTaskEnabled(false);
                 }
-                setMotorPower(calPower);
             }
             else
             {
-                //
-                // If we are not holding target and has reached target or we set a timeout and it has expired, we are
-                // done with the operation. Stop the motor and if there is a notification event, signal it.
-                //
-                if (!holdTarget && (pidCtrl.isOnTarget() || stalled) ||
+                if (stalled ||
+                    !holdTarget && pidCtrl.isOnTarget() ||
                     expiredTime != 0.0 && TrcUtil.getCurrentTime() >= expiredTime)
                 {
+                    //
+                    // We stop the motor if we either: 
+                    // - are stalled
+                    // - have reached target and not holding target position
+                    // - set a timeout and it has expired.
+                    //
                     stop(true);
                     if (notifyEvent != null)
                     {
