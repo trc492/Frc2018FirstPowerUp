@@ -47,7 +47,8 @@ public class TrcPidActuator extends TrcPidMotor
      *
      * @param instanceName specifies the instance name.
      * @param motor specifies the motor in the actuator.
-     * @param lowerLimitSwitch specifies the lower limit switch. Required for zero calibration.
+     * @param lowerLimitSwitch specifies the optional lower limit switch. Required only for auto zero calibration
+     *        whenever it is active.
      * @param pidCtrl specifies the PID controller for PID controlled movement.
      * @param calPower specifies the motor power for the calibration.
      * @param minPos specifies the minimum position of the actuator range.
@@ -74,7 +75,8 @@ public class TrcPidActuator extends TrcPidMotor
      *
      * @param instanceName specifies the instance name.
      * @param motor specifies the motor in the actuator.
-     * @param lowerLimitSwitch specifies the lower limit switch. Required for zero calibration.
+     * @param lowerLimitSwitch specifies the optional lower limit switch. Required only for auto zero calibration
+     *        whenever it is active.
      * @param pidCtrl specifies the PID controller for PID controlled movement.
      * @param calPower specifies the motor power for the calibration.
      * @param minPos specifies the minimum position of the actuator range.
@@ -92,7 +94,8 @@ public class TrcPidActuator extends TrcPidMotor
      *
      * @param instanceName specifies the instance name.
      * @param motor specifies the motor in the actuator.
-     * @param lowerLimitSwitch specifies the lower limit switch. Required for zero calibration.
+     * @param lowerLimitSwitch specifies the optional lower limit switch. Required only for auto zero calibration
+     *        whenever it is active.
      * @param pidCtrl specifies the PID controller for PID controlled movement.
      * @param calPower specifies the motor power for the calibration.
      */
