@@ -1060,7 +1060,7 @@ public class TrcPidMotor
                     //
                     motorPower = pidCtrl.getOutput();
                     setPower(motorPower, MIN_MOTOR_POWER, MAX_MOTOR_POWER, false);
-    
+
                     if (msgTracer != null && tracePidInfo)
                     {
                         pidCtrl.printPidInfo(msgTracer, TrcUtil.getCurrentTime(), battery);

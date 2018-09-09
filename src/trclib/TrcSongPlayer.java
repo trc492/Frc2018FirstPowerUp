@@ -562,7 +562,7 @@ public class TrcSongPlayer
                 while (true)
                 {
                     String note = song.getNextNote();
-    
+
                     if (note == null && repeat)
                     {
                         //
@@ -571,7 +571,7 @@ public class TrcSongPlayer
                         song.rewind();
                         note = song.getNextNote();
                     }
-    
+
                     if (note == null)
                     {
                         //
