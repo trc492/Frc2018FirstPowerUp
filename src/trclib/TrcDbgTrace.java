@@ -25,6 +25,8 @@ package trclib;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.PrintStream;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.LinkedBlockingQueue;
 
 import hallib.HalDbgLog;
 
@@ -87,6 +89,22 @@ public class TrcDbgTrace
 
     }   //enum MsgLevel
 
+    private static class TraceJob
+    {
+        private String funcName;
+        private MsgLevel level;
+        private String format;
+        private Object[] args;
+
+        public TraceJob(String funcName, MsgLevel level, String format, Object... args)
+        {
+            this.funcName = funcName;
+            this.level = level;
+            this.format = format;
+            this.args = args;
+        }
+    }
+
     private static TrcDbgTrace globalTracer = null;
     private static int indentLevel = 0;
 
@@ -97,6 +115,9 @@ public class TrcDbgTrace
     private String traceLogName = null;
     private PrintStream traceLog = null;
     private boolean traceLogEnabled = false;
+
+    private Thread jobThread;
+    private BlockingQueue<TraceJob> jobQueue;
 
     /**
      * Constructor: Create an instance of the object.
@@ -109,6 +130,9 @@ public class TrcDbgTrace
     public TrcDbgTrace(final String instanceName, boolean traceEnabled, TraceLevel traceLevel, MsgLevel msgLevel)
     {
         this.instanceName = instanceName;
+
+        jobQueue = new LinkedBlockingQueue<>();
+
         setDbgTraceConfig(traceEnabled, traceLevel, msgLevel);
     }   //TrcDbgTrace
 
@@ -168,6 +192,8 @@ public class TrcDbgTrace
         }
         traceLogEnabled = false;
 
+        startLoggingThread();
+
         return success;
     }   //openTraceLog
 
@@ -211,6 +237,7 @@ public class TrcDbgTrace
 
         if (traceLog != null)
         {
+            stopLoggingThread();
             if (newName != null)
             {
                 try
@@ -351,7 +378,7 @@ public class TrcDbgTrace
      */
     public void traceFatal(final String funcName, final String format, Object... args)
     {
-        traceMsg(funcName, MsgLevel.FATAL, format, args);
+        traceMsgAsync(funcName, MsgLevel.FATAL, format, args);
     }   //traceFatal
 
     /**
@@ -363,7 +390,7 @@ public class TrcDbgTrace
      */
     public void traceErr(final String funcName, final String format, Object... args)
     {
-        traceMsg(funcName, MsgLevel.ERR, format, args);
+        traceMsgAsync(funcName, MsgLevel.ERR, format, args);
     }   //traceErr
 
     /**
@@ -375,7 +402,7 @@ public class TrcDbgTrace
      */
     public void traceWarn(final String funcName, final String format, Object... args)
     {
-        traceMsg(funcName, MsgLevel.WARN, format, args);
+        traceMsgAsync(funcName, MsgLevel.WARN, format, args);
     }   //traceWarn
 
     /**
@@ -387,7 +414,7 @@ public class TrcDbgTrace
      */
     public void traceInfo(final String funcName, final String format, Object... args)
     {
-        traceMsg(funcName, MsgLevel.INFO, format, args);
+        traceMsgAsync(funcName, MsgLevel.INFO, format, args);
     }   //traceInfo
 
     /**
@@ -399,7 +426,7 @@ public class TrcDbgTrace
      */
     public void traceVerbose(final String funcName, final String format, Object... args)
     {
-        traceMsg(funcName, MsgLevel.VERBOSE, format, args);
+        traceMsgAsync(funcName, MsgLevel.VERBOSE, format, args);
     }   //traceVerbose
 
     /**
@@ -415,7 +442,7 @@ public class TrcDbgTrace
     {
         if (timer.hasExpired())
         {
-            traceMsg(funcName, MsgLevel.INFO, format, args);
+            traceMsgAsync(funcName, MsgLevel.INFO, format, args);
         }
     }   //traceInfoAtInterval
 
@@ -429,6 +456,65 @@ public class TrcDbgTrace
     {
         HalDbgLog.traceMsg(String.format(format, args));
     }   //tracePrintf
+
+    private void startLoggingThread()
+    {
+        if(jobThread != null && jobThread.isAlive()) {
+            jobThread.interrupt();
+            try
+            {
+                jobThread.join();
+            }
+            catch (InterruptedException e)
+            {
+                e.printStackTrace();
+            }
+        }
+
+        jobThread = new Thread(this::processJobQueue);
+        jobThread.setDaemon(true);
+        jobQueue.clear();
+    }
+
+    private void stopLoggingThread()
+    {
+        stopLoggingThread(false);
+    }
+
+    private void stopLoggingThread(boolean returnImmediately)
+    {
+        jobThread.interrupt();
+
+        if(!returnImmediately)
+        {
+            try
+            {
+                jobThread.join();
+            }
+            catch (InterruptedException e)
+            {
+                e.printStackTrace();
+            }
+        }
+
+        jobQueue.clear();
+    }
+
+    /**
+     * This method is the common worker for all the trace message methods.
+     *
+     * @param funcName specifies the calling method name.
+     * @param level specifies the message level.
+     * @param format specifies the format string of the message.
+     * @param args specifies the message arguments.
+     */
+    private void traceMsgAsync(final String funcName, MsgLevel level, final String format, Object... args)
+    {
+        if (level.getValue() <= msgLevel.getValue())
+        {
+            jobQueue.add(new TraceJob(funcName, level, format, args));
+        }
+    }   //traceMsgAsync
 
     /**
      * This method is the common worker for all the trace message methods.
@@ -463,7 +549,7 @@ public class TrcDbgTrace
      */
     private String tracePrefix(final String funcName, boolean enter, boolean newline)
     {
-        String prefix = "";
+        StringBuilder prefix = new StringBuilder();
 
         if (enter)
         {
@@ -472,22 +558,22 @@ public class TrcDbgTrace
 
         for (int i = 0; i < indentLevel; i++)
         {
-            prefix += "| ";
+            prefix.append("| ");
         }
 
-        prefix += instanceName + "." + funcName;
+        prefix.append(instanceName).append(".").append(funcName);
 
         if (enter)
         {
-            prefix += newline? "()\n": "(";
+            prefix.append(newline ? "()\n" : "(");
         }
         else
         {
-            prefix += newline? "!\n": "";
+            prefix.append(newline ? "!\n" : "");
             indentLevel--;
         }
 
-        return prefix;
+        return prefix.toString();
     }   //tracePrefix
 
     /**
@@ -530,5 +616,20 @@ public class TrcDbgTrace
 
         return prefix;
     }   //msgPrefix
+
+    private void processJobQueue()
+    {
+        while(!Thread.interrupted()) {
+            try
+            {
+                TraceJob job = jobQueue.take();
+                traceMsg(job.funcName, job.level, job.format, job.args);
+            }
+            catch (InterruptedException e)
+            {
+                Thread.currentThread().interrupt();
+            }
+        }
+    }
 
 }   //class TrcDbgTrace
