@@ -708,8 +708,15 @@ public abstract class TrcSerialBusDevice implements Runnable
 
             if (processingInterval > 0)
             {
-                long sleepTime = processingInterval - (TrcUtil.getCurrentTimeMillis() - requestStartTime);
-                TrcUtil.sleep(sleepTime);
+                try
+                {
+                    long sleepTime = processingInterval - (TrcUtil.getCurrentTimeMillis() - requestStartTime);
+                    Thread.sleep(sleepTime);
+                }
+                catch (InterruptedException e)
+                {
+                    break;
+                }
             }
             else
             {

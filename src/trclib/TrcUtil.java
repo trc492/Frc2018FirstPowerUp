@@ -89,12 +89,31 @@ public class TrcUtil
     }   //getTimestamp
 
     /**
-     * This method puts the current thread to sleep for the given time in msec. It handles InterruptException where
-     * it recalculates the remaining time and calls sleep again repeatedly until the specified sleep time has past.
+     * This method puts the current thread to sleep for the given time in msec. If the sleep is interrupted, it
+     * throws a RuntimeException to terminate the thread.
      *
      * @param milliTime specifies sleep time in msec.
      */
     public static void sleep(long milliTime)
+    {
+        try
+        {
+            Thread.sleep(milliTime);
+        }
+        catch (InterruptedException e)
+        {
+            throw new RuntimeException("Sleep is interrupted: " + e.getMessage());
+        }
+    }   //sleep
+
+    /**
+     * This method puts the current thread to an non-interruptible sleep for the given time in msec. It handles
+     * InterruptException where it recalculates the remaining time and calls sleep again repeatedly until the
+     * specified sleep time has past. Call Thread.sleep if you intend the sleep be interruptible.
+     *
+     * @param milliTime specifies sleep time in msec.
+     */
+    public static void nonInterruptibleSleep(long milliTime)
     {
         long wakeupTime = System.currentTimeMillis() + milliTime;
 
@@ -110,7 +129,7 @@ public class TrcUtil
                 milliTime = wakeupTime - System.currentTimeMillis();
             }
         }
-    }   //sleep
+    }   //nonInterruptibleSleep
 
     /**
      * This method calculates the modulo of two numbers. Unlike the <code>%</code> operator, this returns a number

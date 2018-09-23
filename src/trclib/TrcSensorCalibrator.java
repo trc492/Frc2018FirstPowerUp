@@ -122,7 +122,7 @@ public class TrcSensorCalibrator<D>
                     maxValues[i] = value;
                 }
             }
-            TrcUtil.sleep(calInterval);
+            TrcUtil.nonInterruptibleSleep(calInterval);
         }
 
         for (int i = 0; i < numAxes; i++)

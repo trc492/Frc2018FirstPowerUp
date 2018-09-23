@@ -341,8 +341,15 @@ public class TrcThread<T> implements Runnable
 
             if (processingInterval > 0)
             {
-                long sleepTime = processingInterval - (TrcUtil.getCurrentTimeMillis() - startTime);
-                TrcUtil.sleep(sleepTime);
+                try
+                {
+                    long sleepTime = processingInterval - (TrcUtil.getCurrentTimeMillis() - startTime);
+                    Thread.sleep(sleepTime);
+                }
+                catch (InterruptedException e)
+                {
+                    break;
+                }
             }
             else
             {

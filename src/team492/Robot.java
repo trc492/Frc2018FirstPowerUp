@@ -470,7 +470,7 @@ public class Robot extends FrcRobotBase
             pdp.setTaskEnabled(false);
             battery.setTaskEnabled(false);
 
-            for (int i = 0; i < FrcPdp.NUM_PDP_CHANNELS; i++)
+            for (int i = 0; i < FrcPdp.kPDPChannels; i++)
             {
                 String channelName = pdp.getChannelName(i);
                 if (channelName != null)
