@@ -118,7 +118,9 @@ public class TrcDbgTrace
     private boolean threadedLoggingEnabled = true;
 
     private Thread jobThread;
+    private Thread shutdownHook;
     private BlockingQueue<TraceJob> jobQueue;
+    private volatile boolean shutdown = false;
 
     /**
      * Constructor: Create an instance of the object.
@@ -133,6 +135,7 @@ public class TrcDbgTrace
         this.instanceName = instanceName;
 
         jobQueue = new LinkedBlockingQueue<>();
+        shutdownHook = new Thread(() -> shutdown = true); // When the JVM shuts down, set the shutdown flag to true.
 
         setDbgTraceConfig(traceEnabled, traceLevel, msgLevel);
     }   //TrcDbgTrace
@@ -484,6 +487,8 @@ public class TrcDbgTrace
             }
         }
 
+        Runtime.getRuntime().addShutdownHook(shutdownHook); // Add the shutdown hook to the jvm
+
         jobThread = new Thread(this::processJobQueue);
         jobThread.setDaemon(true);
         jobQueue.clear();
@@ -511,6 +516,8 @@ public class TrcDbgTrace
         }
 
         jobQueue.clear();
+
+        Runtime.getRuntime().removeShutdownHook(shutdownHook); // Remove the shutdown hook from the JVM.
     }
 
     /**
@@ -563,6 +570,10 @@ public class TrcDbgTrace
             }
         }
     }   //traceMsg
+
+    private void traceMsg(TraceJob job) {
+        traceMsg(job.funcName, job.level, job.format, job.args);
+    }
 
     /**
      * This method returns a trace prefix string. The trace prefix includes the indentation, the instance name and
@@ -648,8 +659,11 @@ public class TrcDbgTrace
         while(!Thread.interrupted()) {
             try
             {
-                TraceJob job = jobQueue.take();
-                traceMsg(job.funcName, job.level, job.format, job.args);
+                traceMsg(jobQueue.take());
+                if(shutdown) {
+                    jobQueue.forEach(this::traceMsg);
+                    Thread.currentThread().interrupt();
+                }
             }
             catch (InterruptedException e)
             {
@@ -657,5 +671,4 @@ public class TrcDbgTrace
             }
         }
     }
-
 }   //class TrcDbgTrace
