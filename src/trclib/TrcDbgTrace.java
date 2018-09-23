@@ -40,15 +40,7 @@ public class TrcDbgTrace
      */
     public enum TraceLevel
     {
-        QUIET(0),
-        INIT(1),
-        API(2),
-        CALLBK(3),
-        EVENT(4),
-        FUNC(5),
-        TASK(6),
-        UTIL(7),
-        HIFREQ(8);
+        QUIET(0), INIT(1), API(2), CALLBK(3), EVENT(4), FUNC(5), TASK(6), UTIL(7), HIFREQ(8);
 
         private int value;
 
@@ -69,11 +61,7 @@ public class TrcDbgTrace
      */
     public enum MsgLevel
     {
-        FATAL(1),
-        ERR(2),
-        WARN(3),
-        INFO(4),
-        VERBOSE(5);
+        FATAL(1), ERR(2), WARN(3), INFO(4), VERBOSE(5);
 
         private int value;
 
@@ -127,8 +115,8 @@ public class TrcDbgTrace
      *
      * @param instanceName specifies the instance name.
      * @param traceEnabled specifies true to enable debug tracing, false to disable.
-     * @param traceLevel specifies the trace level.
-     * @param msgLevel specifies the message level.
+     * @param traceLevel   specifies the trace level.
+     * @param msgLevel     specifies the message level.
      */
     public TrcDbgTrace(final String instanceName, boolean traceEnabled, TraceLevel traceLevel, MsgLevel msgLevel)
     {
@@ -151,8 +139,8 @@ public class TrcDbgTrace
     {
         if (globalTracer == null)
         {
-            globalTracer = new TrcDbgTrace(
-                "GlobalTracer", false, TrcDbgTrace.TraceLevel.API, TrcDbgTrace.MsgLevel.INFO);
+            globalTracer = new TrcDbgTrace("GlobalTracer", false, TrcDbgTrace.TraceLevel.API,
+                TrcDbgTrace.MsgLevel.INFO);
         }
 
         return globalTracer;
@@ -164,11 +152,11 @@ public class TrcDbgTrace
      * set to INFO. Call this method if you want to change the configuration.
      *
      * @param traceEnabled specifies true if enabling method tracing.
-     * @param traceLevel specifies the method tracing level.
-     * @param msgLevel specifies the message tracing level.
+     * @param traceLevel   specifies the method tracing level.
+     * @param msgLevel     specifies the message tracing level.
      */
-    public static void setGlobalTracerConfig(
-            boolean traceEnabled, TrcDbgTrace.TraceLevel traceLevel, TrcDbgTrace.MsgLevel msgLevel)
+    public static void setGlobalTracerConfig(boolean traceEnabled, TrcDbgTrace.TraceLevel traceLevel,
+        TrcDbgTrace.MsgLevel msgLevel)
     {
         globalTracer.setDbgTraceConfig(traceEnabled, traceLevel, msgLevel);
     }   //setGlobalTracerConfig
@@ -206,7 +194,7 @@ public class TrcDbgTrace
      * folder. The file name will be formed by concatenating the date-time stamp with the specified file name.
      *
      * @param folderPath specifies the folder path.
-     * @param fileName specifies the file name, null if none provided.
+     * @param fileName   specifies the file name, null if none provided.
      * @return true if log file is successfully opened, false if it failed.
      */
     public boolean openTraceLog(final String folderPath, final String fileName)
@@ -254,7 +242,7 @@ public class TrcDbgTrace
                     File file = new File(traceLogName);
                     file.renameTo(new File(newFile));
                 }
-                catch(Exception e)
+                catch (Exception e)
                 {
                     // We failed to rename the file, close the log anyway.
                     traceLog.close();
@@ -304,8 +292,8 @@ public class TrcDbgTrace
      * tracing.
      *
      * @param traceEnabled specifies true to enable function tracing, false to disable.
-     * @param traceLevel specifies the trace level.
-     * @param msgLevel specifies the message level.
+     * @param traceLevel   specifies the trace level.
+     * @param msgLevel     specifies the message level.
      */
     public void setDbgTraceConfig(boolean traceEnabled, TraceLevel traceLevel, MsgLevel msgLevel)
     {
@@ -329,10 +317,10 @@ public class TrcDbgTrace
     /**
      * This method is typically called at the beginning of a method to trace the entry parameters of the method.
      *
-     * @param funcName specifies the calling method name.
+     * @param funcName  specifies the calling method name.
      * @param funcLevel specifies the trace level.
-     * @param format specifies the format string of the message.
-     * @param args specifies the message arguments.
+     * @param format    specifies the format string of the message.
+     * @param args      specifies the message arguments.
      */
     public void traceEnter(final String funcName, final TraceLevel funcLevel, final String format, Object... args)
     {
@@ -345,7 +333,7 @@ public class TrcDbgTrace
     /**
      * This method is typically called at the beginning of a method.
      *
-     * @param funcName specifies the calling method name.
+     * @param funcName  specifies the calling method name.
      * @param funcLevel specifies the trace level.
      */
     public void traceEnter(final String funcName, final TraceLevel funcLevel)
@@ -359,10 +347,10 @@ public class TrcDbgTrace
     /**
      * This method is typically called at the end of a method to trace the return value of the method.
      *
-     * @param funcName specifies the calling method name.
+     * @param funcName  specifies the calling method name.
      * @param funcLevel specifies the trace level.
-     * @param format specifies the format string of the message.
-     * @param args specifies the message arguments.
+     * @param format    specifies the format string of the message.
+     * @param args      specifies the message arguments.
      */
     public void traceExit(final String funcName, final TraceLevel funcLevel, final String format, Object... args)
     {
@@ -374,7 +362,8 @@ public class TrcDbgTrace
 
     /**
      * This method is typically called at the end of a method.
-     * @param funcName specifies the calling method name.
+     *
+     * @param funcName  specifies the calling method name.
      * @param funcLevel specifies the trace level.
      */
     public void traceExit(final String funcName, final TraceLevel funcLevel)
@@ -389,8 +378,8 @@ public class TrcDbgTrace
      * This method is called to print a fatal message.
      *
      * @param funcName specifies the calling method name.
-     * @param format specifies the format string of the message.
-     * @param args specifies the message arguments.
+     * @param format   specifies the format string of the message.
+     * @param args     specifies the message arguments.
      */
     public void traceFatal(final String funcName, final String format, Object... args)
     {
@@ -401,8 +390,8 @@ public class TrcDbgTrace
      * This method is called to print an error message.
      *
      * @param funcName specifies the calling method name.
-     * @param format specifies the format string of the message.
-     * @param args specifies the message arguments.
+     * @param format   specifies the format string of the message.
+     * @param args     specifies the message arguments.
      */
     public void traceErr(final String funcName, final String format, Object... args)
     {
@@ -413,8 +402,8 @@ public class TrcDbgTrace
      * This method is called to print a warning message.
      *
      * @param funcName specifies the calling method name.
-     * @param format specifies the format string of the message.
-     * @param args specifies the message arguments.
+     * @param format   specifies the format string of the message.
+     * @param args     specifies the message arguments.
      */
     public void traceWarn(final String funcName, final String format, Object... args)
     {
@@ -425,8 +414,8 @@ public class TrcDbgTrace
      * This method is called to print an information message.
      *
      * @param funcName specifies the calling method name.
-     * @param format specifies the format string of the message.
-     * @param args specifies the message arguments.
+     * @param format   specifies the format string of the message.
+     * @param args     specifies the message arguments.
      */
     public void traceInfo(final String funcName, final String format, Object... args)
     {
@@ -437,8 +426,8 @@ public class TrcDbgTrace
      * This method is called to print a verbose message.
      *
      * @param funcName specifies the calling method name.
-     * @param format specifies the format string of the message.
-     * @param args specifies the message arguments.
+     * @param format   specifies the format string of the message.
+     * @param args     specifies the message arguments.
      */
     public void traceVerbose(final String funcName, final String format, Object... args)
     {
@@ -450,9 +439,9 @@ public class TrcDbgTrace
      * periodic message. This is useful to print out periodic status without overwhelming the debug console.
      *
      * @param funcName specifies the calling method name.
-     * @param timer specifies the interval timer.
-     * @param format specifies the format string of the message.
-     * @param args specifies the message arguments.
+     * @param timer    specifies the interval timer.
+     * @param format   specifies the format string of the message.
+     * @param args     specifies the message arguments.
      */
     public void traceInfoAtInterval(final String funcName, TrcIntervalTimer timer, final String format, Object... args)
     {
@@ -466,7 +455,7 @@ public class TrcDbgTrace
      * This method prints a debug message to the debug console.
      *
      * @param format specifies the format string of the message.
-     * @param args specifies the message arguments.
+     * @param args   specifies the message arguments.
      */
     public void tracePrintf(String format, Object... args)
     {
@@ -475,7 +464,8 @@ public class TrcDbgTrace
 
     private void startLoggingThread()
     {
-        if(jobThread != null && jobThread.isAlive()) {
+        if (jobThread != null && jobThread.isAlive())
+        {
             jobThread.interrupt();
             try
             {
@@ -503,7 +493,7 @@ public class TrcDbgTrace
     {
         jobThread.interrupt();
 
-        if(!returnImmediately)
+        if (!returnImmediately)
         {
             try
             {
@@ -524,15 +514,15 @@ public class TrcDbgTrace
      * This method is the common worker for all the trace message methods.
      *
      * @param funcName specifies the calling method name.
-     * @param level specifies the message level.
-     * @param format specifies the format string of the message.
-     * @param args specifies the message arguments.
+     * @param level    specifies the message level.
+     * @param format   specifies the format string of the message.
+     * @param args     specifies the message arguments.
      */
     private void traceMsgAsync(final String funcName, MsgLevel level, final String format, Object... args)
     {
         if (level.getValue() <= msgLevel.getValue())
         {
-            if(threadedLoggingEnabled)
+            if (threadedLoggingEnabled)
             {
                 jobQueue.add(new TraceJob(funcName, level, format, args));
             }
@@ -547,9 +537,9 @@ public class TrcDbgTrace
      * This method is the common worker for all the trace message methods.
      *
      * @param funcName specifies the calling method name.
-     * @param level specifies the message level.
-     * @param format specifies the format string of the message.
-     * @param args specifies the message arguments.
+     * @param level    specifies the message level.
+     * @param format   specifies the format string of the message.
+     * @param args     specifies the message arguments.
      */
     private void traceMsg(final String funcName, MsgLevel level, final String format, Object... args)
     {
@@ -563,7 +553,7 @@ public class TrcDbgTrace
 
                 // If threaded logging is enabled, don't flush after every write. This will decrease # of IO operations.
                 // If it's disabled, then we want logs to be written ASAP, so flush right away.
-                if(!threadedLoggingEnabled)
+                if (!threadedLoggingEnabled)
                 {
                     traceLog.flush();
                 }
@@ -571,7 +561,8 @@ public class TrcDbgTrace
         }
     }   //traceMsg
 
-    private void traceMsg(TraceJob job) {
+    private void traceMsg(TraceJob job)
+    {
         traceMsg(job.funcName, job.level, job.format, job.args);
     }
 
@@ -580,8 +571,8 @@ public class TrcDbgTrace
      * calling method name.
      *
      * @param funcName specifies the calling method name.
-     * @param enter specifies true if it is a traceEnter call, false if it is a traceExit call.
-     * @param newline specifies true if it should print a newline, false otherwise.
+     * @param enter    specifies true if it is a traceEnter call, false if it is a traceExit call.
+     * @param newline  specifies true if it should print a newline, false otherwise.
      * @return trace prefix string.
      */
     private String tracePrefix(final String funcName, boolean enter, boolean newline)
@@ -617,7 +608,7 @@ public class TrcDbgTrace
      * This method returns a message prefix string.
      *
      * @param funcName specifies the calling method name.
-     * @param level specifies the message level.
+     * @param level    specifies the message level.
      * @return message prefix string.
      */
     private String msgPrefix(final String funcName, MsgLevel level)
@@ -656,11 +647,13 @@ public class TrcDbgTrace
 
     private void processJobQueue()
     {
-        while(!Thread.interrupted()) {
+        while (!Thread.interrupted())
+        {
             try
             {
                 traceMsg(jobQueue.take());
-                if(shutdown) {
+                if (shutdown)
+                {
                     jobQueue.forEach(this::traceMsg);
                     Thread.currentThread().interrupt();
                 }
