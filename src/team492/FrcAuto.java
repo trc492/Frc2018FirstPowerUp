@@ -38,7 +38,6 @@ public class FrcAuto implements TrcRobot.RobotMode
     public static enum AutoStrategy
     {
         // Different choices for autonomous
-        MOTION_PROFILE_TEST,
         AUTO_SIDE,
         AUTO_SWITCH,
         AUTO_SCALE,
@@ -94,7 +93,6 @@ public class FrcAuto implements TrcRobot.RobotMode
     private double forwardDriveDistance;
 
     private TrcRobot.RobotCommand autoCommand;
-    private MotionProfileTest mpTest;
 
     public FrcAuto(Robot robot)
     {
@@ -113,8 +111,7 @@ public class FrcAuto implements TrcRobot.RobotMode
         //
         // Populate Autonomous Mode menus.
         //
-        autoStrategyMenu.addChoice("Motion Profile", AutoStrategy.MOTION_PROFILE_TEST, true, false);
-        autoStrategyMenu.addChoice("Auto Side", AutoStrategy.AUTO_SIDE, false, false);
+        autoStrategyMenu.addChoice("Auto Side", AutoStrategy.AUTO_SIDE, true, false);
         autoStrategyMenu.addChoice("Auto Switch", AutoStrategy.AUTO_SWITCH, false, false);
         autoStrategyMenu.addChoice("Auto Scale", AutoStrategy.AUTO_SCALE, false, false);
         autoStrategyMenu.addChoice("X Timed Drive", AutoStrategy.X_TIMED_DRIVE, false, false);
@@ -123,8 +120,6 @@ public class FrcAuto implements TrcRobot.RobotMode
         autoStrategyMenu.addChoice("Y Distance Drive", AutoStrategy.Y_DISTANCE_DRIVE, false, false);
         autoStrategyMenu.addChoice("Turn Degrees", AutoStrategy.TURN_DEGREES, false, false);
         autoStrategyMenu.addChoice("Do Nothing", AutoStrategy.DO_NOTHING, false, true);
-
-        mpTest = new MotionProfileTest("MPTest", robot);
 
         startPositionMenu.addChoice("Left Side Start", RobotInfo.Position.LEFT_POS, false, false);
         startPositionMenu.addChoice("Middle Start", RobotInfo.Position.MID_POS, true, false);
@@ -203,11 +198,6 @@ public class FrcAuto implements TrcRobot.RobotMode
 
         switch (autoStrategy)
         {
-            case MOTION_PROFILE_TEST:
-                mpTest.start();
-                autoCommand = mpTest;
-                break;
-
             case AUTO_SIDE:
                 if (startPosition != RobotInfo.Position.MID_POS)
                 {
@@ -288,15 +278,6 @@ public class FrcAuto implements TrcRobot.RobotMode
     @Override
     public void stopMode(RunMode nextMode)
     {
-    	switch(autoStrategy)
-    	{
-            case MOTION_PROFILE_TEST:
-                mpTest.stop();
-                break;
-                
-            default:
-                break;
-    	}
         TrcTaskMgr.getInstance().printTaskPerformanceMetrics(robot.globalTracer);
     } // stopMode
 
