@@ -34,6 +34,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import hallib.HalDashboard;
 import hallib.HalDbgLog;
 import trclib.TrcDbgTrace;
+import trclib.TrcRobot;
 import trclib.TrcRobot.*;
 import trclib.TrcTaskMgr;
 import trclib.TrcUtil;
@@ -323,6 +324,7 @@ public abstract class FrcRobotBase extends RobotBase
                     }
                 }
 
+                TrcRobot.setRunMode(currMode);
                 if (currMode != RunMode.INVALID_MODE)
                 {
                     //
