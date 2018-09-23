@@ -115,6 +115,7 @@ public class TrcDbgTrace
     private String traceLogName = null;
     private PrintStream traceLog = null;
     private boolean traceLogEnabled = false;
+    private boolean threadedLoggingEnabled = true;
 
     private Thread jobThread;
     private BlockingQueue<TraceJob> jobQueue;
@@ -309,6 +310,18 @@ public class TrcDbgTrace
         this.traceLevel = traceLevel;
         this.msgLevel = msgLevel;
     }   //setDbgTraceConfig
+
+    /**
+     * Enabled/disable threaded logging. Threaded logging will run a separate thread responsible for IO operations to disk.
+     * Enabling this will decrease latency and increase the speed of the code. However, it also means that logs will not
+     * be immediately written to disk, so if the robot crashes all logs may not have been written.
+     *
+     * @param enabled If true, enable threaded logging. Otherwise, disable it.
+     */
+    public void setThreadedLoggingEnabled(boolean enabled)
+    {
+        this.threadedLoggingEnabled = enabled;
+    }
 
     /**
      * This method is typically called at the beginning of a method to trace the entry parameters of the method.
@@ -512,7 +525,14 @@ public class TrcDbgTrace
     {
         if (level.getValue() <= msgLevel.getValue())
         {
-            jobQueue.add(new TraceJob(funcName, level, format, args));
+            if(threadedLoggingEnabled)
+            {
+                jobQueue.add(new TraceJob(funcName, level, format, args));
+            }
+            else
+            {
+                traceMsg(funcName, level, format, args);
+            }
         }
     }   //traceMsgAsync
 
@@ -533,7 +553,13 @@ public class TrcDbgTrace
             if (traceLogEnabled)
             {
                 traceLog.print(msg + "\r\n");
-                traceLog.flush();
+
+                // If threaded logging is enabled, don't flush after every write. This will decrease # of IO operations.
+                // If it's disabled, then we want logs to be written ASAP, so flush right away.
+                if(!threadedLoggingEnabled)
+                {
+                    traceLog.flush();
+                }
             }
         }
     }   //traceMsg
