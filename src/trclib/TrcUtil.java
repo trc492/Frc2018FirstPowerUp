@@ -113,7 +113,7 @@ public class TrcUtil
      *
      * @param milliTime specifies sleep time in msec.
      */
-    public static void nonInterruptibleSleep(long milliTime)
+    public static void uninterruptibleSleep(long milliTime)
     {
         long wakeupTime = System.currentTimeMillis() + milliTime;
 
@@ -129,7 +129,7 @@ public class TrcUtil
                 milliTime = wakeupTime - System.currentTimeMillis();
             }
         }
-    }   //nonInterruptibleSleep
+    }   //uninterruptibleSleep
 
     /**
      * This method calculates the modulo of two numbers. Unlike the <code>%</code> operator, this returns a number
