@@ -108,7 +108,7 @@ public class TrcDbgTrace
     private Thread loggingThread;
     private Thread shutdownHook;
     private BlockingQueue<TraceJob> loggingQueue;
-    private volatile boolean shutdown = false;
+    private volatile boolean finishWritingLogs = false;
 
     /**
      * Constructor: Create an instance of the object.
@@ -123,7 +123,7 @@ public class TrcDbgTrace
         this.instanceName = instanceName;
 
         loggingQueue = new LinkedBlockingQueue<>();
-        shutdownHook = new Thread(this::shutdownHook);
+        shutdownHook = new Thread(() -> stopLoggingThread(false));
 
         setDbgTraceConfig(traceEnabled, traceLevel, msgLevel);
     }   //TrcDbgTrace
@@ -229,7 +229,7 @@ public class TrcDbgTrace
 
         if (traceLog != null)
         {
-            stopLoggingThread();
+            stopLoggingThread(false);
             if (newName != null)
             {
                 try
@@ -484,43 +484,27 @@ public class TrcDbgTrace
         loggingQueue.clear();
     }
 
-    private void stopLoggingThread()
-    {
-        stopLoggingThread(false);
-    }
-
     private void stopLoggingThread(boolean returnImmediately)
     {
-        if (returnImmediately)
+    	// If stopping immediately, don't write the logs
+    	finishWritingLogs = !returnImmediately;
+        loggingThread.interrupt();
+        
+        if(!returnImmediately)
         {
-            // If we're returning immediately, then we only finish writing the current log
-            // All queued logs will be lost. This will return faster.
-            loggingThread.interrupt();
-        }
-        else
-        {
-            // If we're not returning immediately, then use the shutdown hook method of quitting
-            // Finish writing queued logs and then return
-            shutdownHook();
-            shutdown = false;
+        	try
+        	{
+        		loggingThread.join();
+        	}
+        	catch(InterruptedException e)
+        	{
+        		e.printStackTrace();
+        	}
         }
 
         loggingQueue.clear();
 
         Runtime.getRuntime().removeShutdownHook(shutdownHook); // Remove the shutdown hook from the JVM.
-    }
-
-    private void shutdownHook()
-    {
-        shutdown = true;
-        try
-        {
-            loggingThread.join();
-        }
-        catch (InterruptedException e)
-        {
-            e.printStackTrace();
-        }
     }
 
     /**
@@ -665,16 +649,18 @@ public class TrcDbgTrace
             try
             {
                 traceMsg(loggingQueue.take());
-                if (shutdown)
-                {
-                    loggingQueue.forEach(this::traceMsg);
-                    Thread.currentThread().interrupt();
-                }
             }
             catch (InterruptedException e)
             {
                 Thread.currentThread().interrupt();
             }
+        }
+        
+        // Finish writing all queued logs
+        if (finishWritingLogs)
+        {
+        	loggingQueue.forEach(this::traceMsg);
+        	Thread.currentThread().interrupt();
         }
     }
 }   //class TrcDbgTrace
