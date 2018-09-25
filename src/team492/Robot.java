@@ -23,6 +23,8 @@
 package team492;
 
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
+import com.github.arteam.simplejsonrpc.client.JsonRpcClient;
+
 import edu.wpi.cscore.UsbCamera;
 import edu.wpi.first.wpilibj.AnalogInput;
 import edu.wpi.first.wpilibj.CameraServer;
@@ -195,6 +197,11 @@ public class Robot extends FrcRobotBase
         super(programName);
     }   //Robot
 
+    
+    public AdbBridge adbBridge;
+    public AwooCommunicator awooCommunicator;
+    public JsonRpcClient rpcClient;
+    
     /**
      * This function is run when the robot is first started up and should be used for any initialization code.
      */
@@ -382,6 +389,24 @@ public class Robot extends FrcRobotBase
 
         diagnostics = new OnBoardDiagnostics(this);
 
+        
+        // ayyioasjfasfdjisagoibdsaofisajo;bas;ofjsaiojfasiojgisaofj
+        adbBridge = new AdbBridge();
+        adbBridge.start();
+        adbBridge.portForward(13970, 13970);
+        
+        awooCommunicator = new AwooCommunicator(13970);
+        awooCommunicator.initCommunicator();
+        
+        rpcClient = new JsonRpcClient(awooCommunicator);
+        
+        // awooCommunicator.sendMessage("Test message from RoboRIO");
+        
+        @SuppressWarnings("unused")
+		TestRPCClass remoteInitializationInstance = rpcClient.createRequest().method("getMajiraInstance").id(1).returnAs(TestRPCClass.class).execute();
+        
+        System.out.println(remoteInitializationInstance.toString());
+        
         //
         // Create Robot Modes.
         //
@@ -402,12 +427,14 @@ public class Robot extends FrcRobotBase
             {
                 // Robot is safe.
                 // Note: "disaibled" is not a typo. It forces the speech board to pronounce it correctly.
+            	// awooCommunicator.sendMessage("Robot disabled");
                 tts.speak("Robot disaibled");
                 nextTimeToSpeakInSeconds = TrcUtil.getCurrentTime() + IDLE_PERIOD_SECONDS;
             }
             else
             {
                 // Robot is unsafe
+            	// awooCommunicator.sendMessage("Robot enabled, stand clear.");
                 tts.speak("Robot enabled, stand clear");
                 nextTimeToSpeakInSeconds = TrcUtil.getCurrentTime() + SPEAK_PERIOD_SECONDS;
             }
@@ -881,3 +908,4 @@ public class Robot extends FrcRobotBase
     }
 
 }   //class Robot
+
