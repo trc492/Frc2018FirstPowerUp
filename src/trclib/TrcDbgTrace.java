@@ -478,7 +478,7 @@ public class TrcDbgTrace
         }
 
         Runtime.getRuntime().addShutdownHook(shutdownHook); // Add the shutdown hook to the jvm
-
+        
         loggingThread = new Thread(this::processJobQueue);
         loggingThread.setDaemon(true);
         loggingQueue.clear();
@@ -486,20 +486,20 @@ public class TrcDbgTrace
 
     private void stopLoggingThread(boolean returnImmediately)
     {
-    	// If stopping immediately, don't write the logs
-    	finishWritingLogs = !returnImmediately;
+        // If stopping immediately, don't write the logs
+        finishWritingLogs = !returnImmediately;
         loggingThread.interrupt();
         
         if(!returnImmediately)
         {
-        	try
-        	{
-        		loggingThread.join();
-        	}
-        	catch(InterruptedException e)
-        	{
-        		e.printStackTrace();
-        	}
+            try
+            {
+                loggingThread.join();
+            }
+            catch(InterruptedException e)
+            {
+                e.printStackTrace();
+            }
         }
 
         loggingQueue.clear();
@@ -659,8 +659,8 @@ public class TrcDbgTrace
         // Finish writing all queued logs
         if (finishWritingLogs)
         {
-        	loggingQueue.forEach(this::traceMsg);
-        	Thread.currentThread().interrupt();
+            loggingQueue.forEach(this::traceMsg);
+            Thread.currentThread().interrupt();
         }
     }
 }   //class TrcDbgTrace
