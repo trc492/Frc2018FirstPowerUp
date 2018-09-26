@@ -478,25 +478,32 @@ public class TrcDbgTrace
         }
 
         Runtime.getRuntime().addShutdownHook(shutdownHook); // Add the shutdown hook to the jvm
-        
+
         loggingThread = new Thread(this::processJobQueue);
         loggingThread.setDaemon(true);
         loggingQueue.clear();
     }
 
+    /**
+     * Stop the thread responsible for writing queued logs to disk.
+     *
+     * @param returnImmediately If true, only finish writing current log, drop all queued logs, and return without waiting
+     *                          for thread to exit. If false, finish writing all queued logs and return after thread has
+     *                          exited.
+     */
     private void stopLoggingThread(boolean returnImmediately)
     {
         // If stopping immediately, don't write the logs
         finishWritingLogs = !returnImmediately;
         loggingThread.interrupt();
-        
-        if(!returnImmediately)
+
+        if (!returnImmediately)
         {
             try
             {
                 loggingThread.join();
             }
-            catch(InterruptedException e)
+            catch (InterruptedException e)
             {
                 e.printStackTrace();
             }
@@ -655,7 +662,7 @@ public class TrcDbgTrace
                 Thread.currentThread().interrupt();
             }
         }
-        
+
         // Finish writing all queued logs
         if (finishWritingLogs)
         {
