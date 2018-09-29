@@ -479,9 +479,11 @@ public class TrcDbgTrace
 
         Runtime.getRuntime().addShutdownHook(shutdownHook); // Add the shutdown hook to the jvm
 
+        loggingQueue.clear();
+        
         loggingThread = new Thread(this::processJobQueue);
         loggingThread.setDaemon(true);
-        loggingQueue.clear();
+        loggingThread.start();
     }
 
     /**
