@@ -72,7 +72,7 @@ public class Robot extends FrcRobotBase
 {
     public static final String programName = "FirstPowerUp";
 
-    public static final boolean USE_TRACELOG = false; // TODO: turn logging back on when the delay issue is fixed
+    public static final boolean USE_TRACELOG = true;
     public static final boolean USE_NAV_X = true;
     public static final boolean USE_SONAR = true;
     public static final boolean USE_MAXBOTIX_SONAR_ARRAY = true;
